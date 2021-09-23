@@ -1,0 +1,8 @@
+requests
+SQLAlchemy
+fourmat
+alembic
+flask
+flask_sqlalchemy
+psycopg2
+pytest
