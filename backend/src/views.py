@@ -1,9 +1,9 @@
+import json
 from random import randrange
 
 from .app import app
-from .models import Bill
 from .council_api import get_recent_bills
-import json
+from .models import Bill
 
 
 @app.route("/healthz", methods=["GET"])
@@ -20,11 +20,17 @@ def home():
 
 @app.route("/bills", methods=["GET"])
 def bills():
+    # TODO: Use marshmallow
     bills = Bill.query.all()
-    return json.dumps([{
-      "name": b.name,
-      "title": b.title,
-      "file": b.file,
-      "status": b.status,
-      "body": b.body,
-    } for b in bills] )
+    return json.dumps(
+        [
+            {
+                "name": b.name,
+                "title": b.title,
+                "file": b.file,
+                "status": b.status,
+                "body": b.body,
+            }
+            for b in bills
+        ]
+    )
