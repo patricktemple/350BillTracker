@@ -29,7 +29,4 @@ def get_matters():
         params=make_filter_param(
             date_filter("MatterIntroDate", "ge", date(2021, 1, 1))
         ),
-    )
-
-
-print(get_matters().json()[0])
+    ).json()

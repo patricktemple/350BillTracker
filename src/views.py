@@ -1,4 +1,5 @@
 from .app import app
+from .council import get_matters
 
 
 @app.route("/healthz", methods=["GET"])
@@ -8,4 +9,5 @@ def healthz():
 
 @app.route("/", methods=["GET"])
 def home():
-    return "Hello world!"
+  matters = get_matters()
+  return matters[0]
