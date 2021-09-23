@@ -12,4 +12,4 @@ def healthz():
 def home():
   matters = get_matters()
   random_matter = matters[randrange(0, len(matters))]
-  return f"Random matter: {random_matter['MatterName']}"
+  return random_matter['MatterName']

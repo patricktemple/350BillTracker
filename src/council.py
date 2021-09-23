@@ -27,6 +27,7 @@ def get_matters():
     return council_get(
         "matters",
         params=make_filter_param(
-            date_filter("MatterIntroDate", "ge", date(2021, 1, 1))
+            date_filter("MatterIntroDate", "ge", date(2021, 1, 1)),
+            "MatterTypeName eq 'Introduction'"
         ),
     ).json()
