@@ -1,5 +1,6 @@
 from .app import app
 from .council import get_matters
+from random import randrange
 
 
 @app.route("/healthz", methods=["GET"])
@@ -10,4 +11,5 @@ def healthz():
 @app.route("/", methods=["GET"])
 def home():
   matters = get_matters()
-  return matters[0]
+  random_matter = matters[randrange(0, len(matters))]
+  return f"Random matter: {random_matter['MatterName']}"
