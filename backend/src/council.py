@@ -4,6 +4,8 @@ import requests
 
 from src.settings import CITY_COUNCIL_API_TOKEN
 
+# See http://webapi.legistar.com/Help for an overview of resources.
+
 
 def council_get(path, *, params=None):
     if not params:
