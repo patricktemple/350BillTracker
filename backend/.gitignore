@@ -141,7 +141,4 @@ cython_debug/
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 
-.secret/
-
-
-# __frontend_build__/
+__frontend_build__/
