@@ -34,7 +34,7 @@ def get_recent_bills():
         "matters",
         params=make_filter_param(
             date_filter("MatterIntroDate", "ge", date(2021, 1, 1)),
-            eq_filter("MatterTypeName", "Introduction")
+            eq_filter("MatterTypeName", "Introduction"),
         ),
     ).json()
 
@@ -54,5 +54,5 @@ def find_bill(intro_name):
         raise ValueError("No matching bill found")
     if len(bills) > 1:
         raise ValueError("Multiple matching bills found!")
-    
+
     return bills[0]
