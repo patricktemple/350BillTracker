@@ -1,0 +1,3 @@
+./script/build
+
+(cd backend; eb deploy)

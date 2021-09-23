@@ -1,5 +1,6 @@
 import json
 from random import randrange
+from flask import render_template
 
 from .app import app
 from .council_api import get_recent_bills
@@ -11,11 +12,17 @@ def healthz():
     return "Healthy!"
 
 
-@app.route("/", methods=["GET"])
-def home():
+@app.route("/random", methods=["GET"])
+def random():
     matters = get_recent_bills()
     random_matter = matters[randrange(0, len(matters))]
     return random_matter["MatterName"]
+  
+
+@app.route("/")
+def index():
+    # message = "Hello, World"
+    return render_template('index.html')
 
 
 @app.route("/bills", methods=["GET"])

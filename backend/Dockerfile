@@ -13,6 +13,8 @@ RUN pip install -r requirements.txt
 COPY /src /app/src
 COPY /alembic /app/alembic
 COPY /script_deployed /app/script_deployed
+COPY /__frontend_build__/index.html /app/src/templates/index.html
+COPY /__frontend_build__/static /app/src/static
 
 EXPOSE 5000
 CMD [ "flask", "run", "--host=0.0.0.0" ]

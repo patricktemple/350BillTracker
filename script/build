@@ -1,0 +1,6 @@
+(cd frontend; yarn build)
+
+rm -rf backend/__frontend_build__
+cp -r frontend/build backend/__frontend_build__
+
+(cd backend; docker build .)
