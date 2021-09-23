@@ -25,3 +25,5 @@ From repo root:
 ```bash
 script/deploy
 ```
+
+Do NOT just run `eb deploy` within the `backend` directory, as this will not rebuild the frontend to the latest version.
