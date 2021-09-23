@@ -21,6 +21,7 @@ class Bill(db.Model):
 
     # These are all auto-populated by the API:
     id = Column(Integer, primary_key=True)
+    file = Column(Text, nullable=False) # e.g. Int 2317-2021
     name = Column(Text, nullable=False)
     title = Column(Text, nullable=False)
     status = Column(Text)

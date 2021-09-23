@@ -20,16 +20,39 @@ def date_filter(field, operator, date):
     return f"{field} {operator} datetime'{date.isoformat()}'"
 
 
+def eq_filter(field, value):
+    return f"{field} eq '{value}'"
+
+
 def make_filter_param(*filters):
     return {"$filter": " and ".join(filters)}
 
 
 # http://webapi.legistar.com/Help/Api/GET-v1-Client-Matters
-def get_matters():
+def get_recent_bills():
     return council_get(
         "matters",
         params=make_filter_param(
             date_filter("MatterIntroDate", "ge", date(2021, 1, 1)),
-            "MatterTypeName eq 'Introduction'"
+            eq_filter("MatterTypeName", "Introduction")
         ),
     ).json()
+
+
+def find_bill(intro_name):
+    # intro_name should be something like 2317-2021 including the year
+    # TODO: Escape the name
+    bills = council_get(
+        "matters",
+        params=make_filter_param(
+            eq_filter("MatterTypeName", "Introduction"),
+            f"'Int {intro_name}' eq MatterFile"
+            # f"substringof('Int {intro_name}', MatterFile) eq true",
+        ),
+    ).json()
+    if not bills:
+        raise ValueError("No matching bill found")
+    if len(bills) > 1:
+        raise ValueError("Multiple matching bills found!")
+    
+    return bills[0]
