@@ -77,11 +77,11 @@ export default function BillDetails(props: Props): ReactElement {
         </div>
         <Form.Group className="mb-3">
           <Form.Label><strong>Nickname:</strong></Form.Label>
-          <Form.Control type="text" size="sm" value={billNickname} onChange={handleNicknameChanged} />
+          <Form.Control type="text" size="sm" placeholder="Our short description of bill" value={billNickname} onChange={handleNicknameChanged} />
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label><strong>Our notes:</strong></Form.Label>
-          <Form.Control as="textarea" rows={3} value={billNotes} placeholder="Add our notes about this bill" onChange={handleNotesChanged} />
+          <Form.Control as="textarea" rows={3} size="sm" value={billNotes} placeholder="Add our notes about this bill" onChange={handleNotesChanged} />
         </Form.Group>
         <div>{getSaveText()}</div>
       </Stack>

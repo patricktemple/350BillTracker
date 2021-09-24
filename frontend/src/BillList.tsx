@@ -36,7 +36,7 @@ function BillListRow(props: {
           </Button>
         ) : (
           <Button size="sm" onClick={handleTrackBill}>
-            Track this bill
+            Track
           </Button>
         )}
       </td>
@@ -54,7 +54,7 @@ export default function BillList(props: Props) {
           <th>Title</th>
           <th>Status</th>
           <th>Body</th>
-          <th>Tracking</th>
+          <th>Are we tracking this bill?</th>
         </tr>
       </thead>
       <tbody>
