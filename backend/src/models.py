@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, Text, TypeDecorator
+from sqlalchemy import Column, Integer, Text, TypeDecorator, ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import TIMESTAMP as _TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID as _UUID
 from sqlalchemy import sql
@@ -38,6 +39,8 @@ class Bill(db.Model):
     notes = Column(Text, nullable=False, server_default="")
     nickname = Column(Text, nullable=False, server_default="")
 
+    sponsorships = relationship("BillSponsorship", back_populates="bill")
+
 
 class Legislator(db.Model):
     __tablename__ = "legislators"
@@ -49,3 +52,18 @@ class Legislator(db.Model):
     email = Column(Text)
     district_phone = Column(Text)
     legislative_phone = Column(Text)
+
+    sponsorships = relationship("BillSponsorship", back_populates="legislator")
+
+
+
+class BillSponsorship(db.Model):
+    __tablename__ = "bill_sponsorships"
+
+    id = Column(Integer, primary_key=True)
+    bill_id = Column(Integer, ForeignKey('bills.id'), nullable=False, index=True)
+    bill = relationship("Bill", back_populates="sponsorships")
+
+    # TODO: What if they don't exist in the DB?
+    legislator_id = Column(Integer, ForeignKey('legislators.id'), nullable=False, index=True)
+    legislator = relationship("Legislator", back_populates="sponsorships")

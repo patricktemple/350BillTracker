@@ -4,7 +4,7 @@ from marshmallow import fields
 from .app import app
 from .app import marshmallow as ma
 from .council_api import lookup_bills
-from .council_sync import add_or_update_bill, convert_matter_to_bill
+from .council_sync import add_or_update_bill, convert_matter_to_bill, update_sponsorships
 from .models import Bill, Legislator, db
 
 
@@ -58,6 +58,8 @@ def bills():
 def save_bill():
     matter_id = request.json["id"]
     add_or_update_bill(matter_id)
+    update_sponsorships(matter_id)
+
     return jsonify({})
 
 
@@ -113,3 +115,16 @@ class CouncilMemberSchema(CamelCaseSchema):
 def get_council_members():
     legislators = Legislator.query.all()
     return CouncilMemberSchema(many=True).jsonify(legislators)
+
+
+# Bill sponsorships ----------------------------------------------------------------------
+
+# TODO: This is all a wip
+class BillSponsorshipSchema(CamelCaseSchema):
+    notes = fields.String(required=True)
+    nickname = fields.String(required=True)
+
+
+@app.route("/api/saved-bills/<int:bill_id>/sponsorships", methods=["GET"])
+def bill_sponsorships(bill_id):
+    pass

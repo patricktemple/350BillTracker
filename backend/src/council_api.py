@@ -59,6 +59,12 @@ def get_bill(matter_id):
     ).json()
 
 
+def get_bill_sponsors(matter_id):
+    return council_get(
+        f"matters/{matter_id}/sponsors",
+    ).json()
+
+
 def get_person(person_id):
     return council_get(f"persons/{person_id}").json()
 
@@ -69,7 +75,7 @@ def get_current_council_members():
         params=make_filter_param(
             eq_filter("OfficeRecordBodyName", "City Council"),
             # eq_filter("OfficeRecordTitle", "Council Member"),
-            "(OfficeRecordMemberType eq 'PRIMARY COUNCIL MEMBERS' or OfficeRecordMemberType eq 'PRIMARY SPEAKER')",
+            # "(OfficeRecordMemberType eq 'PRIMARY COUNCIL MEMBERS' or OfficeRecordMemberType eq 'PRIMARY SPEAKER')",
             date_filter("OfficeRecordStartDate", "le", now().date()),
             date_filter("OfficeRecordEndDate", "ge", now().date()),
         ),
