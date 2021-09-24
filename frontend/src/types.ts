@@ -1,4 +1,5 @@
-// Types returned by backend API. snake_case because that's what python does naturally?
+// Defines types returned by the backend APIs.
+
 export interface Bill {
   id: number;
   file: string;
@@ -12,7 +13,7 @@ export interface CouncilMember {
   id: number;
   name: string;
 
-  // Or date?
-  term_start: string;
-  term_end: string;
+  // ISO-formatted datetime.
+  termStart: string;
+  termEnd: string;
 }

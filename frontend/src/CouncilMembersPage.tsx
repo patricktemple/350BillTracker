@@ -33,8 +33,8 @@ export default function CouncilMembersPage() {
             {members.map((member: any) => (
               <tr key={member.id}>
                 <td>{member.name}</td>
-                <td>{member.term_start}</td>
-                <td>{member.term_end}</td>
+                <td>{member.termStart}</td>
+                <td>{member.termEnd}</td>
               </tr>
             ))}
           </tbody>

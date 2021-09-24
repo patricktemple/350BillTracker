@@ -7,6 +7,20 @@ from .council_sync import add_or_update_bill, convert_matter_to_bill
 from .models import Bill, Person
 
 
+def camelcase(s):
+    parts = iter(s.split("_"))
+    return next(parts) + "".join(i.title() for i in parts)
+
+
+class CamelCaseSchema(ma.Schema):
+    """Schema that uses camel-case for its external representation
+    and snake-case for its internal representation.
+    """
+
+    def on_bind_field(self, field_name, field_obj):
+        field_obj.data_key = camelcase(field_obj.data_key or field_name)
+
+
 @app.route("/healthz", methods=["GET"])
 def healthz():
     return "Healthy!"
@@ -20,12 +34,12 @@ def index():
 # Bills ----------------------------------------------------------------------
 
 
-class BillSchema(ma.Schema):
+class BillSchema(CamelCaseSchema):
     id = fields.Integer(required=True)
     name = fields.String(required=True)
     title = fields.String(required=True)
     status = fields.String(required=True)
-    body = fields.Body(required=True)
+    body = fields.String(required=True)
 
 
 @app.route("/saved-bills", methods=["GET"])
@@ -53,7 +67,7 @@ def search_bills():
 # Council members ----------------------------------------------------------------------
 
 
-class CouncilMemberSchema(ma.Schema):
+class CouncilMemberSchema(CamelCaseSchema):
     name = fields.String(required=True)
     id = fields.Integer(required=True)
     term_start = fields.DateTime()
