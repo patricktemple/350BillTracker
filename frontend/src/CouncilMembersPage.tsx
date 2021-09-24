@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function CouncilMembersPage() {
-  const [members, setMembers] = useState<any>(null);
+  const [members, setMembers] = useState<CouncilMember[] | null>(null);
 
   useMountEffect(() => {
     fetch('/api/council-members')

@@ -5,7 +5,7 @@ from .app import app
 from .app import marshmallow as ma
 from .council_api import lookup_bills
 from .council_sync import add_or_update_bill, convert_matter_to_bill, update_sponsorships
-from .models import Bill, Legislator, db
+from .models import Bill, Legislator, db, BillSponsorship
 
 
 def camelcase(s):
@@ -119,12 +119,12 @@ def get_council_members():
 
 # Bill sponsorships ----------------------------------------------------------------------
 
-# TODO: This is all a wip
-class BillSponsorshipSchema(CamelCaseSchema):
-    notes = fields.String(required=True)
-    nickname = fields.String(required=True)
+class SingleBillSponsorshipsSchema(CamelCaseSchema):
+    bill_id = fields.Integer(required=True)
+    legislator = fields.Nested(CouncilMemberSchema)
 
 
 @app.route("/api/saved-bills/<int:bill_id>/sponsorships", methods=["GET"])
 def bill_sponsorships(bill_id):
-    pass
+    sponsorships = BillSponsorship.query.filter_by(bill_id=bill_id).all()
+    return SingleBillSponsorshipsSchema(many=True).jsonify(sponsorships)

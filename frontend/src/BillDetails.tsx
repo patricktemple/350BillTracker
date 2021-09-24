@@ -1,8 +1,11 @@
 import React, { ReactElement, useState } from 'react';
 import Stack from 'react-bootstrap/Stack';
 import Form from 'react-bootstrap/Form';
-import { Bill } from './types';
+import { Bill, SingleBillSponsorship } from './types';
 import useInterval from '@restart/hooks/useInterval';
+import useMountEffect from '@restart/hooks/useMountEffect';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 interface Props {
   bill: Bill;
@@ -17,6 +20,17 @@ export default function BillDetails(props: Props): ReactElement {
   const [localSaveVersion, setLocalSaveVersion] = useState<number>(0);
   const [remoteSaveVersion, setRemoteSaveVersion] = useState<number>(0);
   const [saveInProgress, setSaveInProgress] = useState<boolean>(false);
+
+  const [sponsorships, setSponsorships] = useState<SingleBillSponsorship[] | null>(null);
+
+  // FIXME: This is loading all sponsorships individually on first page load of list
+  useMountEffect(() => {
+    fetch(`/api/saved-bills/${bill.id}/sponsorships`)
+      .then((response) => response.json())
+      .then((response) => {
+          setSponsorships(response);
+      });
+  });
 
   // TODO: Handle save failure too!
   function maybeSaveUpdates() {
@@ -65,26 +79,42 @@ export default function BillDetails(props: Props): ReactElement {
 
   return (
     <Form onSubmit={(e) => e.preventDefault()}>
-      <Stack direction="vertical" gap={2}>
-        <div>
-          <strong>File:</strong> {bill.file}
-        </div>
-        <div>
-          <strong>Title:</strong> {bill.title}
-        </div>
-        <div>
-          <strong>Name:</strong> {bill.name}
-        </div>
-        <Form.Group className="mb-3">
-          <Form.Label><strong>Nickname:</strong></Form.Label>
-          <Form.Control type="text" size="sm" placeholder="Our short description of bill" value={billNickname} onChange={handleNicknameChanged} />
+      <Row className="mb-2">
+        <Col lg={2}><strong>File:</strong></Col>
+        <Col>{bill.file}</Col>
+      </Row>
+      <Row className="mb-2">
+        <Col lg={2}><strong>Title:</strong></Col>
+        <Col>{bill.title}</Col>
+      </Row>
+      <Row className="mb-2">
+        <Col lg={2}><strong>Name:</strong></Col>
+        <Col>{bill.name}</Col>
+      </Row>
+      <Row className="mb-2">
+        <Col lg={2}><strong>Sponsors {sponsorships != null && <>({sponsorships.length})</>}:</strong></Col>
+        <Col>
+          {sponsorships == null ? "Loading..." : (
+            <Stack direction="vertical">
+              {sponsorships.map(s => <div key={s.legislator.id}>{s.legislator.name}</div>)}
+            </Stack>
+          )}
+        </Col>
+      </Row>
+
+      <Form.Group as={Row} className="mb-2">
+          <Form.Label column lg={2}><strong>Nickname:</strong></Form.Label>
+          <Col>
+            <Form.Control type="text" size="sm" placeholder="Our short description of bill" value={billNickname} onChange={handleNicknameChanged} />
+          </Col>
         </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label><strong>Our notes:</strong></Form.Label>
-          <Form.Control as="textarea" rows={3} size="sm" value={billNotes} placeholder="Add our notes about this bill" onChange={handleNotesChanged} />
+        <Form.Group as={Row} className="mb-2">
+          <Form.Label column lg={2}><strong>Our notes:</strong></Form.Label>
+          <Col>
+            <Form.Control as="textarea" rows={3} size="sm" value={billNotes} placeholder="Add our notes about this bill" onChange={handleNotesChanged} />
+          </Col>
         </Form.Group>
-        <div>{getSaveText()}</div>
-      </Stack>
+        <div><em>{getSaveText()}</em></div>
     </Form>
   );
 }

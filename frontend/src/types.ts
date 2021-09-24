@@ -7,11 +7,8 @@ export interface Bill {
   name: string;
   title: string;
   status: string;
-  body: string;
-  email: string;
-  districtPhone: string;
-  legislativePhone: string;
   tracked: boolean;
+  body: string;
 
   // Editable fields
   notes: string;
@@ -25,4 +22,12 @@ export interface CouncilMember {
   // ISO-formatted datetime.
   termStart: string;
   termEnd: string;
+  email: string;
+  districtPhone: string;
+  legislativePhone: string;
+}
+
+export interface SingleBillSponsorship {
+  billId: number;
+  legislator: CouncilMember;
 }
