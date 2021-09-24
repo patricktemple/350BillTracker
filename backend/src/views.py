@@ -1,7 +1,6 @@
-import json
 from random import randrange
 
-from flask import render_template, request
+from flask import render_template, request, jsonify
 
 from .app import app
 from .council_api import get_recent_bills, lookup_bills
@@ -30,7 +29,7 @@ def index():
 def bills():
     # TODO: Use marshmallow
     bills = Bill.query.all()
-    return json.dumps(
+    return jsonify(
         [
             {
                 "name": b.name,
@@ -48,7 +47,7 @@ def bills():
 def save_bill():
     matter_id = request.json["id"]
     add_or_update_bill(matter_id)
-    return "{}"
+    return jsonify({})
 
 
 @app.route("/search-bills", methods=["GET"])
@@ -57,13 +56,13 @@ def search_bills():
 
     bills = lookup_bills(file)
 
-    return json.dumps([convert_matter_to_bill(b) for b in bills])
+    return jsonify([convert_matter_to_bill(b) for b in bills])
 
 
 @app.route("/council-members", methods=["GET"])
 def get_council_members():
     persons = Person.query.all()
-    return json.dumps([{
+    return jsonify([{
         "name": person.name,
         "id": person.id,
         "term_start": person.term_start.isoformat() if person.term_start else None,

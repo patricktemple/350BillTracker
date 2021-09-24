@@ -45,7 +45,6 @@ def upsert_matter_data(matter_json):
 def add_council_members():
     members = get_current_council_members()
 
-    # TODO: Lookup their contact info too
     for member in members:
         person = Person(
             name=member["OfficeRecordFullName"],
@@ -53,6 +52,7 @@ def add_council_members():
             term_start=member["OfficeRecordStartDate"],
             term_end=member["OfficeRecordEndDate"],
         )
+        # TODO: Merge is probably not concurrency friendly. Do insert+on_conflict_do_update
         db.session.merge(person)
 
     db.session.commit()
