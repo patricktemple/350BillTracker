@@ -2,12 +2,22 @@ import logging
 from time import sleep
 
 from .app import app
+from . import council_sync
 
 
 @app.cli.command("cron")
 def cron_command():
     logging.info("Cron job starting")
     while True:
-        logging.info("Hello from cron job!")
+        logging.info("Syncing data...")
 
-        sleep(5)
+        logging.info("Adding council members")
+        council_sync.add_council_members()
+
+        logging.info("Updating council member contact info")
+        council_sync.fill_council_person_data()
+
+        logging.info("Syncing all bill sponsorships")
+        council_sync.update_all_sponsorships()
+
+        sleep(60 * 60)

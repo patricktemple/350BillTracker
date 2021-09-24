@@ -82,3 +82,10 @@ def update_sponsorships(bill_id):
         db.session.merge(internal_sponsorship)
     
     db.session.commit()
+
+
+def update_all_sponsorships():
+    bills = Bill.query.all()
+    for bill in bills:
+        logging.info(f"Updating sponsorships for bill {bill.id} {bill.name}")
+        update_sponsorships(bill.id)
