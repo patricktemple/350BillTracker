@@ -59,6 +59,10 @@ def get_bill(matter_id):
     ).json()
 
 
+def get_person(person_id):
+    return council_get(f"persons/{person_id}").json()
+
+
 def get_current_council_members():
     office_records = council_get(
         "officerecords",

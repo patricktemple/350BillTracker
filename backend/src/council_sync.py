@@ -2,7 +2,7 @@ import logging
 
 from sqlalchemy import update
 
-from .council_api import get_bill, get_current_council_members, lookup_bills
+from .council_api import get_bill, get_current_council_members, lookup_bills, get_person
 from .models import Bill, Person, db
 
 
@@ -54,5 +54,17 @@ def add_council_members():
             term_end=member["OfficeRecordEndDate"],
         )
         db.session.merge(person)
+
+    db.session.commit()
+
+
+def fill_council_person_data():
+    persons = Person.query.all()
+
+    for person in persons:
+        data = get_person(person.id)
+        person.email = data['PersonEmail']
+        person.district_phone = data['PersonPhone']
+        person.legislative_phone = data['PersonPhone2']
 
     db.session.commit()

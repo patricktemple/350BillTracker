@@ -39,3 +39,8 @@ class Person(db.Model):
     name = Column(Text, nullable=False)
     term_start = Column(TIMESTAMP)
     term_end = Column(TIMESTAMP)
+    email = Column(Text)
+    district_phone = Column(Text)
+    legislative_phone = Column(Text)
+
+
