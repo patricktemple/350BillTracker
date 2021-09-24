@@ -1,44 +1,16 @@
 import { useState } from 'react';
-import useMountEffect from '@restart/hooks/useMountEffect';
-import Table from 'react-bootstrap/Table';
 import './App.css';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import SavedBillsPage from './SavedBillsPage';
+import LookupBillPage from './LookupBillPage';
 
 function App() {
-  const [bills, setBills] = useState<any>(null);
-  useMountEffect(() => {
-    fetch("/bills")
-      .then(response => response.json())
-      .then(response => {
-        setBills(response);
-    });
-  });
-
   return (
-    <Table striped bordered>
-      <thead>
-        <tr>
-          <th>
-            File
-          </th>
-          <th>Name</th>
-          <th>Title</th>
-          <th>Status</th>
-          <th>Body</th>
-        </tr>
-      </thead>
-      <tbody>
-        {bills && bills.map((bill: any) => (
-          <tr>
-            <td>{bill.file}</td>
-            <td>{bill.name}</td>
-            <td>{bill.title}</td>
-            <td>{bill.status}</td>
-            <td>{bill.body}</td>
-          </tr>
-        ))}
-      </tbody>
-    </Table>
-  );
+    <Router>
+      <Route path="/" exact component={SavedBillsPage} />
+      <Route path="/lookup" component={LookupBillPage} />
+    </Router>
+  )
 }
 
 export default App;
