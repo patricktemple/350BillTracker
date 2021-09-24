@@ -27,6 +27,9 @@ export default function CouncilMembersPage() {
               <th>Name</th>
               <th>Term Start</th>
               <th>Term End</th>
+              <th>Email</th>
+              <th>District Phone</th>
+              <th>Legislative Phone</th>
             </tr>
           </thead>
           <tbody>
@@ -35,6 +38,9 @@ export default function CouncilMembersPage() {
                 <td>{member.name}</td>
                 <td>{member.termStart}</td>
                 <td>{member.termEnd}</td>
+                <td>{member.email}</td>
+                <td>{member.districtPhone}</td>
+                <td>{member.legislativePhone}</td>
               </tr>
             ))}
           </tbody>

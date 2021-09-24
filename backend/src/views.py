@@ -26,7 +26,7 @@ class CamelCaseSchema(ma.Schema):
 def healthz():
     return "Healthy!"
 
-
+# TODO: Hitting a react route other than root will fail when browser navigates directly there
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -73,6 +73,9 @@ class CouncilMemberSchema(CamelCaseSchema):
     id = fields.Integer(required=True)
     term_start = fields.DateTime()
     term_end = fields.DateTime()
+    email = fields.String()
+    district_phone = fields.String()
+    legislative_phone = fields.String()
 
 
 @app.route("/api/council-members", methods=["GET"])

@@ -7,6 +7,9 @@ export interface Bill {
   title: string;
   status: string;
   body: string;
+  email: string;
+  districtPhone: string;
+  legislativePhone: string;
 }
 
 export interface CouncilMember {

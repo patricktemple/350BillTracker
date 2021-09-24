@@ -8,6 +8,6 @@ from .app import app
 def cron_command():
     logging.info("Cron job starting")
     while True:
-        logging.info("Hello!")
+        logging.info("Hello from cron job!")
 
         sleep(5)
