@@ -2,13 +2,13 @@ import { useState } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import SavedBillsPage from './SavedBillsPage';
-import LookupBillPage from './LookupBillPage';
+import SearchBillsPage from './SearchBillsPage';
 
 function App() {
   return (
     <Router>
       <Route path="/" exact component={SavedBillsPage} />
-      <Route path="/lookup" component={LookupBillPage} />
+      <Route path="/search" component={SearchBillsPage} />
     </Router>
   )
 }

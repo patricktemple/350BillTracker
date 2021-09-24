@@ -1,13 +1,5 @@
 import Table from 'react-bootstrap/Table';
-
-interface Bill {
-  id: number;
-  file: string;
-  name: string;
-  title: string;
-  status: string;
-  body: string;
-}
+import { Bill } from './types';
 
 interface Props {
   bills: Bill[];
