@@ -84,13 +84,19 @@ export default function BillDetails(props: Props): ReactElement {
         <Col>{bill.file}</Col>
       </Row>
       <Row className="mb-2">
-        <Col lg={2}><strong>Title:</strong></Col>
-        <Col>{bill.title}</Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2}><strong>Name:</strong></Col>
+        <Col lg={2}><strong>Official name:</strong></Col>
         <Col>{bill.name}</Col>
       </Row>
+      <Row className="mb-2">
+        <Col lg={2}><strong>Description:</strong></Col>
+        <Col>{bill.title}</Col>
+      </Row>
+      <Form.Group as={Row} className="mb-2">
+          <Form.Label column lg={2}><strong>Our nickname:</strong></Form.Label>
+          <Col>
+            <Form.Control type="text" size="sm" placeholder='e.g. "Skip the stuff"' value={billNickname} onChange={handleNicknameChanged} />
+          </Col>
+        </Form.Group>
       <Row className="mb-2">
         <Col lg={2}><strong>Sponsors {sponsorships != null && <>({sponsorships.length})</>}:</strong></Col>
         <Col>
@@ -101,13 +107,6 @@ export default function BillDetails(props: Props): ReactElement {
           )}
         </Col>
       </Row>
-
-      <Form.Group as={Row} className="mb-2">
-          <Form.Label column lg={2}><strong>Nickname:</strong></Form.Label>
-          <Col>
-            <Form.Control type="text" size="sm" placeholder="Our short description of bill" value={billNickname} onChange={handleNicknameChanged} />
-          </Col>
-        </Form.Group>
         <Form.Group as={Row} className="mb-2">
           <Form.Label column lg={2}><strong>Our notes:</strong></Form.Label>
           <Col>

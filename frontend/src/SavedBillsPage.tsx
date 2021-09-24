@@ -48,7 +48,7 @@ export default function SavedBillsPage() {
           {bills.map((bill) => (
             <Accordion.Item key={bill.id} eventKey={bill.id.toString()}>
               <Accordion.Header>
-                <strong>{bill.name}</strong>&nbsp;({bill.file})
+                <strong>{bill.nickname || bill.name}</strong>&nbsp;({bill.file})
               </Accordion.Header>
               <Accordion.Body>
                 <BillDetails bill={bill} />
