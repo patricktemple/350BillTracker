@@ -4,9 +4,16 @@ import BillList from './BillList';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Bill } from './types';
+import Modal from 'react-bootstrap/Modal';
 import './App.css';
 
-export default function SearchBillsPage() {
+interface Props {
+    show: boolean;
+    onHide: () => void;
+    handleBillSaved: (id: number) => void;
+}
+
+export default function SearchBillsModal(props: Props) {
     const searchBoxRef = useRef<HTMLInputElement>(null);
 
     const [searchResults, setSearchResults] = useState<Bill[] | null>(null);
@@ -21,19 +28,12 @@ export default function SearchBillsPage() {
         });
     }
 
-    function onBillSaved(id: number) {
-        fetch("/saved-bills", {
-            method: "POST",
-            body: JSON.stringify({ id }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(response => response.json()).then(response => {
-            window.alert("Bill saved!");
-        });
-    }
-
-   return (<div><Form>
+   return (<Modal show={props.show} onHide={props.onHide} size="xl">
+       <Modal.Header closeButton>
+           <Modal.Title>Lookup a bill</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+       <Form>
         <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Intro number (such as "2317-2021")</Form.Label>
             <Form.Control type="text" placeholder="Enter bill number" ref={searchBoxRef} />
@@ -43,6 +43,7 @@ export default function SearchBillsPage() {
             Search
         </Button>
     </Form>
-    {searchResults != null && <BillList bills={searchResults} showSaveBill={true} onBillSaved={onBillSaved} />}
-    </div>);
+    {searchResults != null && <BillList bills={searchResults} showSaveBill={true} onBillSaved={props.handleBillSaved} />}
+    </Modal.Body>
+    </Modal>);
 }

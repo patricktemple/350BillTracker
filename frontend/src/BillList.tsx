@@ -31,7 +31,7 @@ export default function BillList(props: Props) {
                 <td>{bill.title}</td>
                 <td>{bill.status}</td>
                 <td>{bill.body}</td>
-                {props.showSaveBill && props.onBillSaved && <td><Button onClick={() => props.onBillSaved!(bill.id)}>Add to saved list</Button></td>}
+                {props.showSaveBill && props.onBillSaved && <td><Button size="sm" onClick={() => props.onBillSaved!(bill.id)}>Track this bill</Button></td>}
               </tr>
             ))}
           </tbody>
