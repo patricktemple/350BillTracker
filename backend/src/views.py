@@ -28,8 +28,9 @@ def healthz():
 
 
 # TODO: Hitting a react route other than root will fail when browser navigates directly there
-@app.route("/")
-def index():
+@app.route("/", defaults={'path': ''})
+@app.route("/<path:path>")
+def index(path):
     return render_template("index.html")
 
 
