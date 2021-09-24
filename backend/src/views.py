@@ -45,11 +45,12 @@ class BillSchema(CamelCaseSchema):
     file = fields.String(required=True)
     tracked = fields.Boolean()
     notes = fields.String()
+    nickname = fields.String()
 
 
 @app.route("/api/saved-bills", methods=["GET"])
 def bills():
-    bills = Bill.query.all()
+    bills = Bill.query.order_by(Bill.name).all()
     return BillSchema(many=True).jsonify(bills)
 
 
@@ -62,6 +63,7 @@ def save_bill():
 
 class UpdateBillSchema(CamelCaseSchema):
     notes = fields.String(required=True)
+    nickname = fields.String(required=True)
 
 
 @app.route("/api/saved-bills/<int:bill_id>", methods=["PUT"])
@@ -70,6 +72,7 @@ def update_bill(bill_id):
 
     bill = Bill.query.get(bill_id)
     bill.notes = data['notes']
+    bill.nickname = data['nickname']
 
     db.session.commit()
 

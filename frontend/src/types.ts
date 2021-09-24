@@ -15,6 +15,7 @@ export interface Bill {
 
   // Editable fields
   notes: string;
+  nickname: string;
 }
 
 export interface CouncilMember {

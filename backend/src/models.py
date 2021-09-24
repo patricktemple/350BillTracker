@@ -36,6 +36,7 @@ class Bill(db.Model):
 
     # Data we track
     notes = Column(Text, nullable=False, server_default="")
+    nickname = Column(Text, nullable=False, server_default="")
 
 
 class Legislator(db.Model):

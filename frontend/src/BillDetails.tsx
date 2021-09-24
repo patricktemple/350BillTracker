@@ -8,17 +8,11 @@ interface Props {
   bill: Bill;
 }
 
-// enum SaveStatus {
-//   NONE,
-//   DRAFT,
-//   SAVING,
-//   SAVED
-// }
-
 export default function BillDetails(props: Props): ReactElement {
   const { bill } = props;
 
   const [billNotes, setBillNotes] = useState<string>(bill.notes);
+  const [billNickname, setBillNickname] = useState<string>(bill.nickname);
 
   const [localSaveVersion, setLocalSaveVersion] = useState<number>(0);
   const [remoteSaveVersion, setRemoteSaveVersion] = useState<number>(0);
@@ -31,7 +25,7 @@ export default function BillDetails(props: Props): ReactElement {
       setRemoteSaveVersion(localSaveVersion);
       fetch('/api/saved-bills/' + bill.id, {
         method: 'PUT',
-        body: JSON.stringify({ notes: billNotes }),
+        body: JSON.stringify({ notes: billNotes, nickname: billNickname }),
         headers: {
           'Content-Type': 'application/json'
         }
@@ -47,6 +41,11 @@ export default function BillDetails(props: Props): ReactElement {
 
   function handleNotesChanged(e: any) {
     setBillNotes(e.target.value);
+    setLocalSaveVersion(localSaveVersion + 1);
+  }
+
+  function handleNicknameChanged(e: any) {
+    setBillNickname(e.target.value);
     setLocalSaveVersion(localSaveVersion + 1);
   }
 
@@ -76,6 +75,10 @@ export default function BillDetails(props: Props): ReactElement {
         <div>
           <strong>Name:</strong> {bill.name}
         </div>
+        <Form.Group className="mb-3">
+          <Form.Label><strong>Nickname:</strong></Form.Label>
+          <Form.Control type="text" size="sm" value={billNickname} onChange={handleNicknameChanged} />
+        </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label><strong>Our notes:</strong></Form.Label>
           <Form.Control as="textarea" rows={3} value={billNotes} placeholder="Add our notes about this bill" onChange={handleNotesChanged} />
