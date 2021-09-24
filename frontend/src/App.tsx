@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import SavedBillsPage from './SavedBillsPage';
 import CouncilMembersPage from './CouncilMembersPage';
 import Container from 'react-bootstrap/Container';
@@ -26,7 +26,10 @@ function App() {
           </Col>
           <Col>
             <main>
-              <Route path="/" exact component={SavedBillsPage} />
+              <Route path="/" exact>
+                <Redirect to="/saved-bills" />
+              </Route>
+              <Route path="/saved-bills/:billId?" exact component={SavedBillsPage} />
               <Route path="/council-members" component={CouncilMembersPage} />
             </main>
           </Col>

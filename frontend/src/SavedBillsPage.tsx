@@ -8,7 +8,11 @@ import { Bill } from './types';
 import BillDetails from './BillDetails';
 import './App.css';
 
-export default function SavedBillsPage() {
+interface Props {
+  match: { params: { billId?: number} };
+}
+
+export default function SavedBillsPage({match:{params:{billId}}}: Props) {
   const [bills, setBills] = useState<Bill[] | null>(null);
   const [addBillVisible, setAddBillVisible] = useState<boolean>(false);
 
@@ -44,7 +48,7 @@ export default function SavedBillsPage() {
         <Button className="mb-2" onClick={() => setAddBillVisible(true)}>
           Add a bill
         </Button>
-        <Accordion>
+        <Accordion defaultActiveKey={billId?.toString()}>
           {bills.map((bill) => (
             <Accordion.Item key={bill.id} eventKey={bill.id.toString()}>
               <Accordion.Header>
