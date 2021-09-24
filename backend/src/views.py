@@ -26,6 +26,7 @@ class CamelCaseSchema(ma.Schema):
 def healthz():
     return "Healthy!"
 
+
 # TODO: Hitting a react route other than root will fail when browser navigates directly there
 @app.route("/")
 def index():
@@ -66,11 +67,11 @@ def search_bills():
 
     # Check whether or not we're already tracking this bill
     external_bills = [convert_matter_to_bill(m) for m in matters]
-    external_bills_ids = [b['id'] for b in external_bills]
+    external_bills_ids = [b["id"] for b in external_bills]
     tracked_bills = Bill.query.filter(Bill.id.in_(external_bills_ids)).all()
     tracked_bill_ids = set([t.id for t in tracked_bills])
     for bill in external_bills:
-        bill['tracked'] = bill['id'] in tracked_bill_ids
+        bill["tracked"] = bill["id"] in tracked_bill_ids
 
     return BillSchema(many=True).jsonify(external_bills)
 
