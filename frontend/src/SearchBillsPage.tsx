@@ -21,6 +21,18 @@ export default function SearchBillsPage() {
         });
     }
 
+    function onBillSaved(id: number) {
+        fetch("/saved-bills", {
+            method: "POST",
+            body: JSON.stringify({ id }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => response.json()).then(response => {
+            window.alert("Bill saved!");
+        });
+    }
+
    return (<div><Form>
         <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Intro number (such as "2317-2021")</Form.Label>
@@ -31,6 +43,6 @@ export default function SearchBillsPage() {
             Search
         </Button>
     </Form>
-    {searchResults != null && <BillList bills={searchResults} />}
+    {searchResults != null && <BillList bills={searchResults} showSaveBill={true} onBillSaved={onBillSaved} />}
     </div>);
 }

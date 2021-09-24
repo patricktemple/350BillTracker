@@ -58,6 +58,6 @@ def lookup_bills(file_name):
 
 
 def get_bill(matter_id):
-        bills = council_get(
+    return council_get(
         f"matters/{matter_id}",
     ).json()

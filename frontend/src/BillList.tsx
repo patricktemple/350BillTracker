@@ -1,8 +1,11 @@
 import Table from 'react-bootstrap/Table';
 import { Bill } from './types';
+import Button from 'react-bootstrap/Button';
 
 interface Props {
   bills: Bill[];
+  showSaveBill?: boolean;
+  onBillSaved?: (id: number) => void;
 }
 
 export default function BillList(props: Props) {
@@ -17,6 +20,7 @@ export default function BillList(props: Props) {
               <th>Title</th>
               <th>Status</th>
               <th>Body</th>
+              {props.showSaveBill && <th>Saved?</th>}
             </tr>
           </thead>
           <tbody>
@@ -27,6 +31,7 @@ export default function BillList(props: Props) {
                 <td>{bill.title}</td>
                 <td>{bill.status}</td>
                 <td>{bill.body}</td>
+                {props.showSaveBill && props.onBillSaved && <td><Button onClick={() => props.onBillSaved!(bill.id)}>Add to saved list</Button></td>}
               </tr>
             ))}
           </tbody>

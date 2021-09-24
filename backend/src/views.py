@@ -4,7 +4,7 @@ from flask import render_template, request
 
 from .app import app
 from .council_api import get_recent_bills, lookup_bills
-from .council_sync import convert_matter_to_bill
+from .council_sync import convert_matter_to_bill, add_or_update_bill
 from .models import Bill
 
 
@@ -41,6 +41,13 @@ def bills():
             for b in bills
         ]
     )
+
+
+@app.route("/saved-bills", methods=["POST"])
+def save_bill():
+    matter_id = request.json['id']
+    add_or_update_bill(matter_id)
+    return "{}"
 
 
 @app.route("/search-bills", methods=["GET"])
