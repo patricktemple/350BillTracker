@@ -64,7 +64,8 @@ def get_current_council_members():
         "officerecords",
         params=make_filter_param(
             eq_filter("OfficeRecordBodyName", "City Council"),
-            eq_filter("OfficeRecordTitle", "Council Member"),
+            # eq_filter("OfficeRecordTitle", "Council Member"),
+            "(OfficeRecordMemberType eq 'PRIMARY COUNCIL MEMBERS' or OfficeRecordMemberType eq 'PRIMARY SPEAKER')",
             date_filter("OfficeRecordStartDate", "le", now().date()),
             date_filter("OfficeRecordEndDate", "ge", now().date()),
         ),
