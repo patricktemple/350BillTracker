@@ -23,7 +23,7 @@ export default function SavedBillsPage() {
     loadBillList();
   });
 
-  function handleBillSaved(id: number) {
+  function handleTrackBill(id: number) {
     fetch("/api/saved-bills", {
         method: "POST",
         body: JSON.stringify({ id }),
@@ -51,7 +51,7 @@ export default function SavedBillsPage() {
             </Accordion.Item>
             ))}
           </Accordion>
-          <SearchBillsModal show={addBillVisible} handleHide={() => setAddBillVisible(false)} handleBillSaved={handleBillSaved} />
+          <SearchBillsModal show={addBillVisible} handleHide={() => setAddBillVisible(false)} handleTrackBill={handleTrackBill} />
         </div>
     )
   }

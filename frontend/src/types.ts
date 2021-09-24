@@ -10,6 +10,7 @@ export interface Bill {
   email: string;
   districtPhone: string;
   legislativePhone: string;
+  tracked: boolean;
 }
 
 export interface CouncilMember {

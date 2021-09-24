@@ -42,6 +42,7 @@ class BillSchema(CamelCaseSchema):
     status = fields.String(required=True)
     body = fields.String(required=True)
     file = fields.String(required=True)
+    tracked = fields.Boolean()
 
 
 @app.route("/api/saved-bills", methods=["GET"])
@@ -61,9 +62,17 @@ def save_bill():
 def search_bills():
     file = request.args.get("file")
 
-    bills = lookup_bills(file)
+    matters = lookup_bills(file)
 
-    return BillSchema(many=True).jsonify([convert_matter_to_bill(b) for b in bills])
+    # Check whether or not we're already tracking this bill
+    external_bills = [convert_matter_to_bill(m) for m in matters]
+    external_bills_ids = [b['id'] for b in external_bills]
+    tracked_bills = Bill.query.filter(Bill.id.in_(external_bills_ids)).all()
+    tracked_bill_ids = set([t.id for t in tracked_bills])
+    for bill in external_bills:
+        bill['tracked'] = bill['id'] in tracked_bill_ids
+
+    return BillSchema(many=True).jsonify(external_bills)
 
 
 # Council members ----------------------------------------------------------------------

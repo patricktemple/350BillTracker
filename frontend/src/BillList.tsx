@@ -5,8 +5,7 @@ import React from 'react';
 
 interface Props {
   bills: Bill[];
-  showSaveBill?: boolean;
-  onBillSaved?: (id: number) => void;
+  handleTrackBill: (id: number) => void;
 }
 
 export default function BillList(props: Props) {
@@ -21,7 +20,7 @@ export default function BillList(props: Props) {
               <th>Title</th>
               <th>Status</th>
               <th>Body</th>
-              {props.showSaveBill && <th>Saved?</th>}
+              <th>Tracking</th>
             </tr>
           </thead>
           <tbody>
@@ -32,7 +31,7 @@ export default function BillList(props: Props) {
                 <td>{bill.title}</td>
                 <td>{bill.status}</td>
                 <td>{bill.body}</td>
-                {props.showSaveBill && props.onBillSaved && <td><Button size="sm" onClick={() => props.onBillSaved!(bill.id)}>Track this bill</Button></td>}
+                <td>{bill.tracked ? <Button disabled size="sm">Tracked</Button> : <Button size="sm" onClick={() => props.handleTrackBill(bill.id)}>Track this bill</Button>}</td>
               </tr>
             ))}
           </tbody>

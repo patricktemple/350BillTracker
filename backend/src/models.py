@@ -29,6 +29,10 @@ class Bill(db.Model):
 
     intro_date = Column(TIMESTAMP, nullable=False)
 
+    @property
+    def tracked(self):
+        return True
+
     # TODO: Add additional data that we track
 
 

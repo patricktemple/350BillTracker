@@ -10,7 +10,7 @@ import './App.css';
 interface Props {
     show: boolean;
     handleHide: () => void;
-    handleBillSaved: (id: number) => void;
+    handleTrackBill: (id: number) => void;
 }
 
 export default function SearchBillsModal(props: Props) {
@@ -24,6 +24,7 @@ export default function SearchBillsModal(props: Props) {
             file: searchText
         });
         fetch("/api/search-bills?" + params).then(response => response.json()).then(response => {
+            // TODO: Update the "tracked" field when user tracks a bill
             setSearchResults(response);
         });
         e.preventDefault();
@@ -34,7 +35,6 @@ export default function SearchBillsModal(props: Props) {
         props.handleHide()
     }
 
-    // TODO: Handle Enter key (submit button?)
    return (<Modal show={props.show} onHide={handleHide} size="xl">
        <Modal.Header closeButton>
            <Modal.Title>Look up a bill from legislative data</Modal.Title>
@@ -50,7 +50,7 @@ export default function SearchBillsModal(props: Props) {
             Search
         </Button>
     </Form>
-    {searchResults != null && <BillList bills={searchResults} showSaveBill={true} onBillSaved={props.handleBillSaved} />}
+    {searchResults != null && <BillList bills={searchResults} handleTrackBill={props.handleTrackBill} />}
     </Modal.Body>
     </Modal>);
 }
