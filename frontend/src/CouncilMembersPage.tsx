@@ -3,6 +3,9 @@ import useMountEffect from '@restart/hooks/useMountEffect';
 import Table from 'react-bootstrap/Table';
 import './App.css';
 import { CouncilMember } from './types';
+import Accordion from 'react-bootstrap/Accordion';
+import CouncilMemberDetails from './CouncilMemberDetails';
+import { Form } from 'react-bootstrap';
 
 interface Props {
   members: CouncilMember[] | null;
@@ -10,6 +13,7 @@ interface Props {
 
 export default function CouncilMembersPage() {
   const [members, setMembers] = useState<CouncilMember[] | null>(null);
+  const [filterText, setFilterText] = useState<string>("");
 
   useMountEffect(() => {
     fetch('/api/council-members')
@@ -19,32 +23,29 @@ export default function CouncilMembersPage() {
       });
   });
 
+  function handleFilterTextChanged(e: any) {
+    setFilterText(e.target.value);
+  }
+
   if (members) {
+    const filteredMembers = members.filter(m => m.name.toLowerCase().includes(filterText.toLowerCase()));
     return (
-      <Table striped bordered>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Term Start</th>
-            <th>Term End</th>
-            <th>Email</th>
-            <th>District Phone</th>
-            <th>Legislative Phone</th>
-          </tr>
-        </thead>
-        <tbody>
-          {members.map((member: any) => (
-            <tr key={member.id}>
-              <td>{member.name}</td>
-              <td>{member.termStart}</td>
-              <td>{member.termEnd}</td>
-              <td>{member.email}</td>
-              <td>{member.districtPhone}</td>
-              <td>{member.legislativePhone}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <div>
+        <h2>Council members</h2>
+        <input type="text" placeholder="Filter by name" value={filterText} className="mb-2" onChange={handleFilterTextChanged}/>
+        <Accordion>
+        {filteredMembers.map((member) => (
+          <Accordion.Item key={member.id} eventKey={member.id.toString()}>
+            <Accordion.Header>
+              <strong>{member.name}</strong>
+            </Accordion.Header>
+            <Accordion.Body>
+              <CouncilMemberDetails councilMember={member} />
+            </Accordion.Body>
+          </Accordion.Item>
+        ))}
+      </Accordion>
+    </div>
     );
   }
   return <div>Loading...</div>;
