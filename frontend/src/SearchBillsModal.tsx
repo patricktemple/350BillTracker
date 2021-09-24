@@ -28,7 +28,13 @@ export default function SearchBillsModal(props: Props) {
         });
     }
 
-   return (<Modal show={props.show} onHide={props.onHide} size="xl">
+    function handleHide() {
+        setSearchResults(null);
+        props.onHide()
+    }
+
+    // TODO: Handle Enter key (submit button?)
+   return (<Modal show={props.show} onHide={handleHide} size="xl">
        <Modal.Header closeButton>
            <Modal.Title>Lookup a bill</Modal.Title>
         </Modal.Header>
