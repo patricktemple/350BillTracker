@@ -61,8 +61,8 @@ export default function SearchBillsModal(props: Props): ReactElement {
           <>
             <div>Results (includes old historical results):</div>
             <BillList
-                bills={searchResults}
-                handleTrackBill={props.handleTrackBill}
+              bills={searchResults}
+              handleTrackBill={props.handleTrackBill}
             />
           </>
         )}

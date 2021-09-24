@@ -40,6 +40,7 @@ class Bill(db.Model):
     nickname = Column(Text, nullable=False, server_default="")
 
     sponsorships = relationship("BillSponsorship", back_populates="bill")
+    attachments = relationship("BillAttachment", back_populates="bill")
 
 
 class Legislator(db.Model):
@@ -67,3 +68,15 @@ class BillSponsorship(db.Model):
     # TODO: What if they don't exist in the DB?
     legislator_id = Column(Integer, ForeignKey('legislators.id'), nullable=False, index=True)
     legislator = relationship("Legislator", back_populates="sponsorships")
+
+
+# TODO: UUIDs for some PKs?
+class BillAttachment(db.Model):
+    __tablename__ = "bill_attachments"
+
+    id = Column(Integer, primary_key=True)
+    bill_id = Column(Integer, ForeignKey('bills.id'), nullable=False, index=True)
+    bill = relationship("Bill", back_populates="attachments")
+
+    name = Column(Text)
+    url = Column(Text, nullable=False)

@@ -29,7 +29,11 @@ function App() {
               <Route path="/" exact>
                 <Redirect to="/saved-bills" />
               </Route>
-              <Route path="/saved-bills/:billId?" exact component={SavedBillsPage} />
+              <Route
+                path="/saved-bills/:billId?"
+                exact
+                component={SavedBillsPage}
+              />
               <Route path="/council-members" component={CouncilMembersPage} />
             </main>
           </Col>

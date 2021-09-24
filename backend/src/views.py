@@ -5,7 +5,7 @@ from .app import app
 from .app import marshmallow as ma
 from .council_api import lookup_bills
 from .council_sync import add_or_update_bill, convert_matter_to_bill, update_sponsorships
-from .models import Bill, Legislator, db, BillSponsorship
+from .models import Bill, Legislator, db, BillSponsorship, BillAttachment
 
 
 def camelcase(s):
@@ -118,7 +118,6 @@ def get_council_members():
 
 
 # Bill sponsorships ----------------------------------------------------------------------
-
 class SingleBillSponsorshipsSchema(CamelCaseSchema):
     bill_id = fields.Integer(required=True)
     legislator = fields.Nested(CouncilMemberSchema)
@@ -126,5 +125,34 @@ class SingleBillSponsorshipsSchema(CamelCaseSchema):
 
 @app.route("/api/saved-bills/<int:bill_id>/sponsorships", methods=["GET"])
 def bill_sponsorships(bill_id):
+    # TODO: No need to wrap this object, just return the list of sponsor people?
     sponsorships = BillSponsorship.query.filter_by(bill_id=bill_id).all()
     return SingleBillSponsorshipsSchema(many=True).jsonify(sponsorships)
+
+
+# Bill attachments ----------------------------------------------------------------------
+class BillAttachmentSchema(CamelCaseSchema):
+    id = fields.Integer()
+    bill_id = fields.Integer()
+    name = fields.String()
+    url = fields.String()
+
+
+@app.route("/api/saved-bills/<int:bill_id>/attachments", methods=["GET"])
+def bill_attachments(bill_id):
+    attachments = BillAttachment.query.filter_by(bill_id=bill_id).all()
+    return BillAttachmentSchema(many=True).jsonify(attachments)
+
+
+@app.route("/api/saved-bills/<int:bill_id>/attachments", methods=["POST"])
+def add_bill_attachment(bill_id):
+    data = BillAttachmentSchema().load(request.json)
+    attachment = BillAttachment(
+        bill_id=bill_id,
+        url=data['url'],
+        name=data['name'],
+    )
+    db.session.add(attachment)
+    db.session.commit()
+
+    return jsonify({})

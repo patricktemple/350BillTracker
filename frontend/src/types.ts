@@ -31,3 +31,11 @@ export interface SingleBillSponsorship {
   billId: number;
   legislator: CouncilMember;
 }
+
+export interface BillAttachment {
+  id: number;
+  billId: number;
+  url: string;
+  name: string;
+  status: string;
+}

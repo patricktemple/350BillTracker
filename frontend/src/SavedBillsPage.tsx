@@ -9,10 +9,14 @@ import BillDetails from './BillDetails';
 import './App.css';
 
 interface Props {
-  match: { params: { billId?: number} };
+  match: { params: { billId?: number } };
 }
 
-export default function SavedBillsPage({match:{params:{billId}}}: Props) {
+export default function SavedBillsPage({
+  match: {
+    params: { billId }
+  }
+}: Props) {
   const [bills, setBills] = useState<Bill[] | null>(null);
   const [addBillVisible, setAddBillVisible] = useState<boolean>(false);
 
