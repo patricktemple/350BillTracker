@@ -5,7 +5,7 @@ from .app import app
 from .app import marshmallow as ma
 from .council_api import lookup_bills
 from .council_sync import add_or_update_bill, convert_matter_to_bill
-from .models import Bill, Legislator
+from .models import Bill, Legislator, db
 
 
 def camelcase(s):
@@ -44,6 +44,7 @@ class BillSchema(CamelCaseSchema):
     body = fields.String(required=True)
     file = fields.String(required=True)
     tracked = fields.Boolean()
+    notes = fields.String()
 
 
 @app.route("/api/saved-bills", methods=["GET"])
@@ -56,6 +57,22 @@ def bills():
 def save_bill():
     matter_id = request.json["id"]
     add_or_update_bill(matter_id)
+    return jsonify({})
+
+
+class UpdateBillSchema(CamelCaseSchema):
+    notes = fields.String(required=True)
+
+
+@app.route("/api/saved-bills/<int:bill_id>", methods=["PUT"])
+def update_bill(bill_id):
+    data = UpdateBillSchema().load(request.json)
+
+    bill = Bill.query.get(bill_id)
+    bill.notes = data['notes']
+
+    db.session.commit()
+
     return jsonify({})
 
 

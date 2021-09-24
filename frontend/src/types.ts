@@ -1,6 +1,7 @@
 // Defines types returned by the backend APIs.
 
 export interface Bill {
+  // Non-editable fields
   id: number;
   file: string;
   name: string;
@@ -11,6 +12,9 @@ export interface Bill {
   districtPhone: string;
   legislativePhone: string;
   tracked: boolean;
+
+  // Editable fields
+  notes: string;
 }
 
 export interface CouncilMember {

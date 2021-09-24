@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, Text, TypeDecorator
 from sqlalchemy.dialects.postgresql import TIMESTAMP as _TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID as _UUID
+from sqlalchemy import sql
 
 from .app import app
 
@@ -33,7 +34,8 @@ class Bill(db.Model):
     def tracked(self):
         return True
 
-    # TODO: Add additional data that we track
+    # Data we track
+    notes = Column(Text, nullable=False, server_default="")
 
 
 class Legislator(db.Model):
