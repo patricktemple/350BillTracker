@@ -5,6 +5,7 @@ import SearchBillsModal from './SearchBillsModal';
 import Button from 'react-bootstrap/Button';
 import Accordion from 'react-bootstrap/Accordion';
 import { Bill } from './types';
+import BillDetails from './BillDetails';
 import './App.css';
 
 export default function SavedBillsPage() {
@@ -49,7 +50,9 @@ export default function SavedBillsPage() {
               <Accordion.Header>
                 <strong>{bill.name}</strong>&nbsp;({bill.file})
               </Accordion.Header>
-              <Accordion.Body>{bill.title}</Accordion.Body>
+              <Accordion.Body>
+                <BillDetails bill={bill} />
+              </Accordion.Body>
             </Accordion.Item>
           ))}
         </Accordion>
