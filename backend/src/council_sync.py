@@ -36,13 +36,9 @@ def upsert_matter_data(matter_json):
     existing_bill = Bill.query.get(data["id"])
     if existing_bill:
         logging.info(f"Bill {data['file']} already in DB, updating")
-        for key in data.keys():
-            setattr(existing_bill, key, data[key])
     else:
         logging.info(f"Bill {data['file']} not found in DB, adding")
-        bill = Bill(**data)
-        db.session.add(bill)
-
+    db.session.merge(Bill(**data))
     db.session.commit()
 
 
