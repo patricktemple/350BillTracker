@@ -43,10 +43,9 @@ def upsert_matter_data(matter_json):
 
 
 def add_council_members():
-    # TODO: Do this as an upsert? This will just fail the second time
     members = get_current_council_members()
 
-    # FIXME: This only returns 46 people, but there are 51 council members. Investigate.
+    # TODO: Lookup their contact info too
     for member in members:
         person = Person(
             name=member["OfficeRecordFullName"],
@@ -54,6 +53,6 @@ def add_council_members():
             term_start=member["OfficeRecordStartDate"],
             term_end=member["OfficeRecordEndDate"],
         )
-        db.session.add(person)
+        db.session.merge(person)
 
     db.session.commit()
