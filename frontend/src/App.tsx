@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import SavedBillsPage from './SavedBillsPage';
 import CouncilMembersPage from './CouncilMembersPage';
 import Container from 'react-bootstrap/Container';
@@ -26,7 +26,7 @@ function App() {
         </Row>
       </Container>
     </Router>
-  )
+  );
 }
 
 export default App;
