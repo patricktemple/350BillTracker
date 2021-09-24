@@ -41,6 +41,7 @@ class BillSchema(CamelCaseSchema):
     title = fields.String(required=True)
     status = fields.String(required=True)
     body = fields.String(required=True)
+    file = fields.String(required=True)
 
 
 @app.route("/api/saved-bills", methods=["GET"])
@@ -62,7 +63,7 @@ def search_bills():
 
     bills = lookup_bills(file)
 
-    return BillSchema().jsonify([convert_matter_to_bill(b) for b in bills])
+    return BillSchema(many=True).jsonify([convert_matter_to_bill(b) for b in bills])
 
 
 # Council members ----------------------------------------------------------------------

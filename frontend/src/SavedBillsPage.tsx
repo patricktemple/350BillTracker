@@ -3,10 +3,12 @@ import useMountEffect from '@restart/hooks/useMountEffect';
 import BillList from './BillList';
 import SearchBillsModal from './SearchBillsModal';
 import Button from 'react-bootstrap/Button';
+import Accordion from 'react-bootstrap/Accordion';
+import { Bill } from './types';
 import './App.css';
 
 export default function SavedBillsPage() {
-  const [bills, setBills] = useState<any>(null);
+  const [bills, setBills] = useState<Bill[] | null>(null);
   const [addBillVisible, setAddBillVisible] = useState<boolean>(false);
 
   function loadBillList() {
@@ -36,9 +38,20 @@ export default function SavedBillsPage() {
   if (bills) {
     return (
         <div>
-          <Button onClick={() => setAddBillVisible(true)}>Add a bill</Button>
-          <BillList bills={bills} />
-          <SearchBillsModal show={addBillVisible} onHide={() => setAddBillVisible(false)} handleBillSaved={handleBillSaved} />
+          <Button className='mb-2' onClick={() => setAddBillVisible(true)}>Add a bill</Button>
+          <Accordion>
+            {bills.map(bill => (
+            <Accordion.Item key={bill.id} eventKey={bill.id.toString()}>
+              <Accordion.Header>
+                <strong>{bill.name}</strong>&nbsp;({bill.file})
+              </Accordion.Header>
+              <Accordion.Body>
+                {bill.title}
+              </Accordion.Body>
+            </Accordion.Item>
+            ))}
+          </Accordion>
+          <SearchBillsModal show={addBillVisible} handleHide={() => setAddBillVisible(false)} handleBillSaved={handleBillSaved} />
         </div>
     )
   }

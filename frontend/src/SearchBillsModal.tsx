@@ -9,7 +9,7 @@ import './App.css';
 
 interface Props {
     show: boolean;
-    onHide: () => void;
+    handleHide: () => void;
     handleBillSaved: (id: number) => void;
 }
 
@@ -18,7 +18,7 @@ export default function SearchBillsModal(props: Props) {
 
     const [searchResults, setSearchResults] = useState<Bill[] | null>(null);
 
-    function onSearchClicked() {
+    function handleSubmit(e: any) {
         const searchText = searchBoxRef.current!.value;
         const params = new URLSearchParams({
             file: searchText
@@ -26,26 +26,27 @@ export default function SearchBillsModal(props: Props) {
         fetch("/api/search-bills?" + params).then(response => response.json()).then(response => {
             setSearchResults(response);
         });
+        e.preventDefault();
     }
 
     function handleHide() {
         setSearchResults(null);
-        props.onHide()
+        props.handleHide()
     }
 
     // TODO: Handle Enter key (submit button?)
    return (<Modal show={props.show} onHide={handleHide} size="xl">
        <Modal.Header closeButton>
-           <Modal.Title>Lookup a bill</Modal.Title>
+           <Modal.Title>Look up a bill from legislative data</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-       <Form>
+       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3">
             <Form.Label>Intro number (such as &quot;2317-2021&quot;)</Form.Label>
             <Form.Control type="text" placeholder="Enter bill number" ref={searchBoxRef} />
         </Form.Group>
 
-        <Button variant="primary" onClick={onSearchClicked}>
+        <Button variant="primary" type="submit">
             Search
         </Button>
     </Form>
