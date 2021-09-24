@@ -7,3 +7,4 @@ flask_sqlalchemy
 psycopg2
 pytest
 flask-marshmallow
+marshmallow-sqlalchemy

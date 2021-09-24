@@ -3,8 +3,9 @@ from marshmallow import fields
 
 from .app import app
 from .app import marshmallow as ma
+from .council_api import lookup_bills
 from .council_sync import add_or_update_bill, convert_matter_to_bill
-from .models import Bill, Person
+from .models import Bill, Legislator
 
 
 def camelcase(s):
@@ -42,20 +43,20 @@ class BillSchema(CamelCaseSchema):
     body = fields.String(required=True)
 
 
-@app.route("/saved-bills", methods=["GET"])
+@app.route("/api/saved-bills", methods=["GET"])
 def bills():
     bills = Bill.query.all()
     return BillSchema(many=True).jsonify(bills)
 
 
-@app.route("/saved-bills", methods=["POST"])
+@app.route("/api/saved-bills", methods=["POST"])
 def save_bill():
     matter_id = request.json["id"]
     add_or_update_bill(matter_id)
     return jsonify({})
 
 
-@app.route("/search-bills", methods=["GET"])
+@app.route("/api/search-bills", methods=["GET"])
 def search_bills():
     file = request.args.get("file")
 
@@ -74,7 +75,7 @@ class CouncilMemberSchema(CamelCaseSchema):
     term_end = fields.DateTime()
 
 
-@app.route("/council-members", methods=["GET"])
+@app.route("/api/council-members", methods=["GET"])
 def get_council_members():
-    persons = Person.query.all()
-    return CouncilMemberSchema(many=True).jsonify(persons)
+    legislators = Legislator.query.all()
+    return CouncilMemberSchema(many=True).jsonify(legislators)

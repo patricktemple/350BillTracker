@@ -10,7 +10,7 @@ export default function SavedBillsPage() {
   const [addBillVisible, setAddBillVisible] = useState<boolean>(false);
 
   function loadBillList() {
-    fetch("/saved-bills")
+    fetch("/api/saved-bills")
         .then(response => response.json())
         .then(response => {
         setBills(response);
@@ -22,7 +22,7 @@ export default function SavedBillsPage() {
   });
 
   function handleBillSaved(id: number) {
-    fetch("/saved-bills", {
+    fetch("/api/saved-bills", {
         method: "POST",
         body: JSON.stringify({ id }),
         headers: {

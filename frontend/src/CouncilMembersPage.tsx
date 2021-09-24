@@ -12,7 +12,7 @@ export default function CouncilMembersPage() {
   const [members, setMembers] = useState<any>(null);
 
   useMountEffect(() => {
-    fetch("/council-members")
+    fetch("/api/council-members")
         .then(response => response.json())
         .then(response => {
             setMembers(response);

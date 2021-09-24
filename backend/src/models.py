@@ -32,8 +32,8 @@ class Bill(db.Model):
     # TODO: Add additional data that we track
 
 
-class Person(db.Model):
-    __tablename__ = "persons"
+class Legislator(db.Model):
+    __tablename__ = "legislators"
 
     id = Column(Integer, primary_key=True)
     name = Column(Text, nullable=False)

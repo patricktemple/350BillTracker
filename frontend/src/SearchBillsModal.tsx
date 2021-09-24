@@ -23,7 +23,7 @@ export default function SearchBillsModal(props: Props) {
         const params = new URLSearchParams({
             file: searchText
         });
-        fetch("/search-bills?" + params).then(response => response.json()).then(response => {
+        fetch("/api/search-bills?" + params).then(response => response.json()).then(response => {
             setSearchResults(response);
         });
     }

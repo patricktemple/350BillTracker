@@ -1,12 +1,7 @@
 import logging
 
-from .council_api import (
-    get_bill,
-    get_current_council_members,
-    get_person,
-    lookup_bills,
-)
-from .models import Bill, Person, db
+from .council_api import get_bill, get_current_council_members, get_person
+from .models import Bill, Legislator, db
 
 
 def convert_matter_to_bill(matter):
@@ -44,25 +39,25 @@ def add_council_members():
     members = get_current_council_members()
 
     for member in members:
-        person = Person(
+        legislator = Legislator(
             name=member["OfficeRecordFullName"],
             id=member["OfficeRecordPersonId"],
             term_start=member["OfficeRecordStartDate"],
             term_end=member["OfficeRecordEndDate"],
         )
         # TODO: Merge is probably not concurrency friendly. Do insert+on_conflict_do_update
-        db.session.merge(person)
+        db.session.merge(legislator)
 
     db.session.commit()
 
 
 def fill_council_person_data():
-    persons = Person.query.all()
+    legislators = Legislator.query.all()
 
-    for person in persons:
-        data = get_person(person.id)
-        person.email = data["PersonEmail"]
-        person.district_phone = data["PersonPhone"]
-        person.legislative_phone = data["PersonPhone2"]
+    for legislator in legislators:
+        data = get_person(legislator.id)
+        legislator.email = data["PersonEmail"]
+        legislator.district_phone = data["PersonPhone"]
+        legislator.legislative_phone = data["PersonPhone2"]
 
     db.session.commit()
