@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import BillList from './BillList';
 import SearchBillsModal from './SearchBillsModal';
@@ -42,5 +42,5 @@ export default function SavedBillsPage() {
         </div>
     )
   }
-  return <div>"Loading..."</div>;
+  return <div>Loading...</div>;
 }

@@ -1,6 +1,7 @@
 import Table from 'react-bootstrap/Table';
 import { Bill } from './types';
 import Button from 'react-bootstrap/Button';
+import React from 'react';
 
 interface Props {
   bills: Bill[];
@@ -25,7 +26,7 @@ export default function BillList(props: Props) {
           </thead>
           <tbody>
             {props.bills.map((bill: any) => (
-              <tr>
+              <tr key={bill.id}>
                 <td>{bill.file}</td>
                 <td>{bill.name}</td>
                 <td>{bill.title}</td>

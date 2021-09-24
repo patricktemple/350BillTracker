@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import BillList from './BillList';
 import Form from 'react-bootstrap/Form';
@@ -40,8 +40,8 @@ export default function SearchBillsModal(props: Props) {
         </Modal.Header>
         <Modal.Body>
        <Form>
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Intro number (such as "2317-2021")</Form.Label>
+        <Form.Group className="mb-3">
+            <Form.Label>Intro number (such as &quot;2317-2021&quot;)</Form.Label>
             <Form.Control type="text" placeholder="Enter bill number" ref={searchBoxRef} />
         </Form.Group>
 
