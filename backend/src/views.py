@@ -1,9 +1,10 @@
 import json
 from random import randrange
-from flask import render_template
+from flask import render_template, request
 
 from .app import app
-from .council_api import get_recent_bills
+from .council_api import get_recent_bills, lookup_bills
+from .council_sync import convert_matter_to_bill
 from .models import Bill
 
 
@@ -21,11 +22,10 @@ def random():
 
 @app.route("/")
 def index():
-    # message = "Hello, World"
     return render_template('index.html')
 
 
-@app.route("/bills", methods=["GET"])
+@app.route("/saved-bills", methods=["GET"])
 def bills():
     # TODO: Use marshmallow
     bills = Bill.query.all()
@@ -40,4 +40,15 @@ def bills():
             }
             for b in bills
         ]
+    )
+
+
+@app.route("/search-bills", methods=["GET"])
+def search_bills():
+    file = request.args.get("file")
+
+    bills = lookup_bills(file)
+
+    return json.dumps(
+        [convert_matter_to_bill(b) for b in bills]
     )

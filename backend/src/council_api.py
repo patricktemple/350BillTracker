@@ -39,20 +39,25 @@ def get_recent_bills():
     ).json()
 
 
-def find_bill(intro_name):
+def lookup_bills(file_name):
     # intro_name should be something like 2317-2021 including the year
     # TODO: Escape the name
     bills = council_get(
         "matters",
         params=make_filter_param(
             eq_filter("MatterTypeName", "Introduction"),
-            f"'Int {intro_name}' eq MatterFile"
-            # f"substringof('Int {intro_name}', MatterFile) eq true",
+            f"substringof('{file_name}', MatterFile) eq true",
         ),
     ).json()
-    if not bills:
-        raise ValueError("No matching bill found")
-    if len(bills) > 1:
-        raise ValueError("Multiple matching bills found!")
+    # if not bills:
+    #     raise ValueError("No matching bill found")
+    # if len(bills) > 1:
+    #     raise ValueError("Multiple matching bills found!")
 
-    return bills[0]
+    return bills
+
+
+def get_bill(matter_id):
+        bills = council_get(
+        f"matters/{matter_id}",
+    ).json()
