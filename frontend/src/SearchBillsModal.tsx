@@ -1,5 +1,4 @@
-import React, { useState, useRef } from 'react';
-import useMountEffect from '@restart/hooks/useMountEffect';
+import React, { useState, useRef, ReactElement } from 'react';
 import BillList from './BillList';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -13,7 +12,7 @@ interface Props {
   handleTrackBill: (id: number) => void;
 }
 
-export default function SearchBillsModal(props: Props) {
+export default function SearchBillsModal(props: Props): ReactElement {
   const searchBoxRef = useRef<HTMLInputElement>(null);
 
   const [searchResults, setSearchResults] = useState<Bill[] | null>(null);

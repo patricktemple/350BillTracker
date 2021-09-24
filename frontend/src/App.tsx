@@ -13,16 +13,23 @@ function App() {
     <Router>
       <Container>
         <Row>
-          <Col lg={6}>
+          <Col md={true}>
+            <h1>350 Brooklyn Bill Tracker</h1>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={3}>
             <Nav defaultActiveKey="/" className="flex-column">
               <Nav.Link href="/">Bill campaigns</Nav.Link>
               <Nav.Link href="/council-members">Council members</Nav.Link>
             </Nav>
           </Col>
-          <main>
-            <Route path="/" exact component={SavedBillsPage} />
-            <Route path="/council-members" component={CouncilMembersPage} />
-          </main>
+          <Col>
+            <main>
+              <Route path="/" exact component={SavedBillsPage} />
+              <Route path="/council-members" component={CouncilMembersPage} />
+            </main>
+          </Col>
         </Row>
       </Container>
     </Router>
