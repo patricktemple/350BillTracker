@@ -24,7 +24,6 @@ export default function SearchBillsModal(props: Props) {
             file: searchText
         });
         fetch("/api/search-bills?" + params).then(response => response.json()).then(response => {
-            // TODO: Update the "tracked" field when user tracks a bill
             setSearchResults(response);
         });
         e.preventDefault();
@@ -46,7 +45,7 @@ export default function SearchBillsModal(props: Props) {
             <Form.Control type="text" placeholder="Enter bill number" ref={searchBoxRef} />
         </Form.Group>
 
-        <Button variant="primary" type="submit">
+        <Button variant="primary" type="submit" className="mb-2">
             Search
         </Button>
     </Form>
