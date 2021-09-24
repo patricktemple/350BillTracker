@@ -1,8 +1,11 @@
 import logging
 
-from sqlalchemy import update
-
-from .council_api import get_bill, get_current_council_members, lookup_bills, get_person
+from .council_api import (
+    get_bill,
+    get_current_council_members,
+    get_person,
+    lookup_bills,
+)
 from .models import Bill, Person, db
 
 
@@ -25,14 +28,9 @@ def add_or_update_bill(matter_id):
 
 
 def upsert_matter_data(matter_json):
-    logging.info(f"Add or update bill")
-    # if not bills:
-    #     raise ValueError("No matching bill found")
-    # if len(bills) > 1:
-    #     raise ValueError("Multiple matching bills found!")
+    logging.info("Add or update bill")
 
     data = convert_matter_to_bill(matter_json)
-
     existing_bill = Bill.query.get(data["id"])
     if existing_bill:
         logging.info(f"Bill {data['file']} already in DB, updating")
@@ -63,8 +61,8 @@ def fill_council_person_data():
 
     for person in persons:
         data = get_person(person.id)
-        person.email = data['PersonEmail']
-        person.district_phone = data['PersonPhone']
-        person.legislative_phone = data['PersonPhone2']
+        person.email = data["PersonEmail"]
+        person.district_phone = data["PersonPhone"]
+        person.legislative_phone = data["PersonPhone2"]
 
     db.session.commit()

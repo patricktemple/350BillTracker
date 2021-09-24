@@ -1,9 +1,8 @@
-from random import randrange
-
-from flask import render_template, request, jsonify
+from flask import jsonify, render_template, request
+from marshmallow import fields
 
 from .app import app
-from .council_api import get_recent_bills, lookup_bills
+from .app import marshmallow as ma
 from .council_sync import add_or_update_bill, convert_matter_to_bill
 from .models import Bill, Person
 
@@ -13,34 +12,26 @@ def healthz():
     return "Healthy!"
 
 
-@app.route("/random", methods=["GET"])
-def random():
-    matters = get_recent_bills()
-    random_matter = matters[randrange(0, len(matters))]
-    return random_matter["MatterName"]
-
-
 @app.route("/")
 def index():
     return render_template("index.html")
 
 
+# Bills ----------------------------------------------------------------------
+
+
+class BillSchema(ma.Schema):
+    id = fields.Integer(required=True)
+    name = fields.String(required=True)
+    title = fields.String(required=True)
+    status = fields.String(required=True)
+    body = fields.Body(required=True)
+
+
 @app.route("/saved-bills", methods=["GET"])
 def bills():
-    # TODO: Use marshmallow
     bills = Bill.query.all()
-    return jsonify(
-        [
-            {
-                "name": b.name,
-                "title": b.title,
-                "file": b.file,
-                "status": b.status,
-                "body": b.body,
-            }
-            for b in bills
-        ]
-    )
+    return BillSchema(many=True).jsonify(bills)
 
 
 @app.route("/saved-bills", methods=["POST"])
@@ -56,15 +47,20 @@ def search_bills():
 
     bills = lookup_bills(file)
 
-    return jsonify([convert_matter_to_bill(b) for b in bills])
+    return BillSchema().jsonify([convert_matter_to_bill(b) for b in bills])
+
+
+# Council members ----------------------------------------------------------------------
+
+
+class CouncilMemberSchema(ma.Schema):
+    name = fields.String(required=True)
+    id = fields.Integer(required=True)
+    term_start = fields.DateTime()
+    term_end = fields.DateTime()
 
 
 @app.route("/council-members", methods=["GET"])
 def get_council_members():
     persons = Person.query.all()
-    return jsonify([{
-        "name": person.name,
-        "id": person.id,
-        "term_start": person.term_start.isoformat() if person.term_start else None,
-        "term_end": person.term_end.isoformat() if person.term_end else None,
-    } for person in persons])
+    return CouncilMemberSchema(many=True).jsonify(persons)

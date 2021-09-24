@@ -42,5 +42,3 @@ class Person(db.Model):
     email = Column(Text)
     district_phone = Column(Text)
     legislative_phone = Column(Text)
-
-
