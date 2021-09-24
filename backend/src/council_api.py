@@ -4,6 +4,8 @@ import requests
 
 from src.settings import CITY_COUNCIL_API_TOKEN
 
+from .utils import now
+
 # See http://webapi.legistar.com/Help for an overview of resources.
 
 
@@ -42,22 +44,30 @@ def get_recent_bills():
 def lookup_bills(file_name):
     # intro_name should be something like 2317-2021 including the year
     # TODO: Escape the name
-    bills = council_get(
+    return council_get(
         "matters",
         params=make_filter_param(
             eq_filter("MatterTypeName", "Introduction"),
             f"substringof('{file_name}', MatterFile) eq true",
         ),
     ).json()
-    # if not bills:
-    #     raise ValueError("No matching bill found")
-    # if len(bills) > 1:
-    #     raise ValueError("Multiple matching bills found!")
-
-    return bills
 
 
 def get_bill(matter_id):
     return council_get(
         f"matters/{matter_id}",
     ).json()
+
+
+def get_current_council_members():
+    office_records = council_get(
+        "officerecords",
+        params=make_filter_param(
+            eq_filter("OfficeRecordBodyName", "City Council"),
+            eq_filter("OfficeRecordTitle", "Council Member"),
+            date_filter("OfficeRecordStartDate", "le", now().date()),
+            date_filter("OfficeRecordEndDate", "ge", now().date()),
+        ),
+    ).json()
+
+    return office_records

@@ -30,3 +30,12 @@ class Bill(db.Model):
     intro_date = Column(TIMESTAMP, nullable=False)
 
     # TODO: Add additional data that we track
+
+
+class Person(db.Model):
+    __tablename__ = "persons"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(Text, nullable=False)
+    term_start = Column(TIMESTAMP)
+    term_end = Column(TIMESTAMP)
