@@ -8,6 +8,7 @@ import useMountEffect from '@restart/hooks/useMountEffect';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import AddAttachmentModal from './AddAttachmentModal';
+import { Link } from 'react-router-dom';
 
 interface Props {
   bill: Bill;
@@ -170,7 +171,7 @@ export default function BillDetails(props: Props): ReactElement {
           ) : (
             <Stack direction="vertical">
               {sponsorships.map((s) => (
-                <div key={s.legislator.id}>{s.legislator.name}</div>
+                <Link to={'/council-members/' + s.legislator.id} key={s.legislator.id}>{s.legislator.name}</Link>
               ))}
             </Stack>
           )}

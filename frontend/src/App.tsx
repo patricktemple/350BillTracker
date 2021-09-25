@@ -34,7 +34,7 @@ function App() {
                 exact
                 component={SavedBillsPage}
               />
-              <Route path="/council-members" component={CouncilMembersPage} />
+              <Route path="/council-members/:memberId?" component={CouncilMembersPage} />
             </main>
           </Col>
         </Row>

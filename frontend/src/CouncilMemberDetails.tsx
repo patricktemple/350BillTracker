@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import { CouncilMember, SingleMemberSponsorship } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Stack from 'react-bootstrap/Stack';
+import { Link } from 'react-router-dom';
 
 interface Props {
   councilMember: CouncilMember;
@@ -61,7 +62,7 @@ export default function CouncilMemberDetails(props: Props) {
       ) : (
         <Stack direction="vertical">
           {sponsorships.map((s) => (
-            <div key={s.bill.id}>{s.bill.file}: <em>{s.bill.nickname || s.bill.name}</em></div>
+            <Link to={'/saved-bills/' + s.bill.id} key={s.bill.id}>{s.bill.file}: <em>{s.bill.nickname || s.bill.name}</em></Link>
           ))}
         </Stack>
       )}

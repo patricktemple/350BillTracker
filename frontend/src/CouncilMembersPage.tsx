@@ -8,10 +8,14 @@ import CouncilMemberDetails from './CouncilMemberDetails';
 import { Form } from 'react-bootstrap';
 
 interface Props {
-  members: CouncilMember[] | null;
+  match: { params: { memberId?: number } };
 }
 
-export default function CouncilMembersPage() {
+export default function ConcilMembersPage({
+  match: {
+    params: { memberId }
+  }
+}: Props) {
   const [members, setMembers] = useState<CouncilMember[] | null>(null);
   const [filterText, setFilterText] = useState<string>("");
 
@@ -34,7 +38,7 @@ export default function CouncilMembersPage() {
       <div>
         <h2>Council members</h2>
         <input type="text" placeholder="Filter" value={filterText} className="mb-2" onChange={handleFilterTextChanged}/>
-        <Accordion>
+        <Accordion defaultActiveKey={memberId?.toString()}>
         {filteredMembers.map((member) => (
           <Accordion.Item key={member.id} eventKey={member.id.toString()}>
             <Accordion.Header>
