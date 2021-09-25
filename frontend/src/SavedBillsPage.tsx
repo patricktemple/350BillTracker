@@ -49,6 +49,7 @@ export default function SavedBillsPage({
   if (bills) {
     return (
       <div>
+        <h2>Bill campaigns</h2>
         <Button className="mb-2" onClick={() => setAddBillVisible(true)}>
           Add a bill
         </Button>

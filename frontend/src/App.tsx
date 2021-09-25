@@ -14,7 +14,7 @@ function App() {
       <Container>
         <Row>
           <Col md={true}>
-            <h1>350 Brooklyn Bill Tracker</h1>
+            <h1 className="mb-4">350 Brooklyn Bill Tracker</h1>
           </Col>
         </Row>
         <Row>
