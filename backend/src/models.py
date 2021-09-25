@@ -63,12 +63,11 @@ class Legislator(db.Model):
 class BillSponsorship(db.Model):
     __tablename__ = "bill_sponsorships"
 
-    id = Column(Integer, primary_key=True)
-    bill_id = Column(Integer, ForeignKey('bills.id'), nullable=False, index=True)
+    bill_id = Column(Integer, ForeignKey('bills.id'), nullable=False, primary_key=True)
     bill = relationship("Bill", back_populates="sponsorships")
 
     # TODO: What if they don't exist in the DB?
-    legislator_id = Column(Integer, ForeignKey('legislators.id'), nullable=False, index=True)
+    legislator_id = Column(Integer, ForeignKey('legislators.id'), nullable=False, primary_key=True)
     legislator = relationship("Legislator", back_populates="sponsorships")
 
 

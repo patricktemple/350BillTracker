@@ -28,6 +28,12 @@ export interface CouncilMember {
   borough: string;
 }
 
+// TODO: This is stupid, just return the bill/member from the APIs alone
+export interface SingleMemberSponsorship {
+  bill: Bill;
+  legislatorId: number;
+}
+
 export interface SingleBillSponsorship {
   billId: number;
   legislator: CouncilMember;

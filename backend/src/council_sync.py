@@ -86,6 +86,8 @@ def update_sponsorships(bill_id):
             # TODO: Instead, insert a stub for them or something
     
         internal_sponsorship = BillSponsorship(bill_id=bill_id, legislator_id=legislator_id)
+
+        # FIXME: This never merges! Because the PK is the surrogate key
         db.session.merge(internal_sponsorship)
     
     db.session.commit()

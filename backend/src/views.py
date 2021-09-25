@@ -113,10 +113,22 @@ class CouncilMemberSchema(CamelCaseSchema):
     borough = fields.String()
 
 
+class SingleMemberSponsorshipsSchema(CamelCaseSchema):
+    legislator_id = fields.Integer(required=True)
+    bill = fields.Nested(BillSchema)
+
+
 @app.route("/api/council-members", methods=["GET"])
 def get_council_members():
     legislators = Legislator.query.order_by(Legislator.name).all()
     return CouncilMemberSchema(many=True).jsonify(legislators)
+
+
+@app.route("/api/council-members/<int:legislator_id>/sponsorships", methods=["GET"])
+def council_member_sponsorships(legislator_id):
+    # TODO: No need to wrap this object, just return the list of sponsor people?
+    sponsorships = BillSponsorship.query.filter_by(legislator_id=legislator_id).all()
+    return SingleMemberSponsorshipsSchema(many=True).jsonify(sponsorships)
 
 
 # Bill sponsorships ----------------------------------------------------------------------
@@ -158,3 +170,6 @@ def add_bill_attachment(bill_id):
     db.session.commit()
 
     return jsonify({})
+
+
+# BUG: This seems to leave open stale SQLA sessions
