@@ -55,6 +55,12 @@ export default function CouncilMemberDetails(props: Props) {
       </Row>
       <Row className="mb-2">
         <Col lg={2}>
+          <strong>Website:</strong>
+        </Col>
+        <Col>{member.website && <a href={member.website}>Visit district website</a>}</Col>
+      </Row>
+      <Row className="mb-2">
+        <Col lg={2}>
           <>
             <strong>Sponsored bills</strong> (only includes bills we are
             tracking)

@@ -66,6 +66,7 @@ def fill_council_person_data():
         legislator.district_phone = data["PersonPhone"]
         legislator.legislative_phone = data["PersonPhone2"]
         legislator.borough = convert_borough(data["PersonCity1"])
+        legislator.website = data['PersonWWW']
 
     db.session.commit()
 

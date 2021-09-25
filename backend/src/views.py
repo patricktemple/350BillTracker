@@ -111,6 +111,7 @@ class CouncilMemberSchema(CamelCaseSchema):
     district_phone = fields.String()
     legislative_phone = fields.String()
     borough = fields.String()
+    website = fields.String()
 
 
 class SingleMemberSponsorshipsSchema(CamelCaseSchema):
