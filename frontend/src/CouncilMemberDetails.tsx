@@ -61,7 +61,7 @@ export default function CouncilMemberDetails(props: Props) {
       ) : (
         <Stack direction="vertical">
           {sponsorships.map((s) => (
-            <div key={s.bill.id}>{s.bill.name}</div>
+            <div key={s.bill.id}>{s.bill.file}: <em>{s.bill.nickname || s.bill.name}</em></div>
           ))}
         </Stack>
       )}
