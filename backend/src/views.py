@@ -110,11 +110,12 @@ class CouncilMemberSchema(CamelCaseSchema):
     email = fields.String()
     district_phone = fields.String()
     legislative_phone = fields.String()
+    borough = fields.String()
 
 
 @app.route("/api/council-members", methods=["GET"])
 def get_council_members():
-    legislators = Legislator.query.all()
+    legislators = Legislator.query.order_by(Legislator.name).all()
     return CouncilMemberSchema(many=True).jsonify(legislators)
 
 

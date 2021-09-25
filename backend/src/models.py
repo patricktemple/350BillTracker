@@ -56,6 +56,8 @@ class Legislator(db.Model):
 
     sponsorships = relationship("BillSponsorship", back_populates="legislator")
 
+    borough = Column(Text)
+
 
 
 class BillSponsorship(db.Model):

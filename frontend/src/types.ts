@@ -25,6 +25,7 @@ export interface CouncilMember {
   email: string;
   districtPhone: string;
   legislativePhone: string;
+  borough: string;
 }
 
 export interface SingleBillSponsorship {

@@ -51,6 +51,12 @@ def add_council_members():
     db.session.commit()
 
 
+def convert_borough(city_name):
+    if city_name == "New York":
+        return "Manhattan"
+    return city_name
+
+
 def fill_council_person_data():
     legislators = Legislator.query.all()
 
@@ -59,6 +65,7 @@ def fill_council_person_data():
         legislator.email = data["PersonEmail"]
         legislator.district_phone = data["PersonPhone"]
         legislator.legislative_phone = data["PersonPhone2"]
+        legislator.borough = convert_borough(data["PersonCity1"])
 
     db.session.commit()
 
