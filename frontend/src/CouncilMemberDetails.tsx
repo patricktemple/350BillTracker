@@ -57,7 +57,7 @@ export default function CouncilMemberDetails(props: Props) {
         <Col lg={2}>
           <strong>Website:</strong>
         </Col>
-        <Col>{member.website && <a href={member.website}>Visit district website</a>}</Col>
+        <Col>{member.website && <a href={member.website}>Visit website</a>}</Col>
       </Row>
       <Row className="mb-2">
         <Col lg={2}>

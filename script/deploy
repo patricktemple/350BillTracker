@@ -1,3 +1,5 @@
 ./script/build
 
 (cd backend; eb deploy)
+
+# FIXME: This takes the backend from the latest git commit but the frontend from the file system
