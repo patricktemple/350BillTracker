@@ -14,7 +14,9 @@ interface Props {
 export default function CouncilMemberDetails(props: Props) {
   const member = props.councilMember;
 
-  const [sponsorships, setSponsorships] = useState<SingleMemberSponsorship[] | null>(null);
+  const [sponsorships, setSponsorships] = useState<
+    SingleMemberSponsorship[] | null
+  >(null);
 
   // FIXME: This is loading all sponsorships individually on first page load of list
   useMountEffect(() => {
@@ -26,48 +28,52 @@ export default function CouncilMemberDetails(props: Props) {
   });
 
   return (
-  <Container>
-  <Row className="mb-2">
-    <Col lg={2}>
-      <strong>Name:</strong>
-    </Col>
-    <Col>{member.name}</Col>
-  </Row>
-  <Row className="mb-2">
-    <Col lg={2}>
-      <strong>Email:</strong>
-    </Col>
-    <Col>{member.email}</Col>
-  </Row>
-  <Row className="mb-2">
-    <Col lg={2}>
-      <strong>District phone:</strong>
-    </Col>
-    <Col>{member.districtPhone}</Col>
-  </Row>
-  <Row className="mb-2">
-    <Col lg={2}>
-      <strong>Legislative phone:</strong>
-    </Col>
-    <Col>{member.legislativePhone}</Col>
-  </Row>
-  <Row className="mb-2">
-    <Col lg={2}>
-      <><strong>
-        Sponsored bills</strong> (only includes bills we are tracking)</>
-    </Col>
-    <Col>
-      {sponsorships == null ? (
-        'Loading...'
-      ) : (
-        <Stack direction="vertical">
-          {sponsorships.map((s) => (
-            <Link to={'/saved-bills/' + s.bill.id} key={s.bill.id}>{s.bill.file}: <em>{s.bill.nickname || s.bill.name}</em></Link>
-          ))}
-        </Stack>
-      )}
-    </Col>
-  </Row>
-  </Container>
+    <Container>
+      <Row className="mb-2">
+        <Col lg={2}>
+          <strong>Name:</strong>
+        </Col>
+        <Col>{member.name}</Col>
+      </Row>
+      <Row className="mb-2">
+        <Col lg={2}>
+          <strong>Email:</strong>
+        </Col>
+        <Col>{member.email}</Col>
+      </Row>
+      <Row className="mb-2">
+        <Col lg={2}>
+          <strong>District phone:</strong>
+        </Col>
+        <Col>{member.districtPhone}</Col>
+      </Row>
+      <Row className="mb-2">
+        <Col lg={2}>
+          <strong>Legislative phone:</strong>
+        </Col>
+        <Col>{member.legislativePhone}</Col>
+      </Row>
+      <Row className="mb-2">
+        <Col lg={2}>
+          <>
+            <strong>Sponsored bills</strong> (only includes bills we are
+            tracking)
+          </>
+        </Col>
+        <Col>
+          {sponsorships == null ? (
+            'Loading...'
+          ) : (
+            <Stack direction="vertical">
+              {sponsorships.map((s) => (
+                <Link to={'/saved-bills/' + s.bill.id} key={s.bill.id}>
+                  {s.bill.file}: <em>{s.bill.nickname || s.bill.name}</em>
+                </Link>
+              ))}
+            </Stack>
+          )}
+        </Col>
+      </Row>
+    </Container>
   );
 }

@@ -17,7 +17,7 @@ export default function ConcilMembersPage({
   }
 }: Props) {
   const [members, setMembers] = useState<CouncilMember[] | null>(null);
-  const [filterText, setFilterText] = useState<string>("");
+  const [filterText, setFilterText] = useState<string>('');
 
   useMountEffect(() => {
     fetch('/api/council-members')
@@ -33,24 +33,35 @@ export default function ConcilMembersPage({
 
   if (members) {
     const lowerFilterText = filterText.toLowerCase();
-    const filteredMembers = members.filter(m => m.name.toLowerCase().includes(lowerFilterText) || m.borough?.toLowerCase().includes(lowerFilterText));
+    const filteredMembers = members.filter(
+      (m) =>
+        m.name.toLowerCase().includes(lowerFilterText) ||
+        m.borough?.toLowerCase().includes(lowerFilterText)
+    );
     return (
       <div>
         <h2>Council members</h2>
-        <input type="text" placeholder="Filter" value={filterText} className="mb-2" onChange={handleFilterTextChanged}/>
+        <input
+          type="text"
+          placeholder="Filter"
+          value={filterText}
+          className="mb-2"
+          onChange={handleFilterTextChanged}
+        />
         <Accordion defaultActiveKey={memberId?.toString()}>
-        {filteredMembers.map((member) => (
-          <Accordion.Item key={member.id} eventKey={member.id.toString()}>
-            <Accordion.Header>
-              <strong>{member.name}</strong>{member.borough && <>&nbsp;({member.borough})</>}
-            </Accordion.Header>
-            <Accordion.Body>
-              <CouncilMemberDetails councilMember={member} />
-            </Accordion.Body>
-          </Accordion.Item>
-        ))}
-      </Accordion>
-    </div>
+          {filteredMembers.map((member) => (
+            <Accordion.Item key={member.id} eventKey={member.id.toString()}>
+              <Accordion.Header>
+                <strong>{member.name}</strong>
+                {member.borough && <>&nbsp;({member.borough})</>}
+              </Accordion.Header>
+              <Accordion.Body>
+                <CouncilMemberDetails councilMember={member} />
+              </Accordion.Body>
+            </Accordion.Item>
+          ))}
+        </Accordion>
+      </div>
     );
   }
   return <div>Loading...</div>;

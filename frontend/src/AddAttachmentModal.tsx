@@ -32,7 +32,11 @@ export default function AddAttachmentModal(props: Props): ReactElement {
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
             <Form.Label>Link description</Form.Label>
-            <Form.Control type="text" ref={descriptionRef} placeholder='eg. "Power Hour tracker 8/23"' />
+            <Form.Control
+              type="text"
+              ref={descriptionRef}
+              placeholder='eg. "Power Hour tracker 8/23"'
+            />
           </Form.Group>
 
           <Form.Group className="mb-3">

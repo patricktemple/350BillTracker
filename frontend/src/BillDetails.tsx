@@ -171,7 +171,12 @@ export default function BillDetails(props: Props): ReactElement {
           ) : (
             <Stack direction="vertical">
               {sponsorships.map((s) => (
-                <Link to={'/council-members/' + s.legislator.id} key={s.legislator.id}>{s.legislator.name}</Link>
+                <Link
+                  to={'/council-members/' + s.legislator.id}
+                  key={s.legislator.id}
+                >
+                  {s.legislator.name}
+                </Link>
               ))}
             </Stack>
           )}
