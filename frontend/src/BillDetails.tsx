@@ -9,20 +9,27 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import AddAttachmentModal from './AddAttachmentModal';
 import { Link } from 'react-router-dom';
+import useAutosavingFormData from './utils/useAutosavingFormData';
 
 interface Props {
   bill: Bill;
 }
 
+interface FormData {
+  notes: string;
+  nickname: string;
+}
+
 export default function BillDetails(props: Props): ReactElement {
   const { bill } = props;
 
-  const [billNotes, setBillNotes] = useState<string>(bill.notes);
-  const [billNickname, setBillNickname] = useState<string>(bill.nickname);
-
-  const [localSaveVersion, setLocalSaveVersion] = useState<number>(0);
-  const [remoteSaveVersion, setRemoteSaveVersion] = useState<number>(0);
-  const [saveInProgress, setSaveInProgress] = useState<boolean>(false);
+  const [formData, setFormData, saveStatus] = useAutosavingFormData<FormData>(
+    '/api/saved-bills/' + bill.id,
+    {
+      notes: bill.notes,
+      nickname: bill.nickname
+    }
+  );
 
   const [sponsorships, setSponsorships] = useState<
     SingleBillSponsorship[] | null
@@ -54,49 +61,12 @@ export default function BillDetails(props: Props): ReactElement {
     loadAttachments();
   });
 
-  // TODO: Handle save failure too!
-  function maybeSaveUpdates() {
-    if (localSaveVersion > remoteSaveVersion && !saveInProgress) {
-      setSaveInProgress(true);
-      setRemoteSaveVersion(localSaveVersion);
-      fetch('/api/saved-bills/' + bill.id, {
-        method: 'PUT',
-        body: JSON.stringify({ notes: billNotes, nickname: billNickname }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          setSaveInProgress(false);
-        });
-    }
-  }
-
-  useInterval(() => maybeSaveUpdates(), 2000);
-
   function handleNotesChanged(e: any) {
-    setBillNotes(e.target.value);
-    setLocalSaveVersion(localSaveVersion + 1);
+    setFormData({ ...formData, notes: e.target.value });
   }
 
   function handleNicknameChanged(e: any) {
-    setBillNickname(e.target.value);
-    setLocalSaveVersion(localSaveVersion + 1);
-  }
-
-  function getSaveText() {
-    if (localSaveVersion > remoteSaveVersion) {
-      return 'Draft';
-    }
-    if (saveInProgress) {
-      return 'Saving...';
-    }
-    if (remoteSaveVersion > 0) {
-      return 'Saved';
-    }
-
-    return null;
+    setFormData({ ...formData, nickname: e.target.value });
   }
 
   function handleAddAttachmentClicked(e: any) {
@@ -154,7 +124,7 @@ export default function BillDetails(props: Props): ReactElement {
             type="text"
             size="sm"
             placeholder='e.g. "Skip the stuff"'
-            value={billNickname}
+            value={formData.nickname}
             onChange={handleNicknameChanged}
           />
         </Col>
@@ -225,14 +195,14 @@ export default function BillDetails(props: Props): ReactElement {
             as="textarea"
             rows={3}
             size="sm"
-            value={billNotes}
+            value={formData.notes}
             placeholder="Add our notes about this bill"
             onChange={handleNotesChanged}
           />
         </Col>
       </Form.Group>
       <div>
-        <em>{getSaveText()}</em>
+        <em>{saveStatus}</em>
       </div>
     </Form>
   );
