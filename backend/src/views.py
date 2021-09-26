@@ -112,6 +112,7 @@ class CouncilMemberSchema(CamelCaseSchema):
     legislative_phone = fields.String()
     borough = fields.String()
     website = fields.String()
+    notes = fields.String()
 
 
 class SingleMemberSponsorshipsSchema(CamelCaseSchema):
@@ -123,6 +124,22 @@ class SingleMemberSponsorshipsSchema(CamelCaseSchema):
 def get_council_members():
     legislators = Legislator.query.order_by(Legislator.name).all()
     return CouncilMemberSchema(many=True).jsonify(legislators)
+
+
+class UpdateCouncilMemberSchema(CamelCaseSchema):
+    notes = fields.String(required=True)
+
+
+@app.route("/api/council-members/<int:legislator_id>", methods=["PUT"])
+def update_council_member(legislator_id):
+    data = UpdateCouncilMemberSchema().load(request.json)
+
+    legislator = Legislator.query.get(legislator_id)
+    legislator.notes = data['notes']
+
+    db.session.commit()
+
+    return jsonify({})
 
 
 @app.route("/api/council-members/<int:legislator_id>/sponsorships", methods=["GET"])

@@ -6,9 +6,15 @@ import { CouncilMember, SingleMemberSponsorship } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Stack from 'react-bootstrap/Stack';
 import { Link } from 'react-router-dom';
+import Form from 'react-bootstrap/Form';
+import useAutosavingFormData from './utils/useAutosavingFormData';
 
 interface Props {
   councilMember: CouncilMember;
+}
+
+interface FormData {
+  notes: string;
 }
 
 export default function CouncilMemberDetails(props: Props) {
@@ -17,6 +23,8 @@ export default function CouncilMemberDetails(props: Props) {
   const [sponsorships, setSponsorships] = useState<
     SingleMemberSponsorship[] | null
   >(null);
+
+  const [formData, setFormData, saveStatus] = useAutosavingFormData<FormData>('/api/council-members/' + member.id, { notes: member.notes } );
 
   // FIXME: This is loading all sponsorships individually on first page load of list
   useMountEffect(() => {
@@ -27,8 +35,12 @@ export default function CouncilMemberDetails(props: Props) {
       });
   });
 
+  function handleNotesChanged(e: any) {
+    setFormData({ ...formData, notes: e.target.value });
+  }
+
   return (
-    <Container>
+    <Form onSubmit={(e) => e.preventDefault()}>
       <Row className="mb-2">
         <Col lg={2}>
           <strong>Name:</strong>
@@ -64,8 +76,12 @@ export default function CouncilMemberDetails(props: Props) {
       <Row className="mb-2">
         <Col lg={2}>
           <>
-            <strong>Sponsored bills</strong> (only includes bills we are
-            tracking)
+            <div style={{fontWeight: 'bold'}}>
+              Sponsored bills
+            </div>
+            <div>
+              Only includes bills we are tracking
+            </div>
           </>
         </Col>
         <Col>
@@ -82,6 +98,24 @@ export default function CouncilMemberDetails(props: Props) {
           )}
         </Col>
       </Row>
-    </Container>
+      <Form.Group as={Row} className="mb-2">
+        <Form.Label column lg={2}>
+          <strong>Our notes:</strong>
+        </Form.Label>
+        <Col>
+          <Form.Control
+            as="textarea"
+            rows={3}
+            size="sm"
+            value={formData.notes}
+            placeholder="Add our notes about this person"
+            onChange={handleNotesChanged}
+          />
+        </Col>
+      </Form.Group>
+      <div style={{fontStyle: 'italics'}}>
+        {saveStatus}
+      </div>
+    </Form>
   );
 }

@@ -42,7 +42,7 @@ export default function ConcilMembersPage({
         <h2>Council members</h2>
         <input
           type="text"
-          placeholder="Filter"
+          placeholder="Search"
           value={filterText}
           className="mb-2"
           onChange={handleFilterTextChanged}

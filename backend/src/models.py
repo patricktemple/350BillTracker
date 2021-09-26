@@ -60,6 +60,11 @@ class Legislator(db.Model):
     website = Column(Text)
 
 
+    # Our info
+    notes = Column(Text)
+
+
+
 
 class BillSponsorship(db.Model):
     __tablename__ = "bill_sponsorships"

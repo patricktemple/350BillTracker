@@ -27,6 +27,9 @@ export interface CouncilMember {
   legislativePhone: string;
   borough: string;
   website: string;
+
+  // Our data
+  notes: string;
 }
 
 // TODO: This is stupid, just return the bill/member from the APIs alone
