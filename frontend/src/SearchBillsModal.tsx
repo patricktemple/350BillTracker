@@ -4,7 +4,6 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Bill } from './types';
 import Modal from 'react-bootstrap/Modal';
-import './App.css';
 
 interface Props {
   show: boolean;

@@ -6,7 +6,6 @@ import Button from 'react-bootstrap/Button';
 import Accordion from 'react-bootstrap/Accordion';
 import { Bill } from './types';
 import BillDetails from './BillDetails';
-import './App.css';
 
 interface Props {
   match: { params: { billId?: number } };

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Table from 'react-bootstrap/Table';
-import './App.css';
 import { CouncilMember } from './types';
 import Accordion from 'react-bootstrap/Accordion';
 import CouncilMemberDetails from './CouncilMemberDetails';
