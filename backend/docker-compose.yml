@@ -6,8 +6,8 @@ services:
       - "80:5000"
     env_file:
       - .env
-  cron:
-    build: .
-    command: flask cron
-    env_file:
-      - .env
+  # cron:
+  #   build: .
+  #   command: flask cron
+  #   env_file:
+  #     - .env
