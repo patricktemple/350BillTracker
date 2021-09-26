@@ -1,6 +1,6 @@
 import os
 
-CITY_COUNCIL_API_TOKEN = os.environ["CITY_COUNCIL_API_TOKEN"]
+CITY_COUNCIL_API_TOKEN = os.environ.get("CITY_COUNCIL_API_TOKEN")
 
 
 # TODO: Share this with TogglSync via a utils package?
