@@ -15,4 +15,4 @@ if hostname := os.environ.get("RDS_HOSTNAME"):
     )
 else:
     # For local development
-    DATABASE_URL = os.environ[.get("DATABASE_URL")
+    DATABASE_URL = os.environ.get("DATABASE_URL")
