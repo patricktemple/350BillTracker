@@ -1,6 +1,6 @@
 import os
 
-CITY_COUNCIL_API_TOKEN = os.environ["CITY_COUNCIL_API_TOKEN"]
+CITY_COUNCIL_API_TOKEN = os.environ.get("CITY_COUNCIL_API_TOKEN")
 
 
 # TODO: Share this with TogglSync via a utils package?
@@ -15,4 +15,4 @@ if hostname := os.environ.get("RDS_HOSTNAME"):
     )
 else:
     # For local development
-    DATABASE_URL = os.environ["DATABASE_URL"]
+    DATABASE_URL = os.environ[.get("DATABASE_URL")
