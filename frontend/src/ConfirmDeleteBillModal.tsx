@@ -25,7 +25,7 @@ export default function CofirmDeleteBillModal({
         <Button variant="secondary" onClick={handleCloseWithoutConfirm}>
           Cancel
         </Button>
-        <Button variant="primary" onClick={handleConfirm}>
+        <Button variant="danger" onClick={handleConfirm}>
           Remove bill
         </Button>
       </Modal.Footer>
