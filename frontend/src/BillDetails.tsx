@@ -62,17 +62,17 @@ export default function BillDetails(props: Props): ReactElement {
     loadAttachments();
   });
 
-  function handleNotesChanged(e: any) {
-    setFormData({ ...formData, notes: e.target.value });
+  function handleNotesChanged(event: any) {
+    setFormData({ ...formData, notes: event.target.value });
   }
 
-  function handleNicknameChanged(e: any) {
-    setFormData({ ...formData, nickname: e.target.value });
+  function handleNicknameChanged(event: any) {
+    setFormData({ ...formData, nickname: event.target.value });
   }
 
-  function handleAddAttachmentClicked(e: any) {
+  function handleAddAttachmentClicked(event: any) {
     setAddAttachmentModalOpen(true);
-    e.preventDefault();
+    event.preventDefault();
   }
 
   function handleAddAttachment(description: string, url: string) {
@@ -80,6 +80,20 @@ export default function BillDetails(props: Props): ReactElement {
     fetch(`/api/saved-bills/${bill.id}/attachments`, {
       method: 'POST',
       body: JSON.stringify({ url, name: description }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        loadAttachments();
+      });
+  }
+
+  function handleDeleteAttachment(event: any, id: number) {
+    event.preventDefault();
+    fetch(`/api/saved-bills/-/attachments/` + id, {
+      method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
       }
@@ -155,7 +169,7 @@ export default function BillDetails(props: Props): ReactElement {
         <Col lg={2}>
           <Stack direction="vertical">
             <div style={{fontWeight: 'bold'}}>
-              Attachments:
+              Attachments: {attachments != null && <>({attachments.length})</>}:
             </div>
             <a href="#" onClick={handleAddAttachmentClicked}>
               Attach a link
@@ -170,15 +184,14 @@ export default function BillDetails(props: Props): ReactElement {
         <Col>
           {attachments == null ? (
             'Loading...'
-          ) : attachments.length == 0 ? (
-            <em>(none)</em>
           ) : (
             <Stack direction="vertical">
               {attachments.map((a) => (
                 <div key={a.id}>
                   <a href={a.url} target="attachment">
                     {a.name}
-                  </a>
+                  </a>&nbsp;
+                  <a href="#" onClick={(e) => handleDeleteAttachment(e, a.id)}>[Remove]</a>
                 </div>
               ))}
             </Stack>

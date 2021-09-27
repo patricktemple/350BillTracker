@@ -1,9 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, Text, TypeDecorator, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, ForeignKey, Integer, Text, TypeDecorator, sql
 from sqlalchemy.dialects.postgresql import TIMESTAMP as _TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID as _UUID
-from sqlalchemy import sql
+from sqlalchemy.orm import relationship
 
 from .app import app
 
@@ -59,22 +58,22 @@ class Legislator(db.Model):
     borough = Column(Text)
     website = Column(Text)
 
-
-    # Our info
+    # Track our own info on the bill.
     notes = Column(Text)
-
-
 
 
 class BillSponsorship(db.Model):
     __tablename__ = "bill_sponsorships"
 
-    bill_id = Column(Integer, ForeignKey('bills.id'), nullable=False, primary_key=True)
-    bill = relationship("Bill", back_populates="sponsorships")
+    bill_id = Column(
+        Integer, ForeignKey("bills.id"), nullable=False, primary_key=True
+    )
+    bill = relationship("Bill", back_populates="sponsorships", order_by="Bill.name")
 
-    # TODO: What if they don't exist in the DB?
-    legislator_id = Column(Integer, ForeignKey('legislators.id'), nullable=False, primary_key=True)
-    legislator = relationship("Legislator", back_populates="sponsorships")
+    legislator_id = Column(
+        Integer, ForeignKey("legislators.id"), nullable=False, primary_key=True
+    )
+    legislator = relationship("Legislator", back_populates="sponsorships", order_by="Legislator.name")
 
 
 # TODO: UUIDs for some PKs?
@@ -82,7 +81,9 @@ class BillAttachment(db.Model):
     __tablename__ = "bill_attachments"
 
     id = Column(Integer, primary_key=True)
-    bill_id = Column(Integer, ForeignKey('bills.id'), nullable=False, index=True)
+    bill_id = Column(
+        Integer, ForeignKey("bills.id"), nullable=False, index=True
+    )
     bill = relationship("Bill", back_populates="attachments")
 
     name = Column(Text)

@@ -1,12 +1,16 @@
 from flask import jsonify, render_template, request
 from marshmallow import fields
+from sqlalchemy.orm import joinedload
 
 from .app import app
 from .app import marshmallow as ma
 from .council_api import lookup_bills
-from .council_sync import add_or_update_bill, convert_matter_to_bill, update_sponsorships
-from .models import Bill, Legislator, db, BillSponsorship, BillAttachment
-from sqlalchemy.orm import joinedload
+from .council_sync import (
+    add_or_update_bill,
+    convert_matter_to_bill,
+    update_sponsorships,
+)
+from .models import Bill, BillAttachment, BillSponsorship, Legislator, db
 
 
 def camelcase(s):
@@ -29,7 +33,7 @@ def healthz():
 
 
 # TODO: Hitting a react route other than root will fail when browser navigates directly there
-@app.route("/", defaults={'path': ''})
+@app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
 def index(path):
     return render_template("index.html")
@@ -73,8 +77,8 @@ def update_bill(bill_id):
     data = BillSchema().load(request.json)
 
     bill = Bill.query.get(bill_id)
-    bill.notes = data['notes']
-    bill.nickname = data['nickname']
+    bill.notes = data["notes"]
+    bill.nickname = data["nickname"]
 
     db.session.commit()
 
@@ -133,17 +137,23 @@ def update_legislator(legislator_id):
     data = LegislatorSchema().load(request.json)
 
     legislator = Legislator.query.get(legislator_id)
-    legislator.notes = data['notes']
+    legislator.notes = data["notes"]
 
     db.session.commit()
 
     return jsonify({})
 
 
-@app.route("/api/legislators/<int:legislator_id>/sponsorships", methods=["GET"])
+@app.route(
+    "/api/legislators/<int:legislator_id>/sponsorships", methods=["GET"]
+)
 def legislator_sponsorships(legislator_id):
     # TODO: No need to wrap this object, just return the list of sponsor people?
-    sponsorships = BillSponsorship.query.filter_by(legislator_id=legislator_id).options(joinedload(BillSponsorship.bill)).all()
+    sponsorships = (
+        BillSponsorship.query.filter_by(legislator_id=legislator_id)
+        .options(joinedload(BillSponsorship.bill))
+        .all()
+    )
     return SingleMemberSponsorshipsSchema(many=True).jsonify(sponsorships)
 
 
@@ -156,7 +166,11 @@ class SingleBillSponsorshipsSchema(CamelCaseSchema):
 @app.route("/api/saved-bills/<int:bill_id>/sponsorships", methods=["GET"])
 def bill_sponsorships(bill_id):
     # TODO: No need to wrap this object, just return the list of sponsor people?
-    sponsorships = BillSponsorship.query.filter_by(bill_id=bill_id).options(joinedload(BillSponsorship.legislator)).all()
+    sponsorships = (
+        BillSponsorship.query.filter_by(bill_id=bill_id)
+        .options(joinedload(BillSponsorship.legislator))
+        .all()
+    )
     return SingleBillSponsorshipsSchema(many=True).jsonify(sponsorships)
 
 
@@ -179,10 +193,19 @@ def add_bill_attachment(bill_id):
     data = BillAttachmentSchema().load(request.json)
     attachment = BillAttachment(
         bill_id=bill_id,
-        url=data['url'],
-        name=data['name'],
+        url=data["url"],
+        name=data["name"],
     )
     db.session.add(attachment)
+    db.session.commit()
+
+    return jsonify({})
+
+
+@app.route("/api/saved-bills/-/attachments/<int:attachment_id>", methods=["DELETE"])
+def delete_bill_attachment(attachment_id):
+    attachment = BillAttachment.query.filter_by(id=attachment_id).one()
+    db.session.delete(attachment)
     db.session.commit()
 
     return jsonify({})

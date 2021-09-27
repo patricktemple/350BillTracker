@@ -1,8 +1,8 @@
 import logging
 from time import sleep
 
-from .app import app
 from . import council_sync
+from .app import app
 
 
 @app.cli.command("cron")
