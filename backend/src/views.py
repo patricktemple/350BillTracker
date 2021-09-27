@@ -38,15 +38,18 @@ def index(path):
 
 
 class BillSchema(CamelCaseSchema):
-    id = fields.Integer(required=True)
-    name = fields.String(required=True)
-    title = fields.String(required=True)
-    status = fields.String(required=True)
-    body = fields.String(required=True)
-    file = fields.String(required=True)
-    tracked = fields.Boolean()
-    notes = fields.String()
-    nickname = fields.String()
+    # Data pulled from the API
+    id = fields.Integer(dump_only=True)
+    name = fields.String(dump_only=True)
+    title = fields.String(dump_only=True)
+    status = fields.String(dump_only=True)
+    body = fields.String(dump_only=True)
+    file = fields.String(dump_only=True)
+
+    # Data that we track
+    tracked = fields.Boolean(dump_only=True)
+    notes = fields.String(required=True)
+    nickname = fields.String(required=True)
 
 
 @app.route("/api/saved-bills", methods=["GET"])
@@ -64,14 +67,9 @@ def save_bill():
     return jsonify({})
 
 
-class UpdateBillSchema(CamelCaseSchema):
-    notes = fields.String(required=True)
-    nickname = fields.String(required=True)
-
-
 @app.route("/api/saved-bills/<int:bill_id>", methods=["PUT"])
 def update_bill(bill_id):
-    data = UpdateBillSchema().load(request.json)
+    data = BillSchema().load(request.json)
 
     bill = Bill.query.get(bill_id)
     bill.notes = data['notes']
@@ -99,20 +97,23 @@ def search_bills():
     return BillSchema(many=True).jsonify(external_bills)
 
 
-# Council members ----------------------------------------------------------------------
+# Legislators ----------------------------------------------------------------------
 
 
-class CouncilMemberSchema(CamelCaseSchema):
-    name = fields.String(required=True)
-    id = fields.Integer(required=True)
-    term_start = fields.DateTime()
-    term_end = fields.DateTime()
-    email = fields.String()
-    district_phone = fields.String()
-    legislative_phone = fields.String()
-    borough = fields.String()
-    website = fields.String()
-    notes = fields.String()
+class LegislatorSchema(CamelCaseSchema):
+    # Data synced from the API
+    name = fields.String(dump_only=True)
+    id = fields.Integer(dump_only=True)
+    term_start = fields.DateTime(dump_only=True)
+    term_end = fields.DateTime(dump_only=True)
+    email = fields.String(dump_only=True)
+    district_phone = fields.String(dump_only=True)
+    legislative_phone = fields.String(dump_only=True)
+    borough = fields.String(dump_only=True)
+    website = fields.String(dump_only=True)
+
+    # Extra data we track
+    notes = fields.String(required=True)
 
 
 class SingleMemberSponsorshipsSchema(CamelCaseSchema):
@@ -120,19 +121,15 @@ class SingleMemberSponsorshipsSchema(CamelCaseSchema):
     bill = fields.Nested(BillSchema)
 
 
-@app.route("/api/council-members", methods=["GET"])
-def get_council_members():
+@app.route("/api/legislators", methods=["GET"])
+def get_legislators():
     legislators = Legislator.query.order_by(Legislator.name).all()
-    return CouncilMemberSchema(many=True).jsonify(legislators)
+    return LegislatorSchema(many=True).jsonify(legislators)
 
 
-class UpdateCouncilMemberSchema(CamelCaseSchema):
-    notes = fields.String(required=True)
-
-
-@app.route("/api/council-members/<int:legislator_id>", methods=["PUT"])
-def update_council_member(legislator_id):
-    data = UpdateCouncilMemberSchema().load(request.json)
+@app.route("/api/legislators/<int:legislator_id>", methods=["PUT"])
+def update_legislator(legislator_id):
+    data = LegislatorSchema().load(request.json)
 
     legislator = Legislator.query.get(legislator_id)
     legislator.notes = data['notes']
@@ -142,8 +139,8 @@ def update_council_member(legislator_id):
     return jsonify({})
 
 
-@app.route("/api/council-members/<int:legislator_id>/sponsorships", methods=["GET"])
-def council_member_sponsorships(legislator_id):
+@app.route("/api/legislators/<int:legislator_id>/sponsorships", methods=["GET"])
+def legislator_sponsorships(legislator_id):
     # TODO: No need to wrap this object, just return the list of sponsor people?
     sponsorships = BillSponsorship.query.filter_by(legislator_id=legislator_id).all()
     return SingleMemberSponsorshipsSchema(many=True).jsonify(sponsorships)
@@ -152,7 +149,7 @@ def council_member_sponsorships(legislator_id):
 # Bill sponsorships ----------------------------------------------------------------------
 class SingleBillSponsorshipsSchema(CamelCaseSchema):
     bill_id = fields.Integer(required=True)
-    legislator = fields.Nested(CouncilMemberSchema)
+    legislator = fields.Nested(LegislatorSchema)
 
 
 @app.route("/api/saved-bills/<int:bill_id>/sponsorships", methods=["GET"])

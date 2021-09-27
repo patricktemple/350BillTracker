@@ -92,32 +92,32 @@ export default function BillDetails(props: Props): ReactElement {
   return (
     <Form onSubmit={(e) => e.preventDefault()}>
       <Row className="mb-2">
-        <Col lg={2}>
-          <strong>File:</strong>
+        <Col lg={2} style={{fontWeight: 'bold'}}>
+          File:
         </Col>
         <Col>{bill.file}</Col>
       </Row>
       <Row className="mb-2">
-        <Col lg={2}>
-          <strong>Official name:</strong>
+        <Col lg={2} style={{fontWeight: 'bold'}}>
+          Official name:
         </Col>
         <Col>{bill.name}</Col>
       </Row>
       <Row className="mb-2">
-        <Col lg={2}>
-          <strong>Description:</strong>
+        <Col lg={2} style={{fontWeight: 'bold'}}>
+          Description:
         </Col>
         <Col>{bill.title}</Col>
       </Row>
       <Row className="mb-2">
-        <Col lg={2}>
-          <strong>Status:</strong>
+        <Col lg={2} style={{fontWeight: 'bold'}}>
+          Status:
         </Col>
         <Col>{bill.status}</Col>
       </Row>
       <Form.Group as={Row} className="mb-2">
-        <Form.Label column lg={2}>
-          <strong>Our nickname:</strong>
+        <Form.Label column lg={2} style={{fontWeight: 'bold'}}>
+          Our nickname:
         </Form.Label>
         <Col>
           <Form.Control
@@ -130,10 +130,8 @@ export default function BillDetails(props: Props): ReactElement {
         </Col>
       </Form.Group>
       <Row className="mb-2">
-        <Col lg={2}>
-          <strong>
+        <Col lg={2} style={{fontWeight: 'bold'}}>
             Sponsors {sponsorships != null && <>({sponsorships.length})</>}:
-          </strong>
         </Col>
         <Col>
           {sponsorships == null ? (
@@ -155,8 +153,8 @@ export default function BillDetails(props: Props): ReactElement {
       <Row className="mb-2">
         <Col lg={2}>
           <Stack direction="vertical">
-            <div>
-              <strong>Attachments:</strong>
+            <div style={{fontWeight: 'bold'}}>
+              Attachments:
             </div>
             <a href="#" onClick={handleAddAttachmentClicked}>
               Attach a link
@@ -187,8 +185,8 @@ export default function BillDetails(props: Props): ReactElement {
         </Col>
       </Row>
       <Form.Group as={Row} className="mb-2">
-        <Form.Label column lg={2}>
-          <strong>Our notes:</strong>
+        <Form.Label column lg={2} style={{fontWeight: 'bold'}}>
+          Our notes:
         </Form.Label>
         <Col>
           <Form.Control
@@ -201,8 +199,8 @@ export default function BillDetails(props: Props): ReactElement {
           />
         </Col>
       </Form.Group>
-      <div>
-        <em>{saveStatus}</em>
+      <div style={{fontStyle: 'italic'}}>
+        {saveStatus}
       </div>
     </Form>
   );

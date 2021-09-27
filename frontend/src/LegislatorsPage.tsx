@@ -1,28 +1,28 @@
 import React, { useState } from 'react';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Table from 'react-bootstrap/Table';
-import { CouncilMember } from './types';
+import { Legislator } from './types';
 import Accordion from 'react-bootstrap/Accordion';
-import CouncilMemberDetails from './CouncilMemberDetails';
+import LegislatorDetailsPanel from './LegislatorDetailsPanel';
 import { Form } from 'react-bootstrap';
 
 interface Props {
-  match: { params: { memberId?: number } };
+  match: { params: { legislatorId?: number } };
 }
 
 export default function ConcilMembersPage({
   match: {
-    params: { memberId }
+    params: { legislatorId }
   }
 }: Props) {
-  const [members, setMembers] = useState<CouncilMember[] | null>(null);
+  const [legislators, setLegislators] = useState<Legislator[] | null>(null);
   const [filterText, setFilterText] = useState<string>('');
 
   useMountEffect(() => {
-    fetch('/api/council-members')
+    fetch('/api/legislators')
       .then((response) => response.json())
       .then((response) => {
-        setMembers(response);
+        setLegislators(response);
       });
   });
 
@@ -30,12 +30,12 @@ export default function ConcilMembersPage({
     setFilterText(e.target.value);
   }
 
-  if (members) {
+  if (legislators) {
     const lowerFilterText = filterText.toLowerCase();
-    const filteredMembers = members.filter(
-      (m) =>
-        m.name.toLowerCase().includes(lowerFilterText) ||
-        m.borough?.toLowerCase().includes(lowerFilterText)
+    const filteredLegislators = legislators.filter(
+      (l) =>
+        l.name.toLowerCase().includes(lowerFilterText) ||
+        l.borough?.toLowerCase().includes(lowerFilterText)
     );
     return (
       <div>
@@ -47,15 +47,15 @@ export default function ConcilMembersPage({
           className="mb-2"
           onChange={handleFilterTextChanged}
         />
-        <Accordion defaultActiveKey={memberId?.toString()}>
-          {filteredMembers.map((member) => (
-            <Accordion.Item key={member.id} eventKey={member.id.toString()}>
+        <Accordion defaultActiveKey={legislatorId?.toString()}>
+          {filteredLegislators.map((legislator) => (
+            <Accordion.Item key={legislator.id} eventKey={legislator.id.toString()}>
               <Accordion.Header>
-                <strong>{member.name}</strong>
-                {member.borough && <>&nbsp;({member.borough})</>}
+                <strong>{legislator.name}</strong>
+                {legislator.borough && <>&nbsp;({legislator.borough})</>}
               </Accordion.Header>
               <Accordion.Body>
-                <CouncilMemberDetails councilMember={member} />
+                <LegislatorDetailsPanel legislator={legislator} />
               </Accordion.Body>
             </Accordion.Item>
           ))}

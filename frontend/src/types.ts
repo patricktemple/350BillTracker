@@ -15,7 +15,7 @@ export interface Bill {
   nickname: string;
 }
 
-export interface CouncilMember {
+export interface Legislator {
   id: number;
   name: string;
 
@@ -40,7 +40,7 @@ export interface SingleMemberSponsorship {
 
 export interface SingleBillSponsorship {
   billId: number;
-  legislator: CouncilMember;
+  legislator: Legislator;
 }
 
 export interface BillAttachment {

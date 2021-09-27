@@ -1,7 +1,7 @@
 import './App.scss';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import SavedBillsPage from './SavedBillsPage';
-import CouncilMembersPage from './CouncilMembersPage';
+import LegislatorsPage from './LegislatorsPage';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -68,8 +68,8 @@ function App() {
               component={SavedBillsPage}
             />
             <Route
-              path="/council-members/:memberId?"
-              component={CouncilMembersPage}
+              path="/council-members/:legislatorId?"
+              component={LegislatorsPage}
             />
           </main>
         </div>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { CouncilMember, SingleMemberSponsorship } from './types';
+import { Legislator, SingleMemberSponsorship } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Stack from 'react-bootstrap/Stack';
 import { Link } from 'react-router-dom';
@@ -10,25 +10,25 @@ import Form from 'react-bootstrap/Form';
 import useAutosavingFormData from './utils/useAutosavingFormData';
 
 interface Props {
-  councilMember: CouncilMember;
+  legislator: Legislator;
 }
 
 interface FormData {
   notes: string;
 }
 
-export default function CouncilMemberDetails(props: Props) {
-  const member = props.councilMember;
+export default function LegislatorDetailsPanel(props: Props) {
+  const legislator = props.legislator;
 
   const [sponsorships, setSponsorships] = useState<
     SingleMemberSponsorship[] | null
   >(null);
 
-  const [formData, setFormData, saveStatus] = useAutosavingFormData<FormData>('/api/council-members/' + member.id, { notes: member.notes } );
+  const [formData, setFormData, saveStatus] = useAutosavingFormData<FormData>('/api/legislators/' + legislator.id, { notes: legislator.notes } );
 
   // FIXME: This is loading all sponsorships individually on first page load of list
   useMountEffect(() => {
-    fetch(`/api/council-members/${member.id}/sponsorships`)
+    fetch(`/api/legislators/${legislator.id}/sponsorships`)
       .then((response) => response.json())
       .then((response) => {
         setSponsorships(response);
@@ -42,35 +42,35 @@ export default function CouncilMemberDetails(props: Props) {
   return (
     <Form onSubmit={(e) => e.preventDefault()}>
       <Row className="mb-2">
-        <Col lg={2}>
-          <strong>Name:</strong>
+        <Col lg={2} style={{fontWeight: 'bold'}}>
+          Name:
         </Col>
-        <Col>{member.name}</Col>
+        <Col>{legislator.name}</Col>
       </Row>
       <Row className="mb-2">
-        <Col lg={2}>
-          <strong>Email:</strong>
+        <Col lg={2} style={{fontWeight: 'bold'}}>
+          Email:
         </Col>
-        <Col>{member.email}</Col>
+        <Col>{legislator.email}</Col>
       </Row>
       <Row className="mb-2">
-        <Col lg={2}>
-          <strong>District phone:</strong>
+        <Col lg={2} style={{fontWeight: 'bold'}}>
+          District phone:
         </Col>
-        <Col>{member.districtPhone}</Col>
+        <Col>{legislator.districtPhone}</Col>
       </Row>
       <Row className="mb-2">
-        <Col lg={2}>
-          <strong>Legislative phone:</strong>
+        <Col lg={2} style={{fontWeight: 'bold'}}>
+          Legislative phone:
         </Col>
-        <Col>{member.legislativePhone}</Col>
+        <Col>{legislator.legislativePhone}</Col>
       </Row>
       <Row className="mb-2">
-        <Col lg={2}>
-          <strong>Website:</strong>
+        <Col lg={2} style={{fontWeight: 'bold'}}>
+          Website:
         </Col>
         <Col>
-          {member.website && <a href={member.website}>Visit website</a>}
+          {legislator.website && <a href={legislator.website}>Visit website</a>}
         </Col>
       </Row>
       <Row className="mb-2">
@@ -79,7 +79,7 @@ export default function CouncilMemberDetails(props: Props) {
             <div style={{fontWeight: 'bold'}}>
               Sponsored bills
             </div>
-            <div>
+            <div style={{fontStyle: 'italic'}}>
               Only includes bills we are tracking
             </div>
           </>
@@ -99,8 +99,8 @@ export default function CouncilMemberDetails(props: Props) {
         </Col>
       </Row>
       <Form.Group as={Row} className="mb-2">
-        <Form.Label column lg={2}>
-          <strong>Our notes:</strong>
+        <Form.Label column lg={2} style={{fontWeight: 'bold'}}>
+          Our notes:
         </Form.Label>
         <Col>
           <Form.Control
@@ -113,7 +113,7 @@ export default function CouncilMemberDetails(props: Props) {
           />
         </Col>
       </Form.Group>
-      <div style={{fontStyle: 'italics'}}>
+      <div style={{fontStyle: 'italic'}}>
         {saveStatus}
       </div>
     </Form>
