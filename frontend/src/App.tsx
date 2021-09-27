@@ -10,11 +10,12 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const colors = {
-  brown: "#584B53",
-  copper: "#9D5C63",
-  blue: "#D6E3F8",
-  beige: "#FEF5EF",
-  sand: "#E4BB97"
+  // brown: "#584B53",
+  // copper: "#9D5C63",
+  // blue: "#D6E3F8",
+  // beige: "#FEF5EF",
+  // sand: "#E4BB97"
+  lightBlue: '#e7f1ff'
 };
 
 
@@ -23,11 +24,11 @@ const styles ={
     height: '100%',
     width: '100%',
     display: 'grid',
-    gridTemplateRows: '100px 1fr',
-    gridTemplateColumns: '200px 1fr',
+    gridTemplateRows: '80px 1fr',
+    gridTemplateColumns: '280px 1fr',
   },
   leftNav: {
-    backgroundColor: colors.beige,
+    backgroundColor: colors.lightBlue,
     gridRow: "2 / span 1",
     gridColumn: "1 / span 1",
     padding: "20px",
@@ -42,6 +43,10 @@ const styles ={
     gridRow: "2 / span 1",
     padding: "20px",
   },
+  navLink: {
+    fontSize: '1.3rem',
+    // fontWeight: 'bold',
+  }
 }
 
 function App() {
@@ -49,12 +54,12 @@ function App() {
     <Router>
       <div style={styles.container}>
         <div style={styles.heading}>
-          <h1 className="mb-4 red">350 Brooklyn Bill Tracker</h1>
+          <h2 className="mb-4 red">350 Brooklyn Bill Tracker</h2>
         </div>
         <div style={styles.leftNav}>
           <Nav defaultActiveKey="/" className="flex-column">
-            <Nav.Link href="/">Bill campaigns</Nav.Link>
-            <Nav.Link href="/council-members">Council members</Nav.Link>
+            <Nav.Link href="/" style={styles.navLink}>Bill campaigns</Nav.Link>
+            <Nav.Link href="/council-members" style={styles.navLink}>Council members</Nav.Link>
           </Nav>
         </div>
         <div style={styles.mainContent}>

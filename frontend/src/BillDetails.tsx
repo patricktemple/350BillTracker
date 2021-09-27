@@ -49,6 +49,7 @@ export default function BillDetails(props: Props): ReactElement {
 
   // FIXME: This is loading all sponsorships individually on first page load of list
   useMountEffect(() => {
+    console.log("Mount");
     fetch(`/api/saved-bills/${bill.id}/sponsorships`)
       .then((response) => response.json())
       .then((response) => {

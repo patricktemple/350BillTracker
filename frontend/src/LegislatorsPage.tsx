@@ -39,7 +39,7 @@ export default function ConcilMembersPage({
     );
     return (
       <div>
-        <h2>Council members</h2>
+        <h3 className="mb-4">Council members</h3>
         <input
           type="text"
           placeholder="Search"
