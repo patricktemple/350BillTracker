@@ -65,8 +65,6 @@ export default function useAutosavingFormData<T>(
     saveStatus = 'Failed to save';
   } else if (localSaveVersion > remoteSaveVersion) {
     saveStatus = 'Draft';
-  } else if (saveInProgress) {
-    saveStatus = 'Saving...';
   } else if (remoteSaveVersion > 0) {
     saveStatus = 'Saved';
   }

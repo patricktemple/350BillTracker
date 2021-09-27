@@ -77,7 +77,6 @@ export default function BillDetails(props: Props): ReactElement {
 
   function handleAddAttachmentClicked(event: any) {
     setAddAttachmentModalOpen(true);
-    event.preventDefault();
   }
 
   function handleAddAttachment(description: string, url: string) {
@@ -182,19 +181,19 @@ export default function BillDetails(props: Props): ReactElement {
       </Row>
       <Row className="mb-2">
         <Col lg={2}>
-          <Stack direction="vertical">
+          <div>
             <div style={{ fontWeight: 'bold' }}>
-              Attachments: {attachments != null && <>({attachments.length})</>}:
+              Attachments {attachments != null && <>({attachments.length})</>}:
             </div>
-            <a href="#" onClick={handleAddAttachmentClicked}>
+            <Button size="sm" variant="outline-primary" onClick={handleAddAttachmentClicked} className="mt-2 mb-2">
               Attach a link
-            </a>
+            </Button>
             <AddAttachmentModal
               show={addAttachmentModalOpen}
               handleAddAttachment={handleAddAttachment}
               onHide={() => setAddAttachmentModalOpen(false)}
             />
-          </Stack>
+          </div>
         </Col>
         <Col>
           {attachments == null ? (
@@ -233,9 +232,9 @@ export default function BillDetails(props: Props): ReactElement {
       </Form.Group>
       <Row className="mt-3 mb-2">
         <Col>
-          <a href="#" onClick={handleRemoveBill}>
+          <Button variant="outline-primary" size="sm" onClick={handleRemoveBill} className="mt-2 mb-2">
             Remove bill from tracker
-          </a>
+          </Button>
           <ConfirmDeleteBillModel
             show={showDeleteBillConfirmation}
             handleConfirm={handleConfirmRemoveBill}
