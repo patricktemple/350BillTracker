@@ -17,4 +17,5 @@ COPY /__frontend_build__/index.html /app/src/templates/index.html
 COPY /__frontend_build__/static /app/src/static
 
 EXPOSE 5000
+ENV FLASK_APP=src.app
 CMD [ "flask", "run", "--host=0.0.0.0" ]
