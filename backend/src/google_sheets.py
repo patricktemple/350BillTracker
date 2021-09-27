@@ -51,10 +51,20 @@ def create_spreadsheet_data(title, raw_rows):
 
 def create_phone_bank_spreadsheet(bill_id):
   sponsorships = models.BillSponsorship.query.filter_by(bill_id=bill_id).all() # todo joinedload
+  sponsorships = sorted(sponsorships, key=lambda s: s.legislator.name)
 
-  rows = [["Name", "Email", "District Phone", "Legislative Phone", "Notes"]]
+  rows = [["SPONSORS"], ["Name", "Email", "District Phone", "Legislative Phone", "Notes"]]
   for sponsorship in sponsorships:
     legislator = sponsorship.legislator
+    rows.append([legislator.name, legislator.email, legislator.district_phone, legislator.legislative_phone, legislator.notes])
+
+  rows.append([])
+  rows.append(["NON-SPONSORS"]) # or just empty row?
+  
+  sponsor_ids = [s.legislator_id for s in sponsorships]
+  non_sponsors = models.Legislator.query.filter(models.Legislator.id.not_in(sponsor_ids)).order_by(models.Legislator.name).all()
+
+  for legislator in non_sponsors:
     rows.append([legislator.name, legislator.email, legislator.district_phone, legislator.legislative_phone, legislator.notes])
 
   service = get_service()
