@@ -73,7 +73,7 @@ def create_phone_bank_spreadsheet(bill_id):
         )
 
     rows.append(create_row_data([]))
-    rows.append(create_row_data(["NON-SPONSORS"]))  # or just empty row?
+    rows.append(create_row_data(["NON-SPONSORS"], bold=True))
 
     sponsor_ids = [s.legislator_id for s in sponsorships]
     non_sponsors = (
@@ -86,13 +86,13 @@ def create_phone_bank_spreadsheet(bill_id):
 
     for legislator in non_sponsors:
         rows.append(
-            [
+            create_row_data([
                 legislator.name,
                 legislator.email,
                 legislator.district_phone,
                 legislator.legislative_phone,
                 legislator.notes,
-            ]
+            ])
         )
 
     service = get_service()
