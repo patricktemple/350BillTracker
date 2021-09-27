@@ -12,6 +12,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 
 from src.google_sheets import SCOPES
 
+
 def print_google_creds():
     # This secret was taken when I configured the Google Cloud app for TogglSync.
     flow = InstalledAppFlow.from_client_secrets_file(
@@ -21,10 +22,10 @@ def print_google_creds():
     creds_json = creds.to_json()
     print(f"JSON token:\n{creds_json}\n")
 
-    creds_b64 = b64encode(creds_json.encode("utf-8")).decode(
-        "utf-8"
+    creds_b64 = b64encode(creds_json.encode("utf-8")).decode("utf-8")
+    print(
+        f"Base64-encoded token (set GOOGLE_CREDENTIALS to this):\n{creds_b64}"
     )
-    print(f"Base64-encoded token (set GOOGLE_CREDENTIALS to this):\n{creds_b64}")
 
 
 def now():

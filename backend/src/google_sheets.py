@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import json
 import os.path
 
 from google.auth.transport.requests import Request
@@ -8,7 +9,6 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
 from src import app, models, settings
-import json
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
@@ -43,30 +43,61 @@ def create_row_data(raw_values):
 def create_sheet_data(raw_rows):
     return {"data": {"rowData": [create_row_data(row) for row in raw_rows]}}
 
+
 def create_spreadsheet_data(title, raw_rows):
     return {
         "properties": {"title": title},
         "sheets": [create_sheet_data(raw_rows)],
     }
 
+
 def create_phone_bank_spreadsheet(bill_id):
-  sponsorships = models.BillSponsorship.query.filter_by(bill_id=bill_id).all() # todo joinedload
-  sponsorships = sorted(sponsorships, key=lambda s: s.legislator.name)
+    sponsorships = models.BillSponsorship.query.filter_by(
+        bill_id=bill_id
+    ).all()  # todo joinedload
+    sponsorships = sorted(sponsorships, key=lambda s: s.legislator.name)
 
-  rows = [["SPONSORS"], ["Name", "Email", "District Phone", "Legislative Phone", "Notes"]]
-  for sponsorship in sponsorships:
-    legislator = sponsorship.legislator
-    rows.append([legislator.name, legislator.email, legislator.district_phone, legislator.legislative_phone, legislator.notes])
+    rows = [
+        ["SPONSORS"],
+        ["Name", "Email", "District Phone", "Legislative Phone", "Notes"],
+    ]
+    for sponsorship in sponsorships:
+        legislator = sponsorship.legislator
+        rows.append(
+            [
+                legislator.name,
+                legislator.email,
+                legislator.district_phone,
+                legislator.legislative_phone,
+                legislator.notes,
+            ]
+        )
 
-  rows.append([])
-  rows.append(["NON-SPONSORS"]) # or just empty row?
-  
-  sponsor_ids = [s.legislator_id for s in sponsorships]
-  non_sponsors = models.Legislator.query.filter(models.Legislator.id.not_in(sponsor_ids)).order_by(models.Legislator.name).all()
+    rows.append([])
+    rows.append(["NON-SPONSORS"])  # or just empty row?
 
-  for legislator in non_sponsors:
-    rows.append([legislator.name, legislator.email, legislator.district_phone, legislator.legislative_phone, legislator.notes])
+    sponsor_ids = [s.legislator_id for s in sponsorships]
+    non_sponsors = (
+        models.Legislator.query.filter(
+            models.Legislator.id.not_in(sponsor_ids)
+        )
+        .order_by(models.Legislator.name)
+        .all()
+    )
 
-  service = get_service()
-  spreadsheet_data = create_spreadsheet_data(f"Phone bank for {sponsorships[0].bill.file}", rows)
-  return service.spreadsheets().create(body=spreadsheet_data).execute()
+    for legislator in non_sponsors:
+        rows.append(
+            [
+                legislator.name,
+                legislator.email,
+                legislator.district_phone,
+                legislator.legislative_phone,
+                legislator.notes,
+            ]
+        )
+
+    service = get_service()
+    spreadsheet_data = create_spreadsheet_data(
+        f"Phone bank for {sponsorships[0].bill.file}", rows
+    )
+    return service.spreadsheets().create(body=spreadsheet_data).execute()

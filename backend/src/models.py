@@ -45,8 +45,9 @@ class Bill(db.Model):
         "BillAttachment", back_populates="bill", cascade="all, delete"
     )
 
+
 # Bill.sponsorship_people = relationship(
-        # "Legislator", primaryjoin=("and_(Legislator.id == BillSponsorship.legislator_id, BillSponsorship.bill_id == Bill.id)"))
+# "Legislator", primaryjoin=("and_(Legislator.id == BillSponsorship.legislator_id, BillSponsorship.bill_id == Bill.id)"))
 
 
 class Legislator(db.Model):

@@ -62,7 +62,12 @@ export default function SavedBillsPage({
     return (
       <div>
         <h3 className="mb-4">Bill campaigns</h3>
-        <Button className="mb-2" onClick={() => setAddBillVisible(true)} size="sm" style={{textAlign: 'right'}}>
+        <Button
+          className="mb-2"
+          onClick={() => setAddBillVisible(true)}
+          size="sm"
+          style={{ textAlign: 'right' }}
+        >
           Add a bill
         </Button>
         <Accordion defaultActiveKey={billId?.toString()}>

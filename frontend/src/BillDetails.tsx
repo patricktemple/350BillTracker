@@ -43,8 +43,9 @@ export default function BillDetails(props: Props): ReactElement {
 
   const [addAttachmentModalOpen, setAddAttachmentModalOpen] =
     useState<boolean>(false);
-  
-  const [createPhoneBankInProgress, setCreatePhoneBankInProgress] = useState<boolean>(false);
+
+  const [createPhoneBankInProgress, setCreatePhoneBankInProgress] =
+    useState<boolean>(false);
 
   function loadAttachments() {
     fetch(`/api/saved-bills/${bill.id}/attachments`)
@@ -202,7 +203,12 @@ export default function BillDetails(props: Props): ReactElement {
             <div style={{ fontWeight: 'bold' }}>
               Attachments {attachments != null && <>({attachments.length})</>}:
             </div>
-            <Button size="sm" variant="outline-primary" onClick={handleAddAttachmentClicked} className="mt-2 mb-2">
+            <Button
+              size="sm"
+              variant="outline-primary"
+              onClick={handleAddAttachmentClicked}
+              className="mt-2 mb-2"
+            >
               Attach a link
             </Button>
             <AddAttachmentModal
@@ -210,8 +216,16 @@ export default function BillDetails(props: Props): ReactElement {
               handleAddAttachment={handleAddAttachment}
               onHide={() => setAddAttachmentModalOpen(false)}
             />
-            <Button size="sm" disabled={createPhoneBankInProgress} variant="outline-primary" onClick={handleGeneratePhoneBankSheet} className="mb-2">
-              {createPhoneBankInProgress ? "Generating sheet..." : "Create phone bank"}
+            <Button
+              size="sm"
+              disabled={createPhoneBankInProgress}
+              variant="outline-primary"
+              onClick={handleGeneratePhoneBankSheet}
+              className="mb-2"
+            >
+              {createPhoneBankInProgress
+                ? 'Generating sheet...'
+                : 'Create phone bank'}
             </Button>
           </div>
         </Col>
@@ -252,7 +266,12 @@ export default function BillDetails(props: Props): ReactElement {
       </Form.Group>
       <Row className="mt-3 mb-2">
         <Col>
-          <Button variant="outline-primary" size="sm" onClick={handleRemoveBill} className="mt-2 mb-2">
+          <Button
+            variant="outline-primary"
+            size="sm"
+            onClick={handleRemoveBill}
+            className="mt-2 mb-2"
+          >
             Remove bill from tracker
           </Button>
           <ConfirmDeleteBillModel

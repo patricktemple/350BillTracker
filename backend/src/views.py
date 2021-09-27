@@ -1,3 +1,5 @@
+from datetime import date
+
 from flask import jsonify, render_template, request
 from marshmallow import fields
 from sqlalchemy.orm import joinedload
@@ -10,9 +12,8 @@ from .council_sync import (
     convert_matter_to_bill,
     update_sponsorships,
 )
-from .models import Bill, BillAttachment, BillSponsorship, Legislator, db
 from .google_sheets import create_phone_bank_spreadsheet
-from datetime import date
+from .models import Bill, BillAttachment, BillSponsorship, Legislator, db
 
 
 def camelcase(s):
@@ -185,7 +186,6 @@ def bill_sponsorships(bill_id):
     return SingleBillSponsorshipsSchema(many=True).jsonify(sponsorships)
 
 
-
 # Bill attachments ----------------------------------------------------------------------
 class BillAttachmentSchema(CamelCaseSchema):
     id = fields.Integer()
@@ -226,7 +226,10 @@ def delete_bill_attachment(attachment_id):
     return jsonify({})
 
 
-@app.route("/api/saved-bills/<int:bill_id>/create-phone-bank-spreadsheet", methods=["POST"])
+@app.route(
+    "/api/saved-bills/<int:bill_id>/create-phone-bank-spreadsheet",
+    methods=["POST"],
+)
 def create_spreadsheet(bill_id):
     spreadsheet = create_phone_bank_spreadsheet(bill_id)
     attachment = BillAttachment(
