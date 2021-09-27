@@ -11,6 +11,8 @@ from .council_sync import (
     update_sponsorships,
 )
 from .models import Bill, BillAttachment, BillSponsorship, Legislator, db
+from .google_sheets import create_phone_bank_spreadsheet
+from datetime import date
 
 
 def camelcase(s):
@@ -183,6 +185,7 @@ def bill_sponsorships(bill_id):
     return SingleBillSponsorshipsSchema(many=True).jsonify(sponsorships)
 
 
+
 # Bill attachments ----------------------------------------------------------------------
 class BillAttachmentSchema(CamelCaseSchema):
     id = fields.Integer()
@@ -208,6 +211,7 @@ def add_bill_attachment(bill_id):
     db.session.add(attachment)
     db.session.commit()
 
+    # TODO: Return the object in all Creates, to be consistent
     return jsonify({})
 
 
@@ -220,6 +224,19 @@ def delete_bill_attachment(attachment_id):
     db.session.commit()
 
     return jsonify({})
+
+
+@app.route("/api/saved-bills/<int:bill_id>/create-phone-bank-spreadsheet", methods=["POST"])
+def create_spreadsheet(bill_id):
+    spreadsheet = create_phone_bank_spreadsheet(bill_id)
+    attachment = BillAttachment(
+        bill_id=bill_id,
+        url=spreadsheet["spreadsheetUrl"],
+        name=f"Power Hour Tracker (created {date.today().isoformat()})",
+    )
+    db.session.add(attachment)
+    db.session.commit()
+    return BillAttachmentSchema().jsonify(attachment)
 
 
 # BUG: This seems to leave open stale SQLA sessions

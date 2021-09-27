@@ -43,6 +43,8 @@ export default function BillDetails(props: Props): ReactElement {
 
   const [addAttachmentModalOpen, setAddAttachmentModalOpen] =
     useState<boolean>(false);
+  
+  const [createPhoneBankInProgress, setCreatePhoneBankInProgress] = useState<boolean>(false);
 
   function loadAttachments() {
     fetch(`/api/saved-bills/${bill.id}/attachments`)
@@ -116,6 +118,21 @@ export default function BillDetails(props: Props): ReactElement {
   function handleConfirmRemoveBill() {
     setShowDeleteBillConfirmation(false);
     props.handleRemoveBill();
+  }
+
+  function handleGeneratePhoneBankSheet() {
+    setCreatePhoneBankInProgress(true);
+    fetch(`/api/saved-bills/${bill.id}/create-phone-bank-spreadsheet`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        setCreatePhoneBankInProgress(false);
+        loadAttachments();
+      });
   }
 
   return (
@@ -193,6 +210,9 @@ export default function BillDetails(props: Props): ReactElement {
               handleAddAttachment={handleAddAttachment}
               onHide={() => setAddAttachmentModalOpen(false)}
             />
+            <Button size="sm" disabled={createPhoneBankInProgress} variant="outline-primary" onClick={handleGeneratePhoneBankSheet} className="mb-2">
+              {createPhoneBankInProgress ? "Generating sheet..." : "Create phone bank"}
+            </Button>
           </div>
         </Col>
         <Col>

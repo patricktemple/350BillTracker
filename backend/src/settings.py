@@ -1,6 +1,11 @@
 import os
+from base64 import b64decode
 
 CITY_COUNCIL_API_TOKEN = os.environ.get("CITY_COUNCIL_API_TOKEN")
+
+GOOGLE_CREDENTIALS = b64decode(
+    os.environ["GOOGLE_CREDENTIALS"].encode("utf-8")
+).decode("utf-8")
 
 
 # TODO: Share this with TogglSync via a utils package?

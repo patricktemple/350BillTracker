@@ -144,5 +144,4 @@ cython_debug/
 __frontend_build__/
 
 # For the Google Sheets sample app
-.credentials.json
-.token.json
+.secret/
