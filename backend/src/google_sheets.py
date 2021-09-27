@@ -32,22 +32,16 @@ def get_service():
     return service
 
 
-def create_cell_data(raw_value):
-    return {"userEnteredValue": {"stringValue": str(raw_value)}}
-
-
-def create_row_data(raw_values):
-    return {"values": [create_cell_data(value) for value in raw_values]}
-
-
-def create_sheet_data(raw_rows):
-    return {"data": {"rowData": [create_row_data(row) for row in raw_rows]}}
-
-
-def create_spreadsheet_data(title, raw_rows):
+def create_cell_data(raw_value, bold=False):
     return {
-        "properties": {"title": title},
-        "sheets": [create_sheet_data(raw_rows)],
+        "userEnteredValue": {"stringValue": str(raw_value)},
+        "userEnteredFormat": {"textFormat": {"bold": bold}},
+    }
+
+
+def create_row_data(raw_values, bold=False):
+    return {
+        "values": [create_cell_data(value, bold=bold) for value in raw_values]
     }
 
 
@@ -58,23 +52,28 @@ def create_phone_bank_spreadsheet(bill_id):
     sponsorships = sorted(sponsorships, key=lambda s: s.legislator.name)
 
     rows = [
-        ["SPONSORS"],
-        ["Name", "Email", "District Phone", "Legislative Phone", "Notes"],
+        create_row_data(["SPONSORS"], bold=True),
+        create_row_data(
+            ["Name", "Email", "District Phone", "Legislative Phone", "Notes"],
+            bold=True,
+        ),
     ]
     for sponsorship in sponsorships:
         legislator = sponsorship.legislator
         rows.append(
-            [
-                legislator.name,
-                legislator.email,
-                legislator.district_phone,
-                legislator.legislative_phone,
-                legislator.notes,
-            ]
+            create_row_data(
+                [
+                    legislator.name,
+                    legislator.email,
+                    legislator.district_phone,
+                    legislator.legislative_phone,
+                    legislator.notes,
+                ]
+            )
         )
 
-    rows.append([])
-    rows.append(["NON-SPONSORS"])  # or just empty row?
+    rows.append(create_row_data([]))
+    rows.append(create_row_data(["NON-SPONSORS"]))  # or just empty row?
 
     sponsor_ids = [s.legislator_id for s in sponsorships]
     non_sponsors = (
@@ -97,7 +96,15 @@ def create_phone_bank_spreadsheet(bill_id):
         )
 
     service = get_service()
-    spreadsheet_data = create_spreadsheet_data(
-        f"Phone bank for {sponsorships[0].bill.file}", rows
-    )
+
+    spreadsheet_data = {
+        "properties": {"title": f"Phone bank for {sponsorships[0].bill.file}"},
+        "sheets": [{"data": {"rowData": rows}}],
+    }
+    print(spreadsheet_data, flush=True)
+
+    # TODO: Share this externally or with a specific person
+    # right now it's only visible to the creator robot account
     return service.spreadsheets().create(body=spreadsheet_data).execute()
+
+# {"properties": {"title": "Phone bank for Int 2317-2021"}, "sheets": [{"data": {"rowData": [{"values": [{"userEnteredValue": {"stringValue": "SPONSORS"}, "userEnteredFormat": 
