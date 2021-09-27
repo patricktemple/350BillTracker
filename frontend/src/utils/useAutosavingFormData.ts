@@ -53,6 +53,8 @@ export default function useAutosavingFormData<T>(
         })
         .catch(() => {
           setSaveInProgress(false);
+          // TODO: Don't retry after error, otherwise it will retry
+          // endlessly and DDOS us.
           setSaveError(true);
         });
     }

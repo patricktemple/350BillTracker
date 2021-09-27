@@ -69,6 +69,9 @@ class Legislator(db.Model):
     # Track our own info on the bill.
     notes = Column(Text)
 
+    # TODO: Exclude the @ symbol?
+    twitter = Column(Text)
+
 
 class BillSponsorship(db.Model):
     __tablename__ = "bill_sponsorships"

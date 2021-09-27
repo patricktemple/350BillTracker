@@ -15,6 +15,7 @@ export interface Bill {
   nickname: string;
 }
 
+// TODO: Change types to reflect nullability
 export interface Legislator {
   id: number;
   name: string;
@@ -30,9 +31,9 @@ export interface Legislator {
 
   // Our data
   notes: string;
+  twitter: string;
 }
 
-// TODO: This is stupid, just return the bill/member from the APIs alone
 export interface SingleMemberSponsorship {
   bill: Bill;
   legislatorId: number;

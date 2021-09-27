@@ -130,7 +130,8 @@ class LegislatorSchema(CamelCaseSchema):
     website = fields.String(dump_only=True)
 
     # Extra data we track
-    notes = fields.String(required=True)
+    notes = fields.String(missing=None)
+    twitter = fields.String(missing=None)
 
 
 class SingleMemberSponsorshipsSchema(CamelCaseSchema):
@@ -146,10 +147,12 @@ def get_legislators():
 
 @app.route("/api/legislators/<int:legislator_id>", methods=["PUT"])
 def update_legislator(legislator_id):
+    print(request.json, flush=True)
     data = LegislatorSchema().load(request.json)
 
     legislator = Legislator.query.get(legislator_id)
     legislator.notes = data["notes"]
+    legislator.twitter = data["twitter"]
 
     db.session.commit()
 

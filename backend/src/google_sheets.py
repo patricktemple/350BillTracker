@@ -45,6 +45,19 @@ def create_row_data(raw_values, bold=False):
     }
 
 
+def create_legislator_row(legislator):
+    return create_row_data(
+        [
+            legislator.name,
+            legislator.email,
+            legislator.district_phone,
+            legislator.legislative_phone,
+            legislator.notes or "",
+            legislator.twitter or "",
+        ]
+    )
+
+
 def create_phone_bank_spreadsheet(bill_id):
     sponsorships = models.BillSponsorship.query.filter_by(
         bill_id=bill_id
@@ -54,23 +67,19 @@ def create_phone_bank_spreadsheet(bill_id):
     rows = [
         create_row_data(["SPONSORS"], bold=True),
         create_row_data(
-            ["Name", "Email", "District Phone", "Legislative Phone", "Notes"],
+            [
+                "Name",
+                "Email",
+                "District Phone",
+                "Legislative Phone",
+                "Notes",
+                "Twitter",
+            ],
             bold=True,
         ),
     ]
     for sponsorship in sponsorships:
-        legislator = sponsorship.legislator
-        rows.append(
-            create_row_data(
-                [
-                    legislator.name,
-                    legislator.email,
-                    legislator.district_phone,
-                    legislator.legislative_phone,
-                    legislator.notes,
-                ]
-            )
-        )
+        rows.append(create_legislator_row(sponsorship.legislator))
 
     rows.append(create_row_data([]))
     rows.append(create_row_data(["NON-SPONSORS"], bold=True))
@@ -85,15 +94,7 @@ def create_phone_bank_spreadsheet(bill_id):
     )
 
     for legislator in non_sponsors:
-        rows.append(
-            create_row_data([
-                legislator.name,
-                legislator.email,
-                legislator.district_phone,
-                legislator.legislative_phone,
-                legislator.notes,
-            ])
-        )
+        rows.append(create_legislator_row(legislator))
 
     service = get_service()
 
@@ -107,4 +108,5 @@ def create_phone_bank_spreadsheet(bill_id):
     # right now it's only visible to the creator robot account
     return service.spreadsheets().create(body=spreadsheet_data).execute()
 
-# {"properties": {"title": "Phone bank for Int 2317-2021"}, "sheets": [{"data": {"rowData": [{"values": [{"userEnteredValue": {"stringValue": "SPONSORS"}, "userEnteredFormat": 
+
+# {"properties": {"title": "Phone bank for Int 2317-2021"}, "sheets": [{"data": {"rowData": [{"values": [{"userEnteredValue": {"stringValue": "SPONSORS"}, "userEnteredFormat":
