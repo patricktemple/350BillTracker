@@ -38,7 +38,8 @@ export default function BillDetails(props: Props): ReactElement {
   >(null);
   const [attachments, setAttachments] = useState<BillAttachment[] | null>(null);
 
-  const [showDeleteBillConfirmation, setShowDeleteBillConfirmation] = useState<boolean>(false);
+  const [showDeleteBillConfirmation, setShowDeleteBillConfirmation] =
+    useState<boolean>(false);
 
   const [addAttachmentModalOpen, setAddAttachmentModalOpen] =
     useState<boolean>(false);
@@ -53,7 +54,7 @@ export default function BillDetails(props: Props): ReactElement {
 
   // FIXME: This is loading all sponsorships individually on first page load of list
   useMountEffect(() => {
-    console.log("Mount");
+    console.log('Mount');
     fetch(`/api/saved-bills/${bill.id}/sponsorships`)
       .then((response) => response.json())
       .then((response) => {
@@ -121,31 +122,31 @@ export default function BillDetails(props: Props): ReactElement {
   return (
     <Form onSubmit={(e) => e.preventDefault()}>
       <Row className="mb-2">
-        <Col lg={2} style={{fontWeight: 'bold'}}>
+        <Col lg={2} style={{ fontWeight: 'bold' }}>
           File:
         </Col>
         <Col>{bill.file}</Col>
       </Row>
       <Row className="mb-2">
-        <Col lg={2} style={{fontWeight: 'bold'}}>
+        <Col lg={2} style={{ fontWeight: 'bold' }}>
           Official name:
         </Col>
         <Col>{bill.name}</Col>
       </Row>
       <Row className="mb-2">
-        <Col lg={2} style={{fontWeight: 'bold'}}>
+        <Col lg={2} style={{ fontWeight: 'bold' }}>
           Description:
         </Col>
         <Col>{bill.title}</Col>
       </Row>
       <Row className="mb-2">
-        <Col lg={2} style={{fontWeight: 'bold'}}>
+        <Col lg={2} style={{ fontWeight: 'bold' }}>
           Status:
         </Col>
         <Col>{bill.status}</Col>
       </Row>
       <Form.Group as={Row} className="mb-2">
-        <Form.Label column lg={2} style={{fontWeight: 'bold'}}>
+        <Form.Label column lg={2} style={{ fontWeight: 'bold' }}>
           Our nickname:
         </Form.Label>
         <Col>
@@ -159,8 +160,8 @@ export default function BillDetails(props: Props): ReactElement {
         </Col>
       </Form.Group>
       <Row className="mb-2">
-        <Col lg={2} style={{fontWeight: 'bold'}}>
-            Sponsors {sponsorships != null && <>({sponsorships.length})</>}:
+        <Col lg={2} style={{ fontWeight: 'bold' }}>
+          Sponsors {sponsorships != null && <>({sponsorships.length})</>}:
         </Col>
         <Col>
           {sponsorships == null ? (
@@ -182,7 +183,7 @@ export default function BillDetails(props: Props): ReactElement {
       <Row className="mb-2">
         <Col lg={2}>
           <Stack direction="vertical">
-            <div style={{fontWeight: 'bold'}}>
+            <div style={{ fontWeight: 'bold' }}>
               Attachments: {attachments != null && <>({attachments.length})</>}:
             </div>
             <a href="#" onClick={handleAddAttachmentClicked}>
@@ -204,8 +205,11 @@ export default function BillDetails(props: Props): ReactElement {
                 <div key={a.id}>
                   <a href={a.url} target="attachment">
                     {a.name}
-                  </a>&nbsp;
-                  <a href="#" onClick={(e) => handleDeleteAttachment(e, a.id)}>[Remove]</a>
+                  </a>
+                  &nbsp;
+                  <a href="#" onClick={(e) => handleDeleteAttachment(e, a.id)}>
+                    [Remove]
+                  </a>
                 </div>
               ))}
             </Stack>
@@ -213,7 +217,7 @@ export default function BillDetails(props: Props): ReactElement {
         </Col>
       </Row>
       <Form.Group as={Row} className="mb-2">
-        <Form.Label column lg={2} style={{fontWeight: 'bold'}}>
+        <Form.Label column lg={2} style={{ fontWeight: 'bold' }}>
           Our notes:
         </Form.Label>
         <Col>
@@ -229,13 +233,19 @@ export default function BillDetails(props: Props): ReactElement {
       </Form.Group>
       <Row className="mt-3 mb-2">
         <Col>
-          <a href="#" onClick={handleRemoveBill}>Remove bill from tracker</a>
-          <ConfirmDeleteBillModel show={showDeleteBillConfirmation} handleConfirm={handleConfirmRemoveBill} handleCloseWithoutConfirm={() => setShowDeleteBillConfirmation(false)} />
+          <a href="#" onClick={handleRemoveBill}>
+            Remove bill from tracker
+          </a>
+          <ConfirmDeleteBillModel
+            show={showDeleteBillConfirmation}
+            handleConfirm={handleConfirmRemoveBill}
+            handleCloseWithoutConfirm={() =>
+              setShowDeleteBillConfirmation(false)
+            }
+          />
         </Col>
       </Row>
-      <div style={{fontStyle: 'italic'}}>
-        {saveStatus}
-      </div>
+      <div style={{ fontStyle: 'italic' }}>{saveStatus}</div>
     </Form>
   );
 }

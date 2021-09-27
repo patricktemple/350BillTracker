@@ -72,7 +72,10 @@ export default function SavedBillsPage({
                 <strong>{bill.nickname || bill.name}</strong>&nbsp;({bill.file})
               </Accordion.Header>
               <Accordion.Body>
-                <BillDetails bill={bill} handleRemoveBill={() => handleRemoveBill(bill.id)}/>
+                <BillDetails
+                  bill={bill}
+                  handleRemoveBill={() => handleRemoveBill(bill.id)}
+                />
               </Accordion.Body>
             </Accordion.Item>
           ))}

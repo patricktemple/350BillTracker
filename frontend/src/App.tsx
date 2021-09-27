@@ -18,36 +18,35 @@ const colors = {
   lightBlue: '#e7f1ff'
 };
 
-
-const styles ={
+const styles = {
   container: {
     height: '100%',
     width: '100%',
     display: 'grid',
     gridTemplateRows: '80px 1fr',
-    gridTemplateColumns: '280px 1fr',
+    gridTemplateColumns: '280px 1fr'
   },
   leftNav: {
     backgroundColor: colors.lightBlue,
-    gridRow: "2 / span 1",
-    gridColumn: "1 / span 1",
-    padding: "20px",
+    gridRow: '2 / span 1',
+    gridColumn: '1 / span 1',
+    padding: '20px'
   },
   heading: {
-    padding: "20px",
-    gridColumn: "1 / span 2",
-    gridRow: "1 / span 1",
+    padding: '20px',
+    gridColumn: '1 / span 2',
+    gridRow: '1 / span 1'
   },
   mainContent: {
-    gridColumn: "2 / span 1",
-    gridRow: "2 / span 1",
-    padding: "20px",
+    gridColumn: '2 / span 1',
+    gridRow: '2 / span 1',
+    padding: '20px'
   },
   navLink: {
-    fontSize: '1.3rem',
+    fontSize: '1.3rem'
     // fontWeight: 'bold',
   }
-}
+};
 
 function App() {
   return (
@@ -58,8 +57,12 @@ function App() {
         </div>
         <div style={styles.leftNav}>
           <Nav defaultActiveKey="/" className="flex-column">
-            <Nav.Link href="/" style={styles.navLink}>Bill campaigns</Nav.Link>
-            <Nav.Link href="/council-members" style={styles.navLink}>Council members</Nav.Link>
+            <Nav.Link href="/" style={styles.navLink}>
+              Bill campaigns
+            </Nav.Link>
+            <Nav.Link href="/council-members" style={styles.navLink}>
+              Council members
+            </Nav.Link>
           </Nav>
         </div>
         <div style={styles.mainContent}>

@@ -24,7 +24,10 @@ export default function LegislatorDetailsPanel(props: Props) {
     SingleMemberSponsorship[] | null
   >(null);
 
-  const [formData, setFormData, saveStatus] = useAutosavingFormData<FormData>('/api/legislators/' + legislator.id, { notes: legislator.notes } );
+  const [formData, setFormData, saveStatus] = useAutosavingFormData<FormData>(
+    '/api/legislators/' + legislator.id,
+    { notes: legislator.notes }
+  );
 
   // FIXME: This is loading all sponsorships individually on first page load of list
   useMountEffect(() => {
@@ -42,31 +45,31 @@ export default function LegislatorDetailsPanel(props: Props) {
   return (
     <Form onSubmit={(e) => e.preventDefault()}>
       <Row className="mb-2">
-        <Col lg={2} style={{fontWeight: 'bold'}}>
+        <Col lg={2} style={{ fontWeight: 'bold' }}>
           Name:
         </Col>
         <Col>{legislator.name}</Col>
       </Row>
       <Row className="mb-2">
-        <Col lg={2} style={{fontWeight: 'bold'}}>
+        <Col lg={2} style={{ fontWeight: 'bold' }}>
           Email:
         </Col>
         <Col>{legislator.email}</Col>
       </Row>
       <Row className="mb-2">
-        <Col lg={2} style={{fontWeight: 'bold'}}>
+        <Col lg={2} style={{ fontWeight: 'bold' }}>
           District phone:
         </Col>
         <Col>{legislator.districtPhone}</Col>
       </Row>
       <Row className="mb-2">
-        <Col lg={2} style={{fontWeight: 'bold'}}>
+        <Col lg={2} style={{ fontWeight: 'bold' }}>
           Legislative phone:
         </Col>
         <Col>{legislator.legislativePhone}</Col>
       </Row>
       <Row className="mb-2">
-        <Col lg={2} style={{fontWeight: 'bold'}}>
+        <Col lg={2} style={{ fontWeight: 'bold' }}>
           Website:
         </Col>
         <Col>
@@ -76,10 +79,8 @@ export default function LegislatorDetailsPanel(props: Props) {
       <Row className="mb-2">
         <Col lg={2}>
           <>
-            <div style={{fontWeight: 'bold'}}>
-              Sponsored bills
-            </div>
-            <div style={{fontStyle: 'italic'}}>
+            <div style={{ fontWeight: 'bold' }}>Sponsored bills</div>
+            <div style={{ fontStyle: 'italic' }}>
               Only includes bills we are tracking
             </div>
           </>
@@ -99,7 +100,7 @@ export default function LegislatorDetailsPanel(props: Props) {
         </Col>
       </Row>
       <Form.Group as={Row} className="mb-2">
-        <Form.Label column lg={2} style={{fontWeight: 'bold'}}>
+        <Form.Label column lg={2} style={{ fontWeight: 'bold' }}>
           Our notes:
         </Form.Label>
         <Col>
@@ -113,9 +114,7 @@ export default function LegislatorDetailsPanel(props: Props) {
           />
         </Col>
       </Form.Group>
-      <div style={{fontStyle: 'italic'}}>
-        {saveStatus}
-      </div>
+      <div style={{ fontStyle: 'italic' }}>{saveStatus}</div>
     </Form>
   );
 }

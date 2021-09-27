@@ -68,12 +68,16 @@ class BillSponsorship(db.Model):
     bill_id = Column(
         Integer, ForeignKey("bills.id"), nullable=False, primary_key=True
     )
-    bill = relationship("Bill", back_populates="sponsorships", order_by="Bill.name")
+    bill = relationship(
+        "Bill", back_populates="sponsorships", order_by="Bill.name"
+    )
 
     legislator_id = Column(
         Integer, ForeignKey("legislators.id"), nullable=False, primary_key=True
     )
-    legislator = relationship("Legislator", back_populates="sponsorships", order_by="Legislator.name")
+    legislator = relationship(
+        "Legislator", back_populates="sponsorships", order_by="Legislator.name"
+    )
 
 
 # TODO: UUIDs for some PKs?

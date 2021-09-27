@@ -211,7 +211,9 @@ def add_bill_attachment(bill_id):
     return jsonify({})
 
 
-@app.route("/api/saved-bills/-/attachments/<int:attachment_id>", methods=["DELETE"])
+@app.route(
+    "/api/saved-bills/-/attachments/<int:attachment_id>", methods=["DELETE"]
+)
 def delete_bill_attachment(attachment_id):
     attachment = BillAttachment.query.filter_by(id=attachment_id).one()
     db.session.delete(attachment)

@@ -49,7 +49,10 @@ export default function ConcilMembersPage({
         />
         <Accordion defaultActiveKey={legislatorId?.toString()}>
           {filteredLegislators.map((legislator) => (
-            <Accordion.Item key={legislator.id} eventKey={legislator.id.toString()}>
+            <Accordion.Item
+              key={legislator.id}
+              eventKey={legislator.id.toString()}
+            >
               <Accordion.Header>
                 <strong>{legislator.name}</strong>
                 {legislator.borough && <>&nbsp;({legislator.borough})</>}
