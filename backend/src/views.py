@@ -85,6 +85,15 @@ def update_bill(bill_id):
     return jsonify({})
 
 
+@app.route("/api/saved-bills/<int:bill_id>", methods=["DELETE"])
+def delete_bill(bill_id):
+    bill = Bill.query.get(bill_id)
+    db.session.delete(bill)
+    db.session.commit()
+
+    return jsonify({})
+
+
 @app.route("/api/search-bills", methods=["GET"])
 def search_bills():
     file = request.args.get("file")

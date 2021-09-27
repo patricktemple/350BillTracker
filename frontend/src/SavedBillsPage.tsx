@@ -45,6 +45,19 @@ export default function SavedBillsPage({
       });
   }
 
+  function handleRemoveBill(billId: number) {
+    fetch(`/api/saved-bills/` + billId, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        loadBillList();
+      });
+  }
+
   if (bills) {
     return (
       <div>
@@ -59,7 +72,7 @@ export default function SavedBillsPage({
                 <strong>{bill.nickname || bill.name}</strong>&nbsp;({bill.file})
               </Accordion.Header>
               <Accordion.Body>
-                <BillDetails bill={bill} />
+                <BillDetails bill={bill} handleRemoveBill={() => handleRemoveBill(bill.id)}/>
               </Accordion.Body>
             </Accordion.Item>
           ))}

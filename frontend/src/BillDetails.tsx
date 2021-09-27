@@ -10,9 +10,11 @@ import Col from 'react-bootstrap/Col';
 import AddAttachmentModal from './AddAttachmentModal';
 import { Link } from 'react-router-dom';
 import useAutosavingFormData from './utils/useAutosavingFormData';
+import ConfirmDeleteBillModel from './ConfirmDeleteBillModal';
 
 interface Props {
   bill: Bill;
+  handleRemoveBill: () => void;
 }
 
 interface FormData {
@@ -35,6 +37,8 @@ export default function BillDetails(props: Props): ReactElement {
     SingleBillSponsorship[] | null
   >(null);
   const [attachments, setAttachments] = useState<BillAttachment[] | null>(null);
+
+  const [showDeleteBillConfirmation, setShowDeleteBillConfirmation] = useState<boolean>(false);
 
   const [addAttachmentModalOpen, setAddAttachmentModalOpen] =
     useState<boolean>(false);
@@ -102,6 +106,16 @@ export default function BillDetails(props: Props): ReactElement {
       .then((response) => {
         loadAttachments();
       });
+  }
+
+  function handleRemoveBill(event: any) {
+    event.preventDefault();
+    setShowDeleteBillConfirmation(true);
+  }
+
+  function handleConfirmRemoveBill() {
+    setShowDeleteBillConfirmation(false);
+    props.handleRemoveBill();
   }
 
   return (
@@ -213,6 +227,12 @@ export default function BillDetails(props: Props): ReactElement {
           />
         </Col>
       </Form.Group>
+      <Row className="mt-3 mb-2">
+        <Col>
+          <a href="#" onClick={handleRemoveBill}>Remove bill from tracker</a>
+          <ConfirmDeleteBillModel show={showDeleteBillConfirmation} handleConfirm={handleConfirmRemoveBill} handleCloseWithoutConfirm={() => setShowDeleteBillConfirmation(false)} />
+        </Col>
+      </Row>
       <div style={{fontStyle: 'italic'}}>
         {saveStatus}
       </div>
