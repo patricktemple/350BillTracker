@@ -12,12 +12,6 @@ from src import app, models
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
-# The ID and range of a sample spreadsheet.
-SAMPLE_SPREADSHEET_ID = "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
-SAMPLE_RANGE_NAME = "Class Data!A2:E"
-
-TOKEN_FILE = "src/sheets/.token.json"
-
 
 def create_cell_data(raw_value):
     return {"userEnteredValue": {"stringValue": str(raw_value)}}
@@ -75,9 +69,6 @@ def main():
     spreadsheet = create_sponsor_spreadsheet(67251)
     # Call the Sheets API
     sheet = service.spreadsheets().create(body=spreadsheet).execute()
-    # result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
-    #                             range=SAMPLE_RANGE_NAME).execute()
-
     print(sheet)
 
 
