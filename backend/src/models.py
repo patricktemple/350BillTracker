@@ -38,8 +38,12 @@ class Bill(db.Model):
     notes = Column(Text, nullable=False, server_default="")
     nickname = Column(Text, nullable=False, server_default="")
 
-    sponsorships = relationship("BillSponsorship", back_populates="bill", cascade="all, delete")
-    attachments = relationship("BillAttachment", back_populates="bill", cascade="all, delete")
+    sponsorships = relationship(
+        "BillSponsorship", back_populates="bill", cascade="all, delete"
+    )
+    attachments = relationship(
+        "BillAttachment", back_populates="bill", cascade="all, delete"
+    )
 
 
 class Legislator(db.Model):

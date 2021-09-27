@@ -142,3 +142,7 @@ cython_debug/
 !.elasticbeanstalk/*.global.yml
 
 __frontend_build__/
+
+# For the Google Sheets sample app
+.credentials.json
+.token.json
