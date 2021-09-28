@@ -22,6 +22,9 @@ interface FormData {
   nickname: string;
 }
 
+// TODO: Make a LazyAccordion that only renders its context the first time that
+// it's visible, using useContext(AccordionContext). See this:
+// https://react-bootstrap.github.io/components/accordion/
 export default function BillDetails(props: Props): ReactElement {
   const { bill } = props;
 

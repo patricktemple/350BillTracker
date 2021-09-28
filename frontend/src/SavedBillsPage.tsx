@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { ReactElement, useState, useContext, useEffect } from 'react';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import BillList from './BillList';
 import SearchBillsModal from './SearchBillsModal';
 import Button from 'react-bootstrap/Button';
 import Accordion from 'react-bootstrap/Accordion';
+import AccordionContext from 'react-bootstrap/AccordionContext';
 import { Bill } from './types';
 import BillDetails from './BillDetails';
+import LazyAccordionBody from './LazyAccordionBody';
 
 interface Props {
   match: { params: { billId?: number } };
@@ -76,12 +78,12 @@ export default function SavedBillsPage({
               <Accordion.Header>
                 <strong>{bill.nickname || bill.name}</strong>&nbsp;({bill.file})
               </Accordion.Header>
-              <Accordion.Body>
+              <LazyAccordionBody eventKey={bill.id.toString()}>
                 <BillDetails
                   bill={bill}
                   handleRemoveBill={() => handleRemoveBill(bill.id)}
                 />
-              </Accordion.Body>
+              </LazyAccordionBody>
             </Accordion.Item>
           ))}
         </Accordion>

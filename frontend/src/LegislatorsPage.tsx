@@ -5,6 +5,7 @@ import { Legislator } from './types';
 import Accordion from 'react-bootstrap/Accordion';
 import LegislatorDetailsPanel from './LegislatorDetailsPanel';
 import { Form } from 'react-bootstrap';
+import LazyAccordionBody from './LazyAccordionBody';
 
 interface Props {
   match: { params: { legislatorId?: number } };
@@ -57,9 +58,9 @@ export default function ConcilMembersPage({
                 <strong>{legislator.name}</strong>
                 {legislator.borough && <>&nbsp;({legislator.borough})</>}
               </Accordion.Header>
-              <Accordion.Body>
+              <LazyAccordionBody eventKey={legislator.id.toString()}>
                 <LegislatorDetailsPanel legislator={legislator} />
-              </Accordion.Body>
+              </LazyAccordionBody>
             </Accordion.Item>
           ))}
         </Accordion>
