@@ -1,5 +1,0 @@
-set -euo pipefail
-
-echo "Running tests before deployment..."
-pytest -vs
-eb deploy
