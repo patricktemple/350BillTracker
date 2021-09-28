@@ -10,6 +10,8 @@ from datetime import datetime, timedelta, timezone
 
 from google_auth_oauthlib.flow import InstalledAppFlow
 
+from src import app
+
 from src.google_sheets import SCOPES
 
 

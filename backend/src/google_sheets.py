@@ -10,11 +10,15 @@ from googleapiclient.discovery import build
 
 from src import app, models, settings
 
+from sqlalchemy.orm import selectinload
+
 # If modifying these scopes, delete the file token.json.
-SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+# TODO: Reduce these scopes
+# This can probably be drive.file scope
+SCOPES = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.file"]
 
 # TODO: Share this with TogglSync via a utils package?
-def get_service():
+def _get_google_credentials():
     # TODO: This will need to refresh the creds every time after first expiration? Maybe?
     print(settings.GOOGLE_CREDENTIALS, flush=True)
     creds = Credentials.from_authorized_user_info(
@@ -27,26 +31,37 @@ def get_service():
             raise ValueError(
                 f"Creds were invalid but not refreshable: {GCAL_CREDENTIALS}"
             )
+    
+    return creds
 
     service = build("sheets", "v4", credentials=creds)
     return service
 
 
-def create_cell_data(raw_value, bold=False):
+def _get_sheets_service(credentials):
+    return build("sheets", "v4", credentials=credentials)
+
+
+def _get_drive_service(credentials):
+    return build('drive', 'v3', credentials=credentials)
+
+
+
+def _create_cell_data(raw_value, bold=False):
     return {
         "userEnteredValue": {"stringValue": str(raw_value)},
         "userEnteredFormat": {"textFormat": {"bold": bold}},
     }
 
 
-def create_row_data(raw_values, bold=False):
+def _create_row_data(raw_values, bold=False):
     return {
-        "values": [create_cell_data(value, bold=bold) for value in raw_values]
+        "values": [_create_cell_data(value, bold=bold) for value in raw_values]
     }
 
 
-def create_legislator_row(legislator):
-    return create_row_data(
+def _create_legislator_row(legislator):
+    return _create_row_data(
         [
             legislator.name,
             legislator.email,
@@ -59,14 +74,14 @@ def create_legislator_row(legislator):
 
 
 def create_phone_bank_spreadsheet(bill_id):
-    sponsorships = models.BillSponsorship.query.filter_by(
-        bill_id=bill_id
-    ).all()  # todo joinedload
+    bill = models.Bill.query.filter_by(id=bill_id).options(selectinload(models.Bill.sponsorships)).one()
+
+    sponsorships = bill.sponsorships
     sponsorships = sorted(sponsorships, key=lambda s: s.legislator.name)
 
     rows = [
-        create_row_data(["SPONSORS"], bold=True),
-        create_row_data(
+        _create_row_data(["SPONSORS"], bold=True),
+        _create_row_data(
             [
                 "Name",
                 "Email",
@@ -79,10 +94,10 @@ def create_phone_bank_spreadsheet(bill_id):
         ),
     ]
     for sponsorship in sponsorships:
-        rows.append(create_legislator_row(sponsorship.legislator))
+        rows.append(_create_legislator_row(sponsorship.legislator))
 
-    rows.append(create_row_data([]))
-    rows.append(create_row_data(["NON-SPONSORS"], bold=True))
+    rows.append(_create_row_data([]))
+    rows.append(_create_row_data(["NON-SPONSORS"], bold=True))
 
     sponsor_ids = [s.legislator_id for s in sponsorships]
     non_sponsors = (
@@ -94,19 +109,32 @@ def create_phone_bank_spreadsheet(bill_id):
     )
 
     for legislator in non_sponsors:
-        rows.append(create_legislator_row(legislator))
-
-    service = get_service()
+        rows.append(_create_legislator_row(legislator))
 
     spreadsheet_data = {
-        "properties": {"title": f"Phone bank for {sponsorships[0].bill.file}"},
+        "properties": {"title": f"Phone bank for {bill.file}"},
         "sheets": [{"data": {"rowData": rows}}],
     }
-    print(spreadsheet_data, flush=True)
 
     # TODO: Share this externally or with a specific person
     # right now it's only visible to the creator robot account
-    return service.spreadsheets().create(body=spreadsheet_data).execute()
+    
+    google_credentials = _get_google_credentials()
+    sheets_service = _get_sheets_service(google_credentials)
 
+    spreadsheet_result = sheets_service.spreadsheets().create(body=spreadsheet_data).execute()
 
-# {"properties": {"title": "Phone bank for Int 2317-2021"}, "sheets": [{"data": {"rowData": [{"values": [{"userEnteredValue": {"stringValue": "SPONSORS"}, "userEnteredFormat":
+    # That sheet is initially only accessible to our robot account, so make it public.
+    drive_service = _get_drive_service(google_credentials)
+    user_permission = {
+        'type': 'anyone',
+        'role': 'writer',
+        # 'emailAddress': 'user@example.com'
+    }
+    drive_service.permissions().create(
+            fileId=spreadsheet_result['spreadsheetId'],
+            body=user_permission,
+            fields='id',
+    ).execute()
+
+    return spreadsheet_result
