@@ -12,15 +12,11 @@ from src import app, models, settings
 
 from sqlalchemy.orm import selectinload
 
-# If modifying these scopes, delete the file token.json.
-# TODO: Reduce these scopes
-# This can probably be drive.file scope
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.file"]
 
 # TODO: Share this with TogglSync via a utils package?
 def _get_google_credentials():
     # TODO: This will need to refresh the creds every time after first expiration? Maybe?
-    print(settings.GOOGLE_CREDENTIALS, flush=True)
     creds = Credentials.from_authorized_user_info(
         json.loads(settings.GOOGLE_CREDENTIALS), SCOPES
     )
@@ -33,10 +29,6 @@ def _get_google_credentials():
             )
     
     return creds
-
-    service = build("sheets", "v4", credentials=creds)
-    return service
-
 
 def _get_sheets_service(credentials):
     return build("sheets", "v4", credentials=credentials)
@@ -74,6 +66,10 @@ def _create_legislator_row(legislator):
 
 
 def create_phone_bank_spreadsheet(bill_id):
+    """Creates a spreadsheet that's a template to run a phone bank
+    for a specific bill, based on its current sponsors. The sheet will be
+    owned by a robot Google account and will be made publicly editable by
+    anyone with the link."""
     bill = models.Bill.query.filter_by(id=bill_id).options(selectinload(models.Bill.sponsorships)).one()
 
     sponsorships = bill.sponsorships
@@ -116,9 +112,6 @@ def create_phone_bank_spreadsheet(bill_id):
         "sheets": [{"data": {"rowData": rows}}],
     }
 
-    # TODO: Share this externally or with a specific person
-    # right now it's only visible to the creator robot account
-    
     google_credentials = _get_google_credentials()
     sheets_service = _get_sheets_service(google_credentials)
 
@@ -129,7 +122,6 @@ def create_phone_bank_spreadsheet(bill_id):
     user_permission = {
         'type': 'anyone',
         'role': 'writer',
-        # 'emailAddress': 'user@example.com'
     }
     drive_service.permissions().create(
             fileId=spreadsheet_result['spreadsheetId'],
