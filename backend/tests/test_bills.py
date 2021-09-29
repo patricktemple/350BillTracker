@@ -1,12 +1,12 @@
 import json
 
+import responses
+
 from src import app
-from src.models import Bill, db
+from src.models import Bill, Legislator, db
 from src.utils import now
 
 from .utils import assert_response
-
-import responses
 
 
 def test_get_saved_bills(client):
@@ -94,9 +94,11 @@ def test_update_bill(client):
         ],
     )
 
+
 @responses.activate
 def test_save_bill(client):
-    responses.add(responses.GET,
+    responses.add(
+        responses.GET,
         url="https://webapi.legistar.com/v1/nyc/matters/123?token=fake_token",
         json={
             "MatterId": "123",
@@ -105,18 +107,21 @@ def test_save_bill(client):
             "MatterTitle": "fake matter title",
             "MatterBodyName": "fake matter body",
             "MatterIntroDate": "2021-01-06T00:00:00",
-            "MatterStatusName": "fake matter status"
-        })
-    
-    responses.add(responses.GET,
-        url="https://webapi.legistar.com/v1/nyc/matters/123/sponsors?token=fake_token",
-        json={ })
+            "MatterStatusName": "fake matter status",
+        },
+    )
 
-    # TODO: Handle a bill that has a sponsorships:
-    # 1 already exists and merge with existing sponsorship
-    # 1 new sponsorship
-    # 1 existing legislator who's not a sponsor
-    # Then assert all that
+    responses.add(
+        responses.GET,
+        url="https://webapi.legistar.com/v1/nyc/matters/123/sponsors?token=fake_token",
+        json=[{"MatterSponsorNameId": 99}],
+    )
+
+    non_sponsor = Legislator(id=88, name="Non sponsor")
+    db.session.add(non_sponsor)
+
+    sponsor = Legislator(id=99, name="Sponsor")
+    db.session.add(sponsor)
 
     response = client.post(
         "/api/saved-bills",
@@ -127,11 +132,15 @@ def test_save_bill(client):
     bill = Bill.query.one()
     assert bill.id == 123
 
+    assert len(bill.sponsorships) == 1
+    assert bill.sponsorships[0].legislator.name == "Sponsor"
+
+
 # TODO: Add a test for adding a bill when bill already exists
+# make sure it updates existing sponsorships too
 
 
 # TODO test coverage:
-# Tracking a new bill
 # Searching for bill in council API
 # Getting sponsorships
 # Adding/deleting attachments
