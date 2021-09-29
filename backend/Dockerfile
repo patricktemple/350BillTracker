@@ -14,6 +14,9 @@ COPY /src /app/src
 COPY /alembic /app/alembic
 COPY /script_deployed /app/script_deployed
 COPY /__frontend_build__/index.html /app/src/templates/index.html
+
+# TODO: This is bad, clean up this directory structure!
+COPY /__frontend_build__/favicon.ico /app/src/static/favicon.ico
 COPY /__frontend_build__/static /app/src/static
 
 EXPOSE 5000
