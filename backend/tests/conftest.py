@@ -1,6 +1,5 @@
 import pytest
 
-from src import app as app_package
 from src import models
 
 

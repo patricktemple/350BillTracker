@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
 from src import app
 from src.google_sheets import create_phone_bank_spreadsheet
@@ -6,7 +6,6 @@ from src.models import Bill, BillSponsorship, Legislator, db
 from src.utils import now
 
 
-# TODO: Need to set test environment variables so we don't accidentally call real APIs
 @patch("src.google_sheets.Credentials")
 @patch("src.google_sheets.build")
 def test_generate_google_sheet(mock_build, mock_credentials):
@@ -38,6 +37,10 @@ def test_generate_google_sheet(mock_build, mock_credentials):
 
     db.session.add(BillSponsorship(legislator_id=sponsor.id, bill_id=bill.id))
     db.session.commit()
+
+    mock_sheets_service.spreadsheets().create().execute.return_value = {
+        "spreadsheetId": "test_spreadsheet"
+    }
 
     create_phone_bank_spreadsheet(1234)
 
@@ -230,3 +233,9 @@ def test_generate_google_sheet(mock_build, mock_credentials):
         body=expected_data
     )
     mock_sheets_service.spreadsheets().create().execute.assert_called()
+
+    mock_drive_service.permissions().create.assert_called_with(
+        fileId="test_spreadsheet",
+        fields="id",
+        body={"type": "anyone", "role": "writer"},
+    )

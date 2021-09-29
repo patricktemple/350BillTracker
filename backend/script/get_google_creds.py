@@ -4,9 +4,8 @@ to sync events to it. Will open a browser-based OAuth consent form when run.
 
 from __future__ import print_function
 
-import json
 from base64 import b64encode
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 
 from google_auth_oauthlib.flow import InstalledAppFlow
 
