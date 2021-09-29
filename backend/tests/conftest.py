@@ -1,6 +1,6 @@
 import pytest
 
-from src import models
+from src import app, models
 
 
 @pytest.fixture(autouse=True)

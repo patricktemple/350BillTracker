@@ -65,20 +65,9 @@ def _create_legislator_row(legislator):
     )
 
 
-def create_phone_bank_spreadsheet(bill_id):
-    """Creates a spreadsheet that's a template to run a phone bank
-    for a specific bill, based on its current sponsors. The sheet will be
-    owned by a robot Google account and will be made publicly editable by
-    anyone with the link."""
-    bill = (
-        models.Bill.query.filter_by(id=bill_id)
-        .options(selectinload(models.Bill.sponsorships))
-        .one()
-    )
-
-    sponsorships = bill.sponsorships
-    sponsorships = sorted(sponsorships, key=lambda s: s.legislator.name)
-
+def _create_phone_bank_spreadsheet_data(bill, sponsors, non_sponsors):
+    """Generates the full body payload that the Sheets API requires for a
+    phone bank spreadsheet."""
     rows = [
         _create_row_data(["SPONSORS"], bold=True),
         _create_row_data(
@@ -93,11 +82,35 @@ def create_phone_bank_spreadsheet(bill_id):
             bold=True,
         ),
     ]
-    for sponsorship in sponsorships:
-        rows.append(_create_legislator_row(sponsorship.legislator))
+    for sponsor in sponsors:
+        rows.append(_create_legislator_row(sponsor))
 
     rows.append(_create_row_data([]))
     rows.append(_create_row_data(["NON-SPONSORS"], bold=True))
+
+    for legislator in non_sponsors:
+        rows.append(_create_legislator_row(legislator))
+
+    return {
+        "properties": {"title": f"Phone bank for {bill.file}"},
+        "sheets": [{"data": {"rowData": rows}}],
+    }
+
+
+def create_phone_bank_spreadsheet(bill_id):
+    """Creates a spreadsheet that's a template to run a phone bank
+    for a specific bill, based on its current sponsors. The sheet will be
+    owned by a robot Google account and will be made publicly editable by
+    anyone with the link."""
+    bill = (
+        models.Bill.query.filter_by(id=bill_id)
+        .options(selectinload(models.Bill.sponsorships))
+        .one()
+    )
+
+    sponsorships = bill.sponsorships
+    sponsorships = sorted(sponsorships, key=lambda s: s.legislator.name)
+    sponsors = [s.legislator for s in sponsorships]
 
     sponsor_ids = [s.legislator_id for s in sponsorships]
     non_sponsors = (
@@ -108,13 +121,9 @@ def create_phone_bank_spreadsheet(bill_id):
         .all()
     )
 
-    for legislator in non_sponsors:
-        rows.append(_create_legislator_row(legislator))
-
-    spreadsheet_data = {
-        "properties": {"title": f"Phone bank for {bill.file}"},
-        "sheets": [{"data": {"rowData": rows}}],
-    }
+    spreadsheet_data = _create_phone_bank_spreadsheet_data(
+        bill, sponsors, non_sponsors
+    )
 
     google_credentials = _get_google_credentials()
     sheets_service = _get_sheets_service(google_credentials)
