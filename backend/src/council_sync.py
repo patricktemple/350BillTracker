@@ -7,6 +7,7 @@ from .council_api import (
     get_person,
 )
 from .models import Bill, BillSponsorship, Legislator, db
+from .static_data import STATIC_DATA_BY_LEGISLATOR_ID
 
 
 def convert_matter_to_bill(matter):
@@ -72,6 +73,22 @@ def fill_council_person_data():
         legislator.legislative_phone = data["PersonPhone2"]
         legislator.borough = convert_borough(data["PersonCity1"])
         legislator.website = data["PersonWWW"]
+
+        legislator_data = STATIC_DATA_BY_LEGISLATOR_ID.get(legislator.id)
+        if not legislator_data:
+            logging.warning(f"Found a legislator without static data: {legislator.id} {legislator.name}")
+        else:
+            legislator.twitter = legislator_data['twitter']
+            legislator.party = legislator_data['party']
+
+            # Name exists in both sets but we can override it here so we can set
+            # a more user-friendly name than some of the formal name in the data.
+            legislator.name = legislator_data['name']
+    
+    legislator_ids_from_db = set([l.id for l in legislators])
+    if diff := set(STATIC_DATA_BY_LEGISLATOR_ID.keys()).difference(legislator_ids_from_db):
+        unmatched_static_data = [STATIC_DATA_BY_LEGISLATOR_ID[id] for id in diff]
+        logging.warning(f"Static data has some legislators not in the DB: {unmatched_static_data}")
 
     db.session.commit()
 

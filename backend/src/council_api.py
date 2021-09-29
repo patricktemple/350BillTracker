@@ -74,11 +74,11 @@ def get_current_council_members():
         "officerecords",
         params=make_filter_param(
             eq_filter("OfficeRecordBodyName", "City Council"),
-            # eq_filter("OfficeRecordTitle", "Council Member"),
-            # "(OfficeRecordMemberType eq 'PRIMARY COUNCIL MEMBERS' or OfficeRecordMemberType eq 'PRIMARY SPEAKER')",
             date_filter("OfficeRecordStartDate", "le", now().date()),
             date_filter("OfficeRecordEndDate", "ge", now().date()),
         ),
     ).json()
 
     return office_records
+
+# TODO: Handle errors on all these APIs. A bunch seem to fail midway through.

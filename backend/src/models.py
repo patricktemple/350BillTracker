@@ -45,14 +45,18 @@ class Bill(db.Model):
         "BillAttachment", back_populates="bill", cascade="all, delete"
     )
 
+# import enum
+# from sqlalchemy import Integer, Enum
 
-# Bill.sponsorship_people = relationship(
-# "Legislator", primaryjoin=("and_(Legislator.id == BillSponsorship.legislator_id, BillSponsorship.bill_id == Bill.id)"))
-
+# class Party(enum.Enum):
+#     DEMOCRATIC = 1
+#     REPUBLICAN = 2
 
 class Legislator(db.Model):
     __tablename__ = "legislators"
 
+
+    # These come from the API
     id = Column(Integer, primary_key=True)
     name = Column(Text, nullable=False)
     term_start = Column(TIMESTAMP)
@@ -66,11 +70,12 @@ class Legislator(db.Model):
     borough = Column(Text)
     website = Column(Text)
 
+    # These are added by our static data
+    twitter = Column(Text) # exclude the @ symbol
+    party = Column(Text)
+
     # Track our own info on the bill.
     notes = Column(Text)
-
-    # TODO: Exclude the @ symbol?
-    twitter = Column(Text)
 
 
 class BillSponsorship(db.Model):

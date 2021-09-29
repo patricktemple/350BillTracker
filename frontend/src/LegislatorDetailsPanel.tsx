@@ -15,7 +15,6 @@ interface Props {
 
 interface FormData {
   notes: string;
-  twitter: string;
 }
 
 export default function LegislatorDetailsPanel(props: Props) {
@@ -27,7 +26,7 @@ export default function LegislatorDetailsPanel(props: Props) {
 
   const [formData, setFormData, saveStatus] = useAutosavingFormData<FormData>(
     '/api/legislators/' + legislator.id,
-    { notes: legislator.notes, twitter: legislator.twitter }
+    { notes: legislator.notes }
   );
 
   // FIXME: This is loading all sponsorships individually on first page load of list
@@ -41,10 +40,6 @@ export default function LegislatorDetailsPanel(props: Props) {
 
   function handleNotesChanged(event: any) {
     setFormData({ ...formData, notes: event.target.value });
-  }
-
-  function handleTwitterChanged(event: any) {
-    setFormData({ ...formData, twitter: event.target.value });
   }
 
   return (
@@ -75,25 +70,28 @@ export default function LegislatorDetailsPanel(props: Props) {
       </Row>
       <Row className="mb-2">
         <Col lg={2} style={{ fontWeight: 'bold' }}>
+            Party:
+          </Col>
+          <Col>
+            {legislator.party}
+          </Col>
+      </Row>
+      <Row className="mb-2">
+        <Col lg={2} style={{ fontWeight: 'bold' }}>
           Website:
         </Col>
         <Col>
           {legislator.website && <a href={legislator.website}>Visit website</a>}
         </Col>
       </Row>
-      <Form.Group as={Row} className="mb-2">
-        <Form.Label column lg={2} style={{ fontWeight: 'bold' }}>
-          Twitter:
-        </Form.Label>
-        <Col>
-          <Form.Control
-            type="text"
-            size="sm"
-            value={formData.twitter}
-            onChange={handleTwitterChanged}
-          />
-        </Col>
-      </Form.Group>
+      <Row className="mb-2">
+        <Col lg={2} style={{ fontWeight: 'bold' }}>
+            Twitter:
+          </Col>
+          <Col>
+            <a href={`https://twitter.com/${legislator.twitter}`}>@{legislator.twitter}</a>
+          </Col>
+      </Row>
       <Row className="mb-2">
         <Col lg={2}>
           <>

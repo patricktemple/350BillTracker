@@ -28,10 +28,11 @@ export interface Legislator {
   legislativePhone: string;
   borough: string;
   website: string;
-
-  // Our data
-  notes: string;
   twitter: string;
+  party: string;
+
+  // Editable data
+  notes: string;
 }
 
 export interface SingleMemberSponsorship {
