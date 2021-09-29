@@ -108,6 +108,7 @@ def search_bills():
     external_bills_ids = [b["id"] for b in external_bills]
     tracked_bills = Bill.query.filter(Bill.id.in_(external_bills_ids)).all()
     tracked_bill_ids = set([t.id for t in tracked_bills])
+
     for bill in external_bills:
         bill["tracked"] = bill["id"] in tracked_bill_ids
 
