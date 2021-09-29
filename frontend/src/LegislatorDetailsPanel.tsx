@@ -87,9 +87,11 @@ export default function LegislatorDetailsPanel(props: Props) {
           Twitter:
         </Col>
         <Col>
-          <a href={`https://twitter.com/${legislator.twitter}`}>
-            @{legislator.twitter}
-          </a>
+          {legislator.twitter && (
+            <a href={`https://twitter.com/${legislator.twitter}`}>
+              @{legislator.twitter}
+            </a>
+          )}
         </Col>
       </Row>
       <Row className="mb-2">

@@ -63,15 +63,16 @@ export default function SavedBillsPage({
   if (bills) {
     return (
       <div>
-        <h3 className="mb-4">Bill campaigns</h3>
-        <Button
-          className="mb-2"
-          onClick={() => setAddBillVisible(true)}
-          size="sm"
-          style={{ textAlign: 'right' }}
-        >
-          Add a bill
-        </Button>
+        <h3 className="mb-1">Bill campaigns</h3>
+        <div style={{ textAlign: 'right' }}>
+          <Button
+            className="mb-2"
+            onClick={() => setAddBillVisible(true)}
+            size="sm"
+          >
+            Add a bill
+          </Button>
+        </div>
         <Accordion defaultActiveKey={billId?.toString()}>
           {bills.map((bill) => (
             <Accordion.Item key={bill.id} eventKey={bill.id.toString()}>

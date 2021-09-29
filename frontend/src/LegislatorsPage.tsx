@@ -46,6 +46,7 @@ export default function ConcilMembersPage({
           placeholder="Search"
           value={filterText}
           className="mb-2"
+          size={30}
           onChange={handleFilterTextChanged}
         />
         <Accordion defaultActiveKey={legislatorId?.toString()}>
