@@ -18,3 +18,12 @@ def autouse_fixtures():
 # def request_context(app):
 #     with app.test_request_context():
 #         yield
+
+
+@pytest.fixture
+def client():
+    # db_fd, flaskr.app.config['DATABASE'] = tempfile.mkstemp()
+    # flaskr.app.config['TESTING'] = True
+
+    with app.app.test_client() as client:
+        yield client
