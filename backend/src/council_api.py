@@ -12,10 +12,12 @@ from .utils import now
 def council_get(path, *, params=None):
     if not params:
         params = {}
-    return requests.get(
+    response = requests.get(
         f"https://webapi.legistar.com/v1/nyc/{path}",
         params={"token": CITY_COUNCIL_API_TOKEN, **params},
     )
+    response.raise_for_status()
+    return response.json()
 
 
 def date_filter(field, operator, date):
@@ -38,7 +40,7 @@ def get_recent_bills():
             date_filter("MatterIntroDate", "ge", date(2021, 1, 1)),
             eq_filter("MatterTypeName", "Introduction"),
         ),
-    ).json()
+    )
 
 
 def lookup_bills(file_name):
@@ -50,36 +52,31 @@ def lookup_bills(file_name):
             eq_filter("MatterTypeName", "Introduction"),
             f"substringof('{file_name}', MatterFile) eq true",
         ),
-    ).json()
+    )
 
 
 def get_bill(matter_id):
     return council_get(
         f"matters/{matter_id}",
-    ).json()
+    )
 
 
 def get_bill_sponsors(matter_id):
     return council_get(
         f"matters/{matter_id}/sponsors",
-    ).json()
+    )
 
 
 def get_person(person_id):
-    return council_get(f"persons/{person_id}").json()
+    return council_get(f"persons/{person_id}")
 
 
 def get_current_council_members():
-    office_records = council_get(
+    return council_get(
         "officerecords",
         params=make_filter_param(
             eq_filter("OfficeRecordBodyName", "City Council"),
             date_filter("OfficeRecordStartDate", "le", now().date()),
             date_filter("OfficeRecordEndDate", "ge", now().date()),
         ),
-    ).json()
-
-    return office_records
-
-
-# TODO: Handle errors on all these APIs. A bunch seem to fail midway through.
+    )

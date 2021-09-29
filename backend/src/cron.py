@@ -7,6 +7,7 @@ from .app import app
 
 @app.cli.command("cron")
 def cron_command():
+    # TODO: Refactor to improve error handling
     logging.info("Cron job starting")
     while True:
         logging.info("Syncing data...")

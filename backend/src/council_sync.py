@@ -42,6 +42,9 @@ def upsert_matter_data(matter_json):
 
 
 def add_council_members():
+    """Adds basic information about each current council member based on their
+    OfficeRecord object in the API. This is missing key fields that need
+    to be filled in with other sources."""
     members = get_current_council_members()
 
     for member in members:
@@ -64,16 +67,24 @@ def convert_borough(city_name):
 
 
 def fill_council_person_data():
+    """For all council members in the DB, updates their contact info and other details
+    based on the Person API and our own static data.
+    """
     legislators = Legislator.query.all()
 
     for legislator in legislators:
-        data = get_person(legislator.id)
-        legislator.email = data["PersonEmail"]
-        legislator.district_phone = data["PersonPhone"]
-        legislator.legislative_phone = data["PersonPhone2"]
-        legislator.borough = convert_borough(data["PersonCity1"])
-        legislator.website = data["PersonWWW"]
+        try:
+            data = get_person(legislator.id)
+            legislator.email = data["PersonEmail"]
+            legislator.district_phone = data["PersonPhone"]
+            legislator.legislative_phone = data["PersonPhone2"]
+            legislator.borough = convert_borough(data["PersonCity1"])
+            legislator.website = data["PersonWWW"]
+        except HTTPError as e:
+            logging.exception(f"Could not get Person {legislator.id} from API")
+            continue
 
+    for legislator in legislators:
         legislator_data = STATIC_DATA_BY_LEGISLATOR_ID.get(legislator.id)
         if not legislator_data:
             logging.warning(
