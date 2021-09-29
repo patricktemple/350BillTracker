@@ -70,11 +70,9 @@ export default function LegislatorDetailsPanel(props: Props) {
       </Row>
       <Row className="mb-2">
         <Col lg={2} style={{ fontWeight: 'bold' }}>
-            Party:
-          </Col>
-          <Col>
-            {legislator.party}
-          </Col>
+          Party:
+        </Col>
+        <Col>{legislator.party}</Col>
       </Row>
       <Row className="mb-2">
         <Col lg={2} style={{ fontWeight: 'bold' }}>
@@ -86,11 +84,13 @@ export default function LegislatorDetailsPanel(props: Props) {
       </Row>
       <Row className="mb-2">
         <Col lg={2} style={{ fontWeight: 'bold' }}>
-            Twitter:
-          </Col>
-          <Col>
-            <a href={`https://twitter.com/${legislator.twitter}`}>@{legislator.twitter}</a>
-          </Col>
+          Twitter:
+        </Col>
+        <Col>
+          <a href={`https://twitter.com/${legislator.twitter}`}>
+            @{legislator.twitter}
+          </a>
+        </Col>
       </Row>
       <Row className="mb-2">
         <Col lg={2}>

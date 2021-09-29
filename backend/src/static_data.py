@@ -16,7 +16,11 @@ STATIC_DATA_BY_LEGISLATOR_ID = {
     7743: {"name": "Mark Gjonaj ", "twitter": None, "party": None},
     7691: {"name": "Barry S. Grodenchik", "twitter": None, "party": None},
     7746: {"name": "Robert F. Holden", "twitter": None, "party": None},
-    7631: {"name": "Corey D. Johnson", "twitter": "NYCSpeakerCoJo", "party": "Democratic"},
+    7631: {
+        "name": "Corey D. Johnson",
+        "twitter": "NYCSpeakerCoJo",
+        "party": "Democratic",
+    },
     7632: {"name": "Ben Kallos", "twitter": None, "party": None},
     7565: {"name": "Peter A. Koo", "twitter": None, "party": None},
     386: {"name": "Karen Koslowitz", "twitter": None, "party": None},

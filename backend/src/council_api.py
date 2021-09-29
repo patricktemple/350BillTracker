@@ -81,4 +81,5 @@ def get_current_council_members():
 
     return office_records
 
+
 # TODO: Handle errors on all these APIs. A bunch seem to fail midway through.

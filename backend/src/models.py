@@ -45,6 +45,7 @@ class Bill(db.Model):
         "BillAttachment", back_populates="bill", cascade="all, delete"
     )
 
+
 # import enum
 # from sqlalchemy import Integer, Enum
 
@@ -52,9 +53,9 @@ class Bill(db.Model):
 #     DEMOCRATIC = 1
 #     REPUBLICAN = 2
 
+
 class Legislator(db.Model):
     __tablename__ = "legislators"
-
 
     # These come from the API
     id = Column(Integer, primary_key=True)
@@ -71,7 +72,7 @@ class Legislator(db.Model):
     website = Column(Text)
 
     # These are added by our static data
-    twitter = Column(Text) # exclude the @ symbol
+    twitter = Column(Text)  # exclude the @ symbol
     party = Column(Text)
 
     # Track our own info on the bill.

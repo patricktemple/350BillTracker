@@ -1,0 +1,2 @@
+(cd backend; fourmat fix)
+(cd frontend; yarn format)
