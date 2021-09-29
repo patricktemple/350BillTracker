@@ -7,12 +7,14 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
+from sqlalchemy.orm import selectinload
 
 from src import app, models, settings
 
-from sqlalchemy.orm import selectinload
-
-SCOPES = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.file"]
+SCOPES = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive.file",
+]
 
 # TODO: Share this with TogglSync via a utils package?
 def _get_google_credentials():
@@ -27,16 +29,16 @@ def _get_google_credentials():
             raise ValueError(
                 f"Creds were invalid but not refreshable: {GCAL_CREDENTIALS}"
             )
-    
+
     return creds
+
 
 def _get_sheets_service(credentials):
     return build("sheets", "v4", credentials=credentials)
 
 
 def _get_drive_service(credentials):
-    return build('drive', 'v3', credentials=credentials)
-
+    return build("drive", "v3", credentials=credentials)
 
 
 def _create_cell_data(raw_value, bold=False):
@@ -70,7 +72,11 @@ def create_phone_bank_spreadsheet(bill_id):
     for a specific bill, based on its current sponsors. The sheet will be
     owned by a robot Google account and will be made publicly editable by
     anyone with the link."""
-    bill = models.Bill.query.filter_by(id=bill_id).options(selectinload(models.Bill.sponsorships)).one()
+    bill = (
+        models.Bill.query.filter_by(id=bill_id)
+        .options(selectinload(models.Bill.sponsorships))
+        .one()
+    )
 
     sponsorships = bill.sponsorships
     sponsorships = sorted(sponsorships, key=lambda s: s.legislator.name)
@@ -115,18 +121,20 @@ def create_phone_bank_spreadsheet(bill_id):
     google_credentials = _get_google_credentials()
     sheets_service = _get_sheets_service(google_credentials)
 
-    spreadsheet_result = sheets_service.spreadsheets().create(body=spreadsheet_data).execute()
+    spreadsheet_result = (
+        sheets_service.spreadsheets().create(body=spreadsheet_data).execute()
+    )
 
     # That sheet is initially only accessible to our robot account, so make it public.
     drive_service = _get_drive_service(google_credentials)
     user_permission = {
-        'type': 'anyone',
-        'role': 'writer',
+        "type": "anyone",
+        "role": "writer",
     }
     drive_service.permissions().create(
-            fileId=spreadsheet_result['spreadsheetId'],
-            body=user_permission,
-            fields='id',
+        fileId=spreadsheet_result["spreadsheetId"],
+        body=user_permission,
+        fields="id",
     ).execute()
 
     return spreadsheet_result
