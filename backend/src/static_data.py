@@ -1,3 +1,13 @@
+"""
+Contains data on legislators that is not provided by the API. Although st sync
+most data that we can from the API, we expect these values to change rarely and
+it's fine to have them be fixed.
+"""
+
+# The API does provide "name", but we have it here too so allow overriding
+# the rendering of the name, and also because it makes this dict much easier
+# to read.
+# TODO: Fill in the party and twitter data
 STATIC_DATA_BY_LEGISLATOR_ID = {
     7739: {"name": "Adrienne E. Adams", "twitter": None, "party": None},
     7747: {"name": "Alicka Ampry-Samuel ", "twitter": None, "party": None},
