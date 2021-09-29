@@ -6,6 +6,8 @@ from src.utils import now
 
 from .utils import assert_response
 
+import responses
+
 
 def test_get_saved_bills(client):
     bill = Bill(
@@ -91,6 +93,41 @@ def test_update_bill(client):
             }
         ],
     )
+
+@responses.activate
+def test_save_bill(client):
+    responses.add(responses.GET,
+        url="https://webapi.legistar.com/v1/nyc/matters/123?token=fake_token",
+        json={
+            "MatterId": "123",
+            "MatterFile": "fake matter file",
+            "MatterName": "fake matter name",
+            "MatterTitle": "fake matter title",
+            "MatterBodyName": "fake matter body",
+            "MatterIntroDate": "2021-01-06T00:00:00",
+            "MatterStatusName": "fake matter status"
+        })
+    
+    responses.add(responses.GET,
+        url="https://webapi.legistar.com/v1/nyc/matters/123/sponsors?token=fake_token",
+        json={ })
+
+    # TODO: Handle a bill that has a sponsorships:
+    # 1 already exists and merge with existing sponsorship
+    # 1 new sponsorship
+    # 1 existing legislator who's not a sponsor
+    # Then assert all that
+
+    response = client.post(
+        "/api/saved-bills",
+        data={"id": "123"},
+    )
+    assert response.status_code == 200
+
+    bill = Bill.query.one()
+    assert bill.id == 123
+
+# TODO: Add a test for adding a bill when bill already exists
 
 
 # TODO test coverage:
