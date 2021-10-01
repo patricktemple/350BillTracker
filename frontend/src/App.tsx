@@ -13,6 +13,7 @@ import RequestLoginLinkPage from './RequestLoginLinkPage';
 import { AuthContextProvider, AuthContext } from './AuthContext';
 import { useLocation } from 'react-router-dom';
 import LoginFromTokenPage from './LoginFromTokenPage';
+import Button from 'react-bootstrap/Button';
 
 // TODO: Fix palette
 const colors = {
@@ -71,6 +72,16 @@ function AppContent() {
     return <LoginFromTokenPage />
   }
 
+  if (!authContext.token) {
+    return <RequestLoginLinkPage />;
+  }
+
+  function handleLogout() {
+    authContext.updateToken(null);
+    window.location.replace("/");
+  }
+
+  // TODO: Need a logout button!
   return (
       <div style={styles.container}>
         <div style={styles.heading}>350 Brooklyn Bill Tracker</div>
@@ -84,6 +95,7 @@ function AppContent() {
               <MdPeople style={styles.icon} />
               Council members
             </Nav.Link>
+            <Button onClick={handleLogout}>Log out</Button>
           </Nav>
         </div>
         <div style={styles.mainContent}>
