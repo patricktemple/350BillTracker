@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 import React, { useState } from 'react';
 
 
-export default function LoginPage() {
+export default function RequestLoginLinkPage() {
   const [emailAddress, setEmailAddress] = useState<string>("");
   const [loginLinkSent, setLoginLinkSent] = useState<boolean>(false);
 

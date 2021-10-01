@@ -6,10 +6,13 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { MdPeople, MdDescription } from 'react-icons/md';
-import LoginPage from './LoginPage';
+import RequestLoginLinkPage from './RequestLoginLinkPage';
+import { AuthContextProvider, AuthContext } from './AuthContext';
+import { useLocation } from 'react-router-dom';
+import LoginFromTokenPage from './LoginFromTokenPage';
 
 // TODO: Fix palette
 const colors = {
@@ -59,15 +62,16 @@ const styles = {
   }
 };
 
-function App() {
-  const [loggedIn, setLoggedIn] = useState<boolean>();
+function AppContent() {
+  const authContext = useContext(AuthContext); // can't do this... we are parent of auth context provider
 
-  if (!loggedIn) {
-    return <LoginPage />;
+  const location = useLocation();
+
+  if (location.pathname === '/login') {
+    return <LoginFromTokenPage />
   }
 
   return (
-    <Router>
       <div style={styles.container}>
         <div style={styles.heading}>350 Brooklyn Bill Tracker</div>
         <div style={styles.leftNav}>
@@ -99,7 +103,16 @@ function App() {
           </main>
         </div>
       </div>
-    </Router>
+  );
+}
+
+function App() {
+  return (
+    <AuthContextProvider>
+  <Router>
+    <AppContent />
+  </Router>
+    </AuthContextProvider>
   );
 }
 

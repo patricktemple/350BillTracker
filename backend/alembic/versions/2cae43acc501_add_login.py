@@ -1,8 +1,8 @@
-"""Add magic link login
+"""Add login
 
-Revision ID: 0c45cedf201b
+Revision ID: 2cae43acc501
 Revises: 65c13df197c5
-Create Date: 2021-10-01 16:28:50.742602
+Create Date: 2021-10-01 17:55:02.882969
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import src
 
 
 # revision identifiers, used by Alembic.
-revision = '0c45cedf201b'
+revision = '2cae43acc501'
 down_revision = '65c13df197c5'
 branch_labels = None
 depends_on = None
@@ -26,12 +26,11 @@ def upgrade():
     )
     op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=False)
     op.create_table('login_links',
-    sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('token', sa.Text(), nullable=False),
     sa.Column('expires_at', src.models.TIMESTAMP(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('token')
     )
     # ### end Alembic commands ###
 

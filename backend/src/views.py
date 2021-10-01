@@ -278,5 +278,23 @@ def create_login_link():
 
     return jsonify({})
 
+class LoginSchema(CamelCaseSchema):
+    token = fields.String()
+
+
+@app.route(
+    "/api/login",
+    methods=["POST"],
+)
+def login():
+    data = LoginSchema().load(request.json)
+    token = data['token']
+
+    # TODO: Implement!
+    return jsonify({
+        "authToken": "This is a real token"
+    })
+
+
 
 # BUG: This seems to leave open stale SQLA sessions
