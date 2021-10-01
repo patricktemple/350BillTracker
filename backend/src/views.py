@@ -290,10 +290,17 @@ def login():
     data = LoginSchema().load(request.json)
     token = data['token']
 
-    # TODO: Implement!
+    # TODO: Implement:
+    # - Look up the token in the DB
+    # - Issue a JWT using this user ID
     return jsonify({
         "authToken": "This is a real token"
     })
+
+
+# NEXT STEPS: Need to guard API calls with the token
+# And do real JWTs
+# And send emails when someone requests a link
 
 
 
