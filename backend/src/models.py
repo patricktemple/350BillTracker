@@ -113,6 +113,7 @@ class BillAttachment(db.Model):
 
 # TODO: UUID for PK!!
 class User(db.Model):
+    __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     email = Column(Text, index=True, nullable=False)
 
@@ -122,7 +123,9 @@ class User(db.Model):
 
 
 # TODO: UUID PK?
-class MagicLinkLogin(db.Model):
+class LoginLink(db.Model):
+    __tablename__ = "login_links"
+
     id = Column(Integer, primary_key=True)
 
     user_id = Column(Integer, ForeignKey(User.id), nullable=False)

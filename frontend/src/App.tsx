@@ -63,7 +63,7 @@ function App() {
   const [loggedIn, setLoggedIn] = useState<boolean>();
 
   if (!loggedIn) {
-    return <LoginPage login={() => setLoggedIn(true)}/>;
+    return <LoginPage />;
   }
 
   return (

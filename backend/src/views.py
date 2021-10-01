@@ -13,7 +13,10 @@ from .council_sync import (
     update_sponsorships,
 )
 from .google_sheets import create_phone_bank_spreadsheet
-from .models import Bill, BillAttachment, BillSponsorship, Legislator, db
+from .models import Bill, BillAttachment, BillSponsorship, Legislator, db, User, LoginLink
+from .utils import now
+from datetime import timedelta
+import secrets
 
 
 def camelcase(s):
@@ -247,6 +250,33 @@ def create_spreadsheet(bill_id):
     db.session.add(attachment)
     db.session.commit()
     return BillAttachmentSchema().jsonify(attachment)
+
+
+# Login ----------------------------------------------------------------------
+class CreateLoginLinkSchema(CamelCaseSchema):
+    email = fields.String()
+
+
+@app.route(
+    "/api/create-login-link",
+    methods=["POST"],
+)
+def create_login_link():
+    data = CreateLoginLinkSchema().load(request.json)
+
+    # TODO: Figure out lowercase stuff
+    email_lower = data['email'].lower()
+    user = User.query.filter_by(email=email_lower).one_or_none()
+    if not user:
+        # return API response instead
+        raise ValueError("user not found")
+    
+    login = LoginLink(user_id=user.id, expires_at=now() + timedelta(days=1),
+        token=secrets.token_urlsafe())
+    db.session.add(login)
+    db.session.commit()
+
+    return jsonify({})
 
 
 # BUG: This seems to leave open stale SQLA sessions
