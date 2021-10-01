@@ -63,7 +63,7 @@ def test_delete_bill_attachment(client):
     db.session.add(bill)
     db.session.commit()
 
-    response = client.delete("/api/saved-bills/-/attachments/123")
+    client.delete("/api/saved-bills/-/attachments/123")
 
     attachments = BillAttachment.query.all()
     assert len(attachments) == 0
