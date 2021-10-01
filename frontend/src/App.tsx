@@ -6,9 +6,10 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
-import React from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { MdPeople, MdDescription } from 'react-icons/md';
+import LoginPage from './LoginPage';
 
 // TODO: Fix palette
 const colors = {
@@ -59,6 +60,12 @@ const styles = {
 };
 
 function App() {
+  const [loggedIn, setLoggedIn] = useState<boolean>();
+
+  if (!loggedIn) {
+    return <LoginPage login={() => setLoggedIn(true)}/>;
+  }
+
   return (
     <Router>
       <div style={styles.container}>
