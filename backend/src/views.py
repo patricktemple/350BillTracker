@@ -17,6 +17,7 @@ from .models import Bill, BillAttachment, BillSponsorship, Legislator, db, User,
 from .utils import now
 from datetime import timedelta
 import secrets
+from .auth import auth_required
 
 
 def camelcase(s):
@@ -64,6 +65,7 @@ class BillSchema(CamelCaseSchema):
 
 
 @app.route("/api/saved-bills", methods=["GET"])
+@auth_required
 def bills():
     bills = Bill.query.order_by(Bill.name).all()
     return BillSchema(many=True).jsonify(bills)
