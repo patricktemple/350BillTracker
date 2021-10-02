@@ -14,6 +14,12 @@ attrs==21.2.0
     #   pytest
 black==21.6b0
     # via fourmat
+boto3==1.18.53
+    # via -r requirements.in
+botocore==1.21.53
+    # via
+    #   boto3
+    #   s3transfer
 cachetools==4.2.2
     # via google-auth
 certifi==2021.5.30
@@ -78,6 +84,10 @@ itsdangerous==2.0.1
     # via flask
 jinja2==3.0.1
     # via flask
+jmespath==0.10.0
+    # via
+    #   boto3
+    #   botocore
 mako==1.1.5
     # via alembic
 markupsafe==2.0.1
@@ -134,6 +144,8 @@ pytest==6.2.5
     #   pytest-dotenv
 pytest-dotenv==0.5.2
     # via -r requirements.in
+python-dateutil==2.8.2
+    # via botocore
 python-dotenv==0.19.0
     # via pytest-dotenv
 regex==2021.8.28
@@ -150,10 +162,13 @@ responses==0.14.0
     # via -r requirements.in
 rsa==4.7.2
     # via google-auth
+s3transfer==0.5.0
+    # via boto3
 six==1.16.0
     # via
     #   flask-marshmallow
     #   google-auth-httplib2
+    #   python-dateutil
     #   responses
 sqlalchemy==1.4.25
     # via
@@ -169,6 +184,7 @@ uritemplate==3.0.1
     # via google-api-python-client
 urllib3==1.26.7
     # via
+    #   botocore
     #   requests
     #   responses
 werkzeug==2.0.1
