@@ -24,6 +24,8 @@ from .models import (
     User,
     db,
 )
+from .ses import send_login_link_email
+from .settings import APP_ORIGIN
 from .utils import now
 
 
@@ -300,6 +302,10 @@ def create_login_link():
     db.session.add(login)
     db.session.commit()
 
+    send_login_link_email(
+        email_lower, f"{APP_ORIGIN}/login?token={login.token}"
+    )
+
     return jsonify({})
 
 
@@ -319,9 +325,6 @@ def login():
 
     user_id = login_link.user_id
 
-    # TODO: Implement:
-    # - Look up the token in the DB
-    # - Issue a JWT using this user ID
     return jsonify({"authToken": create_jwt(user_id)})
 
 
