@@ -17,7 +17,7 @@ from .models import Bill, BillAttachment, BillSponsorship, Legislator, db, User,
 from .utils import now
 from datetime import timedelta
 import secrets
-from .auth import auth_required
+from .auth import auth_required, create_jwt
 
 
 def camelcase(s):
@@ -304,11 +304,13 @@ def login():
     data = LoginSchema().load(request.json)
     token = data['token']
 
+    user_id = 1 # TODO: Grab this from DB!
+ 
     # TODO: Implement:
     # - Look up the token in the DB
     # - Issue a JWT using this user ID
     return jsonify({
-        "authToken": "This is a real token"
+        "authToken": create_jwt(user_id)
     })
 
 

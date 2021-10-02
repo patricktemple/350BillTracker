@@ -7,6 +7,8 @@ GOOGLE_CREDENTIALS = b64decode(
     os.environ["GOOGLE_CREDENTIALS"].encode("utf-8")
 ).decode("utf-8")
 
+JWT_SECRET = "TODO make a real secret"
+
 
 # TODO: Share this with TogglSync via a utils package?
 if hostname := os.environ.get("RDS_HOSTNAME"):

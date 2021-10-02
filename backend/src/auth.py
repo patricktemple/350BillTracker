@@ -1,5 +1,21 @@
 from flask import request
 from functools import wraps
+import jwt
+from .settings import JWT_SECRET
+
+JWT_ALGORITHM="HS256"
+
+def create_jwt(user_id):
+  # TODO: Experiation time, iat
+  # Use this doc: https://auth0.com/docs/security/tokens/json-web-tokens/json-web-token-claims
+  payload = {
+    "sub": str(user_id)
+  }
+  return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+
+def verify_jwt(token):
+  # TODO check expiration time
+  return jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
 
 # TODO: Rewrite this to invert the auth check
 def auth_required(view_fn):
@@ -12,7 +28,8 @@ def auth_required(view_fn):
     if not auth.startswith("JWT "):
       raise ValueError("Expecting JWT auth type")
     
-    # TODO: Validate the JWT itself
+    jwt = auth[4:]
+    verify_jwt(jwt)
 
     return view_fn(*args, **kwargs)
   

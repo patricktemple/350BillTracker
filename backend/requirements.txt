@@ -18,6 +18,8 @@ cachetools==4.2.2
     # via google-auth
 certifi==2021.5.30
     # via requests
+cffi==1.14.6
+    # via cryptography
 charset-normalizer==2.0.6
     # via requests
 click==8.0.1
@@ -25,6 +27,8 @@ click==8.0.1
     #   black
     #   flask
     #   fourmat
+cryptography==3.4.8
+    # via pyjwt
 flake8==3.9.2
     # via
     #   flake8-bugbear
@@ -114,8 +118,12 @@ pyasn1-modules==0.2.8
     # via google-auth
 pycodestyle==2.7.0
     # via flake8
+pycparser==2.20
+    # via cffi
 pyflakes==2.3.1
     # via flake8
+pyjwt[crypto]==2.1.0
+    # via -r requirements.in
 pyparsing==2.4.7
     # via
     #   httplib2
