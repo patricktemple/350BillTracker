@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { AuthContext } from './AuthContext';
 
 interface ApiFetchParams {
-  method?: "GET" | "POST" | "PUT" | "DELETE";
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   body?: any; // or Record of some type?
 }
 
@@ -10,7 +10,7 @@ export default function useApiFetch() {
   const authContext = useContext(AuthContext);
 
   const headers: any = {
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/json'
   };
 
   if (authContext.token != null) {

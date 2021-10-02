@@ -39,7 +39,7 @@ export default function SavedBillsPage({
   function handleTrackBill(id: number) {
     apiFetch('/api/saved-bills', {
       method: 'POST',
-      body: JSON.stringify({ id }),
+      body: JSON.stringify({ id })
     })
       .then((response) => response.json())
       .then((response) => {
@@ -49,7 +49,7 @@ export default function SavedBillsPage({
 
   function handleRemoveBill(billId: number) {
     apiFetch(`/api/saved-bills/` + billId, {
-      method: 'DELETE',
+      method: 'DELETE'
     })
       .then((response) => response.json())
       .then((response) => {

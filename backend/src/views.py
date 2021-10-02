@@ -1,4 +1,5 @@
-from datetime import date
+import secrets
+from datetime import date, timedelta
 
 from flask import jsonify, render_template, request
 from marshmallow import fields
@@ -6,6 +7,7 @@ from sqlalchemy.orm import joinedload
 
 from .app import app
 from .app import marshmallow as ma
+from .auth import auth_required, create_jwt
 from .council_api import lookup_bills
 from .council_sync import (
     add_or_update_bill,
@@ -13,11 +15,16 @@ from .council_sync import (
     update_sponsorships,
 )
 from .google_sheets import create_phone_bank_spreadsheet
-from .models import Bill, BillAttachment, BillSponsorship, Legislator, db, User, LoginLink
+from .models import (
+    Bill,
+    BillAttachment,
+    BillSponsorship,
+    Legislator,
+    LoginLink,
+    User,
+    db,
+)
 from .utils import now
-from datetime import timedelta
-import secrets
-from .auth import auth_required, create_jwt
 
 
 def camelcase(s):
@@ -279,18 +286,22 @@ def create_login_link():
     data = CreateLoginLinkSchema().load(request.json)
 
     # TODO: Figure out lowercase stuff
-    email_lower = data['email'].lower()
+    email_lower = data["email"].lower()
     user = User.query.filter_by(email=email_lower).one_or_none()
     if not user:
         # return API response instead
         raise ValueError("user not found")
-    
-    login = LoginLink(user_id=user.id, expires_at=now() + timedelta(days=1),
-        token=secrets.token_urlsafe())
+
+    login = LoginLink(
+        user_id=user.id,
+        expires_at=now() + timedelta(days=1),
+        token=secrets.token_urlsafe(),
+    )
     db.session.add(login)
     db.session.commit()
 
     return jsonify({})
+
 
 class LoginSchema(CamelCaseSchema):
     token = fields.String()
@@ -302,22 +313,21 @@ class LoginSchema(CamelCaseSchema):
 )
 def login():
     data = LoginSchema().load(request.json)
-    token = data['token']
+    token = data["token"]
 
-    user_id = 1 # TODO: Grab this from DB!
- 
+    login_link = LoginLink.query.filter_by(token=token).one()
+
+    user_id = login_link.user_id
+
     # TODO: Implement:
     # - Look up the token in the DB
     # - Issue a JWT using this user ID
-    return jsonify({
-        "authToken": create_jwt(user_id)
-    })
+    return jsonify({"authToken": create_jwt(user_id)})
 
 
 # NEXT STEPS: Need to guard API calls with the token
 # And do real JWTs
 # And send emails when someone requests a link
-
 
 
 # BUG: This seems to leave open stale SQLA sessions

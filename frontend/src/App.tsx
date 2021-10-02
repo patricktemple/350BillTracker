@@ -69,7 +69,7 @@ function AppContent() {
   const location = useLocation();
 
   if (location.pathname === '/login') {
-    return <LoginFromTokenPage />
+    return <LoginFromTokenPage />;
   }
 
   if (!authContext.token) {
@@ -78,52 +78,52 @@ function AppContent() {
 
   function handleLogout() {
     authContext.updateToken(null);
-    window.location.replace("/");
+    window.location.replace('/');
   }
 
   // TODO: Need a logout button!
   return (
-      <div style={styles.container}>
-        <div style={styles.heading}>350 Brooklyn Bill Tracker</div>
-        <div style={styles.leftNav}>
-          <Nav defaultActiveKey="/" className="flex-column">
-            <Nav.Link href="/" style={styles.navLink}>
-              <MdDescription style={styles.icon} />
-              Bills
-            </Nav.Link>
-            <Nav.Link href="/council-members" style={styles.navLink}>
-              <MdPeople style={styles.icon} />
-              Council members
-            </Nav.Link>
-            <Button onClick={handleLogout}>Log out</Button>
-          </Nav>
-        </div>
-        <div style={styles.mainContent}>
-          <main>
-            <Route path="/" exact>
-              <Redirect to="/saved-bills" />
-            </Route>
-            <Route
-              path="/saved-bills/:billId?"
-              exact
-              component={SavedBillsPage}
-            />
-            <Route
-              path="/council-members/:legislatorId?"
-              component={LegislatorsPage}
-            />
-          </main>
-        </div>
+    <div style={styles.container}>
+      <div style={styles.heading}>350 Brooklyn Bill Tracker</div>
+      <div style={styles.leftNav}>
+        <Nav defaultActiveKey="/" className="flex-column">
+          <Nav.Link href="/" style={styles.navLink}>
+            <MdDescription style={styles.icon} />
+            Bills
+          </Nav.Link>
+          <Nav.Link href="/council-members" style={styles.navLink}>
+            <MdPeople style={styles.icon} />
+            Council members
+          </Nav.Link>
+          <Button onClick={handleLogout}>Log out</Button>
+        </Nav>
       </div>
+      <div style={styles.mainContent}>
+        <main>
+          <Route path="/" exact>
+            <Redirect to="/saved-bills" />
+          </Route>
+          <Route
+            path="/saved-bills/:billId?"
+            exact
+            component={SavedBillsPage}
+          />
+          <Route
+            path="/council-members/:legislatorId?"
+            component={LegislatorsPage}
+          />
+        </main>
+      </div>
+    </div>
   );
 }
 
 function App() {
   return (
     <AuthContextProvider>
-  <Router>
-    <AppContent />
-  </Router>
+      <Router>
+        <AppContent />
+      </Router>
     </AuthContextProvider>
   );
 }

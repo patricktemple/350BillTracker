@@ -1,10 +1,18 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, ForeignKey, Integer, Text, TypeDecorator, Boolean
+from sqlalchemy import (
+    Boolean,
+    Column,
+    ForeignKey,
+    Integer,
+    Text,
+    TypeDecorator,
+)
 from sqlalchemy.dialects.postgresql import TIMESTAMP as _TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID as _UUID
 from sqlalchemy.orm import relationship
 
 from .app import app
+from .utils import now
 
 db = SQLAlchemy(app)
 
@@ -117,8 +125,6 @@ class User(db.Model):
     id = Column(Integer, primary_key=True)
     email = Column(Text, index=True, nullable=False)
 
-
-
     # TODO: Unique constraint on email lower
 
 
@@ -133,6 +139,7 @@ class LoginLink(db.Model):
 
     expires_at = Column(TIMESTAMP, nullable=False)
 
+    created_at = Column(TIMESTAMP, nullable=False, default=now)
+
     # Unclear if this adds much security
     # used = Column(Boolean)
-

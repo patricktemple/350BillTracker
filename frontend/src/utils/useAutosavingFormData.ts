@@ -35,7 +35,7 @@ export default function useAutosavingFormData<T>(
       setSaveInProgress(true);
       apiFetch(path, {
         method: 'PUT',
-        body: JSON.stringify(formState),
+        body: JSON.stringify(formState)
       })
         .then((response) => {
           if (response.status == 200) {

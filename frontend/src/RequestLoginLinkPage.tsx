@@ -2,9 +2,8 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import React, { useState } from 'react';
 
-
 export default function RequestLoginLinkPage() {
-  const [emailAddress, setEmailAddress] = useState<string>("");
+  const [emailAddress, setEmailAddress] = useState<string>('');
   const [loginLinkSent, setLoginLinkSent] = useState<boolean>(false);
 
   function emailAddressChanged(event: any) {
@@ -20,7 +19,7 @@ export default function RequestLoginLinkPage() {
         'Content-Type': 'application/json'
       }
     })
-    // TODO: Handle failed login
+      // TODO: Handle failed login
       .then((response) => response.json())
       .then((response) => {
         setLoginLinkSent(true);
@@ -29,22 +28,20 @@ export default function RequestLoginLinkPage() {
 
   return (
     <Form onSubmit={handleSubmit}>
-    <Form.Group className="mb-3">
-      <Form.Label>
-        Email address:
-      </Form.Label>
-      <Form.Control
-        type="text"
-        placeholder="Enter your email address"
-        value={emailAddress}
-        onChange={emailAddressChanged}
-      />
-    </Form.Group>
+      <Form.Group className="mb-3">
+        <Form.Label>Email address:</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Enter your email address"
+          value={emailAddress}
+          onChange={emailAddressChanged}
+        />
+      </Form.Group>
 
-    <Button variant="primary" type="submit" className="mb-2">
-      Request login link
-    </Button>
-    {loginLinkSent && "A link to login has been sent to this email address."}
-  </Form>
-    );
+      <Button variant="primary" type="submit" className="mb-2">
+        Request login link
+      </Button>
+      {loginLinkSent && 'A link to login has been sent to this email address.'}
+    </Form>
+  );
 }

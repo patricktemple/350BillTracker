@@ -9,7 +9,7 @@ export default function LoginFromTokenPage() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
 
-  const token = urlParams.get("token");
+  const token = urlParams.get('token');
   const authContext = useContext(AuthContext);
 
   useMountEffect(() => {
@@ -23,9 +23,9 @@ export default function LoginFromTokenPage() {
       .then((response) => response.json())
       .then((response) => {
         authContext?.updateToken(response['authToken']);
-        window.location.replace("/");
+        window.location.replace('/');
       });
   });
-  
+
   return <div>Logging in...</div>;
 }

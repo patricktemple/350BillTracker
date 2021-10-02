@@ -1,6 +1,6 @@
 import React, { ReactElement, useState } from 'react';
 
-const STORAGE_KEY = "authToken";
+const STORAGE_KEY = 'authToken';
 
 // TODO: Handle token expiration
 export interface AuthState {
@@ -11,9 +11,9 @@ export interface AuthState {
 const defaultState = {
   token: null,
   updateToken: (value: string | null) => {
-    console.log("null impl of updateToken")
-  },
-}
+    console.log('null impl of updateToken');
+  }
+};
 
 export const AuthContext = React.createContext<AuthState>(defaultState);
 
@@ -38,5 +38,7 @@ export function AuthContextProvider(props: Props) {
   }
   const value = { token, updateToken };
 
-  return <AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>
+  );
 }

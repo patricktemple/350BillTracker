@@ -91,7 +91,7 @@ export default function BillDetails(props: Props): ReactElement {
     setAddAttachmentModalOpen(false);
     apiFetch(`/api/saved-bills/${bill.id}/attachments`, {
       method: 'POST',
-      body: JSON.stringify({ url, name: description }),
+      body: JSON.stringify({ url, name: description })
     })
       .then((response) => response.json())
       .then((response) => {
@@ -102,7 +102,7 @@ export default function BillDetails(props: Props): ReactElement {
   function handleDeleteAttachment(event: any, id: number) {
     event.preventDefault();
     apiFetch(`/api/saved-bills/-/attachments/` + id, {
-      method: 'DELETE',
+      method: 'DELETE'
     })
       .then((response) => response.json())
       .then((response) => {
@@ -123,7 +123,7 @@ export default function BillDetails(props: Props): ReactElement {
   function handleGeneratePhoneBankSheet() {
     setCreatePhoneBankInProgress(true);
     apiFetch(`/api/saved-bills/${bill.id}/create-phone-bank-spreadsheet`, {
-      method: 'POST',
+      method: 'POST'
     })
       .then((response) => response.json())
       .then((response) => {
