@@ -6,6 +6,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import LegislatorDetailsPanel from './LegislatorDetailsPanel';
 import { Form } from 'react-bootstrap';
 import LazyAccordionBody from './LazyAccordionBody';
+import useApiFetch from './useApiFetch';
 
 interface Props {
   match: { params: { legislatorId?: number } };
@@ -18,9 +19,10 @@ export default function ConcilMembersPage({
 }: Props) {
   const [legislators, setLegislators] = useState<Legislator[] | null>(null);
   const [filterText, setFilterText] = useState<string>('');
+  const apiFetch = useApiFetch();
 
   useMountEffect(() => {
-    fetch('/api/legislators')
+    apiFetch('/api/legislators')
       .then((response) => response.json())
       .then((response) => {
         setLegislators(response);

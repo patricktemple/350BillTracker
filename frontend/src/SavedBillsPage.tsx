@@ -8,6 +8,7 @@ import AccordionContext from 'react-bootstrap/AccordionContext';
 import { Bill } from './types';
 import BillDetails from './BillDetails';
 import LazyAccordionBody from './LazyAccordionBody';
+import useApiFetch from './useApiFetch';
 
 interface Props {
   match: { params: { billId?: number } };
@@ -21,8 +22,10 @@ export default function SavedBillsPage({
   const [bills, setBills] = useState<Bill[] | null>(null);
   const [addBillVisible, setAddBillVisible] = useState<boolean>(false);
 
+  const apiFetch = useApiFetch();
+
   function loadBillList() {
-    fetch('/api/saved-bills')
+    apiFetch('/api/saved-bills')
       .then((response) => response.json())
       .then((response) => {
         setBills(response);
@@ -34,12 +37,9 @@ export default function SavedBillsPage({
   });
 
   function handleTrackBill(id: number) {
-    fetch('/api/saved-bills', {
+    apiFetch('/api/saved-bills', {
       method: 'POST',
       body: JSON.stringify({ id }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
     })
       .then((response) => response.json())
       .then((response) => {
@@ -48,11 +48,8 @@ export default function SavedBillsPage({
   }
 
   function handleRemoveBill(billId: number) {
-    fetch(`/api/saved-bills/` + billId, {
+    apiFetch(`/api/saved-bills/` + billId, {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      }
     })
       .then((response) => response.json())
       .then((response) => {

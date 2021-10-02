@@ -72,6 +72,7 @@ def bills():
 
 
 @app.route("/api/saved-bills", methods=["POST"])
+@auth_required
 def save_bill():
     matter_id = request.json["id"]
     add_or_update_bill(matter_id)
@@ -81,6 +82,7 @@ def save_bill():
 
 
 @app.route("/api/saved-bills/<int:bill_id>", methods=["PUT"])
+@auth_required
 def update_bill(bill_id):
     data = BillSchema().load(request.json)
 
@@ -94,6 +96,7 @@ def update_bill(bill_id):
 
 
 @app.route("/api/saved-bills/<int:bill_id>", methods=["DELETE"])
+@auth_required
 def delete_bill(bill_id):
     bill = Bill.query.get(bill_id)
     db.session.delete(bill)
@@ -103,6 +106,7 @@ def delete_bill(bill_id):
 
 
 @app.route("/api/search-bills", methods=["GET"])
+@auth_required
 def search_bills():
     file = request.args.get("file")
 
@@ -151,12 +155,14 @@ class SingleMemberSponsorshipsSchema(CamelCaseSchema):
 
 
 @app.route("/api/legislators", methods=["GET"])
+@auth_required
 def get_legislators():
     legislators = Legislator.query.order_by(Legislator.name).all()
     return LegislatorSchema(many=True).jsonify(legislators)
 
 
 @app.route("/api/legislators/<int:legislator_id>", methods=["PUT"])
+@auth_required
 def update_legislator(legislator_id):
     data = LegislatorSchema().load(request.json)
 
@@ -171,6 +177,7 @@ def update_legislator(legislator_id):
 @app.route(
     "/api/legislators/<int:legislator_id>/sponsorships", methods=["GET"]
 )
+@auth_required
 def legislator_sponsorships(legislator_id):
     # TODO: No need to wrap this object, just return the list of sponsor people?
     sponsorships = (
@@ -188,6 +195,7 @@ class SingleBillSponsorshipsSchema(CamelCaseSchema):
 
 
 @app.route("/api/saved-bills/<int:bill_id>/sponsorships", methods=["GET"])
+@auth_required
 def bill_sponsorships(bill_id):
     # TODO: No need to wrap this object, just return the list of sponsor people?
     sponsorships = (
@@ -207,12 +215,14 @@ class BillAttachmentSchema(CamelCaseSchema):
 
 
 @app.route("/api/saved-bills/<int:bill_id>/attachments", methods=["GET"])
+@auth_required
 def bill_attachments(bill_id):
     attachments = BillAttachment.query.filter_by(bill_id=bill_id).all()
     return BillAttachmentSchema(many=True).jsonify(attachments)
 
 
 @app.route("/api/saved-bills/<int:bill_id>/attachments", methods=["POST"])
+@auth_required
 def add_bill_attachment(bill_id):
     data = BillAttachmentSchema().load(request.json)
     attachment = BillAttachment(
@@ -230,6 +240,7 @@ def add_bill_attachment(bill_id):
 @app.route(
     "/api/saved-bills/-/attachments/<int:attachment_id>", methods=["DELETE"]
 )
+@auth_required
 def delete_bill_attachment(attachment_id):
     attachment = BillAttachment.query.filter_by(id=attachment_id).one()
     db.session.delete(attachment)
@@ -242,6 +253,7 @@ def delete_bill_attachment(attachment_id):
     "/api/saved-bills/<int:bill_id>/create-phone-bank-spreadsheet",
     methods=["POST"],
 )
+@auth_required
 def create_spreadsheet(bill_id):
     spreadsheet = create_phone_bank_spreadsheet(bill_id)
     attachment = BillAttachment(
