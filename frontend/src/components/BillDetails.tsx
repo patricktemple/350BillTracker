@@ -208,7 +208,7 @@ export default function BillDetails(props: Props): ReactElement {
             </div>
             <Button
               size="sm"
-              variant="outline-primary"
+              variant="outline-secondary"
               onClick={handleAddAttachmentClicked}
               className="mt-2 mb-2"
             >
@@ -222,7 +222,7 @@ export default function BillDetails(props: Props): ReactElement {
             <Button
               size="sm"
               disabled={createPhoneBankInProgress}
-              variant="outline-primary"
+              variant="outline-secondary"
               onClick={handleGeneratePhoneBankSheet}
               className="mb-2"
             >
@@ -270,7 +270,7 @@ export default function BillDetails(props: Props): ReactElement {
       <Row className="mt-3 mb-2">
         <Col>
           <Button
-            variant="outline-primary"
+            variant="outline-secondary"
             size="sm"
             onClick={handleRemoveBill}
             className="mt-2 mb-2"

@@ -51,11 +51,7 @@ function App() {
           <Route path="/" exact>
             <Redirect to="/saved-bills" />
           </Route>
-          <Route
-            path="/saved-bills/:billId?"
-            exact
-            component={BillsPage}
-          />
+          <Route path="/saved-bills/:billId?" exact component={BillsPage} />
           <Route
             path="/council-members/:legislatorId?"
             component={LegislatorsPage}

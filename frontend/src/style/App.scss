@@ -5,7 +5,15 @@
 
 @import './variables.scss';
 
-// Before I override the specific bootstrap variables, see how far I get with just the theme colors
+// Bootstrap overrides:
+$font-family-sans-serif: $body-font;
+$theme-colors: (
+  "primary": $palette-medium-blue,
+  "secondary": $palette-lighter-blue,
+  "danger": $palette-red,
+);
+$blue: $palette-medium-blue;
+
 
 // Must put this last for our overrides of the Bootstrap variables to work
 @import "~bootstrap/scss/bootstrap";
