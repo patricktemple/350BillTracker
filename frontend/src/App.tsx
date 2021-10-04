@@ -13,7 +13,6 @@ import { ReactComponent as LogoutIcon } from './assets/logout.svg';
 import { ReactComponent as BillsIcon } from './assets/paper.svg';
 import { ReactComponent as LegislatorIcon } from './assets/person.svg';
 import React, { useState, useContext } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { MdPeople, MdDescription } from 'react-icons/md';
 import RequestLoginLinkPage from './RequestLoginLinkPage';
 import { AuthContextProvider, AuthContext } from './AuthContext';
