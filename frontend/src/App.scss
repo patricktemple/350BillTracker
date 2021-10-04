@@ -1,24 +1,28 @@
-@import "~bootstrap/scss/bootstrap";
+// TODO: Add comment about Bootstrap etc
 
-// $brown: #584B53;
-// $copper: #9D5C63;
-// $blue: #D6E3F8;
-// $beige: #FEF5EF;
-// $sand: #E4BB97;
+// https://getbootstrap.com/docs/4.0/getting-started/theming/#theme-colors
+
+
+// First define our color palette
+$palette-black: #000000;
+$palette-dark-blue: #133c55;
+$palette-medium-blue: #386fa4;
+$palette-lighter-blue: #4690c1;
+$palette-light-blue: #dff9ff;
+$palette-red: #ac3931;
+
+$theme-colors: (
+  "primary": $palette-medium-blue,
+  "secondary": $palette-lighter-blue,
+  "danger": $palette-red,
+);
+
+// Before I override the specific bootstrap variables, see how far I get with just the theme colors
+
+// Must put this last for our overrides of the Bootstrap variables to work
+@import "~bootstrap/scss/bootstrap";
 
 html, body, .root {
   width: 100%;
   height: 100%;
 }
-
-// a:link {
-//   color: brown;
-// }
-
-// .red {
-//   color: $red;
-// }
-
-// .background-blue {
-//   background-color: $blue;
-// }
