@@ -1,0 +1,42 @@
+@import './_variables.scss';
+
+.container {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-rows: 60px 1fr;
+  grid-template-columns: 280px 1fr;
+}
+
+.heading {
+  padding: 16px 20px;
+  grid-column: 1 / span 2;
+  grid-row: 1 / span 1;
+  font-size: 1.5rem;
+  font-weight: 500;
+  background-color: $palette-dark-blue;
+}
+
+.leftNav {
+  background-color: $palette-light-blue;
+  grid-row: 2 / span 1;
+  grid-column: 1 / span 1;
+  padding: 20px;
+}
+
+.mainContent {
+  grid-column: 2 / span 1;
+  grid-row: 2 / span 1;
+  padding: 20px
+}
+
+.navLink {
+  font-size: 1.3rem;
+  padding: 0 0 0.8rem 0
+}
+
+.icon {
+  margin-right: 8px;
+  width: 1.3rem;
+  height: 1.3rem
+}

@@ -1,0 +1,14 @@
+
+// First define our color palette
+$palette-black: #000000;
+$palette-dark-blue: #133c55;
+$palette-medium-blue: #386fa4;
+$palette-lighter-blue: #4690c1;
+$palette-light-blue: #dff9ff;
+$palette-red: #ac3931;
+
+$theme-colors: (
+  "primary": $palette-medium-blue,
+  "secondary": $palette-lighter-blue,
+  "danger": $palette-red,
+);

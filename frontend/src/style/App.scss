@@ -1,21 +1,9 @@
 // TODO: Add comment about Bootstrap etc
+// THESE ARE GLOBAL STYLES, use App.module.scss for styles for that specific component
 
 // https://getbootstrap.com/docs/4.0/getting-started/theming/#theme-colors
 
-
-// First define our color palette
-$palette-black: #000000;
-$palette-dark-blue: #133c55;
-$palette-medium-blue: #386fa4;
-$palette-lighter-blue: #4690c1;
-$palette-light-blue: #dff9ff;
-$palette-red: #ac3931;
-
-$theme-colors: (
-  "primary": $palette-medium-blue,
-  "secondary": $palette-lighter-blue,
-  "danger": $palette-red,
-);
+@import './variables.scss';
 
 // Before I override the specific bootstrap variables, see how far I get with just the theme colors
 
