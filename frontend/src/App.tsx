@@ -81,10 +81,7 @@ function AppContent() {
             path="/council-members/:legislatorId?"
             component={LegislatorsPage}
           />
-          <Route
-            path="/settings"
-            component={SettingsPage}
-          />
+          <Route path="/settings" component={SettingsPage} />
         </main>
       </div>
     </Router>

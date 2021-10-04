@@ -335,6 +335,7 @@ class UserSchema(CamelCaseSchema):
     email = fields.String()
     name = fields.String()
 
+
 @app.route(
     "/api/users",
     methods=["GET"],
@@ -344,6 +345,7 @@ def list_users():
     users = User.query.all()
 
     return UserSchema(many=True).jsonify(users)
+
 
 @app.route(
     "/api/users/<int:user_id>",
@@ -366,7 +368,7 @@ def delete_user(user_id):
 @auth_required
 def create_user():
     data = UserSchema().load(request.json)
-    user = User(name=data['name'], email=data['email'])
+    user = User(name=data["name"], email=data["email"])
     db.session.add(user)
     db.session.commit()
 

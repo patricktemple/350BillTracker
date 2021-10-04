@@ -146,10 +146,7 @@ class LoginLink(db.Model):
 
     created_at = Column(TIMESTAMP, nullable=False, default=now)
 
-    user = relationship(
-        "User", back_populates="login_links"
-    )
-
+    user = relationship("User", back_populates="login_links")
 
     # Unclear if this adds much security
     # used = Column(Boolean)

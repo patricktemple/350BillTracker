@@ -32,10 +32,13 @@ export default function RequestLoginLinkPage() {
 
   return (
     <div className={styles.fullScreenContainer}>
-    <div className={styles.pageContent}>
-      <h1>Log in to 350 Brooklyn Bill Tracker</h1>
-      <p>We&apos;ll email you a link you can click to login. No password needed.</p>
-      <Form onSubmit={handleSubmit}>
+      <div className={styles.pageContent}>
+        <h1>Log in to 350 Brooklyn Bill Tracker</h1>
+        <p>
+          We&apos;ll email you a link you can click to login. No password
+          needed.
+        </p>
+        <Form onSubmit={handleSubmit}>
           <Form.Control
             type="text"
             placeholder="Enter your email address"
@@ -44,12 +47,16 @@ export default function RequestLoginLinkPage() {
             size="sm"
           />
 
-        <Button size="sm" type="submit" disabled={requestInProgress}>
-          {requestInProgress ? "Requesting..." : "Request login link"}
-        </Button>
-        {loginLinkSent && <p className="mt-3">A link to login has been sent to this email address.</p>}
-      </Form>
-    </div>
+          <Button size="sm" type="submit" disabled={requestInProgress}>
+            {requestInProgress ? 'Requesting...' : 'Request login link'}
+          </Button>
+          {loginLinkSent && (
+            <p className="mt-3">
+              A link to login has been sent to this email address.
+            </p>
+          )}
+        </Form>
+      </div>
     </div>
   );
 }
