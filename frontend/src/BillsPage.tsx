@@ -64,7 +64,7 @@ export default function SavedBillsPage({
     <div>
       <div className={styles.title}>Bills</div>
       <div className={styles.content}>
-        {!bills ? (
+        {bills == null ? (
           'Loading...'
         ) : (
           <>

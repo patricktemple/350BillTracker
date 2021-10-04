@@ -46,7 +46,7 @@ export default function ConcilMembersPage({
     <div>
       <div className={styles.title}>Council members</div>
       <div className={styles.content}>
-        {!filteredLegislators ? (
+        {filteredLegislators == null ? (
           'Loading...'
         ) : (
           <>
