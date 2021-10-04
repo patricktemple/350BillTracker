@@ -6,6 +6,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import LegislatorDetailsPanel from './LegislatorDetailsPanel';
 import { Form } from 'react-bootstrap';
 import LazyAccordionBody from './LazyAccordionBody';
+import styles from '../style/LegislatorsPage.module.scss';
 
 interface Props {
   match: { params: { legislatorId?: number } };
@@ -31,17 +32,22 @@ export default function ConcilMembersPage({
     setFilterText(e.target.value);
   }
 
+  let filteredLegislators = null;
   if (legislators) {
     const lowerFilterText = filterText.toLowerCase();
-    const filteredLegislators = legislators.filter(
+    filteredLegislators = legislators.filter(
       (l) =>
         l.name.toLowerCase().includes(lowerFilterText) ||
         l.borough?.toLowerCase().includes(lowerFilterText)
     );
-    return (
-      <div>
-        <h3 className="mb-4">Council members</h3>
-        <input
+  }
+
+  return (
+    <div>
+      <div className={styles.title}>Council members</div>
+      <div className={styles.content}>
+        {!filteredLegislators ? "Loading..." : (
+        <><input
           type="text"
           placeholder="Search"
           value={filterText}
@@ -64,9 +70,8 @@ export default function ConcilMembersPage({
               </LazyAccordionBody>
             </Accordion.Item>
           ))}
-        </Accordion>
+        </Accordion></>)}
       </div>
-    );
-  }
-  return <div>Loading...</div>;
+    </div>
+  );
 }
