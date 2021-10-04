@@ -15,9 +15,9 @@
       "logoutLogo logoutLink content";
   
   // Uncomment to debug grid lines:
-  > * {
-    border: 1px solid black;
-  }
+  // > * {
+  //   border: 1px solid black;
+  // }
 }
 
 .appTitle {
@@ -105,8 +105,14 @@
   padding: 0 0 0.8rem 0
 }
 
-.icon {
-  margin-right: 8px;
-  width: 1.3rem;
-  height: 1.3rem
+.largeIcon {
+  width: 26px;
+  height: 26px;
+  stroke: $palette-medium-blue;
+}
+
+.smallIcon {
+  width: 20px;
+  height: 20px;
+  stroke: $palette-medium-blue;
 }

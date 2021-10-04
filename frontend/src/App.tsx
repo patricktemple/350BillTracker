@@ -11,6 +11,10 @@ import React from 'react';
 import { MdPeople, MdDescription, MdSettings } from 'react-icons/md';
 import styles from './style/App.module.scss';
 import { Link } from 'react-router-dom';
+import {ReactComponent as SettingsIcon} from './assets/settings.svg';
+import {ReactComponent as LogoutIcon} from './assets/logout.svg';
+import {ReactComponent as BillsIcon} from './assets/paper.svg';
+import {ReactComponent as LegislatorIcon} from './assets/person.svg';
 
 function App() {
   return (
@@ -21,14 +25,14 @@ function App() {
           <h1>350 Brooklyn</h1>
           <h2>Bill Tracker</h2>
         </div>
-        <Link to="/" className={styles.billsLogo}><MdDescription /></Link>
+        <Link to="/" className={styles.billsLogo}><BillsIcon className={styles.largeIcon} /></Link>
         <Link to="/" className={styles.billsLink}>Bills</Link>
-        <Link to="/council-members" className={styles.legislatorsLogo}><MdPeople /></Link>
+        <Link to="/council-members" className={styles.legislatorsLogo}><LegislatorIcon className={styles.largeIcon}/></Link>
         <Link to="/council-members" className={styles.legislatorsLink}>Council members
             </Link>
-        <Link to="/setting" className={styles.settingsLogo}><MdSettings /></Link>
+        <Link to="/setting" className={styles.settingsLogo}><SettingsIcon className={styles.smallIcon} /></Link>
         <Link to="/settings" className={styles.settingsLink}>Settings</Link>
-        <Link to="/logout" className={styles.logoutLogo}><MdSettings /></Link>
+        <Link to="/logout" className={styles.logoutLogo}><LogoutIcon className={styles.smallIcon}/></Link>
         <Link to="/settings" className={styles.logoutLink}>Logout</Link>  
           <main className={styles.content}>
             <Route path="/" exact>
