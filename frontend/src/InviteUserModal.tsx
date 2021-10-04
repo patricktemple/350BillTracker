@@ -27,7 +27,7 @@ export default function InviteUserModel(props: Props): ReactElement {
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3">
+          <Form.Group className="mb-3">
             <Form.Label>Name</Form.Label>
             <Form.Control type="text" ref={nameRef} />
           </Form.Group>

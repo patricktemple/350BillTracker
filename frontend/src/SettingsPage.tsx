@@ -55,19 +55,24 @@ export default function SettingsPage() {
     <div>
       <h1 className={style.title}>Settings</h1>
       <div className={style.content}>
-      <h2>Users</h2>
-      <p>Invite 350 Brooklyn volunteers to access this bill tracker.</p>
-      <div style={{textAlign: 'right'}}><Button onClick={handleInvite} size="sm" className="mb-2">Invite</Button></div>
-      <InviteUserModal
-        show={inviteUserModalVisible}
-        onHide={() => setInviteUserModalVisible(false)}
-        handleInviteUser={handleInviteUser}
-      />
+        <h2>Users</h2>
+        <p>Invite 350 Brooklyn volunteers to access this bill tracker. They&apos;ll need to be on this list in order to log in.</p>
+        <div style={{ textAlign: 'right' }}>
+          <Button onClick={handleInvite} size="sm" className="mb-2">
+            Invite
+          </Button>
+        </div>
+        <InviteUserModal
+          show={inviteUserModalVisible}
+          onHide={() => setInviteUserModalVisible(false)}
+          handleInviteUser={handleInviteUser}
+        />
 
-      {users ==  null ? "Loading..." : (
-
-<UserList handleDelete={handleDelete} users={users} />
-)}
+        {users == null ? (
+          'Loading...'
+        ) : (
+          <UserList handleDelete={handleDelete} users={users} />
+        )}
       </div>
     </div>
   );
