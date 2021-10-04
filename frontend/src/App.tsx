@@ -14,6 +14,7 @@ import { AuthContextProvider, AuthContext } from './AuthContext';
 import { useLocation } from 'react-router-dom';
 import LoginFromTokenPage from './LoginFromTokenPage';
 import Button from 'react-bootstrap/Button';
+import SettingsPage from './SettingsPage';
 
 // TODO: Fix palette
 const colors = {
@@ -95,6 +96,9 @@ function AppContent() {
             <MdPeople style={styles.icon} />
             Council members
           </Nav.Link>
+          <Nav.Link href="/settings" style={styles.navLink}>
+            Settings
+          </Nav.Link>
           <Button onClick={handleLogout}>Log out</Button>
         </Nav>
       </div>
@@ -111,6 +115,10 @@ function AppContent() {
           <Route
             path="/council-members/:legislatorId?"
             component={LegislatorsPage}
+          />
+          <Route
+            path="/settings"
+            component={SettingsPage}
           />
         </main>
       </div>

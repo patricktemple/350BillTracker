@@ -34,6 +34,8 @@ def auth_required(view_fn):
         jwt = auth[4:]
         verify_jwt(jwt)
 
+        # TODO: Verify that this user still exists
+
         return view_fn(*args, **kwargs)
 
     return check_auth_and_run

@@ -124,6 +124,11 @@ class User(db.Model):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     email = Column(Text, index=True, nullable=False)
+    name = Column(Text)
+
+    login_links = relationship(
+        "LoginLink", back_populates="user", cascade="all, delete"
+    )
 
     # TODO: Unique constraint on email lower
 
@@ -140,6 +145,11 @@ class LoginLink(db.Model):
     expires_at = Column(TIMESTAMP, nullable=False)
 
     created_at = Column(TIMESTAMP, nullable=False, default=now)
+
+    user = relationship(
+        "User", back_populates="login_links"
+    )
+
 
     # Unclear if this adds much security
     # used = Column(Boolean)

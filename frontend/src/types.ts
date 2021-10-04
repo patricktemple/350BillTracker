@@ -52,3 +52,9 @@ export interface BillAttachment {
   name: string;
   status: string;
 }
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+}

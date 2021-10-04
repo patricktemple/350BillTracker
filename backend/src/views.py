@@ -328,6 +328,36 @@ def login():
     return jsonify({"authToken": create_jwt(user_id)})
 
 
+# Users ----------------------------------------------------------------------
+class UserSchema(CamelCaseSchema):
+    id = fields.Integer()
+    email = fields.String()
+    name = fields.String()
+
+@app.route(
+    "/api/users",
+    methods=["GET"],
+)
+@auth_required
+def list_users():
+    users = User.query.all()
+
+    return UserSchema(many=True).jsonify(users)
+
+@app.route(
+    "/api/users/<int:user_id>",
+    methods=["DELETE"],
+)
+@auth_required
+def delete_user(user_id):
+    # TODO: Guard against deletig yourself, or the root user, or something
+    user = User.query.get(user_id)
+    db.session.delete(user)
+    db.session.commit()
+
+    return jsonify({})
+
+
 # NEXT STEPS: Need to guard API calls with the token
 # And do real JWTs
 # And send emails when someone requests a link
