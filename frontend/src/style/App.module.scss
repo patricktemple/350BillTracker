@@ -4,29 +4,75 @@
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-rows: 60px 1fr;
-  grid-template-columns: 280px 1fr;
+  grid-template-rows: 200px min-content min-content 1fr;
+  grid-gap: 20px 0;
+  grid-template-columns: 40px 200px 1fr;
+  grid-template-areas: 
+      ". appTitle content"
+      "billsLogo billsLink content"
+      "legislatorsLogo legislatorsLink content"
+      "settingsLogo settingsLink content"
+      "logoutLogo logoutLink content";
+  
+  // Uncomment to debug grid lines:
+  > * {
+    border: 1px solid black;
+  }
 }
 
-.heading {
+.appTitle {
   padding: 16px 20px;
-  grid-column: 1 / span 2;
-  grid-row: 1 / span 1;
+  grid-area: appTitle;
   font-size: 1.5rem;
   font-weight: 500;
-  background-color: $palette-dark-blue;
 }
 
-.leftNav {
+.leftNavBackground {
   background-color: $palette-light-blue;
-  grid-row: 2 / span 1;
-  grid-column: 1 / span 1;
-  padding: 20px;
+  grid-row: 1 / span 5;
+  grid-column: 1 / span 2;
 }
 
-.mainContent {
-  grid-column: 2 / span 1;
-  grid-row: 2 / span 1;
+.billsLogo {
+  grid-area: billsLogo;
+  justify-self: center;
+}
+
+.billsLink {
+  grid-area: billsLink;
+}
+
+.legislatorsLogo {
+  grid-area: legislatorsLogo;
+  justify-self: center;
+}
+
+.legislatorsLink {
+  grid-area: legislatorsLink;
+}
+
+.logoutLogo {
+  grid-area: logoutLogo;
+  justify-self: center;
+}
+
+.logoutLink {
+  grid-area: logoutLink;
+}
+
+.settingsLogo {
+  grid-area: settingsLogo;
+  align-self: end;
+  justify-self: center;
+}
+
+.settingsLink {
+  grid-area: settingsLink;
+  align-self: end;
+}
+
+.content {
+  grid-area: content;
   padding: 20px
 }
 
