@@ -17,47 +17,33 @@ function App() {
     <Router>
       <div className={styles.container}>
         <div className={styles.leftNavBackground} />
-        <div className={styles.appTitle}>350 Brooklyn Bill Tracker</div>
-        <Link to="/" className={styles.billsLogo}>
-          <MdDescription />
-        </Link>
-        <Link to="/" className={styles.billsLink}>
-          Bills
-        </Link>
-        <Link to="/council-members" className={styles.legislatorsLogo}>
-          <MdPeople />
-        </Link>
-        <Link to="/council-members" className={styles.legislatorsLink}>
-          Council members
-        </Link>
-        <Link to="/setting" className={styles.settingsLogo}>
-          <MdSettings />
-        </Link>
-        <Link to="/settings" className={styles.settingsLink}>
-          Settings
-        </Link>
-        <Link to="/logout" className={styles.logoutLogo}>
-          <MdSettings />
-        </Link>
-        <Link to="/settings" className={styles.logoutLink}>
-          Logout
-        </Link>
-        {/* <div className={styles.content}> */}
-        <main className={styles.content}>
-          <Route path="/" exact>
-            <Redirect to="/saved-bills" />
-          </Route>
-          <Route
-            path="/saved-bills/:billId?"
-            exact
-            component={SavedBillsPage}
-          />
-          <Route
-            path="/council-members/:legislatorId?"
-            component={LegislatorsPage}
-          />
-        </main>
-        {/* </div> */}
+        <div className={styles.appTitle}>
+          <h1>350 Brooklyn</h1>
+          <h2>Bill Tracker</h2>
+        </div>
+        <Link to="/" className={styles.billsLogo}><MdDescription /></Link>
+        <Link to="/" className={styles.billsLink}>Bills</Link>
+        <Link to="/council-members" className={styles.legislatorsLogo}><MdPeople /></Link>
+        <Link to="/council-members" className={styles.legislatorsLink}>Council members
+            </Link>
+        <Link to="/setting" className={styles.settingsLogo}><MdSettings /></Link>
+        <Link to="/settings" className={styles.settingsLink}>Settings</Link>
+        <Link to="/logout" className={styles.logoutLogo}><MdSettings /></Link>
+        <Link to="/settings" className={styles.logoutLink}>Logout</Link>  
+          <main className={styles.content}>
+            <Route path="/" exact>
+              <Redirect to="/saved-bills" />
+            </Route>
+            <Route
+              path="/saved-bills/:billId?"
+              exact
+              component={SavedBillsPage}
+            />
+            <Route
+              path="/council-members/:legislatorId?"
+              component={LegislatorsPage}
+            />
+          </main>
       </div>
     </Router>
   );

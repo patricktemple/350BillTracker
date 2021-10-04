@@ -4,7 +4,7 @@
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-rows: 200px min-content min-content 1fr;
+  grid-template-rows: 120px min-content min-content 1fr;
   grid-gap: 20px 0;
   grid-template-columns: 40px 200px 1fr;
   grid-template-areas: 
@@ -23,8 +23,18 @@
 .appTitle {
   padding: 16px 20px;
   grid-area: appTitle;
-  font-size: 1.5rem;
-  font-weight: 500;
+  font-family: $title-font;
+
+  > h1 {
+    font-size: 1.5rem;
+    color: $palette-medium-blue;
+    font-weight: bold;
+  }
+
+  > h2 {
+    font-size: 1.2rem;
+    color: $palette-lighter-blue;
+  }
 }
 
 .leftNavBackground {
