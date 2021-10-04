@@ -210,7 +210,7 @@ export default function BillDetails(props: Props): ReactElement {
               size="sm"
               variant="outline-secondary"
               onClick={handleAddAttachmentClicked}
-              className="mt-2 mb-2"
+              className="mt-2 mb-2 d-block"
             >
               Attach a link
             </Button>
@@ -224,7 +224,7 @@ export default function BillDetails(props: Props): ReactElement {
               disabled={createPhoneBankInProgress}
               variant="outline-secondary"
               onClick={handleGeneratePhoneBankSheet}
-              className="mb-2"
+              className="mb-2 d-block"
             >
               {createPhoneBankInProgress
                 ? 'Generating sheet...'
