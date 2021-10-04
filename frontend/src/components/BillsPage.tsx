@@ -5,9 +5,11 @@ import SearchBillsModal from './SearchBillsModal';
 import Button from 'react-bootstrap/Button';
 import Accordion from 'react-bootstrap/Accordion';
 import AccordionContext from 'react-bootstrap/AccordionContext';
-import { Bill } from './types';
+import { Bill } from '../types';
 import BillDetails from './BillDetails';
 import LazyAccordionBody from './LazyAccordionBody';
+
+import styles from './styles/BillsPage.module.scss';
 
 interface Props {
   match: { params: { billId?: number } };

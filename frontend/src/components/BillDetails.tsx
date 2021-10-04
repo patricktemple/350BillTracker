@@ -2,14 +2,14 @@ import React, { ReactElement, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
 import Form from 'react-bootstrap/Form';
-import { Bill, SingleBillSponsorship, BillAttachment } from './types';
+import { Bill, SingleBillSponsorship, BillAttachment } from '../types';
 import useInterval from '@restart/hooks/useInterval';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import AddAttachmentModal from './AddAttachmentModal';
 import { Link } from 'react-router-dom';
-import useAutosavingFormData from './utils/useAutosavingFormData';
+import useAutosavingFormData from '../utils/useAutosavingFormData';
 import ConfirmDeleteBillModel from './ConfirmDeleteBillModal';
 
 interface Props {

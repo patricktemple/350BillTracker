@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Table from 'react-bootstrap/Table';
-import { Legislator } from './types';
+import { Legislator } from '../types';
 import Accordion from 'react-bootstrap/Accordion';
 import LegislatorDetailsPanel from './LegislatorDetailsPanel';
 import { Form } from 'react-bootstrap';

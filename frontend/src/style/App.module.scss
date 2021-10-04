@@ -6,7 +6,7 @@
   display: grid;
   grid-template-rows: 120px min-content min-content 1fr min-content min-content;
   grid-gap: 20px 0;
-  grid-template-columns: 40px 200px 1fr;
+  grid-template-columns: 50px 200px 1fr;
   grid-template-areas: 
       ". appTitle content"
       "billsLogo billsLink content"
@@ -16,9 +16,9 @@
       "logoutLogo logoutLink content";
   
   // Uncomment to debug grid lines:
-  > * {
-    border: 1px solid black;
-  }
+  // > * {
+  //   border: 1px solid black;
+  // }
 }
 
 .appTitle {
@@ -45,7 +45,8 @@
 }
 
 .mainNavLogo {
-  justify-self: center;
+  margin-right: 10px;
+  justify-self: right;
   align-self: center;
 
   > svg {
@@ -64,6 +65,7 @@
   color: $palette-medium-blue;
   text-decoration: none;
   align-self: center;
+  font-weight: 600;
 }
 
 .billsLink {
@@ -89,12 +91,13 @@
 }
 
 .bottomNavLogo {
-  justify-self: center;
+  justify-self: right;
   align-self: center;
+  margin-right: 10px;
 
   > svg {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     stroke: $palette-medium-blue;
   }
 }
@@ -103,11 +106,13 @@
 .logoutLogo {
   @extend .bottomNavLogo;
   grid-area: logoutLogo;
+  margin-bottom: 1.5rem;
 }
 
 .logoutLink {
   @extend .bottomNavLink;
   grid-area: logoutLink;
+  margin-bottom: 1.5rem;
 }
 
 .settingsLogo {
