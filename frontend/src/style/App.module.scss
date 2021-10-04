@@ -48,7 +48,13 @@
   justify-self: center;
 }
 
+.mainNavLink {
+  color: $palette-medium-blue;
+  text-decoration: none;
+}
+
 .billsLink {
+  @extend .mainNavLink;
   grid-area: billsLink;
 }
 
@@ -58,15 +64,22 @@
 }
 
 .legislatorsLink {
+  @extend .mainNavLink;
   grid-area: legislatorsLink;
 }
 
+.bottomNavLink {
+  color: $palette-medium-blue;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
 .logoutLogo {
   grid-area: logoutLogo;
   justify-self: center;
 }
 
 .logoutLink {
+  @extend .bottomNavLink;
   grid-area: logoutLink;
 }
 
@@ -77,6 +90,7 @@
 }
 
 .settingsLink {
+  @extend .bottomNavLink;
   grid-area: settingsLink;
   align-self: end;
 }

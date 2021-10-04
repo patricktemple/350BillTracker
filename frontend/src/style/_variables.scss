@@ -11,10 +11,13 @@ $palette-light-blue: #dff9ff;
 $palette-red: #ac3931;
 
 $title-font: 'Lato';
-$body-font: Open Sans;
+$body-font: 'Open Sans';
 
+// Bootstrap overrides:
+$font-family-sans-serif: $body-font;
 $theme-colors: (
   "primary": $palette-medium-blue,
   "secondary": $palette-lighter-blue,
   "danger": $palette-red,
 );
+
