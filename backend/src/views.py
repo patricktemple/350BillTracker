@@ -331,6 +331,7 @@ def login():
 # Users ----------------------------------------------------------------------
 class UserSchema(CamelCaseSchema):
     id = fields.Integer()
+    # TODO: Validate emails?
     email = fields.String()
     name = fields.String()
 
@@ -354,6 +355,22 @@ def delete_user(user_id):
     user = User.query.get(user_id)
     db.session.delete(user)
     db.session.commit()
+
+    return jsonify({})
+
+
+@app.route(
+    "/api/users/",
+    methods=["POST"],
+)
+@auth_required
+def create_user():
+    data = UserSchema().load(request.json)
+    user = User(name=data['name'], email=data['email'])
+    db.session.add(user)
+    db.session.commit()
+
+    # TODO: Guard against duplicate user?
 
     return jsonify({})
 
