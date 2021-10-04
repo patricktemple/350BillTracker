@@ -26,25 +26,25 @@ function App() {
           <h2>Bill Tracker</h2>
         </div>
         <Link to="/" className={styles.billsLogo}>
-          <BillsIcon className={styles.largeIcon} />
+          <BillsIcon />
         </Link>
         <Link to="/" className={styles.billsLink}>
           Bills
         </Link>
         <Link to="/council-members" className={styles.legislatorsLogo}>
-          <LegislatorIcon className={styles.largeIcon} />
+          <LegislatorIcon />
         </Link>
         <Link to="/council-members" className={styles.legislatorsLink}>
           Council members
         </Link>
         <Link to="/setting" className={styles.settingsLogo}>
-          <SettingsIcon className={styles.smallIcon} />
+          <SettingsIcon />
         </Link>
         <Link to="/settings" className={styles.settingsLink}>
           Settings
         </Link>
         <Link to="/logout" className={styles.logoutLogo}>
-          <LogoutIcon className={styles.smallIcon} />
+          <LogoutIcon />
         </Link>
         <Link to="/settings" className={styles.logoutLink}>
           Logout

@@ -4,20 +4,21 @@
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-rows: 120px min-content min-content 1fr;
+  grid-template-rows: 120px min-content min-content 1fr min-content min-content;
   grid-gap: 20px 0;
   grid-template-columns: 40px 200px 1fr;
   grid-template-areas: 
       ". appTitle content"
       "billsLogo billsLink content"
       "legislatorsLogo legislatorsLink content"
+      ". . content"
       "settingsLogo settingsLink content"
       "logoutLogo logoutLink content";
   
   // Uncomment to debug grid lines:
-  // > * {
-  //   border: 1px solid black;
-  // }
+  > * {
+    border: 1px solid black;
+  }
 }
 
 .appTitle {
@@ -39,18 +40,30 @@
 
 .leftNavBackground {
   background-color: $palette-light-blue;
-  grid-row: 1 / span 5;
+  grid-row: 1 / span 6;
   grid-column: 1 / span 2;
 }
 
-.billsLogo {
-  grid-area: billsLogo;
+.mainNavLogo {
   justify-self: center;
+  align-self: center;
+
+  > svg {
+    width: 26px;
+    height: 26px;
+    stroke: $palette-medium-blue;
+  }
+}
+
+.billsLogo {
+  @extend .mainNavLogo;
+  grid-area: billsLogo;
 }
 
 .mainNavLink {
   color: $palette-medium-blue;
   text-decoration: none;
+  align-self: center;
 }
 
 .billsLink {
@@ -59,8 +72,8 @@
 }
 
 .legislatorsLogo {
+  @extend .mainNavLogo;
   grid-area: legislatorsLogo;
-  justify-self: center;
 }
 
 .legislatorsLink {
@@ -73,9 +86,22 @@
   text-decoration: none;
   font-size: 0.9rem;
 }
-.logoutLogo {
-  grid-area: logoutLogo;
+
+.bottomNavLogo {
   justify-self: center;
+  align-self: center;
+
+  > svg {
+    width: 20px;
+    height: 20px;
+    stroke: $palette-medium-blue;
+  }
+}
+
+
+.logoutLogo {
+  @extend .bottomNavLogo;
+  grid-area: logoutLogo;
 }
 
 .logoutLink {
@@ -84,15 +110,13 @@
 }
 
 .settingsLogo {
+  @extend .bottomNavLogo;
   grid-area: settingsLogo;
-  align-self: end;
-  justify-self: center;
 }
 
 .settingsLink {
   @extend .bottomNavLink;
   grid-area: settingsLink;
-  align-self: end;
 }
 
 .content {
@@ -103,16 +127,4 @@
 .navLink {
   font-size: 1.3rem;
   padding: 0 0 0.8rem 0
-}
-
-.largeIcon {
-  width: 26px;
-  height: 26px;
-  stroke: $palette-medium-blue;
-}
-
-.smallIcon {
-  width: 20px;
-  height: 20px;
-  stroke: $palette-medium-blue;
 }
