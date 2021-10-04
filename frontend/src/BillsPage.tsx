@@ -3,11 +3,11 @@ import useMountEffect from '@restart/hooks/useMountEffect';
 import SearchBillsModal from './SearchBillsModal';
 import Button from 'react-bootstrap/Button';
 import Accordion from 'react-bootstrap/Accordion';
-import { Bill } from '../types';
+import { Bill } from './types';
 import BillDetails from './BillDetails';
 import LazyAccordionBody from './LazyAccordionBody';
 
-import styles from '../style/BillsPage.module.scss';
+import styles from './style/BillsPage.module.scss';
 
 interface Props {
   match: { params: { billId?: number } };

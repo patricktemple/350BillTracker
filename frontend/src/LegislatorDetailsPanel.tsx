@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { Legislator, SingleMemberSponsorship } from '../types';
+import { Legislator, SingleMemberSponsorship } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Stack from 'react-bootstrap/Stack';
 import { Link } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
-import useAutosavingFormData from '../utils/useAutosavingFormData';
+import useAutosavingFormData from './utils/useAutosavingFormData';
 
 interface Props {
   legislator: Legislator;

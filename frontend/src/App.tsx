@@ -1,4 +1,4 @@
-import '../style/App.scss';
+import './style/App.scss';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import BillsPage from './BillsPage';
 import LegislatorsPage from './LegislatorsPage';
@@ -7,12 +7,12 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
 import React from 'react';
-import styles from '../style/App.module.scss';
+import styles from './style/App.module.scss';
 import { Link } from 'react-router-dom';
-import { ReactComponent as SettingsIcon } from '../assets/settings.svg';
-import { ReactComponent as LogoutIcon } from '../assets/logout.svg';
-import { ReactComponent as BillsIcon } from '../assets/paper.svg';
-import { ReactComponent as LegislatorIcon } from '../assets/person.svg';
+import { ReactComponent as SettingsIcon } from './assets/settings.svg';
+import { ReactComponent as LogoutIcon } from './assets/logout.svg';
+import { ReactComponent as BillsIcon } from './assets/paper.svg';
+import { ReactComponent as LegislatorIcon } from './assets/person.svg';
 
 function App() {
   return (

@@ -1,5 +1,5 @@
 import Table from 'react-bootstrap/Table';
-import { Bill } from '../types';
+import { Bill } from './types';
 import Button from 'react-bootstrap/Button';
 import React, { useState } from 'react';
 
