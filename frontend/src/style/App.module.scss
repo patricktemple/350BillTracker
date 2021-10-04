@@ -22,7 +22,7 @@
 }
 
 .appTitle {
-  padding: 16px 20px;
+  padding: 16px 0;
   grid-area: appTitle;
   font-family: $title-font;
 
@@ -85,6 +85,7 @@
   color: $palette-medium-blue;
   text-decoration: none;
   font-size: 0.9rem;
+  align-self: center;
 }
 
 .bottomNavLogo {
