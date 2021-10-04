@@ -27,14 +27,14 @@ export default function InviteUserModel(props: Props): ReactElement {
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control type="text" ref={emailRef} />
+        <Form.Group className="mb-3">
+            <Form.Label>Name</Form.Label>
+            <Form.Control type="text" ref={nameRef} />
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Name</Form.Label>
-            <Form.Control type="text" ref={nameRef} />
+            <Form.Label>Email address</Form.Label>
+            <Form.Control type="text" ref={emailRef} />
           </Form.Group>
 
           <Button variant="primary" type="submit" className="mb-2">
