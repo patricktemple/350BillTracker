@@ -46,31 +46,36 @@ export default function ConcilMembersPage({
     <div>
       <div className={styles.title}>Council members</div>
       <div className={styles.content}>
-        {!filteredLegislators ? "Loading..." : (
-        <><input
-          type="text"
-          placeholder="Search"
-          value={filterText}
-          className="mb-2"
-          size={30}
-          onChange={handleFilterTextChanged}
-        />
-        <Accordion defaultActiveKey={legislatorId?.toString()}>
-          {filteredLegislators.map((legislator) => (
-            <Accordion.Item
-              key={legislator.id}
-              eventKey={legislator.id.toString()}
-            >
-              <Accordion.Header>
-                <strong>{legislator.name}</strong>
-                {legislator.borough && <>&nbsp;({legislator.borough})</>}
-              </Accordion.Header>
-              <LazyAccordionBody eventKey={legislator.id.toString()}>
-                <LegislatorDetailsPanel legislator={legislator} />
-              </LazyAccordionBody>
-            </Accordion.Item>
-          ))}
-        </Accordion></>)}
+        {!filteredLegislators ? (
+          'Loading...'
+        ) : (
+          <>
+            <input
+              type="text"
+              placeholder="Search"
+              value={filterText}
+              className="mb-2"
+              size={30}
+              onChange={handleFilterTextChanged}
+            />
+            <Accordion defaultActiveKey={legislatorId?.toString()}>
+              {filteredLegislators.map((legislator) => (
+                <Accordion.Item
+                  key={legislator.id}
+                  eventKey={legislator.id.toString()}
+                >
+                  <Accordion.Header>
+                    <strong>{legislator.name}</strong>
+                    {legislator.borough && <>&nbsp;({legislator.borough})</>}
+                  </Accordion.Header>
+                  <LazyAccordionBody eventKey={legislator.id.toString()}>
+                    <LegislatorDetailsPanel legislator={legislator} />
+                  </LazyAccordionBody>
+                </Accordion.Item>
+              ))}
+            </Accordion>
+          </>
+        )}
       </div>
     </div>
   );
