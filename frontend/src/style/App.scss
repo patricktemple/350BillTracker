@@ -1,0 +1,25 @@
+// Global styles for the whole app. Use sparingly.For styles specific to the
+// root page, use App.module.scss instead.
+//
+// The main styling stack is SCSS + CSS modules for each component, with
+// some shared variables like the color palette in variables.scss
+@import './variables.scss';
+
+// We do use some React-Bootstrap components, and we override the bootstrap
+// variables so that it uses our main theme colors.
+$font-family-sans-serif: $body-font;
+$theme-colors: (
+  "primary": $palette-medium-blue,
+  "secondary": $palette-lighter-blue,
+  "danger": $palette-red,
+);
+$blue: $palette-medium-blue;
+$dark: $palette-dark-blue;
+
+// Must put this last for our overrides of the Bootstrap variables to work
+@import "~bootstrap/scss/bootstrap";
+
+html, body, .root {
+  width: 100%;
+  height: 100%;
+}
