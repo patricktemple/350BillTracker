@@ -188,7 +188,6 @@ def update_legislator(legislator_id):
 )
 @auth_required
 def legislator_sponsorships(legislator_id):
-    # TODO: No need to wrap this object, just return the list of sponsor people?
     sponsorships = (
         BillSponsorship.query.filter_by(legislator_id=legislator_id)
         .options(joinedload(BillSponsorship.bill))
@@ -206,7 +205,6 @@ class SingleBillSponsorshipsSchema(CamelCaseSchema):
 @app.route("/api/saved-bills/<int:bill_id>/sponsorships", methods=["GET"])
 @auth_required
 def bill_sponsorships(bill_id):
-    # TODO: No need to wrap this object, just return the list of sponsor people?
     sponsorships = (
         BillSponsorship.query.filter_by(bill_id=bill_id)
         .options(joinedload(BillSponsorship.legislator))

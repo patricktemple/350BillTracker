@@ -17,6 +17,7 @@ export default function useApiFetch() {
     headers['Authorization'] = 'JWT ' + authContext.token;
   }
 
+  // TODO: Handle JSON.stringify for callers, too
   function apiFetch(path: string, params?: ApiFetchParams) {
     const fetchParams = params || {};
     return fetch(path, {

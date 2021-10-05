@@ -61,7 +61,6 @@ export default function BillDetails(props: Props): ReactElement {
       });
   }
 
-  // FIXME: This is loading all sponsorships individually on first page load of list
   useMountEffect(() => {
     apiFetch(`/api/saved-bills/${bill.id}/sponsorships`)
       .then((response) => response.json())
@@ -70,7 +69,6 @@ export default function BillDetails(props: Props): ReactElement {
       });
   });
 
-  // FIXME: This is loading all attachments individually on first page load of list
   useMountEffect(() => {
     loadAttachments();
   });

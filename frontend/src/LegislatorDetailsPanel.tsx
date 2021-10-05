@@ -31,7 +31,6 @@ export default function LegislatorDetailsPanel(props: Props) {
   );
   const apiFetch = useApiFetch();
 
-  // FIXME: This is loading all sponsorships individually on first page load of list
   useMountEffect(() => {
     apiFetch(`/api/legislators/${legislator.id}/sponsorships`)
       .then((response) => response.json())
