@@ -33,6 +33,7 @@ def user_id():
 def user_email():
     return "test@example.com"
 
+
 @pytest.fixture
 def user_name():
     return "Test user"

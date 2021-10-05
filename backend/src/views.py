@@ -3,9 +3,9 @@ from datetime import date, timedelta
 
 from flask import jsonify, render_template, request
 from marshmallow import fields
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
 from werkzeug import exceptions
-from sqlalchemy.exc import IntegrityError
 
 from .app import app
 from .app import marshmallow as ma
@@ -379,7 +379,9 @@ def create_user():
     try:
         db.session.commit()
     except IntegrityError as e:
-        raise exceptions.UnprocessableEntity("User already exists with this email")
+        raise exceptions.UnprocessableEntity(
+            "User already exists with this email"
+        )
 
     return jsonify({})
 
