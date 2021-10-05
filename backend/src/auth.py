@@ -17,11 +17,6 @@ TOKEN_LIFETIME = timedelta(hours=1)
 JWT_AUDIENCE = "350bt"
 JWT_ISSUER = "350bt"
 
-# Notes from:
-# https://fusionauth.io/learn/expert-advice/tokens/building-a-secure-jwt/
-# https://auth0.com/docs/security/tokens/json-web-tokens/json-web-token-claims
-
-
 def create_jwt(user_id):
     payload = {
         "sub": str(user_id),
