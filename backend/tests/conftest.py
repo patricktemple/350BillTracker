@@ -3,6 +3,7 @@ import pytest
 from src import app, models
 
 from .utils import ApiClient
+from uuid import uuid4
 
 
 @pytest.fixture(autouse=True)
@@ -24,9 +25,6 @@ def autouse_fixtures():
 
 @pytest.fixture
 def client():
-    # db_fd, flaskr.app.config['DATABASE'] = tempfile.mkstemp()
-    # flaskr.app.config['TESTING'] = True
-
     app.app.test_client_class = ApiClient
     with app.app.test_client() as client:
         yield client
