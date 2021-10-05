@@ -55,14 +55,6 @@ class Bill(db.Model):
     )
 
 
-# import enum
-# from sqlalchemy import Integer, Enum
-
-# class Party(enum.Enum):
-#     DEMOCRATIC = 1
-#     REPUBLICAN = 2
-
-
 class Legislator(db.Model):
     __tablename__ = "legislators"
 
@@ -120,7 +112,6 @@ class BillAttachment(db.Model):
     url = Column(Text, nullable=False)
 
 
-# TODO: UUID for PK!!
 class User(db.Model):
     __tablename__ = "users"
     id = Column(UUID, primary_key=True, default=uuid4)
@@ -134,7 +125,6 @@ class User(db.Model):
     # TODO: Unique constraint on email lower
 
 
-# TODO: UUID PK?
 class LoginLink(db.Model):
     __tablename__ = "login_links"
 

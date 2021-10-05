@@ -3,7 +3,7 @@ import useApiFetch from './useApiFetch';
 import useMountEffect from '@restart/hooks/esm/useMountEffect';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
-import { User } from './types';
+import { User, Uuid } from './types';
 import InviteUserModal from './InviteUserModal';
 import style from './style/SettingsPage.module.scss';
 import UserList from './UserList';
@@ -29,7 +29,7 @@ export default function SettingsPage() {
     setInviteUserModalVisible(true);
   }
 
-  function handleDelete(id: number) {
+  function handleDelete(id: Uuid) {
     apiFetch('/api/users/' + id, {
       method: 'DELETE'
     })

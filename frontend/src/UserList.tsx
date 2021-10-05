@@ -1,12 +1,12 @@
 import React, { ReactElement } from 'react';
-import { User } from './types';
+import { User, Uuid } from './types';
 
 import styles from './style/UserList.module.scss';
 import { ReactComponent as TrashIcon } from './assets/trash.svg';
 
 interface Props {
   users: User[];
-  handleDelete: (id: number) => void;
+  handleDelete: (id: Uuid) => void;
 }
 
 export default function UserList(props: Props): ReactElement {
