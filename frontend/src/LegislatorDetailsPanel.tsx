@@ -80,7 +80,7 @@ export default function LegislatorDetailsPanel(props: Props) {
           Website:
         </Col>
         <Col>
-          {legislator.website && <a href={legislator.website}>Visit website</a>}
+          {legislator.website && <a href={legislator.website} target="website">Visit website</a>}
         </Col>
       </Row>
       <Row className="mb-2">
@@ -89,7 +89,7 @@ export default function LegislatorDetailsPanel(props: Props) {
         </Col>
         <Col>
           {legislator.twitter && (
-            <a href={`https://twitter.com/${legislator.twitter}`}>
+            <a href={`https://twitter.com/${legislator.twitter}`} target="twitter">
               @{legislator.twitter}
             </a>
           )}
