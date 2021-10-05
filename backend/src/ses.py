@@ -2,19 +2,13 @@
 
 import logging
 
-import boto3
+from boto3 import client
 from botocore.exceptions import ClientError
 from werkzeug import exceptions
 
-from .settings import (
-    AWS_ACCESS_KEY_ID,
-    AWS_DEFAULT_REGION,
-    AWS_SECRET_ACCESS_KEY,
-)
-
 # This guide was important in getting the email address set up:
 # https://medium.com/responsetap-engineering/easily-create-email-addresses-for-your-route53-custom-domain-589d099dd0f2
-client = boto3.client("ses")
+client = client("ses")
 
 SENDER = "350 Bill Tracker <no-reply@350billtracker.com>"
 CHARSET = "UTF-8"

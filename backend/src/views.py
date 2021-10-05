@@ -318,12 +318,14 @@ def login():
     data = LoginSchema().load(request.json)
     token = data["token"]
 
-    login_link = LoginLink.query.filter_by(token=token).one()
+    login_link = LoginLink.query.filter_by(token=token).one_or_none()
+    if not login_link:
+        raise exceptions.Unauthorized()
 
     user_id = login_link.user_id
 
     if login_link.expires_at < now():
-        raise exceptions.Forbidden()
+        raise exceptions.Unauthorized()
 
     return jsonify({"authToken": create_jwt(user_id)})
 
