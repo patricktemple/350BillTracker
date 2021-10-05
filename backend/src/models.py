@@ -8,6 +8,7 @@ from sqlalchemy import (
     Integer,
     Text,
     TypeDecorator,
+    CheckConstraint
 )
 from sqlalchemy.dialects.postgresql import TIMESTAMP as _TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID as _UUID
@@ -117,7 +118,8 @@ class BillAttachment(db.Model):
 class User(db.Model):
     __tablename__ = "users"
     id = Column(UUID, primary_key=True, default=uuid4)
-    email = Column(Text, index=True, nullable=False)
+
+    email = Column(Text, index=True, nullable=False, unique=True) # always lowercase
     name = Column(Text)
 
     login_links = relationship(
@@ -127,7 +129,10 @@ class User(db.Model):
     # The "root" user can never be deleted.
     can_be_deleted = Column(Boolean, nullable=False, server_default=sql.true())
 
-    # TODO: Unique constraint on email lower
+    __table_args__ = (
+            CheckConstraint('email = lower(email)', name='check_email_is_lowercase'),
+    )
+
 
 
 class LoginLink(db.Model):
