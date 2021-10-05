@@ -148,7 +148,5 @@ class LoginLink(db.Model):
 
     user = relationship("User", back_populates="login_links")
 
-    # Unclear if this adds much security
-    # used = Column(Boolean)
-    # Yes! Because once they click on the link, it's been sent in the browser url
-    # but for usability... this might be enough
+    # TODO: Consider only allowing these links to be used once. Better security
+    # in case of leaked browser URL, but worse UX.

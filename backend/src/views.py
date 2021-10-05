@@ -325,6 +325,9 @@ def login():
 
     user_id = login_link.user_id
 
+    if login_link.expires_at < now():
+        raise ValueError("link is expired")
+
     return jsonify({"authToken": create_jwt(user_id)})
 
 

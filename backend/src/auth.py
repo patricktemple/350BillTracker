@@ -5,6 +5,7 @@ import jwt
 from flask import request
 
 from .settings import JWT_SECRET
+from .models import User
 
 JWT_ALGORITHM = "HS256"
 
@@ -32,8 +33,6 @@ def create_jwt(user_id):
 
 
 def verify_jwt(token):
-    # TODO check expiration time
-    # Automatically checks expiration time, TODO test this:
     return jwt.decode(
         token, JWT_SECRET, audience=JWT_AUDIENCE, algorithms=[JWT_ALGORITHM]
     )
@@ -50,10 +49,11 @@ def auth_required(view_fn):
         if not auth.startswith("JWT "):
             raise ValueError("Expecting JWT auth type")
 
-        jwt = auth[4:]
-        verify_jwt(jwt)
-
-        # TODO: Verify that this user still exists
+        jwt = verify_jwt(auth[4:])
+    
+        # Make sure the user still exists
+        if not User.query.get(jwt['sub']):
+            raise ValueError("User from JWT no longer exists")
 
         return view_fn(*args, **kwargs)
 

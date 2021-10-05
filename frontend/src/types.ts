@@ -1,5 +1,7 @@
 // Defines types returned by the backend APIs.
 
+type Uuid = string;
+
 export interface Bill {
   // Non-editable fields
   id: number;
@@ -14,6 +16,8 @@ export interface Bill {
   notes: string;
   nickname: string;
 }
+
+
 
 // TODO: Change types to reflect nullability
 export interface Legislator {
