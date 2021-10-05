@@ -1,10 +1,22 @@
+from uuid import uuid4
+
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, ForeignKey, Integer, Text, TypeDecorator
+from sqlalchemy import (
+    Boolean,
+    CheckConstraint,
+    Column,
+    ForeignKey,
+    Integer,
+    Text,
+    TypeDecorator,
+    sql,
+)
 from sqlalchemy.dialects.postgresql import TIMESTAMP as _TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID as _UUID
 from sqlalchemy.orm import relationship
 
 from .app import app
+from .utils import now
 
 db = SQLAlchemy(app)
 
@@ -44,14 +56,6 @@ class Bill(db.Model):
     attachments = relationship(
         "BillAttachment", back_populates="bill", cascade="all, delete"
     )
-
-
-# import enum
-# from sqlalchemy import Integer, Enum
-
-# class Party(enum.Enum):
-#     DEMOCRATIC = 1
-#     REPUBLICAN = 2
 
 
 class Legislator(db.Model):
@@ -109,3 +113,43 @@ class BillAttachment(db.Model):
 
     name = Column(Text)
     url = Column(Text, nullable=False)
+
+
+class User(db.Model):
+    __tablename__ = "users"
+    id = Column(UUID, primary_key=True, default=uuid4)
+
+    email = Column(
+        Text, index=True, nullable=False, unique=True
+    )  # always lowercase
+    name = Column(Text)
+
+    login_links = relationship(
+        "LoginLink", back_populates="user", cascade="all, delete"
+    )
+
+    # The "root" user can never be deleted.
+    can_be_deleted = Column(Boolean, nullable=False, server_default=sql.true())
+
+    __table_args__ = (
+        CheckConstraint(
+            "email = lower(email)", name="check_email_is_lowercase"
+        ),
+    )
+
+
+class LoginLink(db.Model):
+    __tablename__ = "login_links"
+
+    user_id = Column(UUID, ForeignKey(User.id), nullable=False)
+
+    token = Column(Text, nullable=False, primary_key=True)
+
+    expires_at = Column(TIMESTAMP, nullable=False)
+
+    created_at = Column(TIMESTAMP, nullable=False, default=now)
+
+    user = relationship("User", back_populates="login_links")
+
+    # TODO: Consider only allowing these links to be used once. Better security
+    # in case of leaked browser URL, but worse UX.

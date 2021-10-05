@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 import pytest
 
 from src import app, models
@@ -23,10 +25,34 @@ def autouse_fixtures():
 
 
 @pytest.fixture
-def client():
-    # db_fd, flaskr.app.config['DATABASE'] = tempfile.mkstemp()
-    # flaskr.app.config['TESTING'] = True
+def user_id():
+    return uuid4()
 
+
+@pytest.fixture
+def user_email():
+    return "test@example.com"
+
+
+@pytest.fixture
+def user_name():
+    return "Test user"
+
+
+@pytest.fixture
+def client(user_id, user_email, user_name):
+    app.app.test_client_class = ApiClient
+    with app.app.test_client() as client:
+        user = models.User(id=user_id, name=user_name, email=user_email)
+        models.db.session.add(user)
+        models.db.session.commit()
+
+        client.set_authenticated_user_id(user_id)
+        yield client
+
+
+@pytest.fixture
+def unauthenticated_client():
     app.app.test_client_class = ApiClient
     with app.app.test_client() as client:
         yield client

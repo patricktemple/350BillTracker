@@ -8,6 +8,7 @@ import Stack from 'react-bootstrap/Stack';
 import { Link } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import useAutosavingFormData from './utils/useAutosavingFormData';
+import useApiFetch from './useApiFetch';
 
 interface Props {
   legislator: Legislator;
@@ -28,10 +29,10 @@ export default function LegislatorDetailsPanel(props: Props) {
     '/api/legislators/' + legislator.id,
     { notes: legislator.notes }
   );
+  const apiFetch = useApiFetch();
 
-  // FIXME: This is loading all sponsorships individually on first page load of list
   useMountEffect(() => {
-    fetch(`/api/legislators/${legislator.id}/sponsorships`)
+    apiFetch(`/api/legislators/${legislator.id}/sponsorships`)
       .then((response) => response.json())
       .then((response) => {
         setSponsorships(response);

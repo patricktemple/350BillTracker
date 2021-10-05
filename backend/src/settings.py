@@ -7,6 +7,16 @@ GOOGLE_CREDENTIALS = b64decode(
     os.environ["GOOGLE_CREDENTIALS"].encode("utf-8")
 ).decode("utf-8")
 
+JWT_SECRET = os.environ["JWT_SECRET"]
+
+AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
+AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
+AWS_DEFAULT_REGION = os.environ["AWS_DEFAULT_REGION"]
+
+APP_ORIGIN = os.environ["APP_ORIGIN"]
+
+ENABLE_CRON = os.environ.get("ENABLE_CRON", "True") == "True"
+
 
 # TODO: Share this with TogglSync via a utils package?
 if hostname := os.environ.get("RDS_HOSTNAME"):

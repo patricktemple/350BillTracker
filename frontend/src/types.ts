@@ -1,5 +1,7 @@
 // Defines types returned by the backend APIs.
 
+export type Uuid = string;
+
 export interface Bill {
   // Non-editable fields
   id: number;
@@ -51,4 +53,10 @@ export interface BillAttachment {
   url: string;
   name: string;
   status: string;
+}
+
+export interface User {
+  id: Uuid;
+  name: string;
+  email: string;
 }

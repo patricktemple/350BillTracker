@@ -1,11 +1,15 @@
-from datetime import date
+import secrets
+from datetime import date, timedelta
 
 from flask import jsonify, render_template, request
 from marshmallow import fields
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
+from werkzeug import exceptions
 
 from .app import app
 from .app import marshmallow as ma
+from .auth import auth_required, create_jwt
 from .council_api import lookup_bills
 from .council_sync import (
     add_or_update_bill,
@@ -13,7 +17,18 @@ from .council_sync import (
     update_sponsorships,
 )
 from .google_sheets import create_phone_bank_spreadsheet
-from .models import Bill, BillAttachment, BillSponsorship, Legislator, db
+from .models import (
+    Bill,
+    BillAttachment,
+    BillSponsorship,
+    Legislator,
+    LoginLink,
+    User,
+    db,
+)
+from .ses import send_login_link_email
+from .settings import APP_ORIGIN
+from .utils import now
 
 
 def camelcase(s):
@@ -61,12 +76,14 @@ class BillSchema(CamelCaseSchema):
 
 
 @app.route("/api/saved-bills", methods=["GET"])
+@auth_required
 def bills():
     bills = Bill.query.order_by(Bill.name).all()
     return BillSchema(many=True).jsonify(bills)
 
 
 @app.route("/api/saved-bills", methods=["POST"])
+@auth_required
 def save_bill():
     matter_id = request.json["id"]
     add_or_update_bill(matter_id)
@@ -76,6 +93,7 @@ def save_bill():
 
 
 @app.route("/api/saved-bills/<int:bill_id>", methods=["PUT"])
+@auth_required
 def update_bill(bill_id):
     data = BillSchema().load(request.json)
 
@@ -89,6 +107,7 @@ def update_bill(bill_id):
 
 
 @app.route("/api/saved-bills/<int:bill_id>", methods=["DELETE"])
+@auth_required
 def delete_bill(bill_id):
     bill = Bill.query.get(bill_id)
     db.session.delete(bill)
@@ -98,6 +117,7 @@ def delete_bill(bill_id):
 
 
 @app.route("/api/search-bills", methods=["GET"])
+@auth_required
 def search_bills():
     file = request.args.get("file")
 
@@ -146,12 +166,14 @@ class SingleMemberSponsorshipsSchema(CamelCaseSchema):
 
 
 @app.route("/api/legislators", methods=["GET"])
+@auth_required
 def get_legislators():
     legislators = Legislator.query.order_by(Legislator.name).all()
     return LegislatorSchema(many=True).jsonify(legislators)
 
 
 @app.route("/api/legislators/<int:legislator_id>", methods=["PUT"])
+@auth_required
 def update_legislator(legislator_id):
     data = LegislatorSchema().load(request.json)
 
@@ -166,8 +188,8 @@ def update_legislator(legislator_id):
 @app.route(
     "/api/legislators/<int:legislator_id>/sponsorships", methods=["GET"]
 )
+@auth_required
 def legislator_sponsorships(legislator_id):
-    # TODO: No need to wrap this object, just return the list of sponsor people?
     sponsorships = (
         BillSponsorship.query.filter_by(legislator_id=legislator_id)
         .options(joinedload(BillSponsorship.bill))
@@ -183,8 +205,8 @@ class SingleBillSponsorshipsSchema(CamelCaseSchema):
 
 
 @app.route("/api/saved-bills/<int:bill_id>/sponsorships", methods=["GET"])
+@auth_required
 def bill_sponsorships(bill_id):
-    # TODO: No need to wrap this object, just return the list of sponsor people?
     sponsorships = (
         BillSponsorship.query.filter_by(bill_id=bill_id)
         .options(joinedload(BillSponsorship.legislator))
@@ -202,12 +224,14 @@ class BillAttachmentSchema(CamelCaseSchema):
 
 
 @app.route("/api/saved-bills/<int:bill_id>/attachments", methods=["GET"])
+@auth_required
 def bill_attachments(bill_id):
     attachments = BillAttachment.query.filter_by(bill_id=bill_id).all()
     return BillAttachmentSchema(many=True).jsonify(attachments)
 
 
 @app.route("/api/saved-bills/<int:bill_id>/attachments", methods=["POST"])
+@auth_required
 def add_bill_attachment(bill_id):
     data = BillAttachmentSchema().load(request.json)
     attachment = BillAttachment(
@@ -225,6 +249,7 @@ def add_bill_attachment(bill_id):
 @app.route(
     "/api/saved-bills/-/attachments/<int:attachment_id>", methods=["DELETE"]
 )
+@auth_required
 def delete_bill_attachment(attachment_id):
     attachment = BillAttachment.query.filter_by(id=attachment_id).one()
     db.session.delete(attachment)
@@ -237,6 +262,7 @@ def delete_bill_attachment(attachment_id):
     "/api/saved-bills/<int:bill_id>/create-phone-bank-spreadsheet",
     methods=["POST"],
 )
+@auth_required
 def create_spreadsheet(bill_id):
     spreadsheet = create_phone_bank_spreadsheet(bill_id)
     attachment = BillAttachment(
@@ -247,6 +273,117 @@ def create_spreadsheet(bill_id):
     db.session.add(attachment)
     db.session.commit()
     return BillAttachmentSchema().jsonify(attachment)
+
+
+# Login ----------------------------------------------------------------------
+class CreateLoginLinkSchema(CamelCaseSchema):
+    email = fields.String()
+
+
+@app.route(
+    "/api/create-login-link",
+    methods=["POST"],
+)
+def create_login_link():
+    data = CreateLoginLinkSchema().load(request.json)
+
+    email_lower = data["email"].lower()
+    user = User.query.filter_by(email=email_lower).one_or_none()
+    if not user:
+        raise exceptions.UnprocessableEntity("user not found")
+
+    login = LoginLink(
+        user_id=user.id,
+        expires_at=now() + timedelta(days=1),
+        token=secrets.token_urlsafe(),
+    )
+    db.session.add(login)
+    db.session.commit()
+
+    send_login_link_email(
+        email_lower, f"{APP_ORIGIN}/login?token={login.token}"
+    )
+
+    return jsonify({})
+
+
+class LoginSchema(CamelCaseSchema):
+    token = fields.String()
+
+
+@app.route(
+    "/api/login",
+    methods=["POST"],
+)
+def login():
+    data = LoginSchema().load(request.json)
+    token = data["token"]
+
+    login_link = LoginLink.query.filter_by(token=token).one_or_none()
+    if not login_link:
+        raise exceptions.Unauthorized()
+
+    user_id = login_link.user_id
+
+    if login_link.expires_at < now():
+        raise exceptions.Unauthorized()
+
+    return jsonify({"authToken": create_jwt(user_id)})
+
+
+# Users ----------------------------------------------------------------------
+class UserSchema(CamelCaseSchema):
+    id = fields.UUID()
+
+    # TODO: On client side, handle email validation failure
+    email = fields.Email()
+    name = fields.String()
+
+
+@app.route(
+    "/api/users",
+    methods=["GET"],
+)
+@auth_required
+def list_users():
+    users = User.query.all()
+
+    return UserSchema(many=True).jsonify(users)
+
+
+@app.route(
+    "/api/users/<uuid:user_id>",
+    methods=["DELETE"],
+)
+@auth_required
+def delete_user(user_id):
+    user = User.query.get(user_id)
+    if not user.can_be_deleted:
+        raise exceptions.UnprocessableEntity()
+    db.session.delete(user)
+    db.session.commit()
+
+    return jsonify({})
+
+
+@app.route(
+    "/api/users",
+    methods=["POST"],
+)
+@auth_required
+def create_user():
+    data = UserSchema().load(request.json)
+    user = User(name=data["name"], email=data["email"].lower())
+    db.session.add(user)
+
+    try:
+        db.session.commit()
+    except IntegrityError as e:
+        raise exceptions.UnprocessableEntity(
+            "User already exists with this email"
+        )
+
+    return jsonify({})
 
 
 # BUG: This seems to leave open stale SQLA sessions

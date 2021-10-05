@@ -6,6 +6,7 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from sqlalchemy.orm import selectinload
+from werkzeug import exceptions
 
 from src import app, models, settings
 
@@ -24,7 +25,7 @@ def _get_google_credentials():
         if creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            raise ValueError(
+            raise exceptions.InternalServerError(
                 f"Creds were invalid but not refreshable: {settings.GOOGLE_CREDENTIALS}"
             )
 

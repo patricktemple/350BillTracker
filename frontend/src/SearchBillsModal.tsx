@@ -4,6 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Bill } from './types';
 import Modal from 'react-bootstrap/Modal';
+import useApiFetch from './useApiFetch';
 
 interface Props {
   show: boolean;
@@ -16,12 +17,14 @@ export default function SearchBillsModal(props: Props): ReactElement {
 
   const [searchResults, setSearchResults] = useState<Bill[] | null>(null);
 
+  const apiFetch = useApiFetch();
+
   function handleSubmit(e: any) {
     const searchText = searchBoxRef.current!.value;
     const params = new URLSearchParams({
       file: searchText
     });
-    fetch('/api/search-bills?' + params)
+    apiFetch('/api/search-bills?' + params)
       .then((response) => response.json())
       .then((response) => {
         setSearchResults(response);

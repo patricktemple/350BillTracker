@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import useInterval from '@restart/hooks/useInterval';
+import useApiFetch from '../useApiFetch';
 
 const SAVE_INTERVAL_MS = 2000;
 
@@ -22,6 +23,7 @@ export default function useAutosavingFormData<T>(
   const [saveInProgress, setSaveInProgress] = useState<boolean>(false);
   const [formState, setFormState] = useState<T>(initialData);
   const [saveError, setSaveError] = useState<boolean>(false);
+  const apiFetch = useApiFetch();
 
   function setFormDataState(newData: T) {
     setLocalSaveVersion(localSaveVersion + 1);
@@ -31,12 +33,9 @@ export default function useAutosavingFormData<T>(
   function maybeSaveUpdates() {
     if (localSaveVersion > remoteSaveVersion && !saveInProgress) {
       setSaveInProgress(true);
-      fetch(path, {
+      apiFetch(path, {
         method: 'PUT',
-        body: JSON.stringify(formState),
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        body: JSON.stringify(formState)
       })
         .then((response) => {
           if (response.status == 200) {

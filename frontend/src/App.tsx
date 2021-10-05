@@ -6,15 +6,40 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
-import React from 'react';
 import styles from './style/App.module.scss';
 import { Link } from 'react-router-dom';
 import { ReactComponent as SettingsIcon } from './assets/settings.svg';
 import { ReactComponent as LogoutIcon } from './assets/logout.svg';
 import { ReactComponent as BillsIcon } from './assets/paper.svg';
 import { ReactComponent as LegislatorIcon } from './assets/person.svg';
+import React, { useState, useContext } from 'react';
+import { MdPeople, MdDescription } from 'react-icons/md';
+import RequestLoginLinkPage from './RequestLoginLinkPage';
+import { AuthContextProvider, AuthContext } from './AuthContext';
+import { useLocation } from 'react-router-dom';
+import LoginFromTokenPage from './LoginFromTokenPage';
+import Button from 'react-bootstrap/Button';
+import SettingsPage from './SettingsPage';
 
-function App() {
+function AppContent() {
+  const authContext = useContext(AuthContext);
+
+  const location = useLocation();
+
+  if (location.pathname === '/login') {
+    return <LoginFromTokenPage />;
+  }
+
+  if (!authContext.token) {
+    return <RequestLoginLinkPage />;
+  }
+
+  function handleLogout(event: any) {
+    event.preventDefault();
+    authContext.updateToken(null);
+    window.location.replace('/');
+  }
+
   return (
     <Router>
       <div className={styles.container}>
@@ -41,12 +66,12 @@ function App() {
         <Link to="/settings" className={styles.settingsLink}>
           Settings
         </Link>
-        <Link to="/logout" className={styles.logoutLogo}>
+        <a href="#" onClick={handleLogout} className={styles.logoutLogo}>
           <LogoutIcon />
-        </Link>
-        <Link to="/settings" className={styles.logoutLink}>
+        </a>
+        <a href="#" onClick={handleLogout} className={styles.logoutLink}>
           Logout
-        </Link>
+        </a>
         <main className={styles.content}>
           <Route path="/" exact>
             <Redirect to="/saved-bills" />
@@ -56,9 +81,20 @@ function App() {
             path="/council-members/:legislatorId?"
             component={LegislatorsPage}
           />
+          <Route path="/settings" component={SettingsPage} />
         </main>
       </div>
     </Router>
+  );
+}
+
+function App() {
+  return (
+    <AuthContextProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </AuthContextProvider>
   );
 }
 

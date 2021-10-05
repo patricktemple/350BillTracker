@@ -11,6 +11,7 @@ import AddAttachmentModal from './AddAttachmentModal';
 import { Link } from 'react-router-dom';
 import useAutosavingFormData from './utils/useAutosavingFormData';
 import ConfirmDeleteBillModel from './ConfirmDeleteBillModal';
+import useApiFetch from './useApiFetch';
 
 interface Props {
   bill: Bill;
@@ -50,25 +51,24 @@ export default function BillDetails(props: Props): ReactElement {
   const [createPhoneBankInProgress, setCreatePhoneBankInProgress] =
     useState<boolean>(false);
 
+  const apiFetch = useApiFetch();
+
   function loadAttachments() {
-    fetch(`/api/saved-bills/${bill.id}/attachments`)
+    apiFetch(`/api/saved-bills/${bill.id}/attachments`)
       .then((response) => response.json())
       .then((response) => {
         setAttachments(response);
       });
   }
 
-  // FIXME: This is loading all sponsorships individually on first page load of list
   useMountEffect(() => {
-    console.log('Mount');
-    fetch(`/api/saved-bills/${bill.id}/sponsorships`)
+    apiFetch(`/api/saved-bills/${bill.id}/sponsorships`)
       .then((response) => response.json())
       .then((response) => {
         setSponsorships(response);
       });
   });
 
-  // FIXME: This is loading all attachments individually on first page load of list
   useMountEffect(() => {
     loadAttachments();
   });
@@ -87,12 +87,9 @@ export default function BillDetails(props: Props): ReactElement {
 
   function handleAddAttachment(description: string, url: string) {
     setAddAttachmentModalOpen(false);
-    fetch(`/api/saved-bills/${bill.id}/attachments`, {
+    apiFetch(`/api/saved-bills/${bill.id}/attachments`, {
       method: 'POST',
-      body: JSON.stringify({ url, name: description }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      body: JSON.stringify({ url, name: description })
     })
       .then((response) => response.json())
       .then((response) => {
@@ -102,11 +99,8 @@ export default function BillDetails(props: Props): ReactElement {
 
   function handleDeleteAttachment(event: any, id: number) {
     event.preventDefault();
-    fetch(`/api/saved-bills/-/attachments/` + id, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      }
+    apiFetch(`/api/saved-bills/-/attachments/` + id, {
+      method: 'DELETE'
     })
       .then((response) => response.json())
       .then((response) => {
@@ -126,11 +120,8 @@ export default function BillDetails(props: Props): ReactElement {
 
   function handleGeneratePhoneBankSheet() {
     setCreatePhoneBankInProgress(true);
-    fetch(`/api/saved-bills/${bill.id}/create-phone-bank-spreadsheet`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      }
+    apiFetch(`/api/saved-bills/${bill.id}/create-phone-bank-spreadsheet`, {
+      method: 'POST'
     })
       .then((response) => response.json())
       .then((response) => {
