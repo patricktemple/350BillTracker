@@ -1,7 +1,10 @@
 from uuid import uuid4
 
+from freezegun import freeze_time
+
 from src.app import app
-from src.auth import auth_required
+from src.auth import auth_required, create_jwt
+from src.models import User, db
 
 
 @app.route(
@@ -37,12 +40,39 @@ def test_authenticated_client__success(client):
     assert response.status_code == 200
 
 
-def test_expired_jwt__unauthorized():
-    pass
+def test_expired_jwt__unauthorized(unauthenticated_client, user_id):
+    user = User(id=user_id, name="test user", email="text@example.com")
+    db.session.add(user)
+    db.session.commit()
+
+    with freeze_time("2000-1-1"):
+        headers = {"Authorization": f"JWT {create_jwt(user_id)}"}
+        response = unauthenticated_client.get(
+            "/test/auth-required-endpoint", headers=headers
+        )
+        assert response.status_code == 200
+
+    with freeze_time("2100-1-1"):
+        response = unauthenticated_client.get(
+            "/test/auth-required-endpoint", headers=headers
+        )
+        assert response.status_code == 401
 
 
-def test_wrong_jwt_secret__unauthorized():
-    pass
+def test_wrong_jwt_secret__unauthorized(unauthenticated_client, user_id):
+    user = User(id=user_id, name="test user", email="text@example.com")
+    db.session.add(user)
+    db.session.commit()
+
+    response = unauthenticated_client.get(
+            "/test/auth-required-endpoint", headers={"Authorization": f"JWT {create_jwt(user_id)}"}
+        )
+    assert response.status_code == 200
+
+    response = unauthenticated_client.get(
+            "/test/auth-required-endpoint", headers={"Authorization": f"JWT {create_jwt(user_id, secret='wrong secret')}"}
+        )
+    assert response.status_code == 401
 
 
 def test_public_endpoint__success(unauthenticated_client):

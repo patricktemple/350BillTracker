@@ -25,10 +25,14 @@ def autouse_fixtures():
 
 
 @pytest.fixture
-def client():
+def user_id():
+    return uuid4()
+
+
+@pytest.fixture
+def client(user_id):
     app.app.test_client_class = ApiClient
     with app.app.test_client() as client:
-        user_id = uuid4()
         user = models.User(
             id=user_id, name="Test user", email="test@example.com"
         )

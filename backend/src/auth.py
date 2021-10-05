@@ -7,6 +7,7 @@ from werkzeug import exceptions
 
 from .models import User
 from .settings import JWT_SECRET
+import logging
 
 JWT_ALGORITHM = "HS256"
 
@@ -19,14 +20,14 @@ JWT_AUDIENCE = "350bt"
 JWT_ISSUER = "350bt"
 
 
-def create_jwt(user_id):
+def create_jwt(user_id, secret=JWT_SECRET):
     payload = {
         "sub": str(user_id),
         "exp": datetime.utcnow() + TOKEN_LIFETIME,
         "aud": JWT_AUDIENCE,
         "iss": JWT_ISSUER,
     }
-    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+    return jwt.encode(payload, secret, algorithm=JWT_ALGORITHM)
 
 
 def verify_jwt(token):
@@ -45,10 +46,14 @@ def auth_required(view_fn):
         if not auth.startswith("JWT "):
             raise exceptions.Unauthorized("Expecting JWT auth type")
 
-        jwt = verify_jwt(auth[4:])
+        try:
+            jwt_decoded = verify_jwt(auth[4:])
+        except jwt.InvalidTokenError as e:
+            logging.exception("JWT decode failed")
+            raise exceptions.Unauthorized()
 
         # Make sure the user still exists
-        if not User.query.get(jwt["sub"]):
+        if not User.query.get(jwt_decoded["sub"]):
             raise exceptions.Forbidden("User from JWT no longer exists")
 
         return view_fn(*args, **kwargs)
