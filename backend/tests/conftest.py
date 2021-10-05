@@ -27,4 +27,10 @@ def autouse_fixtures():
 def client():
     app.app.test_client_class = ApiClient
     with app.app.test_client() as client:
+        user_id = uuid4()
+        user = models.User(id=user_id, name="Test user", email="test@example.com")
+        models.db.session.add(user)
+        models.db.session.commit()
+    
+        client.set_authenticated_user_id(user_id)
         yield client

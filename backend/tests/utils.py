@@ -7,20 +7,22 @@ from uuid import uuid4
 
 
 class ApiClient(FlaskClient):
-    authenticated_user_id = uuid4()
+    authenticated_user_id = None
 
-    # def __init__(self, *, authenticated_user_id=None, **kwargs):
-    #     self.authenticated_user_id = authenticated_user_id
-    #     super(**kwargs)
+    def set_authenticated_user_id(self, user_id):
+        self.authenticated_user_id = user_id
 
-    def open(self, path, *args, **kwargs):
+    def open(self, path, *args, headers=None, **kwargs):
         kwargs.setdefault("content_type", "application/json")
         if kwargs["content_type"] == "application/json" and "data" in kwargs:
             kwargs["data"] = json.dumps(kwargs["data"])
-        if self.authenticated_user_id:
-            kwargs["Authorization"] = f"JWT {create_jwt(self.authenticated_user_id)}"
+        
 
-        return super().open(path, *args, **kwargs)
+        headers = {} if headers is None else headers.copy()
+        if self.authenticated_user_id:
+            headers["Authorization"] = f"JWT {create_jwt(self.authenticated_user_id)}"
+
+        return super().open(path, *args, headers=headers, **kwargs)
 
 
 def assert_response(response, status_code, data):
