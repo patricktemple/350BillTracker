@@ -61,7 +61,7 @@ def _create_legislator_row(legislator):
             legislator.party,
             legislator.district_phone,
             legislator.legislative_phone,
-            f"@{legislator.twitter}" or "",
+            f"@{legislator.twitter}" if legislator.twitter else "",
             legislator.notes or "",
         ]
     )
