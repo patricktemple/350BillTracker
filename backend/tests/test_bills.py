@@ -21,6 +21,11 @@ def create_fake_matter(matter_id):
     }
 
 
+def test_get_bills_unauthorized(unauthenticated_client):
+    response = unauthenticated_client.get("/api/saved-bills")
+    assert response.status_code == 401
+
+
 def test_get_saved_bills(client):
     bill = Bill(
         id=1,
