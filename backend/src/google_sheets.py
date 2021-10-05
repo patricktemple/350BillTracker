@@ -58,10 +58,11 @@ def _create_legislator_row(legislator):
         [
             legislator.name,
             legislator.email,
+            legislator.party,
             legislator.district_phone,
             legislator.legislative_phone,
+            f"@{legislator.twitter}" or "",
             legislator.notes or "",
-            legislator.twitter or "",
         ]
     )
 
@@ -75,10 +76,11 @@ def _create_phone_bank_spreadsheet_data(bill, sponsors, non_sponsors):
             [
                 "Name",
                 "Email",
+                "Party",
                 "District Phone",
                 "Legislative Phone",
-                "Notes",
                 "Twitter",
+                "Notes",
             ],
             bold=True,
         ),

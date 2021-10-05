@@ -4,8 +4,8 @@ most data that we can from the API, we expect these values to change rarely and
 it's fine to have them be fixed.
 """
 
-D = "Democratic"
-R = "Republican"
+D = "D"
+R = "R"
 
 # The API does provide "name", but we have it here too so allow overriding
 # the rendering of the name, and also because it makes this dict much easier
