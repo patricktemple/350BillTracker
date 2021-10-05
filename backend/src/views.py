@@ -334,8 +334,9 @@ def login():
 # Users ----------------------------------------------------------------------
 class UserSchema(CamelCaseSchema):
     id = fields.Integer()
-    # TODO: Validate emails?
-    email = fields.String()
+
+    # TODO: On client side, handle email validation failure
+    email = fields.Email()
     name = fields.String()
 
 
@@ -356,7 +357,7 @@ def list_users():
 )
 @auth_required
 def delete_user(user_id):
-    # TODO: Guard against deletig yourself, or the root user, or something
+    # TODO: Guard against deleting yourself, or the root user, or something
     user = User.query.get(user_id)
     db.session.delete(user)
     db.session.commit()
