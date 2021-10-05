@@ -371,11 +371,9 @@ def delete_user(user_id):
 @auth_required
 def create_user():
     data = UserSchema().load(request.json)
-    user = User(name=data["name"], email=data["email"])
+    user = User(name=data["name"], email=data["email"].lower())
     db.session.add(user)
     db.session.commit()
-
-    # TODO: Guard against duplicate user?
 
     return jsonify({})
 
