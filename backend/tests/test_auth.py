@@ -65,13 +65,17 @@ def test_wrong_jwt_secret__unauthorized(unauthenticated_client, user_id):
     db.session.commit()
 
     response = unauthenticated_client.get(
-            "/test/auth-required-endpoint", headers={"Authorization": f"JWT {create_jwt(user_id)}"}
-        )
+        "/test/auth-required-endpoint",
+        headers={"Authorization": f"JWT {create_jwt(user_id)}"},
+    )
     assert response.status_code == 200
 
     response = unauthenticated_client.get(
-            "/test/auth-required-endpoint", headers={"Authorization": f"JWT {create_jwt(user_id, secret='wrong secret')}"}
-        )
+        "/test/auth-required-endpoint",
+        headers={
+            "Authorization": f"JWT {create_jwt(user_id, secret='wrong secret')}"
+        },
+    )
     assert response.status_code == 401
 
 

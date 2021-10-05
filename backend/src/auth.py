@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta
 from functools import wraps
 
@@ -7,7 +8,6 @@ from werkzeug import exceptions
 
 from .models import User
 from .settings import JWT_SECRET
-import logging
 
 JWT_ALGORITHM = "HS256"
 
