@@ -1,15 +1,16 @@
 """Utilities for using AWS's Simple Email Service to send emails."""
 
+import logging
+
 import boto3
 from botocore.exceptions import ClientError
+from werkzeug import exceptions
 
 from .settings import (
     AWS_ACCESS_KEY_ID,
     AWS_DEFAULT_REGION,
     AWS_SECRET_ACCESS_KEY,
 )
-import logging
-from werkzeug import exceptions
 
 # This guide was important in getting the email address set up:
 # https://medium.com/responsetap-engineering/easily-create-email-addresses-for-your-route53-custom-domain-589d099dd0f2
@@ -67,4 +68,6 @@ def send_login_link_email(email_address, login_link):
         logging.exception(e)
         raise exceptions.ServiceUnavailable("Could not send email")
     else:
-        logging.info(f"Email sent successfully to {email_address}, message ID: {response['MessageId']}")
+        logging.info(
+            f"Email sent successfully to {email_address}, message ID: {response['MessageId']}"
+        )

@@ -3,17 +3,17 @@ from uuid import uuid4
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import (
     Boolean,
+    CheckConstraint,
     Column,
     ForeignKey,
     Integer,
     Text,
     TypeDecorator,
-    CheckConstraint
+    sql,
 )
 from sqlalchemy.dialects.postgresql import TIMESTAMP as _TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID as _UUID
 from sqlalchemy.orm import relationship
-from sqlalchemy import sql
 
 from .app import app
 from .utils import now
@@ -119,7 +119,9 @@ class User(db.Model):
     __tablename__ = "users"
     id = Column(UUID, primary_key=True, default=uuid4)
 
-    email = Column(Text, index=True, nullable=False, unique=True) # always lowercase
+    email = Column(
+        Text, index=True, nullable=False, unique=True
+    )  # always lowercase
     name = Column(Text)
 
     login_links = relationship(
@@ -130,9 +132,10 @@ class User(db.Model):
     can_be_deleted = Column(Boolean, nullable=False, server_default=sql.true())
 
     __table_args__ = (
-            CheckConstraint('email = lower(email)', name='check_email_is_lowercase'),
+        CheckConstraint(
+            "email = lower(email)", name="check_email_is_lowercase"
+        ),
     )
-
 
 
 class LoginLink(db.Model):

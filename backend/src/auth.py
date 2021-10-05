@@ -3,11 +3,10 @@ from functools import wraps
 
 import jwt
 from flask import request
+from werkzeug import exceptions
 
 from .models import User
 from .settings import JWT_SECRET
-
-from werkzeug import exceptions
 
 JWT_ALGORITHM = "HS256"
 
@@ -18,6 +17,7 @@ JWT_ALGORITHM = "HS256"
 TOKEN_LIFETIME = timedelta(hours=1)
 JWT_AUDIENCE = "350bt"
 JWT_ISSUER = "350bt"
+
 
 def create_jwt(user_id):
     payload = {

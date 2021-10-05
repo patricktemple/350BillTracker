@@ -1,9 +1,10 @@
 import json
-
-from flask.testing import FlaskClient
-import jwt
-from src.auth import create_jwt
 from uuid import uuid4
+
+import jwt
+from flask.testing import FlaskClient
+
+from src.auth import create_jwt
 
 
 class ApiClient(FlaskClient):
@@ -16,11 +17,12 @@ class ApiClient(FlaskClient):
         kwargs.setdefault("content_type", "application/json")
         if kwargs["content_type"] == "application/json" and "data" in kwargs:
             kwargs["data"] = json.dumps(kwargs["data"])
-        
 
         headers = {} if headers is None else headers.copy()
         if self.authenticated_user_id:
-            headers["Authorization"] = f"JWT {create_jwt(self.authenticated_user_id)}"
+            headers[
+                "Authorization"
+            ] = f"JWT {create_jwt(self.authenticated_user_id)}"
 
         return super().open(path, *args, headers=headers, **kwargs)
 

@@ -4,6 +4,7 @@ from datetime import date, timedelta
 from flask import jsonify, render_template, request
 from marshmallow import fields
 from sqlalchemy.orm import joinedload
+from werkzeug import exceptions
 
 from .app import app
 from .app import marshmallow as ma
@@ -27,7 +28,6 @@ from .models import (
 from .ses import send_login_link_email
 from .settings import APP_ORIGIN
 from .utils import now
-from werkzeug import exceptions
 
 
 def camelcase(s):
