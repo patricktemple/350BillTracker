@@ -24,6 +24,7 @@ interface Props {
 const initialValue = localStorage.getItem(STORAGE_KEY);
 
 // TODO: This stuff needs tests now
+// Actuall, localStorage for stuff like this is bad. Use cookies.
 export function AuthContextProvider(props: Props) {
   const [token, setToken] = useState<string | null>(initialValue);
 

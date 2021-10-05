@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from functools import wraps
 
 import jwt
@@ -7,20 +8,35 @@ from .settings import JWT_SECRET
 
 JWT_ALGORITHM = "HS256"
 
+# Normally we wouldn't want such long tokens. But the data here is not sensitive
+# and the auth is meant to provide just a thin layer of protection. Long browser
+# sessions are most important.
+# TODO: Extend this. This is short just for testing sakes early on.
+TOKEN_LIFETIME = timedelta(hours=1)
+JWT_AUDIENCE = "350bt"
+JWT_ISSUER = "350bt"
+
+# Notes from:
 # https://fusionauth.io/learn/expert-advice/tokens/building-a-secure-jwt/
+# https://auth0.com/docs/security/tokens/json-web-tokens/json-web-token-claims
+
 
 def create_jwt(user_id):
-    # TODO: Experiation time, iat
-    # Use this doc: https://auth0.com/docs/security/tokens/json-web-tokens/json-web-token-claims
-
-    # Also set iss, aud, exp, iat
-    payload = {"sub": str(user_id)}
+    payload = {
+        "sub": str(user_id),
+        "exp": datetime.utcnow() + TOKEN_LIFETIME,
+        "aud": JWT_AUDIENCE,
+        "iss": JWT_ISSUER,
+    }
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
 
 def verify_jwt(token):
     # TODO check expiration time
-    return jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+    # Automatically checks expiration time, TODO test this:
+    return jwt.decode(
+        token, JWT_SECRET, audience=JWT_AUDIENCE, algorithms=[JWT_ALGORITHM]
+    )
 
 
 # TODO: Rewrite this to invert the auth check

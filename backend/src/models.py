@@ -150,3 +150,5 @@ class LoginLink(db.Model):
 
     # Unclear if this adds much security
     # used = Column(Boolean)
+    # Yes! Because once they click on the link, it's been sent in the browser url
+    # but for usability... this might be enough

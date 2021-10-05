@@ -56,7 +56,10 @@ export default function SettingsPage() {
       <h1 className={style.title}>Settings</h1>
       <div className={style.content}>
         <h2>Users</h2>
-        <p>Invite 350 Brooklyn volunteers to access this bill tracker. They&apos;ll need to be on this list in order to log in.</p>
+        <p>
+          Invite 350 Brooklyn volunteers to access this bill tracker.
+          They&apos;ll need to be on this list in order to log in.
+        </p>
         <div style={{ textAlign: 'right' }}>
           <Button onClick={handleInvite} size="sm" className="mb-2">
             Invite
