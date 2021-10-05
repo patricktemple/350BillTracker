@@ -333,7 +333,7 @@ def login():
 
 # Users ----------------------------------------------------------------------
 class UserSchema(CamelCaseSchema):
-    id = fields.Integer()
+    id = fields.UUID()
 
     # TODO: On client side, handle email validation failure
     email = fields.Email()
@@ -352,13 +352,14 @@ def list_users():
 
 
 @app.route(
-    "/api/users/<int:user_id>",
+    "/api/users/<uuid:user_id>",
     methods=["DELETE"],
 )
 @auth_required
 def delete_user(user_id):
-    # TODO: Guard against deleting yourself, or the root user, or something
     user = User.query.get(user_id)
+    if not user.can_be_deleted:
+        raise ValueError("this user cannot be deleted")
     db.session.delete(user)
     db.session.commit()
 
@@ -379,11 +380,6 @@ def create_user():
     # TODO: Guard against duplicate user?
 
     return jsonify({})
-
-
-# NEXT STEPS: Need to guard API calls with the token
-# And do real JWTs
-# And send emails when someone requests a link
 
 
 # BUG: This seems to leave open stale SQLA sessions

@@ -12,6 +12,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import TIMESTAMP as _TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID as _UUID
 from sqlalchemy.orm import relationship
+from sqlalchemy import sql
 
 from .app import app
 from .utils import now
@@ -122,6 +123,9 @@ class User(db.Model):
     login_links = relationship(
         "LoginLink", back_populates="user", cascade="all, delete"
     )
+
+    # The "root" user can never be deleted.
+    can_be_deleted = Column(Boolean, nullable=False, server_default=sql.true())
 
     # TODO: Unique constraint on email lower
 
