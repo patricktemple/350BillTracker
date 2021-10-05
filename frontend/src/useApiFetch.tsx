@@ -3,7 +3,7 @@ import { AuthContext } from './AuthContext';
 
 interface ApiFetchParams {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  body?: any; // or Record of some type?
+  body?: any;
 }
 
 export default function useApiFetch() {

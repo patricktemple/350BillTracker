@@ -42,7 +42,7 @@ export default function SettingsPage() {
   function handleInviteUser(email: string, name: string) {
     apiFetch('/api/users', {
       method: 'POST',
-      body: JSON.stringify({ email, name }) // TODO: No json stringify, put that in apiFetch
+      body: JSON.stringify({ email, name })
     })
       .then((response) => response.json())
       .then((response) => {

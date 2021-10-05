@@ -52,7 +52,6 @@ def auth_required(view_fn):
             logging.exception("JWT decode failed")
             raise exceptions.Unauthorized()
 
-        # Make sure the user still exists
         if not User.query.get(jwt_decoded["sub"]):
             raise exceptions.Forbidden("User from JWT no longer exists")
 
