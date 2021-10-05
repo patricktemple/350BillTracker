@@ -5,6 +5,7 @@ from flask import jsonify, render_template, request
 from marshmallow import fields
 from sqlalchemy.orm import joinedload
 from werkzeug import exceptions
+from sqlalchemy.exc import IntegrityError
 
 from .app import app
 from .app import marshmallow as ma
@@ -366,7 +367,7 @@ def delete_user(user_id):
 
 
 @app.route(
-    "/api/users/",
+    "/api/users",
     methods=["POST"],
 )
 @auth_required
@@ -374,7 +375,11 @@ def create_user():
     data = UserSchema().load(request.json)
     user = User(name=data["name"], email=data["email"].lower())
     db.session.add(user)
-    db.session.commit()
+
+    try:
+        db.session.commit()
+    except IntegrityError as e:
+        raise exceptions.UnprocessableEntity("User already exists with this email")
 
     return jsonify({})
 

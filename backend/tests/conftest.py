@@ -31,14 +31,18 @@ def user_id():
 
 @pytest.fixture
 def user_email():
-    return "text@example.com"
+    return "test@example.com"
+
+@pytest.fixture
+def user_name():
+    return "Test user"
 
 
 @pytest.fixture
-def client(user_id, user_email):
+def client(user_id, user_email, user_name):
     app.app.test_client_class = ApiClient
     with app.app.test_client() as client:
-        user = models.User(id=user_id, name="Test user", email=user_email)
+        user = models.User(id=user_id, name=user_name, email=user_email)
         models.db.session.add(user)
         models.db.session.commit()
 
