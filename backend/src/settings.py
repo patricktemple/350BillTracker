@@ -7,7 +7,7 @@ GOOGLE_CREDENTIALS = b64decode(
     os.environ["GOOGLE_CREDENTIALS"].encode("utf-8")
 ).decode("utf-8")
 
-JWT_SECRET = "TODO make a real secret"
+JWT_SECRET = os.environ["JWT_SECRET"]
 
 AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
 AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]

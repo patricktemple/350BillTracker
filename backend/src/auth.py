@@ -7,10 +7,13 @@ from .settings import JWT_SECRET
 
 JWT_ALGORITHM = "HS256"
 
+# https://fusionauth.io/learn/expert-advice/tokens/building-a-secure-jwt/
 
 def create_jwt(user_id):
     # TODO: Experiation time, iat
     # Use this doc: https://auth0.com/docs/security/tokens/json-web-tokens/json-web-token-claims
+
+    # Also set iss, aud, exp, iat
     payload = {"sub": str(user_id)}
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
