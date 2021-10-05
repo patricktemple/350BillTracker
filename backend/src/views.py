@@ -338,6 +338,7 @@ class UserSchema(CamelCaseSchema):
     # TODO: On client side, handle email validation failure
     email = fields.Email()
     name = fields.String()
+    can_be_deleted = fields.Boolean()
 
 
 @app.route(

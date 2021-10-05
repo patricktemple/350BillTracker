@@ -59,4 +59,5 @@ export interface User {
   id: Uuid;
   name: string;
   email: string;
+  canBeDeleted: boolean;
 }
