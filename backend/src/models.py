@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import (
     Boolean,
@@ -13,7 +15,6 @@ from sqlalchemy.orm import relationship
 
 from .app import app
 from .utils import now
-from uuid import uuid4
 
 db = SQLAlchemy(app)
 

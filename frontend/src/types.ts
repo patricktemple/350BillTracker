@@ -17,8 +17,6 @@ export interface Bill {
   nickname: string;
 }
 
-
-
 // TODO: Change types to reflect nullability
 export interface Legislator {
   id: number;

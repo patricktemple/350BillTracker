@@ -4,8 +4,8 @@ from functools import wraps
 import jwt
 from flask import request
 
-from .settings import JWT_SECRET
 from .models import User
+from .settings import JWT_SECRET
 
 JWT_ALGORITHM = "HS256"
 
@@ -50,9 +50,9 @@ def auth_required(view_fn):
             raise ValueError("Expecting JWT auth type")
 
         jwt = verify_jwt(auth[4:])
-    
+
         # Make sure the user still exists
-        if not User.query.get(jwt['sub']):
+        if not User.query.get(jwt["sub"]):
             raise ValueError("User from JWT no longer exists")
 
         return view_fn(*args, **kwargs)
