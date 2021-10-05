@@ -12,14 +12,14 @@ R = "Republican"
 # to read.
 # TODO: Fill in the twitter data
 STATIC_DATA_BY_LEGISLATOR_ID = {
-    7739: {"name": "Adrienne E. Adams", "twitter": None, "party": D},
-    7747: {"name": "Alicka Ampry-Samuel ", "twitter": None, "party": D},
-    7742: {"name": "Diana Ayala ", "twitter": None, "party": D},
-    7623: {"name": "Inez D. Barron", "twitter": None, "party": D},
-    7264: {"name": "Joseph C. Borelli", "twitter": None, "party": R},
-    7748: {"name": "Justin L. Brannan", "twitter": None, "party": D},
-    7561: {"name": "Fernando Cabrera ", "twitter": None, "party": D},
-    7562: {"name": "Margaret S. Chin", "twitter": None, "party": D},
+    7739: {"name": "Adrienne E. Adams", "twitter": "AdrienneEAdams1", "party": D},
+    7747: {"name": "Alicka Ampry-Samuel ", "twitter": "CMAlickaASamuel", "party": D},
+    7742: {"name": "Diana Ayala ", "twitter": "DianaAyalaNYC", "party": D},
+    7623: {"name": "Inez D. Barron", "twitter": "CMInezDBarron", "party": D},
+    7264: {"name": "Joseph C. Borelli", "twitter": "JoeBorelliNYC", "party": R},
+    7748: {"name": "Justin L. Brannan", "twitter": "JustinBrannan", "party": D},
+    7561: {"name": "Fernando Cabrera ", "twitter": "FCabreraNY", "party": D},
+    7562: {"name": "Margaret S. Chin", "twitter": "CM_MargaretChin", "party": D},
     7604: {"name": "Robert E. Cornegy, Jr.", "twitter": None, "party": D},
     7628: {"name": "Laurie A. Cumbo", "twitter": None, "party": D},
     7744: {"name": "Ruben Diaz, Sr.", "twitter": None, "party": D},
