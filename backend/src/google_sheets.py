@@ -8,6 +8,7 @@ from googleapiclient.discovery import build
 from sqlalchemy.orm import selectinload
 
 from src import app, models, settings
+from werkzeug import exceptions
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -24,7 +25,7 @@ def _get_google_credentials():
         if creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            raise ValueError(
+            raise exceptions.InternalServerError(
                 f"Creds were invalid but not refreshable: {settings.GOOGLE_CREDENTIALS}"
             )
 

@@ -7,6 +7,8 @@ from flask import request
 from .models import User
 from .settings import JWT_SECRET
 
+from werkzeug import exceptions
+
 JWT_ALGORITHM = "HS256"
 
 # Normally we wouldn't want such long tokens. But the data here is not sensitive
@@ -39,16 +41,15 @@ def auth_required(view_fn):
     def check_auth_and_run(*args, **kwargs):
         auth = request.headers.get("Authorization")
         if not auth:
-            # TODO: HTTP error types in flask?
-            raise ValueError("Authorization required")
+            raise exceptions.Unauthorized("No authorization header")
         if not auth.startswith("JWT "):
-            raise ValueError("Expecting JWT auth type")
+            raise exceptions.Unauthorized("Expecting JWT auth type")
 
         jwt = verify_jwt(auth[4:])
 
         # Make sure the user still exists
         if not User.query.get(jwt["sub"]):
-            raise ValueError("User from JWT no longer exists")
+            raise exceptions.Forbidden("User from JWT no longer exists")
 
         return view_fn(*args, **kwargs)
 

@@ -27,6 +27,7 @@ from .models import (
 from .ses import send_login_link_email
 from .settings import APP_ORIGIN
 from .utils import now
+from werkzeug import exceptions
 
 
 def camelcase(s):
@@ -285,12 +286,10 @@ class CreateLoginLinkSchema(CamelCaseSchema):
 def create_login_link():
     data = CreateLoginLinkSchema().load(request.json)
 
-    # TODO: Figure out lowercase stuff
     email_lower = data["email"].lower()
     user = User.query.filter_by(email=email_lower).one_or_none()
     if not user:
-        # return API response instead
-        raise ValueError("user not found")
+        raise exceptions.UnprocessableEntity("user not found")
 
     login = LoginLink(
         user_id=user.id,
@@ -324,7 +323,7 @@ def login():
     user_id = login_link.user_id
 
     if login_link.expires_at < now():
-        raise ValueError("link is expired")
+        raise exceptions.Forbidden()
 
     return jsonify({"authToken": create_jwt(user_id)})
 
@@ -357,7 +356,7 @@ def list_users():
 def delete_user(user_id):
     user = User.query.get(user_id)
     if not user.can_be_deleted:
-        raise ValueError("this user cannot be deleted")
+        raise exceptions.UnprocessableEntity()
     db.session.delete(user)
     db.session.commit()
 

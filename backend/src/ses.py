@@ -9,6 +9,7 @@ from .settings import (
     AWS_SECRET_ACCESS_KEY,
 )
 import logging
+from werkzeug import exceptions
 
 # This guide was important in getting the email address set up:
 # https://medium.com/responsetap-engineering/easily-create-email-addresses-for-your-route53-custom-domain-589d099dd0f2
@@ -62,9 +63,8 @@ def send_login_link_email(email_address, login_link):
             },
             Source=SENDER,
         )
-    # TODO: Better error handling
     except ClientError as e:
         logging.exception(e)
-        raise ValueError("failed to send email")
+        raise exceptions.ServiceUnavailable("Could not send email")
     else:
         logging.info(f"Email sent successfully to {email_address}, message ID: {response['MessageId']}")

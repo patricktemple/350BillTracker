@@ -34,7 +34,6 @@ export function AuthContextProvider(props: Props) {
     } else {
       localStorage.removeItem(STORAGE_KEY);
     }
-    // TODO: This might not work in incognito? Session storage needed?
     setToken(token);
   }
   const value = { token, updateToken };
