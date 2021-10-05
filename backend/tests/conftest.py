@@ -34,3 +34,10 @@ def client():
     
         client.set_authenticated_user_id(user_id)
         yield client
+
+
+@pytest.fixture
+def unauthenticated_client():
+    app.app.test_client_class = ApiClient
+    with app.app.test_client() as client:
+        yield client
