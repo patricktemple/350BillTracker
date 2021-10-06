@@ -5,7 +5,7 @@ import styles from './style/RequestLoginLinkPage.module.scss';
 
 export default function RequestLoginLinkPage() {
   const [emailAddress, setEmailAddress] = useState<string>('');
-  const [loginLinkSent, setLoginLinkSent] = useState<boolean>(false);
+  const [statusText, setStatusText] = useState<string | null>(null);
   const [requestInProgress, setRequestInProgress] = useState<boolean>(false);
 
   function emailAddressChanged(event: any) {
@@ -23,9 +23,23 @@ export default function RequestLoginLinkPage() {
       }
     })
       // TODO: Handle failed login
-      .then((response) => response.json())
       .then((response) => {
-        setLoginLinkSent(true);
+        if (response.status == 422) {
+          throw Error(
+            'This email was not found in the system. You need to be invited to this tool before you can log in.'
+          );
+        }
+        if (!response.ok) {
+          throw Error('An unexpected error occurred.');
+        }
+        return response.json();
+      })
+      .then((response) => {
+        setStatusText('A link to login has been sent to this email address.');
+        setRequestInProgress(false);
+      })
+      .catch((err) => {
+        setStatusText(err.message);
         setRequestInProgress(false);
       });
   }
@@ -50,11 +64,7 @@ export default function RequestLoginLinkPage() {
           <Button size="sm" type="submit" disabled={requestInProgress}>
             {requestInProgress ? 'Requesting...' : 'Request login link'}
           </Button>
-          {loginLinkSent && (
-            <p className="mt-3">
-              A link to login has been sent to this email address.
-            </p>
-          )}
+          {statusText && <p className="mt-3">{statusText}</p>}
         </Form>
       </div>
     </div>

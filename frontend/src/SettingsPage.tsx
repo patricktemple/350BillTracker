@@ -39,10 +39,9 @@ export default function SettingsPage() {
     apiFetch('/api/users', {
       method: 'POST',
       body: { email, name }
-    })
-      .then((response) => {
-        loadUsers();
-      });
+    }).then((response) => {
+      loadUsers();
+    });
     setInviteUserModalVisible(false);
   }
 
