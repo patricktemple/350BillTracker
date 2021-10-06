@@ -5,7 +5,7 @@ import json
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import joinedload, selectinload
 from werkzeug import exceptions
 
 from src import app, models, settings
@@ -54,6 +54,9 @@ def _create_row_data(raw_values, bold=False):
 
 
 def _create_legislator_row(legislator):
+    staffer_strings = [s.display_string for s in legislator.staffers]
+    staffer_text = "\n".join(staffer_strings)
+
     return _create_row_data(
         [
             legislator.name,
@@ -62,6 +65,7 @@ def _create_legislator_row(legislator):
             legislator.district_phone,
             legislator.legislative_phone,
             f"@{legislator.twitter}" if legislator.twitter else "",
+            staffer_text,
             legislator.notes or "",
         ]
     )
@@ -80,6 +84,7 @@ def _create_phone_bank_spreadsheet_data(bill, sponsors, non_sponsors):
                 "District Phone",
                 "Legislative Phone",
                 "Twitter",
+                "Staffers",
                 "Notes",
             ],
             bold=True,
@@ -107,7 +112,10 @@ def create_phone_bank_spreadsheet(bill_id):
     anyone with the link."""
     bill = (
         models.Bill.query.filter_by(id=bill_id)
-        .options(selectinload(models.Bill.sponsorships))
+        .options(
+            selectinload(models.Bill.sponsorships),
+            selectinload("sponsorships.legislator.staffers"),
+        )
         .one()
     )
 

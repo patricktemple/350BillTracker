@@ -99,6 +99,21 @@ class Staffer(db.Model):
 
     legislator = relationship("Legislator", back_populates="staffers")
 
+    @property
+    def display_twitter(self):
+        return "@" + self.twitter if self.twitter else None
+
+    @property
+    def display_string(self):
+        contact_methods = [self.phone, self.email, self.display_twitter]
+        contact_methods = [c for c in contact_methods if c]
+        contact_string = ", ".join(contact_methods)
+        if not contact_string:
+            contact_string = "No contact info"
+        title_string = f"{self.title} - " if self.title else ""
+
+        return f"{title_string}{self.name} ({contact_string})"
+
 
 class BillSponsorship(db.Model):
     __tablename__ = "bill_sponsorships"
