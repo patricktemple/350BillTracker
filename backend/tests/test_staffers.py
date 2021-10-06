@@ -39,25 +39,26 @@ def test_get_legislator_staffers(client):
     )
 
 
-# def test_add_bill_attachments(client):
-#     bill = Bill(
-#         id=1, name="name", file="file", title="title", intro_date=now()
-#     )
-#     db.session.add(bill)
-#     db.session.commit()
+def test_add_legislator_staffer(client):
+    legislator = Legislator(id=1, name="name")
+    db.session.add(legislator)
+    db.session.commit()
 
-#     response = client.post(
-#         "/api/saved-bills/1/attachments",
-#         data={
-#             "name": "power hour tracker",
-#             "url": "http://sheets.google.com/123",
-#         },
-#     )
-#     assert response.status_code == 200
+    response = client.post(
+        "/api/legislators/1/staffers",
+        data={
+            "name": "staffer",
+            "title": "chief of staff",
+            "twitter": "TheChief",
+            "phone": "111-111-1111",
+            "email": "test@example.com"
+        },
+    )
+    assert response.status_code == 200
 
-#     attachment = BillAttachment.query.one()
-#     assert attachment.name == "power hour tracker"
-#     assert attachment.url == "http://sheets.google.com/123"
+    attachment = Staffer.query.one()
+    assert attachment.name == "staffer"
+    # assert attachment.url == "http://sheets.google.com/123"
 
 
 # def test_delete_bill_attachment(client):
