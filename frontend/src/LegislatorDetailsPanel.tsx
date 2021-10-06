@@ -22,9 +22,11 @@ interface FormData {
 
 function formatStaffer(staffer: Staffer) {
   // TODO: Add @ and link twitter
-  const contactString = [staffer.phone, staffer.email, staffer.twitter]
-    .filter((item) => !!item)
-    .join(', ');
+  const contactElements: (string | ReactElement)[] = [staffer.phone, staffer.email].filter((item) => !!item);
+  if (staffer.twitter) {
+    contactElements.push(<a href={`https://www.twitter.com/${staffer.twitter}`}>@{staffer.twitter}</a>);
+  }
+  const contactString = contactElements.map((item, i) => <>{item}{i < contactElements.length - 1 && ', '}</>);
 
   return (
     <>
@@ -79,7 +81,7 @@ export default function LegislatorDetailsPanel(props: Props) {
     setAddStafferModalVisible(false);
     apiFetch(`/api/legislators/${legislator.id}/staffers`, {
       method: 'POST',
-      body: { name, title, phone, email, twitter }
+      body: { name: name || null, title: title || null, phone: phone || null, email: email || null, twitter: twitter || null }
     }).then((response) => {
       loadStaffers();
     });
