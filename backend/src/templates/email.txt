@@ -1,0 +1,6 @@
+Log in to 350 Brooklyn Bill Tracker
+
+Click the link below to be redirected back to the app and log in:
+{{ login_link }}
+
+Your session will be saved, and you should not need to repeat this often.
