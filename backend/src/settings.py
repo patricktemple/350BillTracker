@@ -17,6 +17,8 @@ APP_ORIGIN = os.environ["APP_ORIGIN"]
 
 ENABLE_CRON = os.environ.get("ENABLE_CRON", "True") == "True"
 
+APP_TITLE = os.environ.get("APP_TITLE", "350 Brooklyn Bill Tracker")
+
 
 # TODO: Share this with TogglSync via a utils package?
 if hostname := os.environ.get("RDS_HOSTNAME"):

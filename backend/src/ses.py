@@ -6,12 +6,13 @@ from boto3 import client
 from botocore.exceptions import ClientError
 from werkzeug import exceptions
 from flask import render_template
+from .settings import APP_TITLE
 
 # This guide was important in getting the email address set up:
 # https://medium.com/responsetap-engineering/easily-create-email-addresses-for-your-route53-custom-domain-589d099dd0f2
 client = client("ses")
 
-SENDER = "350 Bill Tracker <no-reply@350billtracker.com>"
+SENDER = f"{APP_TITLE} <no-reply@350billtracker.com>"
 CHARSET = "UTF-8"
 
 
