@@ -16,7 +16,6 @@ export default function SettingsPage() {
 
   function loadUsers() {
     apiFetch('/api/users')
-      .then((response) => response.json())
       .then((response) => {
         setUsers(response);
       });
@@ -33,7 +32,6 @@ export default function SettingsPage() {
     apiFetch('/api/users/' + id, {
       method: 'DELETE'
     })
-      .then((response) => response.json())
       .then((response) => {
         loadUsers();
       });
@@ -42,7 +40,7 @@ export default function SettingsPage() {
   function handleInviteUser(email: string, name: string) {
     apiFetch('/api/users', {
       method: 'POST',
-      body: JSON.stringify({ email, name })
+      body: { email, name }
     })
       .then((response) => response.json())
       .then((response) => {

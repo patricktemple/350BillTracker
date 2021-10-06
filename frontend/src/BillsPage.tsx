@@ -25,7 +25,6 @@ export default function SavedBillsPage({
 
   function loadBillList() {
     apiFetch('/api/saved-bills')
-      .then((response) => response.json())
       .then((response) => {
         setBills(response);
       });
@@ -38,9 +37,8 @@ export default function SavedBillsPage({
   function handleTrackBill(id: number) {
     apiFetch('/api/saved-bills', {
       method: 'POST',
-      body: JSON.stringify({ id })
+      body: { id }
     })
-      .then((response) => response.json())
       .then((response) => {
         loadBillList();
       });
@@ -50,7 +48,6 @@ export default function SavedBillsPage({
     apiFetch(`/api/saved-bills/` + billId, {
       method: 'DELETE'
     })
-      .then((response) => response.json())
       .then((response) => {
         loadBillList();
       });

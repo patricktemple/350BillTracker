@@ -33,7 +33,6 @@ export default function LegislatorDetailsPanel(props: Props) {
 
   useMountEffect(() => {
     apiFetch(`/api/legislators/${legislator.id}/sponsorships`)
-      .then((response) => response.json())
       .then((response) => {
         setSponsorships(response);
       });

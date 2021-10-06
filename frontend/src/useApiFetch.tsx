@@ -17,13 +17,26 @@ export default function useApiFetch() {
     headers['Authorization'] = 'JWT ' + authContext.token;
   }
 
-  // TODO: Handle JSON.stringify for callers, too
-  function apiFetch(path: string, params?: ApiFetchParams) {
+  async function apiFetch(path: string, params?: ApiFetchParams) {
     const fetchParams = params || {};
-    return fetch(path, {
+    if (fetchParams.body != null) {
+      fetchParams.body = JSON.stringify(fetchParams.body);
+    }
+    const response = await fetch(path, {
       headers,
       ...fetchParams
     });
+    if (response.ok) {
+      return response.json();
+    }
+
+    if (response.status === 401) {
+      // Assume that the token has expired. Refresh to be bounced to the login page.
+      authContext.updateToken(null);
+      window.location.reload();
+    }
+  
+    throw Error("API call failed with status " + response.status);
   }
 
   return apiFetch;

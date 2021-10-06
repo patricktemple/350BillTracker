@@ -2,7 +2,6 @@ import React, { ReactElement, useState } from 'react';
 
 const STORAGE_KEY = 'authToken';
 
-// TODO: Handle token expiration
 export interface AuthState {
   token: string | null;
   updateToken: (value: string | null) => void;

@@ -24,7 +24,6 @@ export default function ConcilMembersPage({
 
   useMountEffect(() => {
     apiFetch('/api/legislators')
-      .then((response) => response.json())
       .then((response) => {
         setLegislators(response);
       });
