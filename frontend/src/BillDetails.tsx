@@ -55,7 +55,6 @@ export default function BillDetails(props: Props): ReactElement {
 
   function loadAttachments() {
     apiFetch(`/api/saved-bills/${bill.id}/attachments`)
-      .then((response) => response.json())
       .then((response) => {
         setAttachments(response);
       });
@@ -63,7 +62,6 @@ export default function BillDetails(props: Props): ReactElement {
 
   useMountEffect(() => {
     apiFetch(`/api/saved-bills/${bill.id}/sponsorships`)
-      .then((response) => response.json())
       .then((response) => {
         setSponsorships(response);
       });
@@ -89,9 +87,8 @@ export default function BillDetails(props: Props): ReactElement {
     setAddAttachmentModalOpen(false);
     apiFetch(`/api/saved-bills/${bill.id}/attachments`, {
       method: 'POST',
-      body: JSON.stringify({ url, name: description })
+      body: { url, name: description }
     })
-      .then((response) => response.json())
       .then((response) => {
         loadAttachments();
       });
@@ -102,7 +99,6 @@ export default function BillDetails(props: Props): ReactElement {
     apiFetch(`/api/saved-bills/-/attachments/` + id, {
       method: 'DELETE'
     })
-      .then((response) => response.json())
       .then((response) => {
         loadAttachments();
       });
@@ -123,7 +119,6 @@ export default function BillDetails(props: Props): ReactElement {
     apiFetch(`/api/saved-bills/${bill.id}/create-phone-bank-spreadsheet`, {
       method: 'POST'
     })
-      .then((response) => response.json())
       .then((response) => {
         setCreatePhoneBankInProgress(false);
         loadAttachments();

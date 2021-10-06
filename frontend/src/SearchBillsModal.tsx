@@ -25,7 +25,6 @@ export default function SearchBillsModal(props: Props): ReactElement {
       file: searchText
     });
     apiFetch('/api/search-bills?' + params)
-      .then((response) => response.json())
       .then((response) => {
         setSearchResults(response);
       });

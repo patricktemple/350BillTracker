@@ -35,16 +35,8 @@ export default function useAutosavingFormData<T>(
       setSaveInProgress(true);
       apiFetch(path, {
         method: 'PUT',
-        body: JSON.stringify(formState)
+        body: formState
       })
-        .then((response) => {
-          if (response.status == 200) {
-            return response.json();
-          } else {
-            setSaveInProgress(false);
-            throw new Error('Failed to save form data');
-          }
-        })
         .then((response) => {
           setSaveInProgress(false);
           setRemoteSaveVersion(localSaveVersion);
