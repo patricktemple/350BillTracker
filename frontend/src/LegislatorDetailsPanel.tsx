@@ -2,7 +2,7 @@ import React, { useState, ReactElement } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { Legislator, SingleMemberSponsorship, Staffer } from './types';
+import { Legislator, SingleMemberSponsorship, Staffer, Uuid } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Stack from 'react-bootstrap/Stack';
 import { Link } from 'react-router-dom';
@@ -72,6 +72,16 @@ export default function LegislatorDetailsPanel(props: Props) {
       .then((response) => {
         loadStaffers();
       });
+  }
+
+  function handleRemoveStaffer(e: any, id: Uuid) {
+    // TODO: Show a confirmation?
+    apiFetch(`/api/legislators/-/staffers/` + id, {
+      method: "DELETE",
+    })
+    .then((response) => {
+      loadStaffers();
+    });
   }
 
   return (
@@ -147,7 +157,7 @@ export default function LegislatorDetailsPanel(props: Props) {
         </Col>
         <Col>
           {staffers && staffers.map(staffer => (
-            <div key={staffer.id}>{formatStaffer(staffer)}</div>
+            <div key={staffer.id}>{formatStaffer(staffer)} [<a href="#" onClick={(e) => handleRemoveStaffer(e, staffer.id)}>Delete</a>]</div>
           ))}
         </Col>
         <AddStafferModal show={addStafferModalVisible} handleAddStaffer={handleAddStaffer} onHide={() => setAddStafferModalVisible(false)}/>

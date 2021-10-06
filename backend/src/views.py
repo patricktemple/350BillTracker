@@ -240,6 +240,20 @@ def add_legislator_staffer(legislator_id):
     return jsonify({})
 
 
+
+@app.route("/api/legislators/-/staffers/<uuid:staffer_id>", methods=["DELETE"])
+@auth_required
+def delete_staffer(staffer_id):
+    staffer = Staffer.query.get(staffer_id)
+    if not staffer:
+        raise exceptions.NotFound()
+    db.session.delete(staffer)
+    db.session.commit()
+
+    # TODO: Return the object in all Creates, to be consistent
+    return jsonify({})
+
+
 # Bill sponsorships ----------------------------------------------------------------------
 class SingleBillSponsorshipsSchema(CamelCaseSchema):
     bill_id = fields.Integer(required=True)
