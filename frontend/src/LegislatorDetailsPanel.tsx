@@ -86,6 +86,7 @@ export default function LegislatorDetailsPanel(props: Props) {
   }
 
   function handleRemoveStaffer(e: any, id: Uuid) {
+    e.preventDefault();
     // TODO: Show a confirmation?
     apiFetch(`/api/legislators/-/staffers/` + id, {
       method: 'DELETE'

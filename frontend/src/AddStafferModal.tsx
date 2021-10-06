@@ -7,7 +7,6 @@ import Modal from 'react-bootstrap/Modal';
 
 interface Props {
   show: boolean;
-  // TODO: Add other fields
   handleAddStaffer: (
     name: string,
     title: string,
