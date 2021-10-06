@@ -53,14 +53,10 @@ def _create_row_data(raw_values, bold=False):
     }
 
 
-def _create_staffer_text(legislator):
-    # TODO: Reuse the logic from frontend rendering
-    staffers = legislator.staffers
-    staffer_strings = [f"{s.title} - {s.name} ({s.phone}, {s.email}, @{s.twitter})" for s in staffers]
-    return "\n".join(staffer_strings)
-
-
 def _create_legislator_row(legislator):
+    staffer_strings = [s.display_string for s in legislator.staffers]
+    staffer_text = "\n".join(staffer_strings)
+
     return _create_row_data(
         [
             legislator.name,
@@ -69,7 +65,7 @@ def _create_legislator_row(legislator):
             legislator.district_phone,
             legislator.legislative_phone,
             f"@{legislator.twitter}" if legislator.twitter else "",
-            _create_staffer_text(legislator),
+            staffer_text,
             legislator.notes or "",
         ]
     )

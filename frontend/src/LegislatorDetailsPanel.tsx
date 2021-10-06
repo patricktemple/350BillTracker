@@ -32,7 +32,7 @@ function formatStaffer(staffer: Staffer) {
       </a>
     );
   }
-  const contactString = contactElements.map((item, i) => (
+  const contactString = contactElements.length == 0 ? "No contact info" : contactElements.map((item, i) => (
     <>
       {item}
       {i < contactElements.length - 1 && ', '}
