@@ -10,7 +10,14 @@ def test_get_users(client, user_id, user_name, user_email):
     assert_response(
         response,
         200,
-        [{"name": user_name, "email": user_email, "id": str(user_id)}],
+        [
+            {
+                "canBeDeleted": True,
+                "email": "test@example.com",
+                "id": str(user_id),
+                "name": "Test user",
+            }
+        ],
     )
 
 

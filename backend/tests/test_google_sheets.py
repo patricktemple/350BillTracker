@@ -83,6 +83,14 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                 },
                                 {
                                     "userEnteredValue": {
+                                        "stringValue": "Party"
+                                    },
+                                    "userEnteredFormat": {
+                                        "textFormat": {"bold": True}
+                                    },
+                                },
+                                {
+                                    "userEnteredValue": {
                                         "stringValue": "District Phone"
                                     },
                                     "userEnteredFormat": {
@@ -99,7 +107,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                 },
                                 {
                                     "userEnteredValue": {
-                                        "stringValue": "Notes"
+                                        "stringValue": "Twitter"
                                     },
                                     "userEnteredFormat": {
                                         "textFormat": {"bold": True}
@@ -107,7 +115,15 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                 },
                                 {
                                     "userEnteredValue": {
-                                        "stringValue": "Twitter"
+                                        "stringValue": "Staffers"
+                                    },
+                                    "userEnteredFormat": {
+                                        "textFormat": {"bold": True}
+                                    },
+                                },
+                                {
+                                    "userEnteredValue": {
+                                        "stringValue": "Notes"
                                     },
                                     "userEnteredFormat": {
                                         "textFormat": {"bold": True}
@@ -145,6 +161,20 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     "userEnteredValue": {
                                         "stringValue": "None"
                                     },
+                                    "userEnteredFormat": {
+                                        "textFormat": {"bold": False}
+                                    },
+                                },
+                                {
+                                    "userEnteredValue": {
+                                        "stringValue": "None"
+                                    },
+                                    "userEnteredFormat": {
+                                        "textFormat": {"bold": False}
+                                    },
+                                },
+                                {
+                                    "userEnteredValue": {"stringValue": ""},
                                     "userEnteredFormat": {
                                         "textFormat": {"bold": False}
                                     },
@@ -206,6 +236,20 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     "userEnteredValue": {
                                         "stringValue": "None"
                                     },
+                                    "userEnteredFormat": {
+                                        "textFormat": {"bold": False}
+                                    },
+                                },
+                                {
+                                    "userEnteredValue": {
+                                        "stringValue": "None"
+                                    },
+                                    "userEnteredFormat": {
+                                        "textFormat": {"bold": False}
+                                    },
+                                },
+                                {
+                                    "userEnteredValue": {"stringValue": ""},
                                     "userEnteredFormat": {
                                         "textFormat": {"bold": False}
                                     },

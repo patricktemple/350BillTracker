@@ -5,7 +5,7 @@ import json
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
-from sqlalchemy.orm import selectinload, joinedload
+from sqlalchemy.orm import joinedload, selectinload
 from werkzeug import exceptions
 
 from src import app, models, settings
@@ -112,7 +112,10 @@ def create_phone_bank_spreadsheet(bill_id):
     anyone with the link."""
     bill = (
         models.Bill.query.filter_by(id=bill_id)
-        .options(selectinload(models.Bill.sponsorships), selectinload("sponsorships.legislator.staffers"))
+        .options(
+            selectinload(models.Bill.sponsorships),
+            selectinload("sponsorships.legislator.staffers"),
+        )
         .one()
     )
 
