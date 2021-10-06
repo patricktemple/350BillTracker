@@ -40,7 +40,6 @@ export default function SettingsPage() {
       method: 'POST',
       body: { email, name }
     })
-      .then((response) => response.json())
       .then((response) => {
         loadUsers();
       });
