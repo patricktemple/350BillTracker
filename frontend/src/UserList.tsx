@@ -17,7 +17,11 @@ export default function UserList(props: Props): ReactElement {
       <div className={styles.header}>Email</div>
       {props.users.map((user) => (
         <>
-          {user.canBeDeleted ? <TrashIcon onClick={() => props.handleDelete(user.id)} /> : <div />}
+          {user.canBeDeleted ? (
+            <TrashIcon onClick={() => props.handleDelete(user.id)} />
+          ) : (
+            <div />
+          )}
           <div>{user.name}</div>
           <div>{user.email}</div>
         </>

@@ -4,8 +4,9 @@ import logging
 
 from boto3 import client
 from botocore.exceptions import ClientError
-from werkzeug import exceptions
 from flask import render_template
+from werkzeug import exceptions
+
 from .settings import APP_TITLE
 
 # This guide was important in getting the email address set up:
