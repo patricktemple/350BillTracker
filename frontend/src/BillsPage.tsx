@@ -24,10 +24,9 @@ export default function SavedBillsPage({
   const apiFetch = useApiFetch();
 
   function loadBillList() {
-    apiFetch('/api/saved-bills')
-      .then((response) => {
-        setBills(response);
-      });
+    apiFetch('/api/saved-bills').then((response) => {
+      setBills(response);
+    });
   }
 
   useMountEffect(() => {
@@ -38,19 +37,17 @@ export default function SavedBillsPage({
     apiFetch('/api/saved-bills', {
       method: 'POST',
       body: { id }
-    })
-      .then((response) => {
-        loadBillList();
-      });
+    }).then((response) => {
+      loadBillList();
+    });
   }
 
   function handleRemoveBill(billId: number) {
     apiFetch(`/api/saved-bills/` + billId, {
       method: 'DELETE'
-    })
-      .then((response) => {
-        loadBillList();
-      });
+    }).then((response) => {
+      loadBillList();
+    });
   }
 
   return (

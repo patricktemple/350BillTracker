@@ -15,10 +15,9 @@ export default function SettingsPage() {
     useState<boolean>(false);
 
   function loadUsers() {
-    apiFetch('/api/users')
-      .then((response) => {
-        setUsers(response);
-      });
+    apiFetch('/api/users').then((response) => {
+      setUsers(response);
+    });
   }
   useMountEffect(() => {
     loadUsers();
@@ -31,10 +30,9 @@ export default function SettingsPage() {
   function handleDelete(id: Uuid) {
     apiFetch('/api/users/' + id, {
       method: 'DELETE'
-    })
-      .then((response) => {
-        loadUsers();
-      });
+    }).then((response) => {
+      loadUsers();
+    });
   }
 
   function handleInviteUser(email: string, name: string) {

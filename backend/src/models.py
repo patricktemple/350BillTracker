@@ -71,6 +71,7 @@ class Legislator(db.Model):
     legislative_phone = Column(Text)
 
     sponsorships = relationship("BillSponsorship", back_populates="legislator")
+    staffers = relationship("Staffer", back_populates="legislator")
 
     borough = Column(Text)
     website = Column(Text)
@@ -81,6 +82,22 @@ class Legislator(db.Model):
 
     # Track our own info on the bill.
     notes = Column(Text)
+
+
+class Staffer(db.Model):
+    __tablename__ = "staffers"
+
+    id = Column(UUID, primary_key=True, default=uuid4)
+    name = Column(Text, nullable=False)
+    title = Column(Text)
+    email = Column(Text)
+    phone = Column(Text)
+    legislator_id = Column(
+        Integer, ForeignKey("legislators.id"), nullable=False
+    )
+    twitter = Column(Text)
+
+    legislator = relationship("Legislator", back_populates="staffers")
 
 
 class BillSponsorship(db.Model):

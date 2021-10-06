@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, ReactElement } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { Legislator, SingleMemberSponsorship } from './types';
+import { Legislator, SingleMemberSponsorship, Staffer, Uuid } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Stack from 'react-bootstrap/Stack';
 import { Link } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import useAutosavingFormData from './utils/useAutosavingFormData';
 import useApiFetch from './useApiFetch';
+import Button from 'react-bootstrap/Button';
+import AddStafferModal from './AddStafferModal';
 
 interface Props {
   legislator: Legislator;
@@ -18,12 +20,42 @@ interface FormData {
   notes: string;
 }
 
+function formatStaffer(staffer: Staffer) {
+  const contactElements: (string | ReactElement)[] = [
+    staffer.phone,
+    staffer.email
+  ].filter((item) => !!item);
+  if (staffer.twitter) {
+    contactElements.push(
+      <a href={`https://www.twitter.com/${staffer.twitter}`}>
+        @{staffer.twitter}
+      </a>
+    );
+  }
+  const contactString = contactElements.map((item, i) => (
+    <>
+      {item}
+      {i < contactElements.length - 1 && ', '}
+    </>
+  ));
+
+  return (
+    <>
+      {staffer.title && <>{staffer.title} - </>}
+      {staffer.name} ({contactString})
+    </>
+  );
+}
+
 export default function LegislatorDetailsPanel(props: Props) {
   const legislator = props.legislator;
 
   const [sponsorships, setSponsorships] = useState<
     SingleMemberSponsorship[] | null
   >(null);
+  const [staffers, setStaffers] = useState<Staffer[] | null>(null);
+  const [addStafferModalVisible, setAddStafferModalVisible] =
+    useState<boolean>(false);
 
   const [formData, setFormData, saveStatus] = useAutosavingFormData<FormData>(
     '/api/legislators/' + legislator.id,
@@ -31,15 +63,55 @@ export default function LegislatorDetailsPanel(props: Props) {
   );
   const apiFetch = useApiFetch();
 
+  function loadStaffers() {
+    apiFetch(`/api/legislators/${legislator.id}/staffers`).then((response) => {
+      setStaffers(response);
+    });
+  }
+
   useMountEffect(() => {
-    apiFetch(`/api/legislators/${legislator.id}/sponsorships`)
-      .then((response) => {
+    apiFetch(`/api/legislators/${legislator.id}/sponsorships`).then(
+      (response) => {
         setSponsorships(response);
-      });
+      }
+    );
+    loadStaffers();
   });
 
   function handleNotesChanged(event: any) {
     setFormData({ ...formData, notes: event.target.value });
+  }
+
+  function handleAddStaffer(
+    name: string,
+    title: string,
+    phone: string,
+    email: string,
+    twitter: string
+  ) {
+    setAddStafferModalVisible(false);
+    apiFetch(`/api/legislators/${legislator.id}/staffers`, {
+      method: 'POST',
+      body: {
+        name: name || null,
+        title: title || null,
+        phone: phone || null,
+        email: email || null,
+        twitter: twitter || null
+      }
+    }).then((response) => {
+      loadStaffers();
+    });
+  }
+
+  function handleRemoveStaffer(e: any, id: Uuid) {
+    e.preventDefault();
+    // TODO: Show a confirmation?
+    apiFetch(`/api/legislators/-/staffers/` + id, {
+      method: 'DELETE'
+    }).then((response) => {
+      loadStaffers();
+    });
   }
 
   return (
@@ -100,6 +172,36 @@ export default function LegislatorDetailsPanel(props: Props) {
             </a>
           )}
         </Col>
+      </Row>
+      <Row className="mb-2">
+        <Col lg={2} style={{ fontWeight: 'bold' }}>
+          Staffers:
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            onClick={() => setAddStafferModalVisible(true)}
+            className="mt-2 mb-2 d-block"
+          >
+            Add staffer
+          </Button>
+        </Col>
+        <Col>
+          {staffers &&
+            staffers.map((staffer) => (
+              <div key={staffer.id}>
+                {formatStaffer(staffer)} [
+                <a href="#" onClick={(e) => handleRemoveStaffer(e, staffer.id)}>
+                  Delete
+                </a>
+                ]
+              </div>
+            ))}
+        </Col>
+        <AddStafferModal
+          show={addStafferModalVisible}
+          handleAddStaffer={handleAddStaffer}
+          onHide={() => setAddStafferModalVisible(false)}
+        />
       </Row>
       <Row className="mb-2">
         <Col lg={2}>
