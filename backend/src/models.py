@@ -93,13 +93,11 @@ class Staffer(db.Model):
     title = Column(Text)
     email = Column(Text)
     phone = Column(Text)
-    legislator = Column(Integer, ForeignKey("legislators.id"), nullable=False)
+    legislator_id = Column(Integer, ForeignKey("legislators.id"), nullable=False)
     twitter = Column(Text)
 
 
     legislator = relationship("Legislator", back_populates="staffers")
-
-    sponsorships = relationship("BillSponsorship", back_populates="legislator")
 
 
 class BillSponsorship(db.Model):

@@ -61,3 +61,12 @@ export interface User {
   email: string;
   canBeDeleted: boolean;
 }
+
+export interface Staffer {
+  id: Uuid;
+  name: string;
+  title: string;
+  email: string;
+  phone: string;
+  twitter: string;
+}

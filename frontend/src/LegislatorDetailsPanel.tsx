@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, ReactElement } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { Legislator, SingleMemberSponsorship } from './types';
+import { Legislator, SingleMemberSponsorship, Staffer } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Stack from 'react-bootstrap/Stack';
 import { Link } from 'react-router-dom';
@@ -18,11 +18,21 @@ interface FormData {
   notes: string;
 }
 
+function formatStaffer(staffer: Staffer) {
+  // TODO: Add @ and link twitter
+  const contactString = [staffer.phone, staffer.email, staffer.twitter].filter(item => item != null).join(", ");
+
+  return <>{staffer.title && <>{staffer.title} - </>}{staffer.name} ({contactString})</>;
+}
+
 export default function LegislatorDetailsPanel(props: Props) {
   const legislator = props.legislator;
 
   const [sponsorships, setSponsorships] = useState<
     SingleMemberSponsorship[] | null
+  >(null);
+  const [staffers, setStaffers] = useState<
+    Staffer[] | null
   >(null);
 
   const [formData, setFormData, saveStatus] = useAutosavingFormData<FormData>(
@@ -35,6 +45,10 @@ export default function LegislatorDetailsPanel(props: Props) {
     apiFetch(`/api/legislators/${legislator.id}/sponsorships`)
       .then((response) => {
         setSponsorships(response);
+      });
+    apiFetch(`/api/legislators/${legislator.id}/staffers`)
+      .then((response) => {
+        setStaffers(response);
       });
   });
 
@@ -99,6 +113,16 @@ export default function LegislatorDetailsPanel(props: Props) {
               @{legislator.twitter}
             </a>
           )}
+        </Col>
+      </Row>
+      <Row className="mb-2">
+        <Col lg={2} style={{ fontWeight: 'bold' }}>
+          Staffers:
+        </Col>
+        <Col>
+          {staffers && staffers.map(staffer => (
+            <div key={staffer.id}>{formatStaffer(staffer)}</div>
+          ))}
         </Col>
       </Row>
       <Row className="mb-2">

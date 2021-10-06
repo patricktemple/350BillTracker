@@ -24,6 +24,7 @@ from .models import (
     Legislator,
     LoginLink,
     User,
+    Staffer,
     db,
 )
 from .ses import send_login_link_email
@@ -196,6 +197,28 @@ def legislator_sponsorships(legislator_id):
         .all()
     )
     return SingleMemberSponsorshipsSchema(many=True).jsonify(sponsorships)
+
+
+# Staffers ----------------------------------------------------------------------
+
+class StafferSchema(CamelCaseSchema):
+    id = fields.UUID()
+    name = fields.String()
+    title = fields.String()
+    email = fields.Email()
+    phone = fields.String()
+    twitter = fields.String()
+
+@app.route(
+    "/api/legislators/<int:legislator_id>/staffers", methods=["GET"]
+)
+@auth_required
+def legislator_staffers(legislator_id):
+    staffers = (
+        Staffer.query.filter_by(legislator_id=legislator_id)
+        .all()
+    )
+    return StafferSchema(many=True).jsonify(staffers)
 
 
 # Bill sponsorships ----------------------------------------------------------------------

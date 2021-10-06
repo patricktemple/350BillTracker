@@ -1,8 +1,8 @@
 """Add staffers
 
-Revision ID: 8bb02855bea1
+Revision ID: c0a643362ad9
 Revises: 419caf2c892b
-Create Date: 2021-10-05 22:16:00.303404
+Create Date: 2021-10-05 22:23:48.754242
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import src
 
 
 # revision identifiers, used by Alembic.
-revision = '8bb02855bea1'
+revision = 'c0a643362ad9'
 down_revision = '419caf2c892b'
 branch_labels = None
 depends_on = None
@@ -25,7 +25,9 @@ def upgrade():
     sa.Column('title', sa.Text(), nullable=True),
     sa.Column('email', sa.Text(), nullable=True),
     sa.Column('phone', sa.Text(), nullable=True),
+    sa.Column('legislator_id', sa.Integer(), nullable=False),
     sa.Column('twitter', sa.Text(), nullable=True),
+    sa.ForeignKeyConstraint(['legislator_id'], ['legislators.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
