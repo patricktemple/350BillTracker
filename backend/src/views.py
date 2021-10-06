@@ -221,6 +221,25 @@ def legislator_staffers(legislator_id):
     return StafferSchema(many=True).jsonify(staffers)
 
 
+@app.route("/api/legislators/<int:legislator_id>/staffers", methods=["POST"])
+@auth_required
+def add_legislator_staffer(legislator_id):
+    data = StafferSchema().load(request.json)
+    staffer = Staffer(
+        legislator_id=legislator_id,
+        name=data['name'],
+        title=data['title'],
+        phone=data['phone'],
+        email=data['email'],
+        twitter=data['twitter']
+    )
+    db.session.add(staffer)
+    db.session.commit()
+
+    # TODO: Return the object in all Creates, to be consistent
+    return jsonify({})
+
+
 # Bill sponsorships ----------------------------------------------------------------------
 class SingleBillSponsorshipsSchema(CamelCaseSchema):
     bill_id = fields.Integer(required=True)

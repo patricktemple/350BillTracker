@@ -88,7 +88,7 @@ class Staffer(db.Model):
     __tablename__ = "staffers"
 
     # These come from the API
-    id = Column(UUID, primary_key=True)
+    id = Column(UUID, primary_key=True, default=uuid4)
     name = Column(Text, nullable=False)
     title = Column(Text)
     email = Column(Text)

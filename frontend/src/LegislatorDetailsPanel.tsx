@@ -9,6 +9,8 @@ import { Link } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import useAutosavingFormData from './utils/useAutosavingFormData';
 import useApiFetch from './useApiFetch';
+import Button from 'react-bootstrap/Button';
+import AddStafferModal from './AddStafferModal';
 
 interface Props {
   legislator: Legislator;
@@ -20,7 +22,7 @@ interface FormData {
 
 function formatStaffer(staffer: Staffer) {
   // TODO: Add @ and link twitter
-  const contactString = [staffer.phone, staffer.email, staffer.twitter].filter(item => item != null).join(", ");
+  const contactString = [staffer.phone, staffer.email, staffer.twitter].filter(item => !!item).join(", ");
 
   return <>{staffer.title && <>{staffer.title} - </>}{staffer.name} ({contactString})</>;
 }
@@ -34,6 +36,7 @@ export default function LegislatorDetailsPanel(props: Props) {
   const [staffers, setStaffers] = useState<
     Staffer[] | null
   >(null);
+  const [addStafferModalVisible, setAddStafferModalVisible] = useState<boolean>(false);
 
   const [formData, setFormData, saveStatus] = useAutosavingFormData<FormData>(
     '/api/legislators/' + legislator.id,
@@ -41,19 +44,34 @@ export default function LegislatorDetailsPanel(props: Props) {
   );
   const apiFetch = useApiFetch();
 
+  function loadStaffers() {
+    apiFetch(`/api/legislators/${legislator.id}/staffers`)
+      .then((response) => {
+        setStaffers(response);
+      });
+  }
+
   useMountEffect(() => {
     apiFetch(`/api/legislators/${legislator.id}/sponsorships`)
       .then((response) => {
         setSponsorships(response);
       });
-    apiFetch(`/api/legislators/${legislator.id}/staffers`)
-      .then((response) => {
-        setStaffers(response);
-      });
+    loadStaffers();
   });
 
   function handleNotesChanged(event: any) {
     setFormData({ ...formData, notes: event.target.value });
+  }
+
+  function handleAddStaffer(name: string, title: string, phone: string, email: string, twitter: string) {
+    setAddStafferModalVisible(false);
+    apiFetch(`/api/legislators/${legislator.id}/staffers`, {
+      method: "POST",
+      body: { name, title, phone, email, twitter }
+    })
+      .then((response) => {
+        loadStaffers();
+      });
   }
 
   return (
@@ -118,12 +136,21 @@ export default function LegislatorDetailsPanel(props: Props) {
       <Row className="mb-2">
         <Col lg={2} style={{ fontWeight: 'bold' }}>
           Staffers:
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            onClick={() => setAddStafferModalVisible(true)}
+            className="mt-2 mb-2 d-block"
+          >
+            Add staffer
+          </Button>
         </Col>
         <Col>
           {staffers && staffers.map(staffer => (
             <div key={staffer.id}>{formatStaffer(staffer)}</div>
           ))}
         </Col>
+        <AddStafferModal show={addStafferModalVisible} handleAddStaffer={handleAddStaffer} onHide={() => setAddStafferModalVisible(false)}/>
       </Row>
       <Row className="mb-2">
         <Col lg={2}>
