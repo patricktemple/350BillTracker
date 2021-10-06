@@ -51,28 +51,31 @@ def test_add_legislator_staffer(client):
             "title": "chief of staff",
             "twitter": "TheChief",
             "phone": "111-111-1111",
-            "email": "test@example.com"
+            "email": "test@example.com",
         },
     )
     assert response.status_code == 200
 
-    attachment = Staffer.query.one()
-    assert attachment.name == "staffer"
-    # assert attachment.url == "http://sheets.google.com/123"
+    staffer = Staffer.query.one()
+    assert staffer.name == "staffer"
+    assert staffer.title == "chief of staff"
+    assert staffer.twitter == "TheChief"
+    assert staffer.phone == "111-111-1111"
+    assert staffer.email == "test@example.com"
 
 
-# def test_delete_bill_attachment(client):
-#     bill = Bill(
-#         id=1, name="name", file="file", title="title", intro_date=now()
-#     )
-#     attachment = BillAttachment(
-#         id=123, name="power hour tracker", url="http://sheets.google.com/123"
-#     )
-#     bill.attachments.append(attachment)
-#     db.session.add(bill)
-#     db.session.commit()
+def test_delete_bill_attachment(client):
+    staffer_id = uuid4()
+    legislator = Legislator(id=1, name="name")
+    staffer = Staffer(
+        id=staffer_id,
+        name="staffer",
+    )
+    legislator.staffers.append(staffer)
+    db.session.add(legislator)
+    db.session.commit()
 
-#     client.delete("/api/saved-bills/-/attachments/123")
+    client.delete(f"/api/legislators/-/staffers/{staffer_id}")
 
-#     attachments = BillAttachment.query.all()
-#     assert len(attachments) == 0
+    staffers = Staffer.query.all()
+    assert len(staffers) == 0
