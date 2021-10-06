@@ -1,3 +1,4 @@
+import re
 import secrets
 from datetime import date, timedelta
 
@@ -30,7 +31,6 @@ from .models import (
 from .ses import send_login_link_email
 from .settings import APP_ORIGIN
 from .utils import now
-import re
 
 
 def camelcase(s):
@@ -224,13 +224,12 @@ def legislator_staffers(legislator_id):
 @auth_required
 def add_legislator_staffer(legislator_id):
     data = StafferSchema().load(request.json)
-    twitter = data['twitter']
+    twitter = data["twitter"]
     if twitter.startswith("@"):
         twitter = twitter[1:]
-    pattern = re.compile('^[A-Za-z0-9_]{1,15}$')
+    pattern = re.compile("^[A-Za-z0-9_]{1,15}$")
     if not pattern.match(twitter):
         raise exceptions.UnprocessableEntity(f"Invalid Twitter: {twitter}")
-
 
     staffer = Staffer(
         legislator_id=legislator_id,

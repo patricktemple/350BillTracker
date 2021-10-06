@@ -62,7 +62,6 @@ def test_add_legislator_staffer(client):
     assert staffer.twitter == "TheChief"
     assert staffer.phone == "111-111-1111"
     assert staffer.email == "test@example.com"
-  
 
 
 def test_add_legislator_invalid_twitter(client):
