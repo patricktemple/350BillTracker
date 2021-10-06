@@ -23,8 +23,8 @@ from .models import (
     BillSponsorship,
     Legislator,
     LoginLink,
-    User,
     Staffer,
+    User,
     db,
 )
 from .ses import send_login_link_email
@@ -201,6 +201,7 @@ def legislator_sponsorships(legislator_id):
 
 # Staffers ----------------------------------------------------------------------
 
+
 class StafferSchema(CamelCaseSchema):
     id = fields.UUID()
     name = fields.String()
@@ -209,15 +210,11 @@ class StafferSchema(CamelCaseSchema):
     phone = fields.String()
     twitter = fields.String()
 
-@app.route(
-    "/api/legislators/<int:legislator_id>/staffers", methods=["GET"]
-)
+
+@app.route("/api/legislators/<int:legislator_id>/staffers", methods=["GET"])
 @auth_required
 def legislator_staffers(legislator_id):
-    staffers = (
-        Staffer.query.filter_by(legislator_id=legislator_id)
-        .all()
-    )
+    staffers = Staffer.query.filter_by(legislator_id=legislator_id).all()
     return StafferSchema(many=True).jsonify(staffers)
 
 
@@ -227,18 +224,17 @@ def add_legislator_staffer(legislator_id):
     data = StafferSchema().load(request.json)
     staffer = Staffer(
         legislator_id=legislator_id,
-        name=data['name'],
-        title=data['title'],
-        phone=data['phone'],
-        email=data['email'],
-        twitter=data['twitter']
+        name=data["name"],
+        title=data["title"],
+        phone=data["phone"],
+        email=data["email"],
+        twitter=data["twitter"],
     )
     db.session.add(staffer)
     db.session.commit()
 
     # TODO: Return the object in all Creates, to be consistent
     return jsonify({})
-
 
 
 @app.route("/api/legislators/-/staffers/<uuid:staffer_id>", methods=["DELETE"])

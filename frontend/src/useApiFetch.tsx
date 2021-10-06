@@ -35,8 +35,8 @@ export default function useApiFetch() {
       authContext.updateToken(null);
       window.location.reload();
     }
-  
-    throw Error("API call failed with status " + response.status);
+
+    throw Error('API call failed with status ' + response.status);
   }
 
   return apiFetch;

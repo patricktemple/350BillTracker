@@ -22,9 +22,16 @@ interface FormData {
 
 function formatStaffer(staffer: Staffer) {
   // TODO: Add @ and link twitter
-  const contactString = [staffer.phone, staffer.email, staffer.twitter].filter(item => !!item).join(", ");
+  const contactString = [staffer.phone, staffer.email, staffer.twitter]
+    .filter((item) => !!item)
+    .join(', ');
 
-  return <>{staffer.title && <>{staffer.title} - </>}{staffer.name} ({contactString})</>;
+  return (
+    <>
+      {staffer.title && <>{staffer.title} - </>}
+      {staffer.name} ({contactString})
+    </>
+  );
 }
 
 export default function LegislatorDetailsPanel(props: Props) {
@@ -33,10 +40,9 @@ export default function LegislatorDetailsPanel(props: Props) {
   const [sponsorships, setSponsorships] = useState<
     SingleMemberSponsorship[] | null
   >(null);
-  const [staffers, setStaffers] = useState<
-    Staffer[] | null
-  >(null);
-  const [addStafferModalVisible, setAddStafferModalVisible] = useState<boolean>(false);
+  const [staffers, setStaffers] = useState<Staffer[] | null>(null);
+  const [addStafferModalVisible, setAddStafferModalVisible] =
+    useState<boolean>(false);
 
   const [formData, setFormData, saveStatus] = useAutosavingFormData<FormData>(
     '/api/legislators/' + legislator.id,
@@ -45,17 +51,17 @@ export default function LegislatorDetailsPanel(props: Props) {
   const apiFetch = useApiFetch();
 
   function loadStaffers() {
-    apiFetch(`/api/legislators/${legislator.id}/staffers`)
-      .then((response) => {
-        setStaffers(response);
-      });
+    apiFetch(`/api/legislators/${legislator.id}/staffers`).then((response) => {
+      setStaffers(response);
+    });
   }
 
   useMountEffect(() => {
-    apiFetch(`/api/legislators/${legislator.id}/sponsorships`)
-      .then((response) => {
+    apiFetch(`/api/legislators/${legislator.id}/sponsorships`).then(
+      (response) => {
         setSponsorships(response);
-      });
+      }
+    );
     loadStaffers();
   });
 
@@ -63,23 +69,27 @@ export default function LegislatorDetailsPanel(props: Props) {
     setFormData({ ...formData, notes: event.target.value });
   }
 
-  function handleAddStaffer(name: string, title: string, phone: string, email: string, twitter: string) {
+  function handleAddStaffer(
+    name: string,
+    title: string,
+    phone: string,
+    email: string,
+    twitter: string
+  ) {
     setAddStafferModalVisible(false);
     apiFetch(`/api/legislators/${legislator.id}/staffers`, {
-      method: "POST",
+      method: 'POST',
       body: { name, title, phone, email, twitter }
-    })
-      .then((response) => {
-        loadStaffers();
-      });
+    }).then((response) => {
+      loadStaffers();
+    });
   }
 
   function handleRemoveStaffer(e: any, id: Uuid) {
     // TODO: Show a confirmation?
     apiFetch(`/api/legislators/-/staffers/` + id, {
-      method: "DELETE",
-    })
-    .then((response) => {
+      method: 'DELETE'
+    }).then((response) => {
       loadStaffers();
     });
   }
@@ -156,11 +166,22 @@ export default function LegislatorDetailsPanel(props: Props) {
           </Button>
         </Col>
         <Col>
-          {staffers && staffers.map(staffer => (
-            <div key={staffer.id}>{formatStaffer(staffer)} [<a href="#" onClick={(e) => handleRemoveStaffer(e, staffer.id)}>Delete</a>]</div>
-          ))}
+          {staffers &&
+            staffers.map((staffer) => (
+              <div key={staffer.id}>
+                {formatStaffer(staffer)} [
+                <a href="#" onClick={(e) => handleRemoveStaffer(e, staffer.id)}>
+                  Delete
+                </a>
+                ]
+              </div>
+            ))}
         </Col>
-        <AddStafferModal show={addStafferModalVisible} handleAddStaffer={handleAddStaffer} onHide={() => setAddStafferModalVisible(false)}/>
+        <AddStafferModal
+          show={addStafferModalVisible}
+          handleAddStaffer={handleAddStaffer}
+          onHide={() => setAddStafferModalVisible(false)}
+        />
       </Row>
       <Row className="mb-2">
         <Col lg={2}>

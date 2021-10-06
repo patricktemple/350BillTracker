@@ -23,10 +23,9 @@ export default function ConcilMembersPage({
   const apiFetch = useApiFetch();
 
   useMountEffect(() => {
-    apiFetch('/api/legislators')
-      .then((response) => {
-        setLegislators(response);
-      });
+    apiFetch('/api/legislators').then((response) => {
+      setLegislators(response);
+    });
   });
 
   function handleFilterTextChanged(e: any) {

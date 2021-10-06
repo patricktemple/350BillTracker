@@ -8,7 +8,13 @@ import Modal from 'react-bootstrap/Modal';
 interface Props {
   show: boolean;
   // TODO: Add other fields
-  handleAddStaffer: (name: string, title: string, phone: string, email: string, twitter: string) => void;
+  handleAddStaffer: (
+    name: string,
+    title: string,
+    phone: string,
+    email: string,
+    twitter: string
+  ) => void;
   onHide: () => void;
 }
 
@@ -38,10 +44,7 @@ export default function AddAttachmentModal(props: Props): ReactElement {
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
             <Form.Label>Name</Form.Label>
-            <Form.Control
-              type="text"
-              ref={nameRef}
-            />
+            <Form.Control type="text" ref={nameRef} />
           </Form.Group>
 
           <Form.Group className="mb-3">

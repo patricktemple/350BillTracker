@@ -54,17 +54,15 @@ export default function BillDetails(props: Props): ReactElement {
   const apiFetch = useApiFetch();
 
   function loadAttachments() {
-    apiFetch(`/api/saved-bills/${bill.id}/attachments`)
-      .then((response) => {
-        setAttachments(response);
-      });
+    apiFetch(`/api/saved-bills/${bill.id}/attachments`).then((response) => {
+      setAttachments(response);
+    });
   }
 
   useMountEffect(() => {
-    apiFetch(`/api/saved-bills/${bill.id}/sponsorships`)
-      .then((response) => {
-        setSponsorships(response);
-      });
+    apiFetch(`/api/saved-bills/${bill.id}/sponsorships`).then((response) => {
+      setSponsorships(response);
+    });
   });
 
   useMountEffect(() => {
@@ -88,20 +86,18 @@ export default function BillDetails(props: Props): ReactElement {
     apiFetch(`/api/saved-bills/${bill.id}/attachments`, {
       method: 'POST',
       body: { url, name: description }
-    })
-      .then((response) => {
-        loadAttachments();
-      });
+    }).then((response) => {
+      loadAttachments();
+    });
   }
 
   function handleDeleteAttachment(event: any, id: number) {
     event.preventDefault();
     apiFetch(`/api/saved-bills/-/attachments/` + id, {
       method: 'DELETE'
-    })
-      .then((response) => {
-        loadAttachments();
-      });
+    }).then((response) => {
+      loadAttachments();
+    });
   }
 
   function handleRemoveBill(event: any) {
@@ -118,11 +114,10 @@ export default function BillDetails(props: Props): ReactElement {
     setCreatePhoneBankInProgress(true);
     apiFetch(`/api/saved-bills/${bill.id}/create-phone-bank-spreadsheet`, {
       method: 'POST'
-    })
-      .then((response) => {
-        setCreatePhoneBankInProgress(false);
-        loadAttachments();
-      });
+    }).then((response) => {
+      setCreatePhoneBankInProgress(false);
+      loadAttachments();
+    });
   }
 
   return (
