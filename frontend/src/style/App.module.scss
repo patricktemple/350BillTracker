@@ -127,6 +127,8 @@
 
 .content {
   grid-area: content;
+  max-height: 100%;
+  overflow-y: auto;
 }
 
 .navLink {
