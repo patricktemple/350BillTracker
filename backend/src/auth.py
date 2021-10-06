@@ -14,7 +14,7 @@ JWT_ALGORITHM = "HS256"
 # Normally we wouldn't want such long tokens. But the data here is not sensitive
 # and the auth is meant to provide just a thin layer of protection. Long browser
 # sessions are most important.
-TOKEN_LIFETIME = timedelta(seconds=30)
+TOKEN_LIFETIME = timedelta(days=28)
 JWT_AUDIENCE = "350bt"
 JWT_ISSUER = "350bt"
 
