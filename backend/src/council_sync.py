@@ -41,6 +41,13 @@ def upsert_matter_data(matter_json):
     db.session.commit()
 
 
+def sync_bill_updates():
+    bills = Bill.query.all()
+
+    for bill in bills:
+        add_or_update_bill(bill.id)
+
+
 def add_council_members():
     """Adds basic information about each current council member based on their
     OfficeRecord object in the API. This is missing key fields that need
