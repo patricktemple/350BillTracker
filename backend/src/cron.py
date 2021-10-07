@@ -19,6 +19,9 @@ def cron_command():
             logging.info("Updating council member contact info")
             council_sync.fill_council_person_data()
 
+            logging.info("Syncing all bill updates")
+            council_sync.sync_bill_updates()
+
             logging.info("Syncing all bill sponsorships")
             # TODO: Also update the bill itself, to get new status for example
             council_sync.update_all_sponsorships()
