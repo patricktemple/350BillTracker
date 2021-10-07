@@ -1,5 +1,4 @@
 import logging
-from re import L
 from time import sleep
 
 from . import council_sync
