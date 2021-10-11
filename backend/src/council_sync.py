@@ -1,5 +1,7 @@
 import logging
 
+from requests import HTTPError
+
 from .council_api import (
     get_bill,
     get_bill_sponsors,
@@ -140,7 +142,6 @@ def update_sponsorships(bill_id):
             bill_id=bill_id, legislator_id=legislator_id
         )
 
-        # FIXME: This never merges! Because the PK is the surrogate key
         db.session.merge(internal_sponsorship)
 
     db.session.commit()

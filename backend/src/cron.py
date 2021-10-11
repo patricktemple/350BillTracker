@@ -12,20 +12,24 @@ def cron_command():
     logging.info("Cron job starting")
     while True:
         if ENABLE_CRON:
-            logging.info("Syncing data...")
-            logging.info("Adding council members")
-            council_sync.add_council_members()
+            try:
+                logging.info("Syncing data...")
+                logging.info("Adding council members")
+                council_sync.add_council_members()
 
-            logging.info("Updating council member contact info")
-            council_sync.fill_council_person_data()
+                logging.info("Updating council member contact info")
+                council_sync.fill_council_person_data()
 
-            logging.info("Syncing all bill updates")
-            council_sync.sync_bill_updates()
+                logging.info("Syncing all bill updates")
+                council_sync.sync_bill_updates()
 
-            logging.info("Syncing all bill sponsorships")
-            # TODO: Also update the bill itself, to get new status for example
-            council_sync.update_all_sponsorships()
-            logging.info("Cron run complete")
+                logging.info("Syncing all bill sponsorships")
+                # TODO: Also update the bill itself, to get new status for example
+                council_sync.update_all_sponsorships()
+                logging.info("Cron run complete")
+            except Error as e:
+                logging.exception()
+                logging.error("Unhandled exception during cron run")
         else:
             logging.info("Cron job is disabled, it won't do anything")
 
