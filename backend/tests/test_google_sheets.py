@@ -54,6 +54,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                         {
                             "values": [
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "SPONSORS"
                                     },
@@ -66,6 +67,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                         {
                             "values": [
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "Name"
                                     },
@@ -74,6 +76,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "Email"
                                     },
@@ -82,6 +85,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "Party"
                                     },
@@ -90,6 +94,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "District Phone"
                                     },
@@ -98,6 +103,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "Legislative Phone"
                                     },
@@ -106,6 +112,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "Twitter"
                                     },
@@ -114,6 +121,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "Staffers"
                                     },
@@ -122,6 +130,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "Notes"
                                     },
@@ -134,6 +143,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                         {
                             "values": [
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "Sponsor"
                                     },
@@ -142,6 +152,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "None"
                                     },
@@ -150,6 +161,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "None"
                                     },
@@ -158,6 +170,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "None"
                                     },
@@ -166,6 +179,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "None"
                                     },
@@ -174,18 +188,21 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {"stringValue": ""},
                                     "userEnteredFormat": {
                                         "textFormat": {"bold": False}
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {"stringValue": ""},
                                     "userEnteredFormat": {
                                         "textFormat": {"bold": False}
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {"stringValue": ""},
                                     "userEnteredFormat": {
                                         "textFormat": {"bold": False}
@@ -197,6 +214,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                         {
                             "values": [
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "NON-SPONSORS"
                                     },
@@ -209,6 +227,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                         {
                             "values": [
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "Non sponsor"
                                     },
@@ -217,6 +236,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "None"
                                     },
@@ -225,6 +245,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "None"
                                     },
@@ -233,6 +254,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "None"
                                     },
@@ -241,6 +263,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "None"
                                     },
@@ -249,18 +272,21 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {"stringValue": ""},
                                     "userEnteredFormat": {
                                         "textFormat": {"bold": False}
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {"stringValue": ""},
                                     "userEnteredFormat": {
                                         "textFormat": {"bold": False}
                                     },
                                 },
                                 {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {"stringValue": ""},
                                     "userEnteredFormat": {
                                         "textFormat": {"bold": False}
