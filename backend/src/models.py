@@ -83,6 +83,16 @@ class Legislator(db.Model):
     # Track our own info on the bill.
     notes = Column(Text)
 
+    @property
+    def display_twitter(self):
+        return "@" + self.twitter if self.twitter else None
+
+    @property
+    def twitter_url(self):
+        return (
+            f"https://www.twitter.com/{self.twitter}" if self.twitter else None
+        )
+
 
 class Staffer(db.Model):
     __tablename__ = "staffers"

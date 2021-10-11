@@ -15,6 +15,18 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive.file",
 ]
 
+
+class Cell:
+    value = None  # str
+    link_url = None  # str
+    bold = False
+
+    def __init__(self, value, *, link_url=None, bold=False):
+        self.value = value
+        self.link_url = link_url
+        self.bold = bold
+
+
 # TODO: Share this with TogglSync via a utils package?
 def _get_google_credentials():
     # TODO: This will need to refresh the creds every time after first expiration? Maybe?
@@ -40,43 +52,53 @@ def _get_drive_service(credentials):
     return build("drive", "v3", credentials=credentials)
 
 
-def _create_cell_data(raw_value, bold=False):
+def _create_cell_data(cell):
+    text_format_runs = None
+    if cell.link_url:
+        text_format_runs = [
+            {"startIndex": 0, "format": {"link": {"uri": cell.link_url}}}
+        ]
     return {
-        "userEnteredValue": {"stringValue": str(raw_value)},
-        "userEnteredFormat": {"textFormat": {"bold": bold}},
+        "textFormatRuns": text_format_runs,
+        "userEnteredValue": {"stringValue": str(cell.value)},
+        "userEnteredFormat": {"textFormat": {"bold": cell.bold}},
     }
 
 
-def _create_row_data(raw_values, bold=False):
-    return {
-        "values": [_create_cell_data(value, bold=bold) for value in raw_values]
-    }
+def _create_row_data(cells):
+    return {"values": [_create_cell_data(cell) for cell in cells]}
 
 
 def _create_legislator_row(legislator):
     staffer_strings = [s.display_string for s in legislator.staffers]
     staffer_text = "\n".join(staffer_strings)
 
-    return _create_row_data(
-        [
-            legislator.name,
-            legislator.email,
-            legislator.party,
-            legislator.district_phone,
-            legislator.legislative_phone,
-            f"@{legislator.twitter}" if legislator.twitter else "",
-            staffer_text,
-            legislator.notes or "",
-        ]
-    )
+    cells = [
+        Cell(legislator.name),
+        Cell(legislator.email),
+        Cell(legislator.party),
+        Cell(legislator.district_phone),
+        Cell(legislator.legislative_phone),
+        Cell(
+            legislator.display_twitter or "", link_url=legislator.twitter_url
+        ),
+        Cell(staffer_text),
+        Cell(legislator.notes or ""),
+    ]
+    return _create_row_data(cells)
+
+
+def _create_title_row_data(raw_values):
+    cells = [Cell(value, bold=True) for value in raw_values]
+    return _create_row_data(cells)
 
 
 def _create_phone_bank_spreadsheet_data(bill, sponsors, non_sponsors):
     """Generates the full body payload that the Sheets API requires for a
     phone bank spreadsheet."""
     rows = [
-        _create_row_data(["SPONSORS"], bold=True),
-        _create_row_data(
+        _create_title_row_data(["SPONSORS"]),
+        _create_title_row_data(
             [
                 "Name",
                 "Email",
@@ -87,14 +109,13 @@ def _create_phone_bank_spreadsheet_data(bill, sponsors, non_sponsors):
                 "Staffers",
                 "Notes",
             ],
-            bold=True,
         ),
     ]
     for sponsor in sponsors:
         rows.append(_create_legislator_row(sponsor))
 
-    rows.append(_create_row_data([]))
-    rows.append(_create_row_data(["NON-SPONSORS"], bold=True))
+    rows.append(_create_title_row_data([]))
+    rows.append(_create_title_row_data(["NON-SPONSORS"]))
 
     for legislator in non_sponsors:
         rows.append(_create_legislator_row(legislator))
