@@ -1,3 +1,4 @@
+import logging
 import re
 import secrets
 from datetime import date, timedelta
@@ -11,10 +12,8 @@ from werkzeug import exceptions
 from .app import app
 from .app import marshmallow as ma
 from .auth import auth_required, create_jwt
-from .council_api import lookup_bills, lookup_bill
-from .council_sync import (
-    update_sponsorships,
-)
+from .council_api import lookup_bill, lookup_bills
+from .council_sync import update_bill_sponsorships
 from .google_sheets import create_phone_bank_spreadsheet
 from .models import (
     Bill,
@@ -29,7 +28,6 @@ from .models import (
 from .ses import send_login_link_email
 from .settings import APP_ORIGIN
 from .utils import now
-import logging
 
 
 def camelcase(s):
@@ -99,7 +97,7 @@ def save_bill():
     db.session.commit()
 
     # i think this is fine since we don't want to send notifications anyway?
-    update_sponsorships(bill_id) # should this be in the same transaction?
+    update_sponsorships(bill_id)  # should this be in the same transaction?
 
     return jsonify({})
 

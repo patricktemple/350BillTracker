@@ -184,9 +184,9 @@ class User(db.Model):
     # The "root" user can never be deleted.
     can_be_deleted = Column(Boolean, nullable=False, server_default=sql.true())
 
-    send_bill_update_notifications = Column(Boolean, nullable=False, server_default=sql.false(), index=True)
-
-    # TODO: Need to track user's notification preferences here
+    send_bill_update_notifications = Column(
+        Boolean, nullable=False, server_default=sql.false(), index=True
+    )
 
     __table_args__ = (
         CheckConstraint(

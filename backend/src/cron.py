@@ -1,8 +1,7 @@
 import logging
 from time import sleep
 
-from . import council_sync
-from . import ses
+from . import council_sync, ses
 from .app import app
 from .settings import ENABLE_CRON
 
