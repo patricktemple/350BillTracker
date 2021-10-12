@@ -4,9 +4,11 @@
   <body>
     <div style="font-size: 1.3rem; font-weight: bold">Bill updates</div>
     {% for diff in diffs %}
-    <div style="font-size: 1.1rem; font-weight: bold">{{ diff.file }} - {{ diff.display_name }}</div>
-    <div style="color: {{ diff.status_color }}">{{ diff.status_text }}</div>
-    <div style="color: {{ diff.sponsor_color }}">{{ diff.sponsor_text }}</div>
+    <div style="padding-bottom: 1rem">
+      <div style="font-size: 1.1rem; font-weight: bold">{{ diff.file }} - {{ diff.display_name }}</div>
+      <div style="color: {{ diff.status_color }}">{{ diff.status_text }}</div>
+      <div style="color: {{ diff.sponsor_color }}">{{ diff.sponsor_text }}</div>
+    </div>
     {% endfor %}
   </body>
 </html>
