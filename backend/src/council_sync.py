@@ -134,16 +134,28 @@ def sync_bill_updates():
 
 # TODO: Unit test this whole cron job
 def update_sponsorships(bill_id):
-    # TODO: This does not remove sponsorships if they're taken away! Implement and test that
-    sponsorships = get_bill_sponsors(bill_id)
+    """
+    Updates sponsorships for a given bill:
+    1) Deletes any previous sponsorships
+    2) Adds all new sponsorships
+    3) If new sponsors aren't in the existing legislators (e.g. they're not longer in office),
+       ignore them.
+    """
+    # Clear all old sponsorships for this bill so we can add them back
+    existing_sponsorships = BillSponsorship.query.filter_by(bill_id=bill_id).all()
+    for sponsorship in existing_sponsorships:
+        db.session.delete(sponsorship)
+
+    new_sponsorships = get_bill_sponsors(bill_id)
 
     existing_legislators = Legislator.query.filter(
-        Legislator.id.in_([s["MatterSponsorNameId"] for s in sponsorships])
+        Legislator.id.in_([s["MatterSponsorNameId"] for s in new_sponsorships])
     ).all()
     existing_legislator_ids = set([l.id for l in existing_legislators])
 
-    for sponsorship in sponsorships:
+    for sponsorship in new_sponsorships:
         legislator_id = sponsorship["MatterSponsorNameId"]
+
         if legislator_id not in existing_legislator_ids:
             logging.warning(
                 f"Did not find legislator {legislator_id} in db, ignoring..."
