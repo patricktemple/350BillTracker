@@ -68,16 +68,19 @@ def send_bill_diff_email(bill_diffs):
     for diff in bill_diffs:
         if diff.bill.status == diff.old_status:
             status_text = f"Status: {diff.bill.status} (unchanged)"
-            # status_color = "black" # or bold?
+            status_color = "black" # or bold?
         else:
             status_text = f"Status: {diff.old_status} --> {diff.bill.status}"
-            # status_color = "green"
+            status_color = "blue"
         
         if not diff.added_sponsors and not diff.removed_sponsors:
             sponsor_text = f"{len(diff.bill.sponsorships)} sponsors (unchanged)"
+            sponsor_color = "black"
         else:
             new_sponsor_count = len(diff.bill.sponsorships)
             old_sponsor_count = new_sponsor_count - len(diff.added_sponsors) + len(diff.removed_sponsors)
+            sponsor_color = "blue"
+
             explanations = []
             if diff.added_sponsors:
                 explanations.append(f"gained {', '.join(diff.added_sponsors)}")
@@ -91,8 +94,9 @@ def send_bill_diff_email(bill_diffs):
             "file": diff.bill.file,
             "display_name": diff.bill.display_name,
             "status_text": status_text,
-            # "status_color": status_color,
-            "sponsor_text": sponsor_text
+            "status_color": status_color,
+            "sponsor_text": sponsor_text,
+            "sponsor_color": sponsor_color,
         })
     
     subject = get_bill_update_subject_line(bill_diffs)
@@ -100,6 +104,7 @@ def send_bill_diff_email(bill_diffs):
 
     # Make this another function!
     body_text = render_template("bill_alerts_email.txt", diffs=diffs_for_template)
+    body_html = render_template("bill_alerts_email.html", diffs=diffs_for_template)
 
     try:
         response = client.send_email(
@@ -110,10 +115,10 @@ def send_bill_diff_email(bill_diffs):
             },
             Message={
                 "Body": {
-                    # "Html": {
-                    #     "Charset": CHARSET,
-                    #     "Data": body_html,
-                    # },
+                    "Html": {
+                        "Charset": CHARSET,
+                        "Data": body_html,
+                    },
                     "Text": {
                         "Charset": CHARSET,
                         "Data": body_text,

@@ -2,8 +2,11 @@
   <head>
   </head>
   <body>
-    <div style="font-size: 1.3rem; font-weight: bold">Log in to 350 Brooklyn Bill Tracker</div>
-    <p><a href="{{ login_link }}">Click here</a> to be redirected back to the app and log in.</p>
-    <p>Your session will be saved, and you should not need to repeat this often.</p>
+    <div style="font-size: 1.3rem; font-weight: bold">Bill updates</div>
+    {% for diff in diffs %}
+    <div style="font-size: 1.1rem; font-weight: bold">{{ diff.file }} - {{ diff.display_name }}</div>
+    <div style="color: {{ diff.status_color }}">{{ diff.status_text }}</div>
+    <div style="color: {{ diff.sponsor_color }}">{{ diff.sponsor_text }}</div>
+    {% endfor %}
   </body>
 </html>
