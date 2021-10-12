@@ -11,10 +11,9 @@ from werkzeug import exceptions
 from .app import app
 from .app import marshmallow as ma
 from .auth import auth_required, create_jwt
-from .council_api import lookup_bills
+from .council_api import lookup_bills, lookup_bill
 from .council_sync import (
     add_or_update_bill,
-    convert_matter_to_bill,
     update_sponsorships,
 )
 from .google_sheets import create_phone_bank_spreadsheet
@@ -31,6 +30,7 @@ from .models import (
 from .ses import send_login_link_email
 from .settings import APP_ORIGIN
 from .utils import now
+import logging
 
 
 def camelcase(s):
@@ -87,9 +87,19 @@ def bills():
 @app.route("/api/saved-bills", methods=["POST"])
 @auth_required
 def save_bill():
-    matter_id = request.json["id"]
-    add_or_update_bill(matter_id)
-    update_sponsorships(matter_id)
+    bill_id = request.json["id"]
+    bill_data = lookup_bill(bill_id)
+    logging.info(f"Saving bill {bill_id}, council API returned {bill_data}")
+
+    bill = Bill(**bill_data)
+    db.session.add(bill)
+
+    # If we're already tracking this bill, this will have an integrity
+    # error which is intentional.
+    # TODO: Add test for this, return 409
+    db.session.commit()
+
+    update_sponsorships(bill_id) # should this be in the same transaction?
 
     return jsonify({})
 
@@ -123,10 +133,9 @@ def delete_bill(bill_id):
 def search_bills():
     file = request.args.get("file")
 
-    matters = lookup_bills(file)
+    external_bills = lookup_bills(file)
 
     # Check whether or not we're already tracking this bill
-    external_bills = [convert_matter_to_bill(m) for m in matters]
     external_bills_ids = [b["id"] for b in external_bills]
     tracked_bills = Bill.query.filter(Bill.id.in_(external_bills_ids)).all()
     tracked_bill_ids = set([t.id for t in tracked_bills])

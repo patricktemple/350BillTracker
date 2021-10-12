@@ -3,7 +3,7 @@ import logging
 from requests import HTTPError
 
 from .council_api import (
-    get_bill,
+    lookup_bill,
     get_bill_sponsors,
     get_current_council_members,
     get_person,
@@ -12,42 +12,7 @@ from .models import Bill, BillSponsorship, Legislator, db
 from .static_data import STATIC_DATA_BY_LEGISLATOR_ID
 
 
-def convert_matter_to_bill(matter):
-    return {
-        "id": matter["MatterId"],
-        "file": matter["MatterFile"],
-        "name": matter["MatterName"],
-        "title": matter["MatterTitle"],
-        "body": matter["MatterBodyName"],
-        "intro_date": matter["MatterIntroDate"],
-        "status": matter["MatterStatusName"],
-    }
-
-
-def add_or_update_bill(matter_id):
-    bill_data = get_bill(matter_id)
-    logging.info(f"Got bill {bill_data} for {matter_id}")
-    upsert_matter_data(bill_data)
-
-
-def upsert_matter_data(matter_json):
-    logging.info("Add or update bill")
-
-    data = convert_matter_to_bill(matter_json)
-    existing_bill = Bill.query.get(data["id"])
-    if existing_bill:
-        logging.info(f"Bill {data['file']} already in DB, updating")
-    else:
-        logging.info(f"Bill {data['file']} not found in DB, adding")
-    db.session.merge(Bill(**data))
-    db.session.commit()
-
-
-def sync_bill_updates():
-    bills = Bill.query.all()
-
-    for bill in bills:
-        add_or_update_bill(bill.id)
+# Legislators ----------------------------------------------------------------
 
 
 def add_council_members():
@@ -121,6 +86,33 @@ def fill_council_person_data():
     db.session.commit()
 
 
+# Bills ----------------------------------------------------------------------
+
+
+def add_or_update_bill(matter_id):
+    bill_data = lookup_bill(matter_id)
+    logging.info(f"Got bill {bill_data} for {matter_id}")
+
+    existing_bill = Bill.query.get(data["id"])
+    if existing_bill:
+        logging.info(f"Bill {data['file']} already in DB, updating")
+    else:
+        logging.info(f"Bill {data['file']} not found in DB, adding")
+    db.session.merge(Bill(**data))
+    db.session.commit()
+
+
+def sync_bill_updates():
+    # Note: the bill gets updated if the user "tracks" it too
+    # We don't want to do that, because it will not send out email notifications
+    # on any changes.
+    bills = Bill.query.all()
+
+    for bill in bills:
+        add_or_update_bill(bill.id)
+
+
+# TODO: Unit test this
 def update_sponsorships(bill_id):
     sponsorships = get_bill_sponsors(bill_id)
 

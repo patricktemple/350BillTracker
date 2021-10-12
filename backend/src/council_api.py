@@ -32,33 +32,50 @@ def make_filter_param(*filters):
     return {"$filter": " and ".join(filters)}
 
 
+def _convert_matter_to_bill(matter):
+    """Converts the City Council's representation of a bill, called Matters,
+    into our own format."""
+    return {
+        "id": matter["MatterId"],
+        "file": matter["MatterFile"],
+        "name": matter["MatterName"],
+        "title": matter["MatterTitle"],
+        "body": matter["MatterBodyName"],
+        "intro_date": matter["MatterIntroDate"],
+        "status": matter["MatterStatusName"],
+    }
+
+
 # http://webapi.legistar.com/Help/Api/GET-v1-Client-Matters
 def get_recent_bills():
-    return council_get(
+    matters = council_get(
         "matters",
         params=make_filter_param(
             date_filter("MatterIntroDate", "ge", date(2021, 1, 1)),
             eq_filter("MatterTypeName", "Introduction"),
         ),
     )
+    return [_convert_matter_to_bill(m) for m in matters]
 
 
 def lookup_bills(file_name):
-    # intro_name should be something like 2317-2021 including the year
     # TODO: Escape the name
-    return council_get(
+    matters = council_get(
         "matters",
         params=make_filter_param(
+            # "Introduction" means "bill". Matters can be other things like "Motion".
             eq_filter("MatterTypeName", "Introduction"),
             f"substringof('{file_name}', MatterFile) eq true",
         ),
     )
+    return [_convert_matter_to_bill(m) for m in matters]
 
 
-def get_bill(matter_id):
-    return council_get(
+def lookup_bill(matter_id):
+    matter = council_get(
         f"matters/{matter_id}",
     )
+    return _convert_matter_to_bill(matter)
 
 
 def get_bill_sponsors(matter_id):

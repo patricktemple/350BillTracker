@@ -24,10 +24,9 @@ def cron_command():
                 council_sync.sync_bill_updates()
 
                 logging.info("Syncing all bill sponsorships")
-                # TODO: Also update the bill itself, to get new status for example
                 council_sync.update_all_sponsorships()
                 logging.info("Cron run complete")
-            except Error as e:
+            except Exception as e:
                 logging.exception()
                 logging.error("Unhandled exception during cron run")
         else:
