@@ -101,32 +101,6 @@ def fill_council_person_static_data():
 # Bills ----------------------------------------------------------------------
 
 
-class BillSnapshot:
-    bill_id = None
-    status = None
-    sponsor_ids = []
-
-    def __init__(self, bill_id, status, sponsor_ids):
-        self.bill_id = bill_id  # needed?
-        self.status = status
-        self.sponsor_ids = sponsor_ids
-
-
-# TODO: This file is a weird place for that
-def snapshot_bills():
-    """Snapshots the state of all bills. Used to calculate the diff produced by
-    a cron job run, so that we can send out email notifications of bill status changes."""
-    bills = Bill.query.options(selectinload(Bill.sponsorships)).all()
-
-    snapshots_by_bill_id = {}
-    for bill in bills:
-        sponsor_ids = [s.legislator_id for s in bill.sponsorships]
-        snapshot = BillSnapshot(bill.id, bill.status, sponsor_ids)
-        snapshots_by_bill_id[bill.id] = snapshot
-
-    return snapshots_by_bill_id
-
-
 def _update_bill(bill_id):
     bill_data = lookup_bill(bill_id)
     logging.info(f"Updating bill {bill_id} and got {bill_data}")

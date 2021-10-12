@@ -83,7 +83,6 @@ function AppContent() {
           />
           <Route path="/settings" component={SettingsPage} />
         </main>
-        <a href="mailto:patricktemple@gmail.com">Mail me</a>
       </div>
     </Router>
   );

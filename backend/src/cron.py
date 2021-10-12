@@ -1,7 +1,7 @@
 import logging
 from time import sleep
 
-from . import council_sync, ses
+from . import bill_notifications, council_sync, ses
 from .app import app
 from .settings import ENABLE_CRON
 
@@ -24,7 +24,7 @@ def cron_command():
                 # This doesn't need to run at cron time though! Just once on startup
                 # council_sync.fill_council_person_static_data()
 
-                bill_snapshots = council_sync.snapshot_bills()
+                bill_snapshots = bill_notifications.snapshot_bills()
 
                 logging.info("Syncing all bill updates")
                 council_sync.sync_bill_updates()
@@ -32,7 +32,9 @@ def cron_command():
                 logging.info("Syncing all bill sponsorships")
                 council_sync.update_all_sponsorships()
 
-                ses.send_bill_update_notifications(bill_snapshots)
+                bill_notifications.send_bill_update_notifications(
+                    bill_snapshots
+                )
 
                 logging.info("Cron run complete")
             except Exception as e:
