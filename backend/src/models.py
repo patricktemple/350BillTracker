@@ -57,6 +57,10 @@ class Bill(db.Model):
         "BillAttachment", back_populates="bill", cascade="all, delete"
     )
 
+    @property
+    def display_name(self):
+        return self.nickname if self.nickname else self.name
+
     # # When we last synced this bill or its sponsor list
     # last_synced_at = Column(TIMESTAMP)
 

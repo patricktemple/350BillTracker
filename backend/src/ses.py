@@ -23,8 +23,8 @@ CHARSET = "UTF-8"
 class BillDiff:
     bill = None
     old_status = None
-    added_sponsors = None
-    removed_sponsors = None
+    added_sponsors = None # lists the sponsor names
+    removed_sponsors = None # lists the sponsor names only
 
 
     def __repr__(self):
@@ -35,7 +35,7 @@ def _get_sponsor_subject_string(sponsors):
     if len(sponsors) > 1:
         return f"{len(sponsors)} sponsors"
     
-    return f"sponsor {sponsors[0].name}"
+    return f"sponsor {sponsors[0]}"
     
 
 def get_bill_update_subject_line(bill_diffs):
@@ -62,6 +62,79 @@ def get_bill_update_subject_line(bill_diffs):
     return f"{diff.bill.file} was updated"
 
 
+def send_bill_diff_email(bill_diffs):
+    diffs_for_template = []
+    # TODO figure out if we really need this middle layer BillDiff before converting it to the renderable thing
+    for diff in bill_diffs:
+        if diff.bill.status == diff.old_status:
+            status_text = f"Status: {diff.bill.status} (unchanged)"
+            # status_color = "black" # or bold?
+        else:
+            status_text = f"Status: {diff.old_status} --> {diff.bill.status}"
+            # status_color = "green"
+        
+        if not diff.added_sponsors and not diff.removed_sponsors:
+            sponsor_text = f"{len(diff.bill.sponsorships)} sponsors (unchanged)"
+        else:
+            new_sponsor_count = len(diff.bill.sponsorships)
+            old_sponsor_count = new_sponsor_count - len(diff.added_sponsors) + len(diff.removed_sponsors)
+            explanations = []
+            if diff.added_sponsors:
+                explanations.append(f"gained {', '.join(diff.added_sponsors)}")
+            if diff.removed_sponsors:
+                explanations.append(f"lost {', '.join(diff.removed_sponsors)}")
+
+            sponsor_text = f"{old_sponsor_count} sponsors --> {new_sponsor_count} sponsors ({', '.join(explanations)})"
+
+
+        diffs_for_template.append({
+            "file": diff.bill.file,
+            "display_name": diff.bill.display_name,
+            "status_text": status_text,
+            # "status_color": status_color,
+            "sponsor_text": sponsor_text
+        })
+    
+    subject = get_bill_update_subject_line(bill_diffs)
+    email_address = "patricktemple@gmail.com" # TODO change this!
+
+    # Make this another function!
+    body_text = render_template("bill_alerts_email.txt", diffs=diffs_for_template)
+
+    try:
+        response = client.send_email(
+            Destination={
+                "ToAddresses": [
+                    email_address
+                ],
+            },
+            Message={
+                "Body": {
+                    # "Html": {
+                    #     "Charset": CHARSET,
+                    #     "Data": body_html,
+                    # },
+                    "Text": {
+                        "Charset": CHARSET,
+                        "Data": body_text,
+                    },
+                },
+                "Subject": {
+                    "Charset": CHARSET,
+                    "Data": subject,
+                },
+            },
+            Source=SENDER,
+        )
+    except ClientError as e:
+        logging.exception(e)
+        raise exceptions.ServiceUnavailable("Could not send email")
+    else:
+        logging.info(
+            f"Email sent successfully to {email_address}, message ID: {response['MessageId']}"
+        )
+
+
 def send_bill_update_notifications(snapshots_by_bill_id): # this modifies the snapshots
     bills = Bill.query.options(selectinload("sponsorships.legislator")).all()
 
@@ -86,51 +159,15 @@ def send_bill_update_notifications(snapshots_by_bill_id): # this modifies the sn
             diff = BillDiff()
             diff.bill = bill
             diff.old_status = snapshot.status
-            diff.added_sponsors = added_sponsors
-            diff.removed_sponsors = removed_sponsors
+            diff.added_sponsors = [s.name for s in added_sponsors]
+            diff.removed_sponsors = [s.name for s in removed_sponsors]
             changed_bill_diffs.append(diff)
+            # It's possible that all this logic doesn't belong in the SES stuff
     
     if changed_bill_diffs:
         # Send an email
         # TODO be more specific when possible, and do plural
-        subject = get_bill_update_subject_line(changed_bill_diffs)
-        email_address = "patricktemple@gmail.com" # TODO change this!
-    
-        # Make this another function!
-        body_text = changed_bill_diffs.__repr__()
-
-        try:
-            response = client.send_email(
-                Destination={
-                    "ToAddresses": [
-                        email_address
-                    ],
-                },
-                Message={
-                    "Body": {
-                        # "Html": {
-                        #     "Charset": CHARSET,
-                        #     "Data": body_html,
-                        # },
-                        "Text": {
-                            "Charset": CHARSET,
-                            "Data": body_text,
-                        },
-                    },
-                    "Subject": {
-                        "Charset": CHARSET,
-                        "Data": subject,
-                    },
-                },
-                Source=SENDER,
-            )
-        except ClientError as e:
-            logging.exception(e)
-            raise exceptions.ServiceUnavailable("Could not send email")
-        else:
-            logging.info(
-                f"Email sent successfully to {email_address}, message ID: {response['MessageId']}"
-            )
+        send_bill_diff_email(changed_bill_diffs)
 
 
 def send_login_link_email(email_address, login_link):

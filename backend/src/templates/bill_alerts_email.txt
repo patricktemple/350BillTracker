@@ -1,20 +1,6 @@
-Subject:
-- general principle: be as specific as possible, but send just one email
-- if multiple bills changed:
----- $count bills were updated
+{% for diff in diffs %}
+  {{ diff.file }} - {{ diff.display_name }}
+  {{ diff.status_text }}
+  {{ diff.sponsor_text }}
 
-- if just a single bill changed
----- if status changed: Intro 2317 status changed to "Enacted"
----- if gained a sponsor: Intro 2317 gained sponsor $name
----- if lost a sponsor: Intro 2318 lost sponsor $name
----- if gained and lost: Intro 2317 sponsors changed
-
- But... don't start off too specific
- 
- BODY:
-
-Bill updates!
-
-Updates to Intro 2317 (skip the stuff):
-Status: Enacted (unchanged) OR Status: Committee --> Enacted (and color it green)
-23 Sponsors --> 25 Sponsors (added $sponsor_names, lost $sponsor_names)
+{% endfor %}
