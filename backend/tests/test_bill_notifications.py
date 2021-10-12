@@ -101,6 +101,8 @@ def test_email_contents__sponsors_added():
         added_sponsor_names=["Brad Lander", "Jamaal Bowman"],
     )
 
+    # It uses the current sponsor count to figure out the previous, so
+    # add some sponsors in the DB so it doesn't report a negative number
     for i in range(3):
         add_test_legislator(i)
         add_test_sponsorship(bill_id=1, legislator_id=i)

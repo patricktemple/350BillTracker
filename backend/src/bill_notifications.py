@@ -2,9 +2,9 @@ import logging
 from dataclasses import dataclass
 from typing import List
 
+from botocore.exceptions import ClientError
 from flask import render_template
 from sqlalchemy.orm import selectinload
-from botocore.exceptions import ClientError
 
 from .models import Bill, Legislator, User
 from .ses import send_email
@@ -97,9 +97,13 @@ def _convert_bill_diff_to_template_variables(diff):
         # List out the names of all changed sponsors
         explanations = []
         if diff.added_sponsor_names:
-            explanations.append(f"gained {', '.join(diff.added_sponsor_names)}")
+            explanations.append(
+                f"gained {', '.join(diff.added_sponsor_names)}"
+            )
         if diff.removed_sponsor_names:
-            explanations.append(f"lost {', '.join(diff.removed_sponsor_names)}")
+            explanations.append(
+                f"lost {', '.join(diff.removed_sponsor_names)}"
+            )
 
         sponsor_text = f"{old_sponsor_count} sponsors --> {new_sponsor_count} sponsors ({', '.join(explanations)})"
     else:
