@@ -31,6 +31,37 @@ class BillDiff:
         return self.__dict__.__repr__()
 
 
+def _get_sponsor_subject_string(sponsors):
+    if len(sponsors) > 1:
+        return f"{len(sponsors)} sponsors"
+    
+    return f"sponsor {sponsors[0].name}"
+    
+
+def get_bill_update_subject_line(bill_diffs):
+    """Get a subject line for the email describing the bill updates. Assumes the diff list
+    and the diffs themselves are non-empty."""
+    if len(bill_diffs) > 1:
+        return f"{len(bill_diffs)} bills were updated"
+
+    diff = bill_diffs[0]
+
+    # Update to python 3.10 and use structural pattern matching?
+
+    file = diff.bill.file
+    if not diff.added_sponsors and not diff.removed_sponsors:
+        return f"{file}'s status changed to {diff.bill.status}"
+
+    if diff.old_status == diff.bill.status:
+        if not diff.added_sponsors:
+            return f"{file} lost {_get_sponsor_subject_string(diff.removed_sponsors)}"
+        if not diff.removed_sponsors:
+            return f"{file} gained {_get_sponsor_subject_string(diff.added_sponsors)}"
+        return f"{file} gained and lost sponsors"
+    
+    return f"{diff.bill.file} was updated"
+
+
 def send_bill_update_notifications(snapshots_by_bill_id): # this modifies the snapshots
     bills = Bill.query.options(selectinload("sponsorships.legislator")).all()
 
@@ -62,7 +93,7 @@ def send_bill_update_notifications(snapshots_by_bill_id): # this modifies the sn
     if changed_bill_diffs:
         # Send an email
         # TODO be more specific when possible, and do plural
-        subject = f"{len(changed_bill_diffs)} bills updated"
+        subject = get_bill_update_subject_line(changed_bill_diffs)
         email_address = "patricktemple@gmail.com" # TODO change this!
     
         # Make this another function!
