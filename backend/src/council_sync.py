@@ -10,6 +10,7 @@ from .council_api import (
 )
 from .models import Bill, BillSponsorship, Legislator, db
 from .static_data import STATIC_DATA_BY_LEGISLATOR_ID
+from sqlalchemy.org import selectinload
 
 
 # Legislators ----------------------------------------------------------------
@@ -89,30 +90,49 @@ def fill_council_person_data():
 # Bills ----------------------------------------------------------------------
 
 
-def add_or_update_bill(matter_id):
-    bill_data = lookup_bill(matter_id)
-    logging.info(f"Got bill {bill_data} for {matter_id}")
+class BillSnapshot:
+    bill_id = None
+    status = None
+    sponsor_ids = []
 
-    existing_bill = Bill.query.get(data["id"])
-    if existing_bill:
-        logging.info(f"Bill {data['file']} already in DB, updating")
-    else:
-        logging.info(f"Bill {data['file']} not found in DB, adding")
-    db.session.merge(Bill(**data))
+    def __init__(self, bill_id, status, sponsor_ids):
+        self.bill_id = bill_id # needed?
+        self.status = status
+        self.sponsor_ids = sponsor_ids
+
+
+def snapshot_bills():
+    """Snapshots the state of all bills. Used to calculate the diff produced by
+    a cron job run, so that we can send out email notifications of bill status changes."""
+    bills = Bill.query.options(selectinload(Bill.sponsorships)).all()
+
+    snapshots_by_bill_id = {}
+    for bill in bills:
+        sponsor_ids = [s.legislator_id for s in bill.sponsorships]
+        snapshot = BillSnapshot(bill.id, bill.status, sponsor_ids)
+        snapshots_by_bill_id[bill.id] = snapshot
+
+
+    return snapshots_by_bill_id
+
+
+def update_bill(bill_id):
+    bill_data = lookup_bill(bill_id)
+    logging.info(f"Updating bill {bill_id} and got {bill_data}")
+
+    existing_bill = Bill.query.filter_by(id=bill_id).one()
+    db.session.merge(Bill(**bill_data))
     db.session.commit()
 
 
 def sync_bill_updates():
-    # Note: the bill gets updated if the user "tracks" it too
-    # We don't want to do that, because it will not send out email notifications
-    # on any changes.
     bills = Bill.query.all()
 
     for bill in bills:
-        add_or_update_bill(bill.id)
+        update_bill(bill.id)
 
 
-# TODO: Unit test this
+# TODO: Unit test this whole cron job
 def update_sponsorships(bill_id):
     sponsorships = get_bill_sponsors(bill_id)
 

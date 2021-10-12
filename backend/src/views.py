@@ -5,7 +5,7 @@ from datetime import date, timedelta
 from flask import jsonify, render_template, request
 from marshmallow import fields
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, selectinload
 from werkzeug import exceptions
 
 from .app import app
@@ -280,7 +280,7 @@ class SingleBillSponsorshipsSchema(CamelCaseSchema):
 def bill_sponsorships(bill_id):
     sponsorships = (
         BillSponsorship.query.filter_by(bill_id=bill_id)
-        .options(joinedload(BillSponsorship.legislator))
+        .options(selectinload("sponsorships.legislator"))
         .all()
     )
     return SingleBillSponsorshipsSchema(many=True).jsonify(sponsorships)
