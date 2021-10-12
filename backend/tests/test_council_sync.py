@@ -8,8 +8,10 @@ from src.council_sync import (
     fill_council_person_data_from_api,
     fill_council_person_static_data,
     sync_bill_updates,
+    update_all_sponsorships,
+    update_bill_sponsorships,
 )
-from src.models import Bill, Legislator, db
+from src.models import Bill, BillSponsorship, Legislator, db
 from src.static_data import STATIC_DATA_BY_LEGISLATOR_ID
 
 
@@ -155,3 +157,107 @@ def test_sync_bill_updates():
     assert result.status == "New status"
     assert result.intro_date == datetime(2021, 1, 1, tzinfo=timezone.utc)
     assert result.nickname == "Shouldn't change"
+
+
+@responses.activate
+@freeze_time("2021-1-1")
+def test_update_sponsorships__new_sponsor():
+    bill = Bill(
+        id=1,
+        file="Intro 200",
+        name="Electric school buses",
+        title="Bill title",
+        status="Committee",
+        intro_date="2000-1-1",
+    )
+    db.session.add(bill)
+    legislator = Legislator(id=1, name="Patrick")
+    db.session.add(legislator)
+
+    responses.add(
+        responses.GET,
+        url="https://webapi.legistar.com/v1/nyc/matters/1/sponsors?token=fake_token",
+        json=[
+            {"MatterSponsorNameId": 1},
+            {
+                # This one isn't found in the DB
+                "MatterSponsorNameId": 2
+            },
+        ],
+    )
+
+    update_all_sponsorships()
+
+    sponsorship = BillSponsorship.query.one()
+    assert sponsorship.legislator_id == 1
+    assert sponsorship.bill_id == 1
+    assert sponsorship.added_at == datetime(2021, 1, 1, tzinfo=timezone.utc)
+
+
+@responses.activate
+@freeze_time("2021-1-1")
+def test_update_sponsorships__sponsorship_already_exists():
+    bill = Bill(
+        id=1,
+        file="Intro 200",
+        name="Electric school buses",
+        title="Bill title",
+        status="Committee",
+        intro_date="2000-1-1",
+    )
+    db.session.add(bill)
+    legislator = Legislator(id=1, name="Patrick")
+    db.session.add(legislator)
+
+    sponsorship = BillSponsorship(
+        bill_id=1,
+        legislator_id=1,
+        added_at=datetime(2000, 1, 1, tzinfo=timezone.utc),
+    )
+    db.session.add(sponsorship)
+
+    responses.add(
+        responses.GET,
+        url="https://webapi.legistar.com/v1/nyc/matters/1/sponsors?token=fake_token",
+        json=[{"MatterSponsorNameId": 1}],
+    )
+
+    update_all_sponsorships()
+
+    sponsorship = BillSponsorship.query.one()
+    assert sponsorship.legislator_id == 1
+    assert sponsorship.bill_id == 1
+    assert sponsorship.added_at == datetime(2000, 1, 1, tzinfo=timezone.utc)
+
+
+@responses.activate
+@freeze_time("2021-1-1")
+def test_update_sponsorships__remove_sponsorship():
+    bill = Bill(
+        id=1,
+        file="Intro 200",
+        name="Electric school buses",
+        title="Bill title",
+        status="Committee",
+        intro_date="2000-1-1",
+    )
+    db.session.add(bill)
+    legislator = Legislator(id=1, name="Patrick")
+    db.session.add(legislator)
+
+    sponsorship = BillSponsorship(
+        bill_id=1,
+        legislator_id=1,
+        added_at=datetime(2000, 1, 1, tzinfo=timezone.utc),
+    )
+    db.session.add(sponsorship)
+
+    responses.add(
+        responses.GET,
+        url="https://webapi.legistar.com/v1/nyc/matters/1/sponsors?token=fake_token",
+        json=[],
+    )
+
+    update_all_sponsorships()
+
+    assert BillSponsorship.query.count() == 0

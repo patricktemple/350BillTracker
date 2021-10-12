@@ -96,7 +96,7 @@ def save_bill():
     # TODO: Add test for this, return 409
     db.session.commit()
 
-    # i think this is fine since we don't want to send notifications anyway?
+    # problem: this will set added_at and we don't want that
     update_sponsorships(bill_id)  # should this be in the same transaction?
 
     return jsonify({})
