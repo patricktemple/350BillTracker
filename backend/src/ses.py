@@ -27,6 +27,10 @@ class BillDiff:
     removed_sponsors = None
 
 
+    def __repr__(self):
+        return self.__dict__.__repr__()
+
+
 def send_bill_update_notifications(snapshots_by_bill_id): # this modifies the snapshots
     bills = Bill.query.options(selectinload("sponsorships.legislator")).all()
 
@@ -39,10 +43,11 @@ def send_bill_update_notifications(snapshots_by_bill_id): # this modifies the sn
         for sponsorship in bill.sponsorships:
             if sponsorship.legislator_id not in prior_sponsor_ids:
                 added_sponsors.append(sponsorship.legislator)
+            else:
                 prior_sponsor_ids.remove(sponsorship.legislator_id)
         
         if prior_sponsor_ids:
-            removed_sponsors = Legislator.query.filter(id.in_(prior_sponsor_ids)).all()
+            removed_sponsors = Legislator.query.filter(Legislator.id.in_(prior_sponsor_ids)).all()
         else:
             removed_sponsors = []
         

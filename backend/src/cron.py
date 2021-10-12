@@ -2,6 +2,7 @@ import logging
 from time import sleep
 
 from . import council_sync
+from . import ses
 from .app import app
 from .settings import ENABLE_CRON
 
@@ -28,11 +29,11 @@ def cron_command():
                 # logging.info("Syncing all bill sponsorships")
                 # council_sync.update_all_sponsorships()
 
-                council_sync.send_bill_update_notifications(bill_snapshots)
+                ses.send_bill_update_notifications(bill_snapshots)
 
                 logging.info("Cron run complete")
             except Exception as e:
-                logging.exception()
+                logging.exception(e)
                 logging.error("Unhandled exception during cron run")
         else:
             logging.info("Cron job is disabled, it won't do anything")

@@ -13,7 +13,6 @@ from .app import marshmallow as ma
 from .auth import auth_required, create_jwt
 from .council_api import lookup_bills, lookup_bill
 from .council_sync import (
-    add_or_update_bill,
     update_sponsorships,
 )
 from .google_sheets import create_phone_bank_spreadsheet
@@ -99,6 +98,7 @@ def save_bill():
     # TODO: Add test for this, return 409
     db.session.commit()
 
+    # i think this is fine since we don't want to send notifications anyway?
     update_sponsorships(bill_id) # should this be in the same transaction?
 
     return jsonify({})

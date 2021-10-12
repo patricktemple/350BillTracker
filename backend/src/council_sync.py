@@ -10,7 +10,7 @@ from .council_api import (
 )
 from .models import Bill, BillSponsorship, Legislator, db
 from .static_data import STATIC_DATA_BY_LEGISLATOR_ID
-from sqlalchemy.org import selectinload
+from sqlalchemy.orm import selectinload
 
 
 # Legislators ----------------------------------------------------------------
