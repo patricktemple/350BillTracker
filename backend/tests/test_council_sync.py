@@ -9,7 +9,6 @@ from src.council_sync import (
     fill_council_person_static_data,
     sync_bill_updates,
     update_all_sponsorships,
-    update_bill_sponsorships,
 )
 from src.models import Bill, BillSponsorship, Legislator, db
 from src.static_data import STATIC_DATA_BY_LEGISLATOR_ID

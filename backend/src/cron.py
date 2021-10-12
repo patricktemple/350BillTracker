@@ -1,7 +1,7 @@
 import logging
 from time import sleep
 
-from . import bill_notifications, council_sync, ses
+from . import bill_notifications, council_sync, models, ses
 from .app import app
 from .settings import ENABLE_CRON
 
@@ -43,6 +43,7 @@ def cron_command():
             except Exception as e:
                 logging.exception(e)
                 logging.error("Unhandled exception during cron run")
+                models.db.session.rollback()
         else:
             logging.info("Cron job is disabled, it won't do anything")
 

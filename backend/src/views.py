@@ -85,19 +85,20 @@ def bills():
 @auth_required
 def save_bill():
     bill_id = request.json["id"]
+    if Bill.query.get(bill_id):
+        # There's a race condition of checking this and then inserting,
+        # but in that rare case it will hit the DB unique constraint instead.
+        raise exceptions.Conflict()
+
     bill_data = lookup_bill(bill_id)
     logging.info(f"Saving bill {bill_id}, council API returned {bill_data}")
 
     bill = Bill(**bill_data)
     db.session.add(bill)
 
-    # If we're already tracking this bill, this will have an integrity
-    # error which is intentional.
-    # TODO: Add test for this, return 409
-    db.session.commit()
+    update_bill_sponsorships(bill_id)
 
-    # problem: this will set added_at and we don't want that
-    update_sponsorships(bill_id)  # should this be in the same transaction?
+    db.session.commit()
 
     return jsonify({})
 

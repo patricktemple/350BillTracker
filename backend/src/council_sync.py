@@ -107,7 +107,6 @@ def _update_bill(bill_id):
 
     existing_bill = Bill.query.filter_by(id=bill_id).one()
     db.session.merge(Bill(**bill_data))
-    db.session.commit()
 
 
 def sync_bill_updates():
@@ -115,10 +114,10 @@ def sync_bill_updates():
 
     for bill in bills:
         _update_bill(bill.id)
+        db.session.commit()
 
 
-# TODO: Unit test this whole cron job
-def update_bill_sponsorships(bill_id):
+def update_bill_sponsorships(bill_id, set_added_at=False):
     """
     Updates sponsorships for a given bill:
     1) Deletes any previous sponsorships
@@ -159,7 +158,7 @@ def update_bill_sponsorships(bill_id):
             # Remove sponsors from this set until we're left with only those
             # sponsorships that were rescinded recently.
             del existing_sponsorships_by_id[legislator_id]
-        else:
+        elif set_added_at:
             internal_sponsorship.added_at = now()
 
         db.session.merge(internal_sponsorship)
@@ -167,11 +166,10 @@ def update_bill_sponsorships(bill_id):
     for lost_sponsor in existing_sponsorships_by_id.values():
         db.session.delete(lost_sponsor)
 
-    db.session.commit()
-
 
 def update_all_sponsorships():
     bills = Bill.query.all()
     for bill in bills:
         logging.info(f"Updating sponsorships for bill {bill.id} {bill.name}")
-        update_bill_sponsorships(bill.id)
+        update_bill_sponsorships(bill.id, set_added_at=True)
+        db.session.commit()

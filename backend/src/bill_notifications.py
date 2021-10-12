@@ -58,8 +58,7 @@ def _get_bill_update_subject_line(bill_diffs):
 
     diff = bill_diffs[0]
 
-    # Update to python 3.10 and use structural pattern matching?
-
+    # TODO: Update to python 3.10 and use structural pattern matching?
     file = diff.bill.file
     if not diff.added_sponsors and not diff.removed_sponsors:
         return f"{file}'s status changed to {diff.bill.status}"
