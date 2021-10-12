@@ -3,11 +3,11 @@
   </head>
   <body>
     <p>The following bills were updated by the City Council.</p>
-    {% for diff in diffs %}
+    {% for bill in bills %}
     <div style="padding-bottom: 1rem">
-      <div style="font-size: 1rem; font-weight: bold">{{ diff.file }} - {{ diff.display_name }}</div>
-      <div style="color: {{ diff.status_color }}">{{ diff.status_text }}</div>
-      <div style="color: {{ diff.sponsor_color }}">{{ diff.sponsor_text }}</div>
+      <div style="font-size: 1rem; font-weight: bold">{{ bill.file }} - {{ bill.display_name }}</div>
+      <div style="color: {{ bill.status_color }}">{{ bill.status_text }}</div>
+      <div style="color: {{ bill.sponsor_color }}">{{ bill.sponsor_text }}</div>
     </div>
     {% endfor %}
   </body>

@@ -32,6 +32,7 @@ def cron_command():
                 logging.info("Syncing all bill sponsorships")
                 council_sync.update_all_sponsorships()
 
+                logging.info("Checking if bills have changed, and sending notifications if so")
                 bill_notifications.send_bill_update_notifications(
                     bill_snapshots
                 )
