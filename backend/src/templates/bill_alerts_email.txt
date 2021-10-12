@@ -1,4 +1,4 @@
-BILL UPDATES
+The following bills were updated by the City Council.
 
 {% for diff in diffs %}
   {{ diff.file }} - {{ diff.display_name }}

@@ -186,6 +186,8 @@ class User(db.Model):
     # The "root" user can never be deleted.
     can_be_deleted = Column(Boolean, nullable=False, server_default=sql.true())
 
+    # TODO: Need to track user's notification preferences here
+
     __table_args__ = (
         CheckConstraint(
             "email = lower(email)", name="check_email_is_lowercase"
