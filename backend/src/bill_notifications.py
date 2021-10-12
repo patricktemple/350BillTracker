@@ -1,4 +1,6 @@
 import logging
+from dataclasses import dataclass
+from typing import List
 
 from flask import render_template
 from sqlalchemy.orm import selectinload
@@ -6,8 +8,6 @@ from werkzeug import exceptions
 
 from .models import Bill, Legislator, User
 from .ses import send_email
-from dataclasses import dataclass
-from typing import List
 
 
 @dataclass
@@ -88,8 +88,8 @@ def _convert_bill_diff_to_template_variables(diff):
         new_sponsor_count = len(diff.bill.sponsorships)
         old_sponsor_count = (
             new_sponsor_count
-            - len(diff.added_sponsors)
-            + len(diff.removed_sponsors)
+            - len(diff.added_sponsors or [])
+            + len(diff.removed_sponsors or [])
         )
         sponsor_color = "blue"
 

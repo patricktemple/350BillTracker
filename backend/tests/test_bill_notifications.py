@@ -2,6 +2,7 @@ from src.bill_notifications import (
     BillDiff,
     BillSnapshot,
     _calculate_bill_diffs,
+    _convert_bill_diff_to_template_variables,
 )
 from src.models import Bill, BillSponsorship, Legislator, db
 from src.utils import now
@@ -23,7 +24,7 @@ def add_test_bill(bill_id, status):
 
 def add_test_legislator(legislator_id):
     legislator = Legislator(
-        id=legislator_id, 
+        id=legislator_id,
         name=f"{legislator_id} name",
     )
     db.session.add(legislator)
@@ -66,5 +67,83 @@ def test_calculate_bill_diffs():
     assert diff.bill.status == "Enacted"
 
 
-def test_convert_bill_diffs_to_template_variables():
-    diff = BillDiff()
+def test_convert_bill_diff_to_template_variables__status_changed():
+    bill = add_test_bill(1, "Enacted")
+    diff = BillDiff(old_status="Committee", bill=bill)
+
+    variables = _convert_bill_diff_to_template_variables(diff)
+    assert variables == {
+        "file": bill.file,
+        "display_name": bill.display_name,
+        "status_text": "Status: Committee --> Enacted",
+        "status_color": "blue",
+        "sponsor_text": "0 sponsors (unchanged)",
+        "sponsor_color": "black",
+    }
+
+
+def test_convert_bill_diff_to_template_variables__sponsor_added():
+    bill = add_test_bill(1, "Enacted")
+    diff = BillDiff(
+        old_status="Enacted",
+        bill=bill,
+        added_sponsors=["Brad Lander", "Jamaal Bowman"],
+    )
+
+    for i in range(3):
+        add_test_legislator(i)
+        add_test_sponsorship(bill_id=1, legislator_id=i)
+
+    db.session.commit()
+
+    variables = _convert_bill_diff_to_template_variables(diff)
+    assert variables == {
+        "file": bill.file,
+        "display_name": bill.display_name,
+        "status_text": "Status: Enacted (unchanged)",
+        "status_color": "black",
+        "sponsor_text": "1 sponsors --> 3 sponsors (gained Brad Lander, Jamaal Bowman)",
+        "sponsor_color": "blue",
+    }
+
+
+def test_convert_bill_diff_to_template_variables__sponsor_removed():
+    bill = add_test_bill(1, "Enacted")
+    diff = BillDiff(
+        old_status="Enacted", bill=bill, removed_sponsors=["Brad Lander"]
+    )
+
+    variables = _convert_bill_diff_to_template_variables(diff)
+    assert variables == {
+        "file": bill.file,
+        "display_name": bill.display_name,
+        "status_text": "Status: Enacted (unchanged)",
+        "status_color": "black",
+        "sponsor_text": "1 sponsors --> 0 sponsors (lost Brad Lander)",
+        "sponsor_color": "blue",
+    }
+
+
+def test_convert_bill_diff_to_template_variables__sponsor_added_and_removed():
+    bill = add_test_bill(1, "Enacted")
+    diff = BillDiff(
+        old_status="Enacted",
+        bill=bill,
+        added_sponsors=["Jamaal Bowman"],
+        removed_sponsors=["Brad Lander"],
+    )
+
+    add_test_legislator(1)
+    add_test_sponsorship(bill_id=1, legislator_id=1)
+
+    db.session.commit()
+
+    variables = _convert_bill_diff_to_template_variables(diff)
+    assert variables == {
+        "file": bill.file,
+        "display_name": bill.display_name,
+        "status_text": "Status: Enacted (unchanged)",
+        "status_color": "black",
+        "sponsor_text": "1 sponsors --> 1 sponsors (gained Jamaal Bowman, lost Brad Lander)",
+        "sponsor_color": "blue",
+    }
