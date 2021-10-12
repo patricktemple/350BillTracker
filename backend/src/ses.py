@@ -9,7 +9,7 @@ from flask import render_template
 from werkzeug import exceptions
 
 from .settings import APP_TITLE
-from .models import Bill, Legislator
+from .models import Bill, Legislator, User
 from sqlalchemy.orm import selectinload
 
 # This guide was important in getting the email address set up:
@@ -38,7 +38,7 @@ def _get_sponsor_subject_string(sponsors):
     return f"sponsor {sponsors[0]}"
     
 
-def get_bill_update_subject_line(bill_diffs):
+def _get_bill_update_subject_line(bill_diffs):
     """Get a subject line for the email describing the bill updates. Assumes the diff list
     and the diffs themselves are non-empty."""
     if len(bill_diffs) > 1:
@@ -62,7 +62,42 @@ def get_bill_update_subject_line(bill_diffs):
     return f"{diff.bill.file} was updated"
 
 
-def send_bill_diff_email(bill_diffs):
+def send_email(email, subject, body_html, body_text):
+    try:
+        response = client.send_email(
+            Destination={
+                "ToAddresses": [
+                    email
+                ],
+            },
+            Message={
+                "Body": {
+                    "Html": {
+                        "Charset": CHARSET,
+                        "Data": body_html,
+                    },
+                    "Text": {
+                        "Charset": CHARSET,
+                        "Data": body_text,
+                    },
+                },
+                "Subject": {
+                    "Charset": CHARSET,
+                    "Data": subject,
+                },
+            },
+            Source=SENDER,
+        )
+    except ClientError as e:
+        logging.exception(e)
+        raise exceptions.ServiceUnavailable("Could not send email")
+    else:
+        logging.info(
+            f"Email sent successfully to {email}, message ID: {response['MessageId']}"
+        )
+
+
+def send_bill_update_emails(bill_diffs):
     diffs_for_template = []
     # TODO figure out if we really need this middle layer BillDiff before converting it to the renderable thing
     for diff in bill_diffs:
@@ -99,45 +134,15 @@ def send_bill_diff_email(bill_diffs):
             "sponsor_color": sponsor_color,
         })
     
-    subject = get_bill_update_subject_line(bill_diffs)
-    email_address = "patricktemple@gmail.com" # TODO change this!
-
-    # Make this another function!
+    subject = _get_bill_update_subject_line(bill_diffs)
     body_text = render_template("bill_alerts_email.txt", diffs=diffs_for_template)
     body_html = render_template("bill_alerts_email.html", diffs=diffs_for_template)
 
-    try:
-        response = client.send_email(
-            Destination={
-                "ToAddresses": [
-                    email_address
-                ],
-            },
-            Message={
-                "Body": {
-                    "Html": {
-                        "Charset": CHARSET,
-                        "Data": body_html,
-                    },
-                    "Text": {
-                        "Charset": CHARSET,
-                        "Data": body_text,
-                    },
-                },
-                "Subject": {
-                    "Charset": CHARSET,
-                    "Data": subject,
-                },
-            },
-            Source=SENDER,
-        )
-    except ClientError as e:
-        logging.exception(e)
-        raise exceptions.ServiceUnavailable("Could not send email")
-    else:
-        logging.info(
-            f"Email sent successfully to {email_address}, message ID: {response['MessageId']}"
-        )
+    users_to_notify = User.query.filter_by(send_bill_update_notifications=True).all()
+
+    for user in users_to_notify:
+        logging.info(f"Sending bill update email to {user.email}")
+        send_email(user.email, subject, body_html, body_text)
 
 
 def send_bill_update_notifications(snapshots_by_bill_id): # this modifies the snapshots
@@ -170,44 +175,12 @@ def send_bill_update_notifications(snapshots_by_bill_id): # this modifies the sn
             # It's possible that all this logic doesn't belong in the SES stuff
     
     if changed_bill_diffs:
-        # Send an email
-        # TODO be more specific when possible, and do plural
-        send_bill_diff_email(changed_bill_diffs)
+        logging.info("Bills were changed in this cron run, sending emails")
+        send_bill_update_emails(changed_bill_diffs)
 
 
 def send_login_link_email(email_address, login_link):
     body_text = render_template("login_email.txt", login_link=login_link)
     body_html = render_template("login_email.html", login_link=login_link)
 
-    try:
-        response = client.send_email(
-            Destination={
-                "ToAddresses": [
-                    email_address,
-                ],
-            },
-            Message={
-                "Body": {
-                    "Html": {
-                        "Charset": CHARSET,
-                        "Data": body_html,
-                    },
-                    "Text": {
-                        "Charset": CHARSET,
-                        "Data": body_text,
-                    },
-                },
-                "Subject": {
-                    "Charset": CHARSET,
-                    "Data": "Log in to 350 Bill Tracker",
-                },
-            },
-            Source=SENDER,
-        )
-    except ClientError as e:
-        logging.exception(e)
-        raise exceptions.ServiceUnavailable("Could not send email")
-    else:
-        logging.info(
-            f"Email sent successfully to {email_address}, message ID: {response['MessageId']}"
-        )
+    send_email(email_address, "Log in to 350 Bill Tracker", body_html, body_text)
