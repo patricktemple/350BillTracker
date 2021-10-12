@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timezone
 
 from requests import HTTPError
 from sqlalchemy.orm import selectinload
@@ -12,7 +13,6 @@ from .council_api import (
 from .models import Bill, BillSponsorship, Legislator, db
 from .static_data import STATIC_DATA_BY_LEGISLATOR_ID
 from .utils import now
-from datetime import datetime, timezone
 
 # Legislators ----------------------------------------------------------------
 
@@ -27,8 +27,12 @@ def add_council_members():
         legislator = Legislator(
             name=member["OfficeRecordFullName"],
             id=member["OfficeRecordPersonId"],
-            term_start=datetime.fromisoformat(member["OfficeRecordStartDate"]).replace(tzinfo=timezone.utc),
-            term_end=datetime.fromisoformat(member["OfficeRecordEndDate"]).replace(tzinfo=timezone.utc),
+            term_start=datetime.fromisoformat(
+                member["OfficeRecordStartDate"]
+            ).replace(tzinfo=timezone.utc),
+            term_end=datetime.fromisoformat(
+                member["OfficeRecordEndDate"]
+            ).replace(tzinfo=timezone.utc),
         )
         # TODO: Merge is probably not concurrency friendly. Do insert+on_conflict_do_update
         db.session.merge(legislator)
@@ -42,7 +46,7 @@ def _convert_borough(city_name):
     return city_name
 
 
-def fill_council_person_data():
+def fill_council_person_data_from_api():
     """For all council members in the DB, updates their contact info and other details
     based on the Person API and our own static data.
     """
@@ -59,6 +63,12 @@ def fill_council_person_data():
         except HTTPError as e:
             logging.exception(f"Could not get Person {legislator.id} from API")
             continue
+    
+    db.session.commit()
+
+
+def fill_council_person_static_data():
+    legislators = Legislator.query.all()
 
     for legislator in legislators:
         legislator_data = STATIC_DATA_BY_LEGISLATOR_ID.get(legislator.id)

@@ -18,7 +18,11 @@ def cron_command():
                 # council_sync.add_council_members()
 
                 # logging.info("Updating council member contact info")
-                # council_sync.fill_council_person_data()
+                # council_sync.fill_council_person_data_from_api()
+
+                # logging.info("Refreshing council_member_static_data")
+                # This doesn't need to run at cron time though! Just once on startup
+                # council_sync.fill_council_person_static_data()
 
                 bill_snapshots = council_sync.snapshot_bills()
 
