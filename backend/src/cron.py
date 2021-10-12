@@ -47,4 +47,5 @@ def cron_command():
         else:
             logging.info("Cron job is disabled, it won't do anything")
 
-        sleep(60 * 60)
+        # TODO: Revert this!
+        sleep(1 * 60)
