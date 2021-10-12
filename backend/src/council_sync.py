@@ -134,6 +134,7 @@ def sync_bill_updates():
 
 # TODO: Unit test this whole cron job
 def update_sponsorships(bill_id):
+    # TODO: This does not remove sponsorships if they're taken away! Implement and test that
     sponsorships = get_bill_sponsors(bill_id)
 
     existing_legislators = Legislator.query.filter(
