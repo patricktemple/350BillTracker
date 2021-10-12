@@ -6,30 +6,27 @@ from werkzeug import exceptions
 
 from .models import Bill, Legislator, User
 from .ses import send_email
+from dataclasses import dataclass
+from typing import List
 
 
+@dataclass
 class BillDiff:
     """Utility class to track a bill's state before and after a cron run."""
 
-    bill = None  # Bill
-    old_status = None  # str
-    added_sponsors = None  # str[], lists the sponsor names
-    removed_sponsors = None  # str[], lists the sponsor names only
-
-    def __repr__(self):
-        return self.__dict__.__repr__()
+    bill: Bill = None
+    old_status: str = None
+    added_sponsors: List[str] = None
+    removed_sponsors: List[str] = None
 
 
+@dataclass
 class BillSnapshot:
     """Utility class to track the state of a bill before a cron run may have
     updated it."""
 
-    status = None
-    sponsor_ids = []
-
-    def __init__(self, status, sponsor_ids):
-        self.status = status
-        self.sponsor_ids = sponsor_ids
+    status: str = None
+    sponsor_ids: List[int] = None
 
 
 def snapshot_bills():

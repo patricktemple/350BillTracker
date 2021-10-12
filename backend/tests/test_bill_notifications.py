@@ -64,3 +64,7 @@ def test_calculate_bill_diffs():
     assert diff.removed_sponsors == [legislator_2.name]
     assert diff.old_status == "Committee"
     assert diff.bill.status == "Enacted"
+
+
+def test_convert_bill_diffs_to_template_variables():
+    diff = BillDiff()
