@@ -280,7 +280,7 @@ class SingleBillSponsorshipsSchema(CamelCaseSchema):
 def bill_sponsorships(bill_id):
     sponsorships = (
         BillSponsorship.query.filter_by(bill_id=bill_id)
-        .options(selectinload("sponsorships.legislator"))
+        .options(joinedload(BillSponsorship.legislator))
         .all()
     )
     return SingleBillSponsorshipsSchema(many=True).jsonify(sponsorships)
