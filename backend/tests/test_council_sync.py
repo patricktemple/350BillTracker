@@ -9,6 +9,7 @@ from src.council_sync import (
     fill_council_person_static_data,
 )
 from src.models import Legislator, db
+from src.static_data import STATIC_DATA_BY_LEGISLATOR_ID
 
 
 @responses.activate
@@ -94,6 +95,7 @@ def test_fill_council_person_data():
 
 
 def test_fill_council_person_static_data():
+    corey_static = STATIC_DATA_BY_LEGISLATOR_ID[7631]
     legislator_to_update = Legislator(
         id=7631, name="Corey Johnson badly formatted name----"
     )
@@ -107,6 +109,6 @@ def test_fill_council_person_static_data():
     fill_council_person_static_data()
 
     corey = Legislator.query.get(7631)
-    assert corey.name == "Corey D. Johnson"
-    assert corey.twitter == "NYCSpeakerCoJo"
-    assert corey.party == "D"
+    assert corey.name == corey_static['name']
+    assert corey.twitter == corey_static['twitter']
+    assert corey.party == corey_static['party']
