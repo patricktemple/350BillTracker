@@ -143,20 +143,21 @@ def update_sponsorships(bill_id):
     """
     # Clear all old sponsorships for this bill so we can add them back
     existing_sponsorships = BillSponsorship.query.filter_by(bill_id=bill_id).all()
-    for sponsorship in existing_sponsorships:
-        db.session.delete(sponsorship)
+    existing_sponsorships_by_id = {s.legislator_id: s for s in existing_sponsorships}
 
     new_sponsorships = get_bill_sponsors(bill_id)
 
     existing_legislators = Legislator.query.filter(
         Legislator.id.in_([s["MatterSponsorNameId"] for s in new_sponsorships])
     ).all()
-    existing_legislator_ids = set([l.id for l in existing_legislators])
+    existing_legislator_ids = {l.id for l in existing_legislators}
 
     for sponsorship in new_sponsorships:
         legislator_id = sponsorship["MatterSponsorNameId"]
 
-        if legislator_id not in existing_legislator_ids:
+        if legislator_id in existing_sponsorships_by_id:
+            del existing_sponsorships_by_id[legislator_id]
+        elif legislator_id not in existing_legislator_ids:
             logging.warning(
                 f"Did not find legislator {legislator_id} in db, ignoring..."
             )
@@ -168,6 +169,9 @@ def update_sponsorships(bill_id):
         )
 
         db.session.merge(internal_sponsorship)
+    
+    for lost_sponsor in existing_sponsorships_by_id.values():
+        db.session.delete(lost_sponsor)
 
     db.session.commit()
 
