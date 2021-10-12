@@ -13,16 +13,16 @@ def cron_command():
     while True:
         if ENABLE_CRON:
             try:
-                # logging.info("Syncing data...")
-                # logging.info("Adding council members")
-                # council_sync.add_council_members()
+                logging.info("Syncing data...")
+                logging.info("Adding council members")
+                council_sync.add_council_members()
 
-                # logging.info("Updating council member contact info")
-                # council_sync.fill_council_person_data_from_api()
+                logging.info("Updating council member contact info")
+                council_sync.fill_council_person_data_from_api()
 
-                # logging.info("Refreshing council_member_static_data")
-                # This doesn't need to run at cron time though! Just once on startup
-                # council_sync.fill_council_person_static_data()
+                logging.info("Refreshing council_member_static_data")
+                # TODO: This doesn't need to run at cron time though! Just once on startup
+                council_sync.fill_council_person_static_data()
 
                 bill_snapshots = bill_notifications.snapshot_bills()
 
@@ -47,5 +47,4 @@ def cron_command():
         else:
             logging.info("Cron job is disabled, it won't do anything")
 
-        # TODO: Revert this!
-        sleep(1 * 60)
+        sleep(60 * 60)
