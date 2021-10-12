@@ -3,6 +3,7 @@ from src.bill_notifications import (
     BillSnapshot,
     _calculate_bill_diffs,
     _convert_bill_diff_to_template_variables,
+    _get_bill_update_subject_line,
 )
 from src.models import Bill, BillSponsorship, Legislator, db
 from src.utils import now
@@ -67,9 +68,12 @@ def test_calculate_bill_diffs():
     assert diff.bill.status == "Enacted"
 
 
-def test_convert_bill_diff_to_template_variables__status_changed():
+def test_email_contents__status_changed():
     bill = add_test_bill(1, "Enacted")
     diff = BillDiff(old_status="Committee", bill=bill)
+
+    subject = _get_bill_update_subject_line([diff])
+    assert subject == f"{bill.file}'s status changed to Enacted"
 
     variables = _convert_bill_diff_to_template_variables(diff)
     assert variables == {
@@ -82,7 +86,7 @@ def test_convert_bill_diff_to_template_variables__status_changed():
     }
 
 
-def test_convert_bill_diff_to_template_variables__sponsor_added():
+def test_email_contents__sponsors_added():
     bill = add_test_bill(1, "Enacted")
     diff = BillDiff(
         old_status="Enacted",
@@ -96,6 +100,9 @@ def test_convert_bill_diff_to_template_variables__sponsor_added():
 
     db.session.commit()
 
+    subject = _get_bill_update_subject_line([diff])
+    assert subject == f"{bill.file} gained 2 sponsors"
+
     variables = _convert_bill_diff_to_template_variables(diff)
     assert variables == {
         "file": bill.file,
@@ -107,11 +114,32 @@ def test_convert_bill_diff_to_template_variables__sponsor_added():
     }
 
 
-def test_convert_bill_diff_to_template_variables__sponsor_removed():
+def test_email_subject__1_sponsor_added():
+    bill = add_test_bill(1, "Enacted")
+    diff = BillDiff(
+        old_status="Enacted",
+        bill=bill,
+        added_sponsors=["Brad Lander"],
+    )
+
+    for i in range(3):
+        add_test_legislator(i)
+        add_test_sponsorship(bill_id=1, legislator_id=i)
+
+    db.session.commit()
+
+    subject = _get_bill_update_subject_line([diff])
+    assert subject == f"{bill.file} gained sponsor Brad Lander"
+
+
+def test_email_contents__sponsor_removed():
     bill = add_test_bill(1, "Enacted")
     diff = BillDiff(
         old_status="Enacted", bill=bill, removed_sponsors=["Brad Lander"]
     )
+
+    subject = _get_bill_update_subject_line([diff])
+    assert subject == f"{bill.file} lost sponsor Brad Lander"
 
     variables = _convert_bill_diff_to_template_variables(diff)
     assert variables == {
@@ -124,7 +152,7 @@ def test_convert_bill_diff_to_template_variables__sponsor_removed():
     }
 
 
-def test_convert_bill_diff_to_template_variables__sponsor_added_and_removed():
+def test_email_contents__sponsor_added_and_removed():
     bill = add_test_bill(1, "Enacted")
     diff = BillDiff(
         old_status="Enacted",
@@ -137,6 +165,9 @@ def test_convert_bill_diff_to_template_variables__sponsor_added_and_removed():
     add_test_sponsorship(bill_id=1, legislator_id=1)
 
     db.session.commit()
+
+    subject = _get_bill_update_subject_line([diff])
+    assert subject == f"{bill.file} gained and lost sponsors"
 
     variables = _convert_bill_diff_to_template_variables(diff)
     assert variables == {
