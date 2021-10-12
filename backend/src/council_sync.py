@@ -2,7 +2,6 @@ import logging
 from datetime import datetime, timezone
 
 from requests import HTTPError
-from sqlalchemy.orm import selectinload
 
 from .council_api import (
     get_bill_sponsors,
@@ -60,7 +59,7 @@ def fill_council_person_data_from_api():
             legislator.legislative_phone = data["PersonPhone2"]
             legislator.borough = _convert_borough(data["PersonCity1"])
             legislator.website = data["PersonWWW"]
-        except HTTPError as e:
+        except HTTPError:
             logging.exception(f"Could not get Person {legislator.id} from API")
             continue
 
@@ -105,7 +104,7 @@ def _update_bill(bill_id):
     bill_data = lookup_bill(bill_id)
     logging.info(f"Updating bill {bill_id} and got {bill_data}")
 
-    existing_bill = Bill.query.filter_by(id=bill_id).one()
+    Bill.query.filter_by(id=bill_id).one()  # ensure bill exists
     db.session.merge(Bill(**bill_data))
 
 

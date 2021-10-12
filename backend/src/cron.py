@@ -1,7 +1,7 @@
 import logging
 from time import sleep
 
-from . import bill_notifications, council_sync, models, ses
+from . import bill_notifications, council_sync, models
 from .app import app
 from .settings import ENABLE_CRON
 

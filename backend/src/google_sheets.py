@@ -5,7 +5,7 @@ import json
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
-from sqlalchemy.orm import joinedload, selectinload
+from sqlalchemy.orm import selectinload
 from werkzeug import exceptions
 
 from src import app, models, settings

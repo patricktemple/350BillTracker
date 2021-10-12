@@ -4,7 +4,6 @@ from typing import List
 
 from flask import render_template
 from sqlalchemy.orm import selectinload
-from werkzeug import exceptions
 
 from .models import Bill, Legislator, User
 from .ses import send_email

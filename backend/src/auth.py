@@ -47,7 +47,7 @@ def auth_required(view_fn):
 
         try:
             jwt_decoded = verify_jwt(auth[4:])
-        except jwt.InvalidTokenError as e:
+        except jwt.InvalidTokenError:
             logging.exception("JWT decode failed")
             raise exceptions.Unauthorized()
 

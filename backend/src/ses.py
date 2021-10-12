@@ -1,15 +1,12 @@
 """Utilities for using AWS's Simple Email Service to send emails."""
 
 import logging
-from operator import add
 
 from boto3 import client
 from botocore.exceptions import ClientError
 from flask import render_template
-from sqlalchemy.orm import selectinload
 from werkzeug import exceptions
 
-from .models import Bill, Legislator, User
 from .settings import APP_TITLE
 
 # This guide was important in getting the email address set up:
