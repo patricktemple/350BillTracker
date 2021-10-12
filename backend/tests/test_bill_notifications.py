@@ -1,11 +1,18 @@
+from unittest.mock import patch
+from uuid import uuid4
+
+import responses
+
+from src.app import app
 from src.bill_notifications import (
     BillDiff,
     BillSnapshot,
     _calculate_bill_diffs,
     _convert_bill_diff_to_template_variables,
     _get_bill_update_subject_line,
+    send_bill_update_notifications,
 )
-from src.models import Bill, BillSponsorship, Legislator, db
+from src.models import Bill, BillSponsorship, Legislator, User, db
 from src.utils import now
 
 
@@ -178,3 +185,41 @@ def test_email_contents__sponsor_added_and_removed():
         "sponsor_text": "1 sponsors --> 1 sponsors (gained Jamaal Bowman, lost Brad Lander)",
         "sponsor_color": "blue",
     }
+
+
+@responses.activate
+@patch("src.ses.client")
+def test_send_email_notification_end_to_end(mock_ses_client):
+    user_to_notify = User(
+        id=uuid4(),
+        name="User to notify",
+        email="user@example.com",
+        send_bill_update_notifications=True,
+    )
+    db.session.add(user_to_notify)
+    other_user = User(
+        id=uuid4(), name="Someone else", email="wrong@example.com"
+    )
+    db.session.add(other_user)
+
+    add_test_bill(1, "Enacted")
+
+    db.session.commit()
+
+    snapshots = {
+        1: BillSnapshot("Committee", sponsor_ids=[]),
+    }
+
+    def side_effect(*, Destination, Message, Source):
+        assert Destination["ToAddresses"] == ["user@example.com"]
+        assert "Enacted" in Message["Body"]["Html"]["Data"]
+        assert "Enacted" in Message["Body"]["Text"]["Data"]
+        assert "Enacted" in Message["Subject"]["Data"]
+        return {"MessageId": 1}
+
+    mock_ses_client.send_email.side_effect = side_effect
+
+    with app.app_context():
+        send_bill_update_notifications(snapshots)
+
+    mock_ses_client.send_email.assert_called_once()
