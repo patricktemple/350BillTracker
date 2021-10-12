@@ -11,6 +11,7 @@ from .council_api import (
 from .models import Bill, BillSponsorship, Legislator, db
 from .static_data import STATIC_DATA_BY_LEGISLATOR_ID
 from sqlalchemy.orm import selectinload
+from .utils import now
 
 
 # Legislators ----------------------------------------------------------------
@@ -141,7 +142,6 @@ def update_sponsorships(bill_id):
     3) If new sponsors aren't in the existing legislators (e.g. they're not longer in office),
        ignore them.
     """
-    # Clear all old sponsorships for this bill so we can add them back
     existing_sponsorships = BillSponsorship.query.filter_by(bill_id=bill_id).all()
     existing_sponsorships_by_id = {s.legislator_id: s for s in existing_sponsorships}
 
@@ -155,18 +155,24 @@ def update_sponsorships(bill_id):
     for sponsorship in new_sponsorships:
         legislator_id = sponsorship["MatterSponsorNameId"]
 
-        if legislator_id in existing_sponsorships_by_id:
-            del existing_sponsorships_by_id[legislator_id]
-        elif legislator_id not in existing_legislator_ids:
+        if legislator_id not in existing_legislator_ids:
+            # Can't insert the sponsorship without its foreign key object
+            # TODO: Instead, insert a stub for them or something
             logging.warning(
                 f"Did not find legislator {legislator_id} in db, ignoring..."
             )
             continue
-            # TODO: Instead, insert a stub for them or something
-
+        
         internal_sponsorship = BillSponsorship(
             bill_id=bill_id, legislator_id=legislator_id
         )
+        
+        if legislator_id in existing_sponsorships_by_id:
+            # Remove sponsors from this set until we're left with only those
+            # sponsorships that were rescinded recently.
+            del existing_sponsorships_by_id[legislator_id]
+        else:
+            internal_sponsorship.added_at = now()
 
         db.session.merge(internal_sponsorship)
     
