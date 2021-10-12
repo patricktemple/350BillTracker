@@ -10,8 +10,9 @@ from .ses import send_email
 
 class BillDiff:
     """Utility class to track a bill's state before and after a cron run."""
-    bill = None # Bill
-    old_status = None # str
+
+    bill = None  # Bill
+    old_status = None  # str
     added_sponsors = None  # str[], lists the sponsor names
     removed_sponsors = None  # str[], lists the sponsor names only
 
@@ -22,6 +23,7 @@ class BillDiff:
 class BillSnapshot:
     """Utility class to track the state of a bill before a cron run may have
     updated it."""
+
     status = None
     sponsor_ids = []
 
@@ -102,23 +104,23 @@ def _convert_bill_diff_to_template_variables(diff):
 
         sponsor_text = f"{old_sponsor_count} sponsors --> {new_sponsor_count} sponsors ({', '.join(explanations)})"
     else:
-        sponsor_text = (
-            f"{len(diff.bill.sponsorships)} sponsors (unchanged)"
-        )
+        sponsor_text = f"{len(diff.bill.sponsorships)} sponsors (unchanged)"
         sponsor_color = "black"
-    
+
     return {
-                "file": diff.bill.file,
-                "display_name": diff.bill.display_name,
-                "status_text": status_text,
-                "status_color": status_color,
-                "sponsor_text": sponsor_text,
-                "sponsor_color": sponsor_color,
-            }
+        "file": diff.bill.file,
+        "display_name": diff.bill.display_name,
+        "status_text": status_text,
+        "status_color": status_color,
+        "sponsor_text": sponsor_text,
+        "sponsor_color": sponsor_color,
+    }
 
 
 def _send_bill_update_emails(bill_diffs):
-    bills_for_template = [_convert_bill_diff_to_template_variables(d) for d in bill_diffs]
+    bills_for_template = [
+        _convert_bill_diff_to_template_variables(d) for d in bill_diffs
+    ]
 
     subject = _get_bill_update_subject_line(bill_diffs)
     body_text = render_template(
@@ -138,8 +140,10 @@ def _send_bill_update_emails(bill_diffs):
 
 
 def _calculate_bill_diffs(snapshots_by_bill_id):
+    """Looks at the before and after states of all bills, and collapses this info
+    info a form that's useful for further processing when building emails."""
     bills = Bill.query.options(selectinload("sponsorships.legislator")).all()
-    
+
     bill_diffs = []
     for bill in bills:
         snapshot = snapshots_by_bill_id[bill.id]
@@ -170,7 +174,7 @@ def _calculate_bill_diffs(snapshots_by_bill_id):
             diff.added_sponsors = [s.name for s in added_sponsors]
             diff.removed_sponsors = [s.name for s in removed_sponsors]
             bill_diffs.append(diff)
-    
+
     return bill_diffs
 
 
