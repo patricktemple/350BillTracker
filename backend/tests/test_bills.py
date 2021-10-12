@@ -143,6 +143,22 @@ def test_save_bill(client):
 
     assert len(bill.sponsorships) == 1
     assert bill.sponsorships[0].legislator.name == "Sponsor"
+    assert not bill.sponsorships[0].added_at
+
+
+@responses.activate
+def test_save_bill__already_exists(client):
+    bill = Bill(
+        id=1, name="name", file="file", title="title", intro_date=now()
+    )
+    db.session.add(bill)
+    db.session.commit()
+
+    response = client.post(
+        "/api/saved-bills",
+        data={"id": "1"},
+    )
+    assert response.status_code == 409
 
 
 @responses.activate

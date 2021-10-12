@@ -57,6 +57,10 @@ class Bill(db.Model):
         "BillAttachment", back_populates="bill", cascade="all, delete"
     )
 
+    @property
+    def display_name(self):
+        return self.nickname if self.nickname else self.name
+
 
 class Legislator(db.Model):
     __tablename__ = "legislators"
@@ -142,6 +146,13 @@ class BillSponsorship(db.Model):
         "Legislator", back_populates="sponsorships", order_by="Legislator.name"
     )
 
+    # The timestamp when we first saw this sponsorship in the bill's list.
+    # This is a proxy for when the sponsor actually signed on to the bill.
+    # Note that when we first start tracking a bill, it may already have sponsorships
+    # and we don't know the date that those were added. We leave added_at as null,
+    # in that case, and only fill this in for sponsorships that were added later on.
+    added_at = Column(TIMESTAMP)
+
 
 # TODO: UUIDs for some PKs?
 class BillAttachment(db.Model):
@@ -172,6 +183,10 @@ class User(db.Model):
 
     # The "root" user can never be deleted.
     can_be_deleted = Column(Boolean, nullable=False, server_default=sql.true())
+
+    send_bill_update_notifications = Column(
+        Boolean, nullable=False, server_default=sql.false(), index=True
+    )
 
     __table_args__ = (
         CheckConstraint(

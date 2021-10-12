@@ -1,3 +1,4 @@
+import logging
 import re
 import secrets
 from datetime import date, timedelta
@@ -11,12 +12,8 @@ from werkzeug import exceptions
 from .app import app
 from .app import marshmallow as ma
 from .auth import auth_required, create_jwt
-from .council_api import lookup_bills
-from .council_sync import (
-    add_or_update_bill,
-    convert_matter_to_bill,
-    update_sponsorships,
-)
+from .council_api import lookup_bill, lookup_bills
+from .council_sync import update_bill_sponsorships
 from .google_sheets import create_phone_bank_spreadsheet
 from .models import (
     Bill,
@@ -87,9 +84,21 @@ def bills():
 @app.route("/api/saved-bills", methods=["POST"])
 @auth_required
 def save_bill():
-    matter_id = request.json["id"]
-    add_or_update_bill(matter_id)
-    update_sponsorships(matter_id)
+    bill_id = request.json["id"]
+    if Bill.query.get(bill_id):
+        # There's a race condition of checking this and then inserting,
+        # but in that rare case it will hit the DB unique constraint instead.
+        raise exceptions.Conflict()
+
+    bill_data = lookup_bill(bill_id)
+    logging.info(f"Saving bill {bill_id}, council API returned {bill_data}")
+
+    bill = Bill(**bill_data)
+    db.session.add(bill)
+
+    update_bill_sponsorships(bill_id)
+
+    db.session.commit()
 
     return jsonify({})
 
@@ -123,10 +132,9 @@ def delete_bill(bill_id):
 def search_bills():
     file = request.args.get("file")
 
-    matters = lookup_bills(file)
+    external_bills = lookup_bills(file)
 
     # Check whether or not we're already tracking this bill
-    external_bills = [convert_matter_to_bill(m) for m in matters]
     external_bills_ids = [b["id"] for b in external_bills]
     tracked_bills = Bill.query.filter(Bill.id.in_(external_bills_ids)).all()
     tracked_bill_ids = set([t.id for t in tracked_bills])
@@ -441,7 +449,7 @@ def create_user():
 
     try:
         db.session.commit()
-    except IntegrityError as e:
+    except IntegrityError:
         raise exceptions.UnprocessableEntity(
             "User already exists with this email"
         )

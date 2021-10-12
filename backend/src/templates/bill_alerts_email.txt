@@ -1,0 +1,8 @@
+The following bills were updated by the City Council.
+
+{% for bill in bills %}
+  {{ bill.file }} - {{ bill.display_name }}
+  {{ bill.status_text }}
+  {{ bill.sponsor_text }}
+
+{% endfor %}

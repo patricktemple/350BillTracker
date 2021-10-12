@@ -1,7 +1,5 @@
 import json
-from uuid import uuid4
 
-import jwt
 from flask.testing import FlaskClient
 
 from src.auth import create_jwt

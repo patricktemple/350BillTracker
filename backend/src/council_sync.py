@@ -1,53 +1,19 @@
 import logging
+from datetime import datetime, timezone
 
 from requests import HTTPError
 
 from .council_api import (
-    get_bill,
     get_bill_sponsors,
     get_current_council_members,
     get_person,
+    lookup_bill,
 )
 from .models import Bill, BillSponsorship, Legislator, db
 from .static_data import STATIC_DATA_BY_LEGISLATOR_ID
+from .utils import now
 
-
-def convert_matter_to_bill(matter):
-    return {
-        "id": matter["MatterId"],
-        "file": matter["MatterFile"],
-        "name": matter["MatterName"],
-        "title": matter["MatterTitle"],
-        "body": matter["MatterBodyName"],
-        "intro_date": matter["MatterIntroDate"],
-        "status": matter["MatterStatusName"],
-    }
-
-
-def add_or_update_bill(matter_id):
-    bill_data = get_bill(matter_id)
-    logging.info(f"Got bill {bill_data} for {matter_id}")
-    upsert_matter_data(bill_data)
-
-
-def upsert_matter_data(matter_json):
-    logging.info("Add or update bill")
-
-    data = convert_matter_to_bill(matter_json)
-    existing_bill = Bill.query.get(data["id"])
-    if existing_bill:
-        logging.info(f"Bill {data['file']} already in DB, updating")
-    else:
-        logging.info(f"Bill {data['file']} not found in DB, adding")
-    db.session.merge(Bill(**data))
-    db.session.commit()
-
-
-def sync_bill_updates():
-    bills = Bill.query.all()
-
-    for bill in bills:
-        add_or_update_bill(bill.id)
+# Legislators ----------------------------------------------------------------
 
 
 def add_council_members():
@@ -60,8 +26,12 @@ def add_council_members():
         legislator = Legislator(
             name=member["OfficeRecordFullName"],
             id=member["OfficeRecordPersonId"],
-            term_start=member["OfficeRecordStartDate"],
-            term_end=member["OfficeRecordEndDate"],
+            term_start=datetime.fromisoformat(
+                member["OfficeRecordStartDate"]
+            ).replace(tzinfo=timezone.utc),
+            term_end=datetime.fromisoformat(
+                member["OfficeRecordEndDate"]
+            ).replace(tzinfo=timezone.utc),
         )
         # TODO: Merge is probably not concurrency friendly. Do insert+on_conflict_do_update
         db.session.merge(legislator)
@@ -69,13 +39,13 @@ def add_council_members():
     db.session.commit()
 
 
-def convert_borough(city_name):
+def _convert_borough(city_name):
     if city_name == "New York":
         return "Manhattan"
     return city_name
 
 
-def fill_council_person_data():
+def fill_council_person_data_from_api():
     """For all council members in the DB, updates their contact info and other details
     based on the Person API and our own static data.
     """
@@ -87,11 +57,17 @@ def fill_council_person_data():
             legislator.email = data["PersonEmail"]
             legislator.district_phone = data["PersonPhone"]
             legislator.legislative_phone = data["PersonPhone2"]
-            legislator.borough = convert_borough(data["PersonCity1"])
+            legislator.borough = _convert_borough(data["PersonCity1"])
             legislator.website = data["PersonWWW"]
-        except HTTPError as e:
+        except HTTPError:
             logging.exception(f"Could not get Person {legislator.id} from API")
             continue
+
+    db.session.commit()
+
+
+def fill_council_person_static_data():
+    legislators = Legislator.query.all()
 
     for legislator in legislators:
         legislator_data = STATIC_DATA_BY_LEGISLATOR_ID.get(legislator.id)
@@ -121,34 +97,78 @@ def fill_council_person_data():
     db.session.commit()
 
 
-def update_sponsorships(bill_id):
-    sponsorships = get_bill_sponsors(bill_id)
+# Bills ----------------------------------------------------------------------
+
+
+def _update_bill(bill_id):
+    bill_data = lookup_bill(bill_id)
+    logging.info(f"Updating bill {bill_id} and got {bill_data}")
+
+    Bill.query.filter_by(id=bill_id).one()  # ensure bill exists
+    db.session.merge(Bill(**bill_data))
+
+
+def sync_bill_updates():
+    bills = Bill.query.all()
+
+    for bill in bills:
+        _update_bill(bill.id)
+        db.session.commit()
+
+
+def update_bill_sponsorships(bill_id, set_added_at=False):
+    """
+    Updates sponsorships for a given bill:
+    1) Deletes any previous sponsorships
+    2) Adds all new sponsorships
+    3) If new sponsors aren't in the existing legislators (e.g. they're not longer in office),
+       ignore them.
+    """
+    existing_sponsorships = BillSponsorship.query.filter_by(
+        bill_id=bill_id
+    ).all()
+    existing_sponsorships_by_id = {
+        s.legislator_id: s for s in existing_sponsorships
+    }
+
+    new_sponsorships = get_bill_sponsors(bill_id)
 
     existing_legislators = Legislator.query.filter(
-        Legislator.id.in_([s["MatterSponsorNameId"] for s in sponsorships])
+        Legislator.id.in_([s["MatterSponsorNameId"] for s in new_sponsorships])
     ).all()
-    existing_legislator_ids = set([l.id for l in existing_legislators])
+    existing_legislator_ids = {l.id for l in existing_legislators}
 
-    for sponsorship in sponsorships:
+    for sponsorship in new_sponsorships:
         legislator_id = sponsorship["MatterSponsorNameId"]
+
         if legislator_id not in existing_legislator_ids:
+            # Can't insert the sponsorship without its foreign key object
+            # TODO: Instead, insert a stub for them or something
             logging.warning(
                 f"Did not find legislator {legislator_id} in db, ignoring..."
             )
             continue
-            # TODO: Instead, insert a stub for them or something
 
         internal_sponsorship = BillSponsorship(
             bill_id=bill_id, legislator_id=legislator_id
         )
 
+        if legislator_id in existing_sponsorships_by_id:
+            # Remove sponsors from this set until we're left with only those
+            # sponsorships that were rescinded recently.
+            del existing_sponsorships_by_id[legislator_id]
+        elif set_added_at:
+            internal_sponsorship.added_at = now()
+
         db.session.merge(internal_sponsorship)
 
-    db.session.commit()
+    for lost_sponsor in existing_sponsorships_by_id.values():
+        db.session.delete(lost_sponsor)
 
 
 def update_all_sponsorships():
     bills = Bill.query.all()
     for bill in bills:
         logging.info(f"Updating sponsorships for bill {bill.id} {bill.name}")
-        update_sponsorships(bill.id)
+        update_bill_sponsorships(bill.id, set_added_at=True)
+        db.session.commit()

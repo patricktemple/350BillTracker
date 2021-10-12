@@ -17,39 +17,42 @@ SENDER = f"{APP_TITLE} <no-reply@350billtracker.com>"
 CHARSET = "UTF-8"
 
 
+def send_email(email, subject, body_html, body_text):
+    response = client.send_email(
+        Destination={
+            "ToAddresses": [email],
+        },
+        Message={
+            "Body": {
+                "Html": {
+                    "Charset": CHARSET,
+                    "Data": body_html,
+                },
+                "Text": {
+                    "Charset": CHARSET,
+                    "Data": body_text,
+                },
+            },
+            "Subject": {
+                "Charset": CHARSET,
+                "Data": subject,
+            },
+        },
+        Source=SENDER,
+    )
+    logging.info(
+        f"Email sent successfully to {email}, message ID: {response['MessageId']}"
+    )
+
+
 def send_login_link_email(email_address, login_link):
-    BODY_TEXT = render_template("email.txt", login_link=login_link)
-    BODY_HTML = render_template("email.html", login_link=login_link)
+    body_text = render_template("login_email.txt", login_link=login_link)
+    body_html = render_template("login_email.html", login_link=login_link)
 
     try:
-        response = client.send_email(
-            Destination={
-                "ToAddresses": [
-                    email_address,
-                ],
-            },
-            Message={
-                "Body": {
-                    "Html": {
-                        "Charset": CHARSET,
-                        "Data": BODY_HTML,
-                    },
-                    "Text": {
-                        "Charset": CHARSET,
-                        "Data": BODY_TEXT,
-                    },
-                },
-                "Subject": {
-                    "Charset": CHARSET,
-                    "Data": "Log in to 350 Bill Tracker",
-                },
-            },
-            Source=SENDER,
+        send_email(
+            email_address, "Log in to 350 Bill Tracker", body_html, body_text
         )
     except ClientError as e:
         logging.exception(e)
         raise exceptions.ServiceUnavailable("Could not send email")
-    else:
-        logging.info(
-            f"Email sent successfully to {email_address}, message ID: {response['MessageId']}"
-        )

@@ -2,8 +2,6 @@ import json
 from datetime import datetime, timedelta
 from unittest.mock import patch
 
-import responses
-
 from src.models import LoginLink, db
 
 

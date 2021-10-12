@@ -2,7 +2,6 @@ from uuid import uuid4
 
 from src import app
 from src.models import Legislator, Staffer, db
-from src.utils import now
 
 from .utils import assert_response
 
