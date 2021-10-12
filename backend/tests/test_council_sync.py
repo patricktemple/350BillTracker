@@ -3,7 +3,11 @@ from datetime import datetime, timezone
 import responses
 from freezegun import freeze_time
 
-from src.council_sync import add_council_members, fill_council_person_data_from_api
+from src.council_sync import (
+    add_council_members,
+    fill_council_person_data_from_api,
+    fill_council_person_static_data,
+)
 from src.models import Legislator, db
 
 
@@ -51,12 +55,12 @@ def test_add_council_members():
 
 @responses.activate
 def test_fill_council_person_data():
-    legislator_to_update = Legislator(
-        id=1, name="Corey Johnson"
-    )
+    legislator_to_update = Legislator(id=1, name="Corey Johnson")
     db.session.add(legislator_to_update)
 
-    legislator_without_new_data = Legislator(id=2, name="Person who was impeached and removed")
+    legislator_without_new_data = Legislator(
+        id=2, name="Person who was impeached and removed"
+    )
     db.session.add(legislator_without_new_data)
 
     responses.add(
@@ -67,12 +71,15 @@ def test_fill_council_person_data():
             "PersonPhone": "555-111-1111",
             "PersonPhone2": "888-888-8888",
             "PersonCity1": "New York",
-            "PersonWWW": "https://www.example.com/",}
+            "PersonWWW": "https://www.example.com/",
+        },
     )
+
+    # We just want to check that a 404 doesn't crash the whole thing
     responses.add(
         responses.GET,
         url="https://webapi.legistar.com/v1/nyc/persons/2?token=fake_token",
-        status=404
+        status=404,
     )
 
     fill_council_person_data_from_api()
@@ -84,3 +91,22 @@ def test_fill_council_person_data():
     assert corey.legislative_phone == "888-888-8888"
     assert corey.borough == "Manhattan"
     assert corey.website == "https://www.example.com/"
+
+
+def test_fill_council_person_static_data():
+    legislator_to_update = Legislator(
+        id=7631, name="Corey Johnson badly formatted name----"
+    )
+    db.session.add(legislator_to_update)
+
+    legislator_without_static_data = Legislator(
+        id=2, name="Person without static data"
+    )
+    db.session.add(legislator_without_static_data)
+
+    fill_council_person_static_data()
+
+    corey = Legislator.query.get(7631)
+    assert corey.name == "Corey D. Johnson"
+    assert corey.twitter == "NYCSpeakerCoJo"
+    assert corey.party == "D"

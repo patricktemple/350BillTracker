@@ -63,7 +63,7 @@ def fill_council_person_data_from_api():
         except HTTPError as e:
             logging.exception(f"Could not get Person {legislator.id} from API")
             continue
-    
+
     db.session.commit()
 
 
