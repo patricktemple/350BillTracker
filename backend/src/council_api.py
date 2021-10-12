@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime, timezone
 
 import requests
 
@@ -41,7 +41,9 @@ def _convert_matter_to_bill(matter):
         "name": matter["MatterName"],
         "title": matter["MatterTitle"],
         "body": matter["MatterBodyName"],
-        "intro_date": matter["MatterIntroDate"],
+        "intro_date": datetime.fromisoformat(
+            matter["MatterIntroDate"]
+        ).replace(tzinfo=timezone.utc),
         "status": matter["MatterStatusName"],
     }
 

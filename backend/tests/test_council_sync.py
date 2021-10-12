@@ -7,8 +7,9 @@ from src.council_sync import (
     add_council_members,
     fill_council_person_data_from_api,
     fill_council_person_static_data,
+    sync_bill_updates,
 )
-from src.models import Legislator, db
+from src.models import Bill, Legislator, db
 from src.static_data import STATIC_DATA_BY_LEGISLATOR_ID
 
 
@@ -97,7 +98,9 @@ def test_fill_council_person_data():
 def test_fill_council_person_static_data():
     corey_static = STATIC_DATA_BY_LEGISLATOR_ID[7631]
     legislator_to_update = Legislator(
-        id=7631, name="Corey Johnson badly formatted name----"
+        id=7631,
+        name="Corey Johnson badly formatted name----",
+        email="existing-email@council.nyc.gov",
     )
     db.session.add(legislator_to_update)
 
@@ -109,6 +112,46 @@ def test_fill_council_person_static_data():
     fill_council_person_static_data()
 
     corey = Legislator.query.get(7631)
-    assert corey.name == corey_static['name']
-    assert corey.twitter == corey_static['twitter']
-    assert corey.party == corey_static['party']
+    assert corey.name == corey_static["name"]
+    assert corey.twitter == corey_static["twitter"]
+    assert corey.party == corey_static["party"]
+    assert corey.email == "existing-email@council.nyc.gov"
+
+
+@responses.activate
+def test_sync_bill_updates():
+    bill = Bill(
+        id=1,
+        file="Intro 200",
+        name="Electric school buses",
+        title="Bill title",
+        status="Committee",
+        intro_date="2000-1-1",
+        nickname="Shouldn't change",
+    )
+    db.session.add(bill)
+
+    responses.add(
+        responses.GET,
+        url="https://webapi.legistar.com/v1/nyc/matters/1?token=fake_token",
+        json={
+            "MatterId": "1",
+            "MatterFile": "New file",
+            "MatterName": "New name",
+            "MatterTitle": "New title",
+            "MatterBodyName": "New body",
+            "MatterIntroDate": "2021-01-01T00:00:00",
+            "MatterStatusName": "New status",
+        },
+    )
+
+    sync_bill_updates()
+
+    result = Bill.query.one()
+    assert result.name == "New name"
+    assert result.title == "New title"
+    assert result.file == "New file"
+    assert result.body == "New body"
+    assert result.status == "New status"
+    assert result.intro_date == datetime(2021, 1, 1, tzinfo=timezone.utc)
+    assert result.nickname == "Shouldn't change"
