@@ -4,6 +4,7 @@ from typing import List
 
 from flask import render_template
 from sqlalchemy.orm import selectinload
+from botocore.exceptions import ClientError
 
 from .models import Bill, Legislator, User
 from .ses import send_email
@@ -15,8 +16,8 @@ class BillDiff:
 
     bill: Bill = None
     old_status: str = None
-    added_sponsors: List[str] = None
-    removed_sponsors: List[str] = None
+    added_sponsor_names: List[str] = None
+    removed_sponsor_names: List[str] = None
 
 
 @dataclass
@@ -59,43 +60,46 @@ def _get_bill_update_subject_line(bill_diffs):
 
     # TODO: Update to python 3.10 and use structural pattern matching?
     file = diff.bill.file
-    if not diff.added_sponsors and not diff.removed_sponsors:
+    if not diff.added_sponsor_names and not diff.removed_sponsor_names:
         return f"{file}'s status changed to {diff.bill.status}"
 
     if diff.old_status == diff.bill.status:
-        if not diff.added_sponsors:
-            return f"{file} lost {_get_sponsor_subject_string(diff.removed_sponsors)}"
-        if not diff.removed_sponsors:
-            return f"{file} gained {_get_sponsor_subject_string(diff.added_sponsors)}"
+        if not diff.added_sponsor_names:
+            return f"{file} lost {_get_sponsor_subject_string(diff.removed_sponsor_names)}"
+        if not diff.removed_sponsor_names:
+            return f"{file} gained {_get_sponsor_subject_string(diff.added_sponsor_names)}"
         return f"{file} gained and lost sponsors"
 
     return f"{diff.bill.file} was updated"
 
 
 def _convert_bill_diff_to_template_variables(diff):
+    """Converts the intermediate BillDiff into the variables used to render
+    the email template."""
     status_changed = diff.bill.status != diff.old_status
     if status_changed:
         status_text = f"Status: {diff.old_status} --> {diff.bill.status}"
         status_color = "blue"
     else:
         status_text = f"Status: {diff.bill.status} (unchanged)"
-        status_color = "black"  # or bold?
+        status_color = "black"
 
-    sponsors_changed = diff.added_sponsors or diff.removed_sponsors
+    sponsors_changed = diff.added_sponsor_names or diff.removed_sponsor_names
     if sponsors_changed:
         new_sponsor_count = len(diff.bill.sponsorships)
         old_sponsor_count = (
             new_sponsor_count
-            - len(diff.added_sponsors or [])
-            + len(diff.removed_sponsors or [])
+            - len(diff.added_sponsor_names or [])
+            + len(diff.removed_sponsor_names or [])
         )
         sponsor_color = "blue"
 
+        # List out the names of all changed sponsors
         explanations = []
-        if diff.added_sponsors:
-            explanations.append(f"gained {', '.join(diff.added_sponsors)}")
-        if diff.removed_sponsors:
-            explanations.append(f"lost {', '.join(diff.removed_sponsors)}")
+        if diff.added_sponsor_names:
+            explanations.append(f"gained {', '.join(diff.added_sponsor_names)}")
+        if diff.removed_sponsor_names:
+            explanations.append(f"lost {', '.join(diff.removed_sponsor_names)}")
 
         sponsor_text = f"{old_sponsor_count} sponsors --> {new_sponsor_count} sponsors ({', '.join(explanations)})"
     else:
@@ -131,7 +135,10 @@ def _send_bill_update_emails(bill_diffs):
 
     for user in users_to_notify:
         logging.info(f"Sending bill update email to {user.email}")
-        send_email(user.email, subject, body_html, body_text)
+        try:
+            send_email(user.email, subject, body_html, body_text)
+        except ClientError:
+            logging.exception(f"Faild to send email to {user.email}")
 
 
 def _calculate_bill_diffs(snapshots_by_bill_id):
@@ -166,8 +173,8 @@ def _calculate_bill_diffs(snapshots_by_bill_id):
             diff = BillDiff()
             diff.bill = bill
             diff.old_status = snapshot.status
-            diff.added_sponsors = [s.name for s in added_sponsors]
-            diff.removed_sponsors = [s.name for s in removed_sponsors]
+            diff.added_sponsor_names = [s.name for s in added_sponsors]
+            diff.removed_sponsor_names = [s.name for s in removed_sponsors]
             bill_diffs.append(diff)
 
     return bill_diffs

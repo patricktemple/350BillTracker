@@ -18,42 +18,41 @@ CHARSET = "UTF-8"
 
 
 def send_email(email, subject, body_html, body_text):
-    try:
-        response = client.send_email(
-            Destination={
-                "ToAddresses": [email],
-            },
-            Message={
-                "Body": {
-                    "Html": {
-                        "Charset": CHARSET,
-                        "Data": body_html,
-                    },
-                    "Text": {
-                        "Charset": CHARSET,
-                        "Data": body_text,
-                    },
-                },
-                "Subject": {
+    response = client.send_email(
+        Destination={
+            "ToAddresses": [email],
+        },
+        Message={
+            "Body": {
+                "Html": {
                     "Charset": CHARSET,
-                    "Data": subject,
+                    "Data": body_html,
+                },
+                "Text": {
+                    "Charset": CHARSET,
+                    "Data": body_text,
                 },
             },
-            Source=SENDER,
-        )
-    except ClientError as e:
-        logging.exception(e)
-        raise exceptions.ServiceUnavailable("Could not send email")
-    else:
-        logging.info(
-            f"Email sent successfully to {email}, message ID: {response['MessageId']}"
-        )
+            "Subject": {
+                "Charset": CHARSET,
+                "Data": subject,
+            },
+        },
+        Source=SENDER,
+    )
+    logging.info(
+        f"Email sent successfully to {email}, message ID: {response['MessageId']}"
+    )
 
 
 def send_login_link_email(email_address, login_link):
     body_text = render_template("login_email.txt", login_link=login_link)
     body_html = render_template("login_email.html", login_link=login_link)
 
-    send_email(
-        email_address, "Log in to 350 Bill Tracker", body_html, body_text
-    )
+    try:
+        send_email(
+            email_address, "Log in to 350 Bill Tracker", body_html, body_text
+        )
+    except ClientError as e:
+        logging.exception(e)
+        raise exceptions.ServiceUnavailable("Could not send email")

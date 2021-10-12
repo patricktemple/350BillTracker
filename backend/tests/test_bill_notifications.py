@@ -69,8 +69,8 @@ def test_calculate_bill_diffs():
     assert len(diffs) == 1
     diff = diffs[0]
 
-    assert diff.added_sponsors == [legislator_3.name]
-    assert diff.removed_sponsors == [legislator_2.name]
+    assert diff.added_sponsor_names == [legislator_3.name]
+    assert diff.removed_sponsor_names == [legislator_2.name]
     assert diff.old_status == "Committee"
     assert diff.bill.status == "Enacted"
 
@@ -98,7 +98,7 @@ def test_email_contents__sponsors_added():
     diff = BillDiff(
         old_status="Enacted",
         bill=bill,
-        added_sponsors=["Brad Lander", "Jamaal Bowman"],
+        added_sponsor_names=["Brad Lander", "Jamaal Bowman"],
     )
 
     for i in range(3):
@@ -126,7 +126,7 @@ def test_email_subject__1_sponsor_added():
     diff = BillDiff(
         old_status="Enacted",
         bill=bill,
-        added_sponsors=["Brad Lander"],
+        added_sponsor_names=["Brad Lander"],
     )
 
     for i in range(3):
@@ -142,7 +142,7 @@ def test_email_subject__1_sponsor_added():
 def test_email_contents__sponsor_removed():
     bill = add_test_bill(1, "Enacted")
     diff = BillDiff(
-        old_status="Enacted", bill=bill, removed_sponsors=["Brad Lander"]
+        old_status="Enacted", bill=bill, removed_sponsor_names=["Brad Lander"]
     )
 
     subject = _get_bill_update_subject_line([diff])
@@ -164,8 +164,8 @@ def test_email_contents__sponsor_added_and_removed():
     diff = BillDiff(
         old_status="Enacted",
         bill=bill,
-        added_sponsors=["Jamaal Bowman"],
-        removed_sponsors=["Brad Lander"],
+        added_sponsor_names=["Jamaal Bowman"],
+        removed_sponsor_names=["Brad Lander"],
     )
 
     add_test_legislator(1)
