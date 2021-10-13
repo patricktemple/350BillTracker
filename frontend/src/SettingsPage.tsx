@@ -7,6 +7,7 @@ import { User, Uuid } from './types';
 import InviteUserModal from './InviteUserModal';
 import style from './style/SettingsPage.module.scss';
 import UserList from './UserList';
+import NotificationSettingsPanel from './NotificationSettingsPanel';
 
 export default function SettingsPage() {
   const [users, setUsers] = useState<User[] | null>(null);
@@ -70,6 +71,7 @@ export default function SettingsPage() {
         ) : (
           <UserList handleDelete={handleDelete} users={users} />
         )}
+        <NotificationSettingsPanel />
       </div>
     </div>
   );
