@@ -461,6 +461,17 @@ def create_user():
 
 @app.route(
     "/api/users/viewer",
+    methods=["GET"],
+)
+@auth_required
+def get_current_user():
+    current_user = User.query.get(flask.g.request_user_id)
+
+    return UserSchema().jsonify(current_user)
+
+
+@app.route(
+    "/api/users/viewer",
     methods=["PUT"],
 )
 @auth_required
