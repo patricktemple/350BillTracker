@@ -4,6 +4,7 @@ from functools import wraps
 
 import jwt
 from flask import request
+import flask
 from werkzeug import exceptions
 
 from .models import User
@@ -51,8 +52,12 @@ def auth_required(view_fn):
             logging.exception("JWT decode failed")
             raise exceptions.Unauthorized()
 
-        if not User.query.get(jwt_decoded["sub"]):
+        user_id = jwt_decoded["sub"]
+
+        if not User.query.get(user_id):
             raise exceptions.Forbidden("User from JWT no longer exists")
+        
+        flask.g.request_user_id = user_id
 
         return view_fn(*args, **kwargs)
 

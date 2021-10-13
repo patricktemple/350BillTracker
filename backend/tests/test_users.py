@@ -60,3 +60,6 @@ def test_delete_user_cant_be_deleted(client):
 
     response = client.delete(f"/api/users/{new_user.id}")
     assert response.status_code == 422
+
+
+# TODO: Test update user preferences
