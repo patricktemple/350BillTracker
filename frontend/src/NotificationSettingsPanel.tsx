@@ -1,38 +1,39 @@
 import React, { useState } from 'react';
 import useApiFetch from './useApiFetch';
 import useMountEffect from '@restart/hooks/useMountEffect';
+import styles from './style/NotificationSettingsPanel.module.scss';
+import Form from 'react-bootstrap/Form';
 
 export default function NotificationSettingsPanel() {
-    const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(false);
-    const apiFetch = useApiFetch();
+  const [notificationsEnabled, setNotificationsEnabled] =
+    useState<boolean>(false);
+  const apiFetch = useApiFetch();
 
-    useMountEffect(() => {
-        apiFetch('/api/users/viewer')
-            .then(response => {
-                setNotificationsEnabled(response.sendBillUpdateNotifications);
-            });
+  useMountEffect(() => {
+    apiFetch('/api/users/viewer').then((response) => {
+      setNotificationsEnabled(response.sendBillUpdateNotifications);
     });
+  });
 
-    function handleCheckboxChanged(e: any) {
-        const enabled = e.target.checked;
-        setNotificationsEnabled(enabled); // or checked?
-        apiFetch('/api/users/viewer', {
-            method: "PUT",
-            body: {
-                sendBillUpdateNotifications: enabled,
-            }
-        }).then(response => {
-            // todo errors etc
-            console.log('success');
-        });
-        // TODO: Call the API
-    }
-    return (
-        <div>
-            <h2>
-                Notification Settings
-            </h2>
-            Enable noticications <input checked={notificationsEnabled} type="checkbox" onChange={handleCheckboxChanged} />
-        </div>
-    );
+  function handleCheckboxChanged(e: any) {
+    const enabled = e.target.checked;
+    setNotificationsEnabled(enabled);
+    apiFetch('/api/users/viewer', {
+      method: 'PUT',
+      body: {
+        sendBillUpdateNotifications: enabled
+      }
+    });
+  }
+  return (
+    <div>
+      <h2 className={styles.title}>Alerts</h2>
+      <Form.Check
+        checked={notificationsEnabled}
+        type={'checkbox'}
+        label="Email me whenever a bill's status or sponsors change"
+        onChange={handleCheckboxChanged}
+      />
+    </div>
+  );
 }
