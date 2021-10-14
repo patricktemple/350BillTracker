@@ -16,6 +16,7 @@ def test_get_users(client, user_id, user_name, user_email):
                 "email": "test@example.com",
                 "id": str(user_id),
                 "name": "Test user",
+                "sendBillUpdateNotifications": False,
             }
         ],
     )
@@ -49,6 +50,7 @@ def test_invite_user_email_exists(client, user_email):
 def test_delete_user_success(client, user_id):
     response = client.delete(f"/api/users/{user_id}")
     assert response.status_code == 200
+    assert not User.query.get(user_id)
 
 
 def test_delete_user_cant_be_deleted(client):
@@ -60,3 +62,36 @@ def test_delete_user_cant_be_deleted(client):
 
     response = client.delete(f"/api/users/{new_user.id}")
     assert response.status_code == 422
+
+
+def test_get_viewer(client, user_id, user_email):
+    response = client.get(f"/api/viewer")
+    assert_response(
+        response,
+        200,
+        {
+            "canBeDeleted": True,
+            "email": user_email,
+            "id": str(user_id),
+            "name": "Test user",
+            "sendBillUpdateNotifications": False,
+        },
+    )
+
+
+def test_get_viewer_requires_auth(unauthenticated_client, user_id, user_email):
+    response = unauthenticated_client.get(f"/api/viewer")
+    assert response.status_code == 401
+
+
+def test_update_viewer(client, user_id):
+    user = User.query.get(user_id)
+    assert not user.send_bill_update_notifications
+
+    response = client.put(
+        f"/api/viewer", data={"sendBillUpdateNotifications": True}
+    )
+    assert response.status_code == 200
+
+    user = User.query.get(user_id)
+    assert user.send_bill_update_notifications

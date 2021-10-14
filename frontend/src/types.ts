@@ -60,6 +60,7 @@ export interface User {
   name: string;
   email: string;
   canBeDeleted: boolean;
+  sendBillUpdateNotifications: boolean;
 }
 
 export interface Staffer {

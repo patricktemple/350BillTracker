@@ -3,6 +3,7 @@ import re
 import secrets
 from datetime import date, timedelta
 
+import flask
 from flask import jsonify, render_template, request
 from marshmallow import fields
 from sqlalchemy.exc import IntegrityError
@@ -408,7 +409,8 @@ class UserSchema(CamelCaseSchema):
     # TODO: On client side, handle email validation failure
     email = fields.Email()
     name = fields.String()
-    can_be_deleted = fields.Boolean()
+    can_be_deleted = fields.Boolean(dump_only=True)
+    send_bill_update_notifications = fields.Boolean()
 
 
 @app.route(
@@ -453,6 +455,34 @@ def create_user():
         raise exceptions.UnprocessableEntity(
             "User already exists with this email"
         )
+
+    return jsonify({})
+
+
+@app.route(
+    "/api/viewer",
+    methods=["GET"],
+)
+@auth_required
+def get_current_user():
+    current_user = User.query.get(flask.g.request_user_id)
+
+    return UserSchema().jsonify(current_user)
+
+
+@app.route(
+    "/api/viewer",
+    methods=["PUT"],
+)
+@auth_required
+def update_current_user():
+    data = UserSchema().load(request.json)
+
+    current_user = User.query.get(flask.g.request_user_id)
+    current_user.send_bill_update_notifications = data[
+        "send_bill_update_notifications"
+    ]
+    db.session.commit()
 
     return jsonify({})
 
