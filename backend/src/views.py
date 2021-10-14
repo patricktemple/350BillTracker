@@ -407,8 +407,8 @@ class UserSchema(CamelCaseSchema):
     id = fields.UUID()
 
     # TODO: On client side, handle email validation failure
-    email = fields.Email(dump_only=True)
-    name = fields.String(dump_only=True)
+    email = fields.Email()
+    name = fields.String()
     can_be_deleted = fields.Boolean(dump_only=True)
     send_bill_update_notifications = fields.Boolean()
 
@@ -479,9 +479,10 @@ def update_current_user():
     data = UserSchema().load(request.json)
 
     current_user = User.query.get(flask.g.request_user_id)
-    current_user.send_bill_update_notifications = data['send_bill_update_notifications']
+    current_user.send_bill_update_notifications = data[
+        "send_bill_update_notifications"
+    ]
     db.session.commit()
-
 
     return jsonify({})
 

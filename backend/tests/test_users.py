@@ -15,7 +15,8 @@ def test_get_users(client, user_id, user_name, user_email):
                 "canBeDeleted": True,
                 "email": "test@example.com",
                 "id": str(user_id),
-                "name": "Test user", 'sendBillUpdateNotifications': False
+                "name": "Test user",
+                "sendBillUpdateNotifications": False,
             }
         ],
     )
@@ -60,14 +61,13 @@ def test_get_viewer(client, user_id, user_email):
     assert_response(
         response,
         200,
-        
-            {
-                "canBeDeleted": True,
-                "email": user_email,
-                "id": str(user_id),
-                "name": "Test user", 'sendBillUpdateNotifications': False
-            }
-        ,
+        {
+            "canBeDeleted": True,
+            "email": user_email,
+            "id": str(user_id),
+            "name": "Test user",
+            "sendBillUpdateNotifications": False,
+        },
     )
 
 
@@ -76,4 +76,14 @@ def test_get_viewer_requires_auth(unauthenticated_client, user_id, user_email):
     assert response.status_code == 401
 
 
-# TODO: Test update user preferences
+def test_update_viewer(client, user_id):
+    user = User.query.get(user_id)
+    assert not user.send_bill_update_notifications
+
+    response = client.put(
+        f"/api/viewer", data={"sendBillUpdateNotifications": True}
+    )
+    assert response.status_code == 200
+
+    user = User.query.get(user_id)
+    assert user.send_bill_update_notifications
