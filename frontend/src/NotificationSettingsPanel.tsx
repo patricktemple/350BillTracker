@@ -10,7 +10,7 @@ export default function NotificationSettingsPanel() {
   const apiFetch = useApiFetch();
 
   useMountEffect(() => {
-    apiFetch('/api/users/viewer').then((response) => {
+    apiFetch('/api/viewer').then((response) => {
       setNotificationsEnabled(response.sendBillUpdateNotifications);
     });
   });
@@ -18,7 +18,7 @@ export default function NotificationSettingsPanel() {
   function handleCheckboxChanged(e: any) {
     const enabled = e.target.checked;
     setNotificationsEnabled(enabled);
-    apiFetch('/api/users/viewer', {
+    apiFetch('/api/viewer', {
       method: 'PUT',
       body: {
         sendBillUpdateNotifications: enabled

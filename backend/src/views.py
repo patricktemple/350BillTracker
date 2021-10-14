@@ -460,7 +460,7 @@ def create_user():
 
 
 @app.route(
-    "/api/users/viewer",
+    "/api/viewer",
     methods=["GET"],
 )
 @auth_required
@@ -471,7 +471,7 @@ def get_current_user():
 
 
 @app.route(
-    "/api/users/viewer",
+    "/api/viewer",
     methods=["PUT"],
 )
 @auth_required
