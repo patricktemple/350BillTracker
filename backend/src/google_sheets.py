@@ -2,8 +2,7 @@ from __future__ import print_function
 
 import json
 
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
+from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from sqlalchemy.orm import selectinload
 from werkzeug import exceptions
@@ -27,21 +26,10 @@ class Cell:
         self.bold = bold
 
 
-# TODO: Share this with TogglSync via a utils package?
 def _get_google_credentials():
-    # TODO: This will need to refresh the creds every time after first expiration? Maybe?
-    creds = Credentials.from_authorized_user_info(
-        json.loads(settings.GOOGLE_CREDENTIALS), SCOPES
+    return Credentials.from_service_account_info(
+        json.loads(settings.GOOGLE_CREDENTIALS)
     )
-    if not creds.valid:
-        if creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            raise exceptions.InternalServerError(
-                f"Creds were invalid but not refreshable: {settings.GOOGLE_CREDENTIALS}"
-            )
-
-    return creds
 
 
 def _get_sheets_service(credentials):
