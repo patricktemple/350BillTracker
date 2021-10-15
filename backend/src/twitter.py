@@ -1,5 +1,6 @@
 import requests
 from src.settings import TWITTER_BEARER_TOKEN
+import re
 
 AUTH_HEADERS = {"Authorization": f"Bearer {TWITTER_BEARER_TOKEN}"}
 
@@ -20,14 +21,22 @@ def get_tweets_by_username(username):
     return get_recent_tweets(twitter_id)
 
 
+def _get_canonical_tweet(text):
+    return re.sub("\W+", " ", text)
+
+
 def _tweet_matches_keywords(tweet, keywords, referenced_tweets_by_id):
     for keyword in keywords:
+        canonical_keyword = _get_canonical_tweet(keyword)
         # improve this logic a lot
-        if keyword.lower() in tweet['text'].lower():
+        if canonical_keyword.lower() in _get_canonical_tweet(tweet['text'].lower()):
             return True
         if referenced := tweet.get('referenced_tweets'):
             for referenced_tweet in referenced:
-                if keyword.lower() in referenced_tweets_by_id[referenced_tweet['id']]['text'].lower():
+                if referenced_tweet['id'] not in referenced_tweets_by_id:
+                    print(f"Did not find referenced tweet {referenced_tweet['id']}")
+                    continue
+                if canonical_keyword.lower() in _get_canonical_tweet(referenced_tweets_by_id[referenced_tweet['id']]['text']).lower():
                     return True
     return False
 
