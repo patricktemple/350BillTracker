@@ -1,6 +1,7 @@
 import requests
 from src.settings import TWITTER_BEARER_TOKEN
 import re
+from urllib.parse import quote
 
 AUTH_HEADERS = {"Authorization": f"Bearer {TWITTER_BEARER_TOKEN}"}
 
@@ -56,3 +57,9 @@ def search_tweets_by_user(username, keywords):
             results.append(tweet)
         
     return results
+
+
+def get_twitter_search_url(twitter_handle, search_terms):
+    query_terms = " OR ".join([f'"{term}"' for term in search_terms])
+    full_query = f"{query_terms} (from:{twitter_handle})"
+    return f"https://twitter.com/search?q={quote(full_query)}"
