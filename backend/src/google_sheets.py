@@ -15,6 +15,32 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive.file",
 ]
 
+COLUMN_TITLES = [
+                "Name",
+                "Email",
+                "Party",
+                "District Phone",
+                "Legislative Phone",
+                "Twitter",
+                "Twitter search",
+                "Staffers",
+                "Notes",
+            ]
+
+# comment this
+COLUMN_WIDTHS = [
+  150,
+  200,
+  50,
+  100,
+  100,
+  150,
+  150,
+  250,
+  250,
+  
+]
+
 
 class Cell:
     value = None  # str
@@ -51,7 +77,7 @@ def _create_cell_data(cell):
     return {
         "textFormatRuns": text_format_runs,
         "userEnteredValue": {"stringValue": str(cell.value)},
-        "userEnteredFormat": {"textFormat": {"bold": cell.bold}},
+        "userEnteredFormat": {"wrapStrategy":"WRAP", "textFormat": {"bold": cell.bold}},
     }
 
 
@@ -61,7 +87,7 @@ def _create_row_data(cells):
 
 def _create_legislator_row(legislator, bill):
     staffer_strings = [s.display_string for s in legislator.staffers]
-    staffer_text = "\n".join(staffer_strings)
+    staffer_text = "\n\n".join(staffer_strings)
 
     twitter_search_url = twitter.get_bill_twitter_search_url(bill, legislator)
 
@@ -92,17 +118,7 @@ def _create_phone_bank_spreadsheet_data(bill, sponsors, non_sponsors):
     rows = [
         _create_title_row_data(["SPONSORS"]),
         _create_title_row_data(
-            [
-                "Name",
-                "Email",
-                "Party",
-                "District Phone",
-                "Legislative Phone",
-                "Twitter",
-                "Twitter search",
-                "Staffers",
-                "Notes",
-            ],
+            COLUMN_TITLES,
         ),
     ]
     for sponsor in sponsors:
@@ -114,9 +130,12 @@ def _create_phone_bank_spreadsheet_data(bill, sponsors, non_sponsors):
     for legislator in non_sponsors:
         rows.append(_create_legislator_row(legislator, bill))
 
+
+    column_metadata = [{'pixelSize': size} for size in COLUMN_WIDTHS]
     return {
         "properties": {"title": f"Phone bank for {bill.file}"},
-        "sheets": [{"data": {"rowData": rows}}],
+        "sheets": [{"data": {"rowData": rows,
+        "columnMetadata": column_metadata}}],
     }
 
 
