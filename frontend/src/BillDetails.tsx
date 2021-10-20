@@ -21,6 +21,7 @@ interface Props {
 interface FormData {
   notes: string;
   nickname: string;
+  twitterSearchTerms: string;
 }
 
 // TODO: Make a LazyAccordion that only renders its context the first time that
@@ -33,7 +34,8 @@ export default function BillDetails(props: Props): ReactElement {
     '/api/saved-bills/' + bill.id,
     {
       notes: bill.notes,
-      nickname: bill.nickname
+      nickname: bill.nickname,
+      twitterSearchTerms: bill.twitterSearchTerms,
     }
   );
 
@@ -75,6 +77,10 @@ export default function BillDetails(props: Props): ReactElement {
 
   function handleNicknameChanged(event: any) {
     setFormData({ ...formData, nickname: event.target.value });
+  }
+
+  function handleTwitterSearchTermsChanged(event: any) {
+    setFormData({ ...formData, twitterSearchTerms: event.target.value });
   }
 
   function handleAddAttachmentClicked(event: any) {
@@ -232,6 +238,20 @@ export default function BillDetails(props: Props): ReactElement {
           )}
         </Col>
       </Row>
+      <Form.Group as={Row} className="mb-2">
+        <Form.Label column lg={2} style={{ fontWeight: 'bold' }}>
+          Twitter search terms (comma-separated):
+        </Form.Label>
+        <Col>
+          <Form.Control
+            type="text"
+            size="sm"
+            placeholder='default: solar, climate, wind, renewable, fossil fuel'
+            value={formData.twitterSearchTerms}
+            onChange={handleTwitterSearchTermsChanged}
+          />
+        </Col>
+      </Form.Group>
       <Form.Group as={Row} className="mb-2">
         <Form.Label column lg={2} style={{ fontWeight: 'bold' }}>
           Our notes:
