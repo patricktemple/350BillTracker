@@ -8,7 +8,7 @@ from googleapiclient.discovery import build
 from sqlalchemy.orm import selectinload
 from werkzeug import exceptions
 
-from src import app, models, settings
+from src import app, models, settings, twitter
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -69,9 +69,11 @@ def _create_row_data(cells):
     return {"values": [_create_cell_data(cell) for cell in cells]}
 
 
-def _create_legislator_row(legislator):
+def _create_legislator_row(legislator, bill):
     staffer_strings = [s.display_string for s in legislator.staffers]
     staffer_text = "\n".join(staffer_strings)
+
+    twitter_search_url = twitter.get_bill_twitter_search_url(bill, legislator)
 
     cells = [
         Cell(legislator.name),
@@ -82,6 +84,7 @@ def _create_legislator_row(legislator):
         Cell(
             legislator.display_twitter or "", link_url=legislator.twitter_url
         ),
+        Cell("Search relevant tweets" if twitter_search_url else "", link_url=twitter_search_url),
         Cell(staffer_text),
         Cell(legislator.notes or ""),
     ]
@@ -106,19 +109,20 @@ def _create_phone_bank_spreadsheet_data(bill, sponsors, non_sponsors):
                 "District Phone",
                 "Legislative Phone",
                 "Twitter",
+                "Twitter search"
                 "Staffers",
                 "Notes",
             ],
         ),
     ]
     for sponsor in sponsors:
-        rows.append(_create_legislator_row(sponsor))
+        rows.append(_create_legislator_row(sponsor, bill))
 
     rows.append(_create_title_row_data([]))
     rows.append(_create_title_row_data(["NON-SPONSORS"]))
 
     for legislator in non_sponsors:
-        rows.append(_create_legislator_row(legislator))
+        rows.append(_create_legislator_row(legislator, bill))
 
     return {
         "properties": {"title": f"Phone bank for {bill.file}"},
