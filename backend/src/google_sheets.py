@@ -22,7 +22,7 @@ COLUMN_TITLES = [
                 "District Phone",
                 "Legislative Phone",
                 "Twitter",
-                "Twitter search",
+                "Twitter search\nNote: Twitter has a bug and will sometimes wrongly show no results. If this happens, refresh the Twitter page to try again.",
                 "Staffers",
                 "Notes",
             ]
@@ -35,7 +35,7 @@ COLUMN_WIDTHS = [
   100,
   100,
   150,
-  150,
+  200,
   250,
   250,
   
