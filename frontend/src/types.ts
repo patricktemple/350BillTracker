@@ -45,6 +45,7 @@ export interface SingleMemberSponsorship {
 export interface SingleBillSponsorship {
   billId: number;
   legislator: Legislator;
+  twitterSearchUrl: string;
 }
 
 export interface BillAttachment {

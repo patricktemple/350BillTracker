@@ -13,6 +13,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import TIMESTAMP as _TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID as _UUID
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import relationship
 
 from .app import app
@@ -50,6 +51,8 @@ class Bill(db.Model):
     notes = Column(Text, nullable=False, server_default="")
     nickname = Column(Text, nullable=False, server_default="")
 
+    custom_twitter_search_terms = Column(ARRAY(Text)) # list of strings? what is the type for this?
+
     sponsorships = relationship(
         "BillSponsorship", back_populates="bill", cascade="all, delete"
     )
@@ -60,6 +63,13 @@ class Bill(db.Model):
     @property
     def display_name(self):
         return self.nickname if self.nickname else self.name
+
+    @property
+    def twitter_search_terms(self):
+        if self.custom_twitter_search_terms:
+            return self.custom_twitter_search_terms
+        
+        return ["solar", "climate", "wind", "renewable", "fossil fuel"]
 
 
 class Legislator(db.Model):
@@ -152,6 +162,13 @@ class BillSponsorship(db.Model):
     # and we don't know the date that those were added. We leave added_at as null,
     # in that case, and only fill this in for sponsorships that were added later on.
     added_at = Column(TIMESTAMP)
+
+    @property
+    def twitter_search_url(self):
+        # TODO: better way to deal with circular import?
+        from .twitter import get_bill_twitter_search_url
+        
+        return get_bill_twitter_search_url(self.bill, self.legislator)
 
 
 # TODO: UUIDs for some PKs?

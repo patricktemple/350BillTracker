@@ -61,5 +61,12 @@ def search_tweets_by_user(username, keywords):
 
 def get_twitter_search_url(twitter_handle, search_terms):
     query_terms = " OR ".join([f'"{term}"' for term in search_terms])
-    full_query = f"{query_terms} (from:{twitter_handle})"
-    return f"https://twitter.com/search?q={quote(full_query)}"
+    full_query = f"{query_terms} (from:{twitter_handle})" # TODO figure out twitter search bug
+    return f"https://twitter.com/search?q={quote(full_query)}&f=live"
+
+
+# Doesn't take in a BillSponsorship because it also can represent
+# non-sponsoring legislators on a bill
+# TODO: Just represent that as a BillSponsorship somehow?
+def get_bill_twitter_search_url(bill, legislator):
+    return get_twitter_search_url(legislator.twitter, bill.twitter_search_terms)

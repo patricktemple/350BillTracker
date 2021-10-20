@@ -273,6 +273,7 @@ def delete_staffer(staffer_id):
 class SingleBillSponsorshipsSchema(CamelCaseSchema):
     bill_id = fields.Integer(required=True)
     legislator = fields.Nested(LegislatorSchema)
+    twitter_search_url = fields.String()
 
 
 @app.route("/api/saved-bills/<int:bill_id>/sponsorships", methods=["GET"])
