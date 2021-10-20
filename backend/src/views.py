@@ -50,7 +50,6 @@ def healthz():
     return "Healthy!"
 
 
-# TODO: Hitting a react route other than root will fail when browser navigates directly there
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
 def index(path):
@@ -73,7 +72,7 @@ class BillSchema(CamelCaseSchema):
     tracked = fields.Boolean(dump_only=True)
     notes = fields.String(required=True)
     nickname = fields.String(required=True)
-    twitter_search_terms = fields.String() # or expose as a list? this is wrong... doesn't match the type on the model
+    custom_twitter_search_terms = fields.String() # or expose as a list? this is wrong... doesn't match the type on the model
 
 
 @app.route("/api/saved-bills", methods=["GET"])
@@ -116,7 +115,7 @@ def update_bill(bill_id):
 
     # TODO: Sanitize this fully!
     # Rather than show default in placeholder, why not just make it explicit?
-    bill.custom_twitter_search_terms = [t.strip() for t in data['twitter_search_terms'].split(',')]
+    bill.custom_twitter_search_terms = [t.strip() for t in data['custom_twitter_search_terms'].split(',') if t.strip()]
 
     db.session.commit()
 

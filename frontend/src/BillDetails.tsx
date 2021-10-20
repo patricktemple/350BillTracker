@@ -21,7 +21,7 @@ interface Props {
 interface FormData {
   notes: string;
   nickname: string;
-  twitterSearchTerms: string;
+  customTwitterSearchTerms: string;
 }
 
 // TODO: Make a LazyAccordion that only renders its context the first time that
@@ -35,7 +35,7 @@ export default function BillDetails(props: Props): ReactElement {
     {
       notes: bill.notes,
       nickname: bill.nickname,
-      twitterSearchTerms: bill.twitterSearchTerms,
+      customTwitterSearchTerms: bill.customTwitterSearchTerms,
     }
   );
 
@@ -75,12 +75,16 @@ export default function BillDetails(props: Props): ReactElement {
     setFormData({ ...formData, notes: event.target.value });
   }
 
+  // TODO: Get real types for all my Events
   function handleNicknameChanged(event: any) {
     setFormData({ ...formData, nickname: event.target.value });
   }
 
   function handleTwitterSearchTermsChanged(event: any) {
-    setFormData({ ...formData, twitterSearchTerms: event.target.value });
+    // Hmm this won't regenerate the twitter search links for all the sponsorships
+    // Does that need to involve an async fetch of the latest terms?
+    // Or just duplicate the logic on client side
+    setFormData({ ...formData, customTwitterSearchTerms: event.target.value });
   }
 
   function handleAddAttachmentClicked(event: any) {
@@ -247,7 +251,7 @@ export default function BillDetails(props: Props): ReactElement {
             type="text"
             size="sm"
             placeholder='default: solar, climate, wind, renewable, fossil fuel'
-            value={formData.twitterSearchTerms}
+            value={formData.customTwitterSearchTerms}
             onChange={handleTwitterSearchTermsChanged}
           />
         </Col>
