@@ -165,8 +165,6 @@ class BillSponsorship(db.Model):
 
     @property
     def twitter_search_url(self):
-        if not self.legislator.twitter:
-            return None
         # TODO: better way to deal with circular import?
         from .twitter import get_bill_twitter_search_url
         

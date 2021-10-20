@@ -69,4 +69,6 @@ def get_twitter_search_url(twitter_handle, search_terms):
 # non-sponsoring legislators on a bill
 # TODO: Just represent that as a BillSponsorship somehow?
 def get_bill_twitter_search_url(bill, legislator):
+    if not legislator.twitter:
+        return None
     return get_twitter_search_url(legislator.twitter, bill.twitter_search_terms)
