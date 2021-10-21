@@ -167,17 +167,6 @@ class BillSponsorship(db.Model):
     # in that case, and only fill this in for sponsorships that were added later on.
     added_at = Column(TIMESTAMP)
 
-    # @property
-    # def twitter_search_url(self):
-    #     from .twitter import get_bill_twitter_search_url
-
-    #     return get_bill_twitter_search_url(self.bill, self.legislator)
-    
-    @property
-    def is_sponsor(self):
-        # this is awkward
-        return True
-
 
 # TODO: UUIDs for some PKs?
 class BillAttachment(db.Model):

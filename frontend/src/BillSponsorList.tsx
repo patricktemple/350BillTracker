@@ -12,10 +12,6 @@ interface Props {
 
 function getTwitterSearchUrl(searchTerms: string[], twitterHandle: string) {
   // Need to keep this in sync with the backend implementation
-  // def get_twitter_search_url(twitter_handle, search_terms):
-  // query_terms = " OR ".join([f'"{term}"' for term in search_terms])
-  // full_query = f"(from:{twitter_handle}) {query_terms}"
-  // return f"https://twitter.com/search?q={quote(full_query)}&f=live"
   const queryTerms = searchTerms.map((term: string) => `"${term}"`).join(" OR ");
   const fullQuery = `(from:${twitterHandle}) ${queryTerms}`;
   return "https://twitter.com/search?" + new URLSearchParams({q: fullQuery}).toString();

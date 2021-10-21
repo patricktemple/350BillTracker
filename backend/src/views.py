@@ -114,7 +114,6 @@ def update_bill(bill_id):
     bill.notes = data["notes"]
     bill.nickname = data["nickname"]
 
-    # TODO: Sanitize this fully!
     bill.twitter_search_terms = data["twitter_search_terms"]
 
     db.session.commit()
@@ -291,6 +290,11 @@ def bill_sponsorships(bill_id):
         .options(joinedload(BillSponsorship.legislator))
         .all()
     )
+    for sponsorship in sponsorships:
+        # This is not a field on the SQLA object, but we set it so that it gets
+        # serialized into the response.
+        sponsorship.is_sponsor = True
+
     non_sponsors = (
         Legislator.query.filter(
             Legislator.id.not_in([s.legislator_id for s in sponsorships])

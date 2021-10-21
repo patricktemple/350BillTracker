@@ -22,12 +22,13 @@ COLUMN_TITLES = [
     "District Phone",
     "Legislative Phone",
     "Twitter",
-    "Twitter search\nNote: Twitter has a bug and will sometimes wrongly show no results. If this happens, refresh the Twitter page to try again.",
+    "Twitter search\nNote: Note: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.",
     "Staffers",
     "Notes",
 ]
 
-# comment this
+# Width in pixels for each column. We can't dynamically set it to match the,
+# contents via the API, so instead we just hardcode them as best we can.
 COLUMN_WIDTHS = [
     150,
     200,
