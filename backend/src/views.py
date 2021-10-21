@@ -28,8 +28,8 @@ from .models import (
 )
 from .ses import send_login_link_email
 from .settings import APP_ORIGIN
-from .utils import now
 from .twitter import get_bill_twitter_search_url
+from .utils import now
 
 
 def camelcase(s):
@@ -73,7 +73,7 @@ class BillSchema(CamelCaseSchema):
     tracked = fields.Boolean(dump_only=True)
     notes = fields.String(required=True)
     nickname = fields.String(required=True)
-    twitter_search_terms = fields.List(fields.String())
+    twitter_search_terms = fields.List(fields.String(), required=True)
 
 
 @app.route("/api/saved-bills", methods=["GET"])
