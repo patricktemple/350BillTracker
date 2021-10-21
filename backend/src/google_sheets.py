@@ -19,6 +19,7 @@ COLUMN_TITLES = [
     "Name",
     "Email",
     "Party",
+    "Borough",
     "District Phone",
     "Legislative Phone",
     "Twitter",
@@ -32,6 +33,7 @@ COLUMN_TITLES = [
 COLUMN_WIDTHS = [
     150,
     200,
+    100,
     100,
     100,
     150,
@@ -96,6 +98,7 @@ def _create_legislator_row(legislator, bill):
         Cell(legislator.name),
         Cell(legislator.email),
         Cell(legislator.party),
+        Cell(legislator.borough),
         Cell(legislator.district_phone),
         Cell(legislator.legislative_phone),
         Cell(
@@ -143,6 +146,11 @@ def _create_phone_bank_spreadsheet_data(bill, sponsors, non_sponsors):
     }
 
 
+def get_sort_key(legislator):
+    # TODO: Canonicalize the borough
+    return (legislator.borough, legislator.name)
+
+
 def create_phone_bank_spreadsheet(bill_id):
     """Creates a spreadsheet that's a template to run a phone bank
     for a specific bill, based on its current sponsors. The sheet will be
@@ -158,17 +166,16 @@ def create_phone_bank_spreadsheet(bill_id):
     )
 
     sponsorships = bill.sponsorships
-    sponsorships = sorted(sponsorships, key=lambda s: s.legislator.name)
+    sponsorships = sorted(
+        sponsorships, key=lambda s: get_sort_key(s.legislator)
+    )
     sponsors = [s.legislator for s in sponsorships]
 
     sponsor_ids = [s.legislator_id for s in sponsorships]
-    non_sponsors = (
-        models.Legislator.query.filter(
-            models.Legislator.id.not_in(sponsor_ids)
-        )
-        .order_by(models.Legislator.name)
-        .all()
-    )
+    non_sponsors = models.Legislator.query.filter(
+        models.Legislator.id.not_in(sponsor_ids)
+    ).all()
+    non_sponsors = sorted(non_sponsors, key=get_sort_key)
 
     spreadsheet_data = _create_phone_bank_spreadsheet_data(
         bill, sponsors, non_sponsors

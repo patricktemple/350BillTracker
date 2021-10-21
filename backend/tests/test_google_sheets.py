@@ -100,6 +100,16 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                 {
                                     "textFormatRuns": None,
                                     "userEnteredValue": {
+                                        "stringValue": "Borough"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
                                         "stringValue": "District Phone"
                                     },
                                     "userEnteredFormat": {
@@ -165,6 +175,16 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                     "textFormatRuns": None,
                                     "userEnteredValue": {
                                         "stringValue": "Sponsor"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "None"
                                     },
                                     "userEnteredFormat": {
                                         "wrapStrategy": "WRAP",
@@ -314,6 +334,16 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                 },
                                 {
                                     "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "None"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {"stringValue": ""},
                                     "userEnteredFormat": {
                                         "wrapStrategy": "WRAP",
@@ -350,6 +380,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                     "columnMetadata": [
                         {"pixelSize": 150},
                         {"pixelSize": 200},
+                        {"pixelSize": 100},
                         {"pixelSize": 100},
                         {"pixelSize": 100},
                         {"pixelSize": 150},
