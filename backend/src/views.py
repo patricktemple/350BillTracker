@@ -28,6 +28,7 @@ from .models import (
 )
 from .ses import send_login_link_email
 from .settings import APP_ORIGIN
+from .twitter import get_bill_twitter_search_url
 from .utils import now
 
 
@@ -50,7 +51,6 @@ def healthz():
     return "Healthy!"
 
 
-# TODO: Hitting a react route other than root will fail when browser navigates directly there
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
 def index(path):
@@ -73,6 +73,7 @@ class BillSchema(CamelCaseSchema):
     tracked = fields.Boolean(dump_only=True)
     notes = fields.String(required=True)
     nickname = fields.String(required=True)
+    twitter_search_terms = fields.List(fields.String(), required=True)
 
 
 @app.route("/api/saved-bills", methods=["GET"])
@@ -112,6 +113,8 @@ def update_bill(bill_id):
     bill = Bill.query.get(bill_id)
     bill.notes = data["notes"]
     bill.nickname = data["nickname"]
+
+    bill.twitter_search_terms = data["twitter_search_terms"]
 
     db.session.commit()
 
@@ -270,20 +273,46 @@ def delete_staffer(staffer_id):
 
 
 # Bill sponsorships ----------------------------------------------------------------------
-class SingleBillSponsorshipsSchema(CamelCaseSchema):
+class BillSponsorshipSchema(CamelCaseSchema):
     bill_id = fields.Integer(required=True)
     legislator = fields.Nested(LegislatorSchema)
+    is_sponsor = fields.Boolean()
 
 
 @app.route("/api/saved-bills/<int:bill_id>/sponsorships", methods=["GET"])
 @auth_required
 def bill_sponsorships(bill_id):
+    bill = Bill.query.get(bill_id)
+    if not bill:
+        raise exceptions.NotFound()
     sponsorships = (
         BillSponsorship.query.filter_by(bill_id=bill_id)
         .options(joinedload(BillSponsorship.legislator))
         .all()
     )
-    return SingleBillSponsorshipsSchema(many=True).jsonify(sponsorships)
+    for sponsorship in sponsorships:
+        # This is not a field on the SQLA object, but we set it so that it gets
+        # serialized into the response.
+        sponsorship.is_sponsor = True
+
+    non_sponsors = (
+        Legislator.query.filter(
+            Legislator.id.not_in([s.legislator_id for s in sponsorships])
+        )
+        .order_by(Legislator.name)
+        .all()
+    )
+    non_sponsorships = [
+        {
+            "bill_id": bill_id,
+            "is_sponsor": False,
+            "legislator": legislator,
+        }
+        for legislator in non_sponsors
+    ]
+    return BillSponsorshipSchema(many=True).jsonify(
+        sponsorships + non_sponsorships
+    )
 
 
 # Bill attachments ----------------------------------------------------------------------

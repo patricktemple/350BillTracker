@@ -3,7 +3,7 @@ import json
 import responses
 
 from src import app
-from src.models import Bill, Legislator, db
+from src.models import DEFAULT_TWITTER_SEARCH_TERMS, Bill, Legislator, db
 from src.utils import now
 
 from .utils import assert_response
@@ -56,6 +56,7 @@ def test_get_saved_bills(client):
                 "status": "Enacted",
                 "title": "title",
                 "tracked": True,
+                "twitterSearchTerms": DEFAULT_TWITTER_SEARCH_TERMS,
             }
         ],
     )
@@ -88,7 +89,11 @@ def test_update_bill(client):
 
     response = client.put(
         "/api/saved-bills/1",
-        data={"notes": "good bill", "nickname": "skip the stuff"},
+        data={
+            "notes": "good bill",
+            "nickname": "skip the stuff",
+            "twitterSearchTerms": ["oil"],
+        },
     )
     assert response.status_code == 200
 
@@ -107,6 +112,7 @@ def test_update_bill(client):
                 "status": None,
                 "title": "title",
                 "tracked": True,
+                "twitterSearchTerms": ["oil"],
             }
         ],
     )
@@ -201,11 +207,3 @@ def test_lookup_bill_already_tracked(client):
     response_data = json.loads(response.data)[0]
     assert response_data["id"] == 1
     assert response_data["tracked"] == True
-
-
-# TODO: Add a test for adding a bill when bill already exists
-# make sure it updates existing sponsorships too
-
-
-# TODO test coverage:
-# Getting sponsorships

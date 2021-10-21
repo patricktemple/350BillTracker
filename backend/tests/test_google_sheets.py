@@ -59,7 +59,8 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "SPONSORS"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": True}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
                                     },
                                 }
                             ]
@@ -72,7 +73,8 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "Name"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": True}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
                                     },
                                 },
                                 {
@@ -81,7 +83,8 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "Email"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": True}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
                                     },
                                 },
                                 {
@@ -90,7 +93,8 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "Party"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": True}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
                                     },
                                 },
                                 {
@@ -99,7 +103,8 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "District Phone"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": True}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
                                     },
                                 },
                                 {
@@ -108,7 +113,8 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "Legislative Phone"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": True}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
                                     },
                                 },
                                 {
@@ -117,7 +123,18 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "Twitter"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": True}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Twitter search\nNote: Note: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this."
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
                                     },
                                 },
                                 {
@@ -126,7 +143,8 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "Staffers"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": True}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
                                     },
                                 },
                                 {
@@ -135,7 +153,8 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "Notes"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": True}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
                                     },
                                 },
                             ]
@@ -148,7 +167,8 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "Sponsor"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": False}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
                                     },
                                 },
                                 {
@@ -157,7 +177,8 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "None"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": False}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
                                     },
                                 },
                                 {
@@ -166,7 +187,8 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "None"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": False}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
                                     },
                                 },
                                 {
@@ -175,7 +197,8 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "None"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": False}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
                                     },
                                 },
                                 {
@@ -184,28 +207,40 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "None"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": False}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
                                     },
                                 },
                                 {
                                     "textFormatRuns": None,
                                     "userEnteredValue": {"stringValue": ""},
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": False}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
                                     },
                                 },
                                 {
                                     "textFormatRuns": None,
                                     "userEnteredValue": {"stringValue": ""},
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": False}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
                                     },
                                 },
                                 {
                                     "textFormatRuns": None,
                                     "userEnteredValue": {"stringValue": ""},
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": False}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {"stringValue": ""},
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
                                     },
                                 },
                             ]
@@ -219,7 +254,8 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "NON-SPONSORS"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": True}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
                                     },
                                 }
                             ]
@@ -232,7 +268,8 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "Non sponsor"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": False}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
                                     },
                                 },
                                 {
@@ -241,7 +278,8 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "None"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": False}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
                                     },
                                 },
                                 {
@@ -250,7 +288,8 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "None"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": False}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
                                     },
                                 },
                                 {
@@ -259,7 +298,8 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "None"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": False}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
                                     },
                                 },
                                 {
@@ -268,33 +308,55 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                         "stringValue": "None"
                                     },
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": False}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
                                     },
                                 },
                                 {
                                     "textFormatRuns": None,
                                     "userEnteredValue": {"stringValue": ""},
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": False}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
                                     },
                                 },
                                 {
                                     "textFormatRuns": None,
                                     "userEnteredValue": {"stringValue": ""},
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": False}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
                                     },
                                 },
                                 {
                                     "textFormatRuns": None,
                                     "userEnteredValue": {"stringValue": ""},
                                     "userEnteredFormat": {
-                                        "textFormat": {"bold": False}
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {"stringValue": ""},
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
                                     },
                                 },
                             ]
                         },
-                    ]
+                    ],
+                    "columnMetadata": [
+                        {"pixelSize": 150},
+                        {"pixelSize": 200},
+                        {"pixelSize": 100},
+                        {"pixelSize": 100},
+                        {"pixelSize": 150},
+                        {"pixelSize": 200},
+                        {"pixelSize": 250},
+                        {"pixelSize": 250},
+                    ],
                 }
             }
         ],

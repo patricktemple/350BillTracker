@@ -15,6 +15,7 @@ export interface Bill {
   // Editable fields
   notes: string;
   nickname: string;
+  twitterSearchTerms: string[];
 }
 
 // TODO: Change types to reflect nullability
@@ -42,9 +43,10 @@ export interface SingleMemberSponsorship {
   legislatorId: number;
 }
 
-export interface SingleBillSponsorship {
+export interface BillSponsorship {
   billId: number;
   legislator: Legislator;
+  isSponsor: boolean;
 }
 
 export interface BillAttachment {

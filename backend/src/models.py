@@ -11,6 +11,7 @@ from sqlalchemy import (
     TypeDecorator,
     sql,
 )
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.dialects.postgresql import TIMESTAMP as _TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID as _UUID
 from sqlalchemy.orm import relationship
@@ -27,6 +28,15 @@ class UUID(TypeDecorator):
 
 class TIMESTAMP(TypeDecorator):
     impl = _TIMESTAMP(timezone=True)
+
+
+DEFAULT_TWITTER_SEARCH_TERMS = [
+    "solar",
+    "climate",
+    "wind power",
+    "renewable",
+    "fossil fuel",
+]
 
 
 class Bill(db.Model):
@@ -49,6 +59,10 @@ class Bill(db.Model):
     # Data we track
     notes = Column(Text, nullable=False, server_default="")
     nickname = Column(Text, nullable=False, server_default="")
+
+    twitter_search_terms = Column(
+        ARRAY(Text), nullable=False, default=DEFAULT_TWITTER_SEARCH_TERMS
+    )
 
     sponsorships = relationship(
         "BillSponsorship", back_populates="bill", cascade="all, delete"

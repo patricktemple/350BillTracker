@@ -2,16 +2,15 @@ import React, { ReactElement, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
 import Form from 'react-bootstrap/Form';
-import { Bill, SingleBillSponsorship, BillAttachment } from './types';
-import useInterval from '@restart/hooks/useInterval';
+import { Bill, BillSponsorship, BillAttachment } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import AddAttachmentModal from './AddAttachmentModal';
-import { Link } from 'react-router-dom';
 import useAutosavingFormData from './utils/useAutosavingFormData';
 import ConfirmDeleteBillModel from './ConfirmDeleteBillModal';
 import useApiFetch from './useApiFetch';
+import BillSponsorList from './BillSponsorList';
 
 interface Props {
   bill: Bill;
@@ -21,11 +20,9 @@ interface Props {
 interface FormData {
   notes: string;
   nickname: string;
+  twitterSearchTerms: string[];
 }
 
-// TODO: Make a LazyAccordion that only renders its context the first time that
-// it's visible, using useContext(AccordionContext). See this:
-// https://react-bootstrap.github.io/components/accordion/
 export default function BillDetails(props: Props): ReactElement {
   const { bill } = props;
 
@@ -33,13 +30,18 @@ export default function BillDetails(props: Props): ReactElement {
     '/api/saved-bills/' + bill.id,
     {
       notes: bill.notes,
-      nickname: bill.nickname
+      nickname: bill.nickname,
+      twitterSearchTerms: bill.twitterSearchTerms
     }
   );
 
-  const [sponsorships, setSponsorships] = useState<
-    SingleBillSponsorship[] | null
-  >(null);
+  const [twitterSearchTermsRaw, setTwitterSearchTermsRaw] = useState<string>(
+    bill.twitterSearchTerms.join(', ')
+  );
+
+  const [sponsorships, setSponsorships] = useState<BillSponsorship[] | null>(
+    null
+  );
   const [attachments, setAttachments] = useState<BillAttachment[] | null>(null);
 
   const [showDeleteBillConfirmation, setShowDeleteBillConfirmation] =
@@ -73,11 +75,21 @@ export default function BillDetails(props: Props): ReactElement {
     setFormData({ ...formData, notes: event.target.value });
   }
 
+  // TODO: Get real types for all my Events
   function handleNicknameChanged(event: any) {
     setFormData({ ...formData, nickname: event.target.value });
   }
 
-  function handleAddAttachmentClicked(event: any) {
+  function handleTwitterSearchTermsChanged(event: any) {
+    setTwitterSearchTermsRaw(event.target.value);
+    const twitterSearchTermsList = event.target.value
+      .split(',')
+      .map((term: string) => term.trim())
+      .filter(Boolean);
+    setFormData({ ...formData, twitterSearchTerms: twitterSearchTermsList });
+  }
+
+  function handleAddAttachmentClicked() {
     setAddAttachmentModalOpen(true);
   }
 
@@ -120,6 +132,12 @@ export default function BillDetails(props: Props): ReactElement {
     });
   }
 
+  const positiveSponsors = sponsorships?.filter(
+    (s: BillSponsorship) => s.isSponsor
+  );
+  const negativeSponsors = sponsorships?.filter(
+    (s: BillSponsorship) => !s.isSponsor
+  );
   return (
     <Form onSubmit={(e) => e.preventDefault()}>
       <Row className="mb-2">
@@ -161,23 +179,39 @@ export default function BillDetails(props: Props): ReactElement {
         </Col>
       </Form.Group>
       <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Sponsors {sponsorships != null && <>({sponsorships.length})</>}:
+        <Col lg={2}>
+          <div style={{ fontWeight: 'bold' }}>
+            Sponsors{' '}
+            {positiveSponsors != null && <>({positiveSponsors.length})</>}:
+          </div>
+          <div style={{ fontSize: '0.8rem', fontStyle: 'italic' }}>
+            Note: Due to a Twitter bug, the Twitter search sometimes displays 0
+            results even when there should be should be matching tweets.
+            Refreshing the Twitter page often fixes this.
+          </div>
         </Col>
         <Col>
-          {sponsorships == null ? (
+          {positiveSponsors == null ? (
             'Loading...'
           ) : (
-            <Stack direction="vertical">
-              {sponsorships.map((s) => (
-                <Link
-                  to={'/council-members/' + s.legislator.id}
-                  key={s.legislator.id}
-                >
-                  {s.legislator.name}
-                </Link>
-              ))}
-            </Stack>
+            <BillSponsorList
+              sponsorships={positiveSponsors}
+              twitterSearchTerms={formData.twitterSearchTerms}
+            />
+          )}
+        </Col>
+        <Col lg={2} style={{ fontWeight: 'bold' }}>
+          Non-sponsors{' '}
+          {negativeSponsors != null && <>({negativeSponsors.length})</>}:
+        </Col>
+        <Col>
+          {negativeSponsors == null ? (
+            'Loading...'
+          ) : (
+            <BillSponsorList
+              sponsorships={negativeSponsors}
+              twitterSearchTerms={formData.twitterSearchTerms}
+            />
           )}
         </Col>
       </Row>
@@ -233,6 +267,20 @@ export default function BillDetails(props: Props): ReactElement {
           )}
         </Col>
       </Row>
+      <Form.Group as={Row} className="mb-2">
+        <Form.Label column lg={2} style={{ fontWeight: 'bold' }}>
+          Twitter search terms:
+        </Form.Label>
+        <Col>
+          <Form.Control
+            type="text"
+            size="sm"
+            placeholder="Enter comma-separated terms, e.g. solar, climate, fossil fuels"
+            value={twitterSearchTermsRaw}
+            onChange={handleTwitterSearchTermsChanged}
+          />
+        </Col>
+      </Form.Group>
       <Form.Group as={Row} className="mb-2">
         <Form.Label column lg={2} style={{ fontWeight: 'bold' }}>
           Our notes:

@@ -2,16 +2,42 @@ from __future__ import print_function
 
 import json
 
+from google.auth.transport.requests import Request
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from sqlalchemy.orm import selectinload
 from werkzeug import exceptions
 
-from src import app, models, settings
+from src import app, models, settings, twitter
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file",
+]
+
+COLUMN_TITLES = [
+    "Name",
+    "Email",
+    "Party",
+    "District Phone",
+    "Legislative Phone",
+    "Twitter",
+    "Twitter search\nNote: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.",
+    "Staffers",
+    "Notes",
+]
+
+# Width in pixels for each column. We can't dynamically set it to match the,
+# contents via the API, so instead we just hardcode them as best we can.
+COLUMN_WIDTHS = [
+    150,
+    200,
+    100,
+    100,
+    150,
+    200,
+    250,
+    250,
 ]
 
 
@@ -49,7 +75,10 @@ def _create_cell_data(cell):
     return {
         "textFormatRuns": text_format_runs,
         "userEnteredValue": {"stringValue": str(cell.value)},
-        "userEnteredFormat": {"textFormat": {"bold": cell.bold}},
+        "userEnteredFormat": {
+            "wrapStrategy": "WRAP",
+            "textFormat": {"bold": cell.bold},
+        },
     }
 
 
@@ -57,9 +86,11 @@ def _create_row_data(cells):
     return {"values": [_create_cell_data(cell) for cell in cells]}
 
 
-def _create_legislator_row(legislator):
+def _create_legislator_row(legislator, bill):
     staffer_strings = [s.display_string for s in legislator.staffers]
-    staffer_text = "\n".join(staffer_strings)
+    staffer_text = "\n\n".join(staffer_strings)
+
+    twitter_search_url = twitter.get_bill_twitter_search_url(bill, legislator)
 
     cells = [
         Cell(legislator.name),
@@ -69,6 +100,10 @@ def _create_legislator_row(legislator):
         Cell(legislator.legislative_phone),
         Cell(
             legislator.display_twitter or "", link_url=legislator.twitter_url
+        ),
+        Cell(
+            "Relevant tweets" if twitter_search_url else "",
+            link_url=twitter_search_url,
         ),
         Cell(staffer_text),
         Cell(legislator.notes or ""),
@@ -87,30 +122,24 @@ def _create_phone_bank_spreadsheet_data(bill, sponsors, non_sponsors):
     rows = [
         _create_title_row_data(["SPONSORS"]),
         _create_title_row_data(
-            [
-                "Name",
-                "Email",
-                "Party",
-                "District Phone",
-                "Legislative Phone",
-                "Twitter",
-                "Staffers",
-                "Notes",
-            ],
+            COLUMN_TITLES,
         ),
     ]
     for sponsor in sponsors:
-        rows.append(_create_legislator_row(sponsor))
+        rows.append(_create_legislator_row(sponsor, bill))
 
     rows.append(_create_title_row_data([]))
     rows.append(_create_title_row_data(["NON-SPONSORS"]))
 
     for legislator in non_sponsors:
-        rows.append(_create_legislator_row(legislator))
+        rows.append(_create_legislator_row(legislator, bill))
 
+    column_metadata = [{"pixelSize": size} for size in COLUMN_WIDTHS]
     return {
         "properties": {"title": f"Phone bank for {bill.file}"},
-        "sheets": [{"data": {"rowData": rows}}],
+        "sheets": [
+            {"data": {"rowData": rows, "columnMetadata": column_metadata}}
+        ],
     }
 
 
