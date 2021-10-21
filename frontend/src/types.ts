@@ -46,7 +46,7 @@ export interface SingleMemberSponsorship {
 export interface BillSponsorship {
   billId: number;
   legislator: Legislator;
-  isSponsor: boolean
+  isSponsor: boolean;
 }
 
 export interface BillAttachment {

@@ -39,9 +39,9 @@ export default function BillDetails(props: Props): ReactElement {
     bill.twitterSearchTerms.join(', ')
   );
 
-  const [sponsorships, setSponsorships] = useState<
-    BillSponsorship[] | null
-  >(null);
+  const [sponsorships, setSponsorships] = useState<BillSponsorship[] | null>(
+    null
+  );
   const [attachments, setAttachments] = useState<BillAttachment[] | null>(null);
 
   const [showDeleteBillConfirmation, setShowDeleteBillConfirmation] =
@@ -132,8 +132,12 @@ export default function BillDetails(props: Props): ReactElement {
     });
   }
 
-  const positiveSponsors = sponsorships?.filter((s: BillSponsorship) => s.isSponsor);
-  const negativeSponsors = sponsorships?.filter((s: BillSponsorship) => !s.isSponsor);
+  const positiveSponsors = sponsorships?.filter(
+    (s: BillSponsorship) => s.isSponsor
+  );
+  const negativeSponsors = sponsorships?.filter(
+    (s: BillSponsorship) => !s.isSponsor
+  );
   return (
     <Form onSubmit={(e) => e.preventDefault()}>
       <Row className="mb-2">
@@ -176,24 +180,38 @@ export default function BillDetails(props: Props): ReactElement {
       </Form.Group>
       <Row className="mb-2">
         <Col lg={2}>
-          <div style={{ fontWeight: 'bold' }}>Sponsors {positiveSponsors != null && <>({positiveSponsors.length})</>}:</div>
-          <div style={{fontSize: '0.8rem', fontStyle: 'italic'}}>Note: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.</div>
+          <div style={{ fontWeight: 'bold' }}>
+            Sponsors{' '}
+            {positiveSponsors != null && <>({positiveSponsors.length})</>}:
+          </div>
+          <div style={{ fontSize: '0.8rem', fontStyle: 'italic' }}>
+            Note: Due to a Twitter bug, the Twitter search sometimes displays 0
+            results even when there should be should be matching tweets.
+            Refreshing the Twitter page often fixes this.
+          </div>
         </Col>
         <Col>
           {positiveSponsors == null ? (
             'Loading...'
           ) : (
-            <BillSponsorList sponsorships={positiveSponsors} twitterSearchTerms={formData.twitterSearchTerms} />
+            <BillSponsorList
+              sponsorships={positiveSponsors}
+              twitterSearchTerms={formData.twitterSearchTerms}
+            />
           )}
         </Col>
         <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Non-sponsors {negativeSponsors != null && <>({negativeSponsors.length})</>}:
+          Non-sponsors{' '}
+          {negativeSponsors != null && <>({negativeSponsors.length})</>}:
         </Col>
         <Col>
           {negativeSponsors == null ? (
             'Loading...'
           ) : (
-            <BillSponsorList sponsorships={negativeSponsors} twitterSearchTerms={formData.twitterSearchTerms} />
+            <BillSponsorList
+              sponsorships={negativeSponsors}
+              twitterSearchTerms={formData.twitterSearchTerms}
+            />
           )}
         </Col>
       </Row>
