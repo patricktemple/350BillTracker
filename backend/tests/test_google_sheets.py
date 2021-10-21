@@ -130,7 +130,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                 {
                                     "textFormatRuns": None,
                                     "userEnteredValue": {
-                                        "stringValue": "Twitter search\nNote: Note: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this."
+                                        "stringValue": "Twitter search\nNote: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this."
                                     },
                                     "userEnteredFormat": {
                                         "wrapStrategy": "WRAP",
