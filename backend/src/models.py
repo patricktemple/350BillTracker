@@ -11,9 +11,9 @@ from sqlalchemy import (
     TypeDecorator,
     sql,
 )
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.dialects.postgresql import TIMESTAMP as _TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID as _UUID
-from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import relationship
 
 from .app import app
@@ -29,7 +29,14 @@ class UUID(TypeDecorator):
 class TIMESTAMP(TypeDecorator):
     impl = _TIMESTAMP(timezone=True)
 
-DEFAULT_TWITTER_SEARCH_TERMS = ["solar", "climate", "wind", "renewable", "fossil fuel"]
+
+DEFAULT_TWITTER_SEARCH_TERMS = [
+    "solar",
+    "climate",
+    "wind",
+    "renewable",
+    "fossil fuel",
+]
 
 
 class Bill(db.Model):
@@ -53,7 +60,9 @@ class Bill(db.Model):
     notes = Column(Text, nullable=False, server_default="")
     nickname = Column(Text, nullable=False, server_default="")
 
-    twitter_search_terms = Column(ARRAY(Text), nullable=False, default=DEFAULT_TWITTER_SEARCH_TERMS)
+    twitter_search_terms = Column(
+        ARRAY(Text), nullable=False, default=DEFAULT_TWITTER_SEARCH_TERMS
+    )
 
     sponsorships = relationship(
         "BillSponsorship", back_populates="bill", cascade="all, delete"
@@ -162,7 +171,7 @@ class BillSponsorship(db.Model):
     def twitter_search_url(self):
         # TODO: better way to deal with circular import?
         from .twitter import get_bill_twitter_search_url
-        
+
         return get_bill_twitter_search_url(self.bill, self.legislator)
 
 

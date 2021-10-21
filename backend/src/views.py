@@ -59,7 +59,6 @@ def index(path):
 # Bills ----------------------------------------------------------------------
 
 
-
 class BillSchema(CamelCaseSchema):
     # Data pulled from the API
     id = fields.Integer(dump_only=True)
@@ -115,7 +114,7 @@ def update_bill(bill_id):
     bill.nickname = data["nickname"]
 
     # TODO: Sanitize this fully!
-    bill.twitter_search_terms = data['twitter_search_terms']
+    bill.twitter_search_terms = data["twitter_search_terms"]
 
     db.session.commit()
 

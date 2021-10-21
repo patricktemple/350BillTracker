@@ -32,11 +32,13 @@ export default function BillDetails(props: Props): ReactElement {
     {
       notes: bill.notes,
       nickname: bill.nickname,
-      twitterSearchTerms: bill.twitterSearchTerms,
-    },
+      twitterSearchTerms: bill.twitterSearchTerms
+    }
   );
 
-  const [twitterSearchTermsRaw, setTwitterSearchTermsRaw] = useState<string>(bill.twitterSearchTerms.join(", "));
+  const [twitterSearchTermsRaw, setTwitterSearchTermsRaw] = useState<string>(
+    bill.twitterSearchTerms.join(', ')
+  );
 
   const [sponsorships, setSponsorships] = useState<
     SingleBillSponsorship[] | null
@@ -85,7 +87,10 @@ export default function BillDetails(props: Props): ReactElement {
     // Or just duplicate the logic on client side
 
     setTwitterSearchTermsRaw(event.target.value);
-    const twitterSearchTermsList = event.target.value.split(',').map((term: string) => term.trim()).filter(Boolean);
+    const twitterSearchTermsList = event.target.value
+      .split(',')
+      .map((term: string) => term.trim())
+      .filter(Boolean);
     setFormData({ ...formData, twitterSearchTerms: twitterSearchTermsList });
   }
 
@@ -182,11 +187,22 @@ export default function BillDetails(props: Props): ReactElement {
           ) : (
             <Stack direction="vertical">
               {sponsorships.map((s) => (
-                <div    key={s.legislator.id}><Link
-                  to={'/council-members/' + s.legislator.id}
-               
-                >
-                  {s.legislator.name}</Link> <span style={{marginLeft: '1rem'}}>[<a href={s.twitterSearchUrl} target="_blank" rel="noreferrer">Search relevant tweets</a>]</span></div>
+                <div key={s.legislator.id}>
+                  <Link to={'/council-members/' + s.legislator.id}>
+                    {s.legislator.name}
+                  </Link>{' '}
+                  <span style={{ marginLeft: '1rem' }}>
+                    [
+                    <a
+                      href={s.twitterSearchUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Search relevant tweets
+                    </a>
+                    ]
+                  </span>
+                </div>
               ))}
             </Stack>
           )}
@@ -252,7 +268,7 @@ export default function BillDetails(props: Props): ReactElement {
           <Form.Control
             type="text"
             size="sm"
-            placeholder='e.g. solar, climate, fossil fuels'
+            placeholder="e.g. solar, climate, fossil fuels"
             value={twitterSearchTermsRaw}
             onChange={handleTwitterSearchTermsChanged}
           />

@@ -1,8 +1,9 @@
 import React from 'react';
-import { Tweet} from 'react-twitter-widgets';
+import { Tweet } from 'react-twitter-widgets';
 
 export default function TwitterList() {
-    const tweetIds = ['1419696643545444362',
+  const tweetIds = [
+    '1419696643545444362',
     '1444056465686384641',
     '1437787382498086922',
     '1433420993398194176',
@@ -28,12 +29,13 @@ export default function TwitterList() {
     '1447535348943294467',
     '1446110013739524096',
     '1446110009994080259',
-    '1446110006990934033'];
-    return (
-        <>
-        {tweetIds.map(tweetId => 
-    <Tweet key={tweetId} tweetId={tweetId} />
-        )}
+    '1446110006990934033'
+  ];
+  return (
+    <>
+      {tweetIds.map((tweetId) => (
+        <Tweet key={tweetId} tweetId={tweetId} />
+      ))}
     </>
-    )
+  );
 }

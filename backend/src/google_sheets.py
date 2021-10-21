@@ -16,28 +16,27 @@ SCOPES = [
 ]
 
 COLUMN_TITLES = [
-                "Name",
-                "Email",
-                "Party",
-                "District Phone",
-                "Legislative Phone",
-                "Twitter",
-                "Twitter search\nNote: Twitter has a bug and will sometimes wrongly show no results. If this happens, refresh the Twitter page to try again.",
-                "Staffers",
-                "Notes",
-            ]
+    "Name",
+    "Email",
+    "Party",
+    "District Phone",
+    "Legislative Phone",
+    "Twitter",
+    "Twitter search\nNote: Twitter has a bug and will sometimes wrongly show no results. If this happens, refresh the Twitter page to try again.",
+    "Staffers",
+    "Notes",
+]
 
 # comment this
 COLUMN_WIDTHS = [
-  150,
-  200,
-  100,
-  100,
-  150,
-  200,
-  250,
-  250,
-  
+    150,
+    200,
+    100,
+    100,
+    150,
+    200,
+    250,
+    250,
 ]
 
 
@@ -75,7 +74,10 @@ def _create_cell_data(cell):
     return {
         "textFormatRuns": text_format_runs,
         "userEnteredValue": {"stringValue": str(cell.value)},
-        "userEnteredFormat": {"wrapStrategy":"WRAP", "textFormat": {"bold": cell.bold}},
+        "userEnteredFormat": {
+            "wrapStrategy": "WRAP",
+            "textFormat": {"bold": cell.bold},
+        },
     }
 
 
@@ -98,7 +100,10 @@ def _create_legislator_row(legislator, bill):
         Cell(
             legislator.display_twitter or "", link_url=legislator.twitter_url
         ),
-        Cell("Search relevant tweets" if twitter_search_url else "", link_url=twitter_search_url),
+        Cell(
+            "Search relevant tweets" if twitter_search_url else "",
+            link_url=twitter_search_url,
+        ),
         Cell(staffer_text),
         Cell(legislator.notes or ""),
     ]
@@ -128,12 +133,12 @@ def _create_phone_bank_spreadsheet_data(bill, sponsors, non_sponsors):
     for legislator in non_sponsors:
         rows.append(_create_legislator_row(legislator, bill))
 
-
-    column_metadata = [{'pixelSize': size} for size in COLUMN_WIDTHS]
+    column_metadata = [{"pixelSize": size} for size in COLUMN_WIDTHS]
     return {
         "properties": {"title": f"Phone bank for {bill.file}"},
-        "sheets": [{"data": {"rowData": rows,
-        "columnMetadata": column_metadata}}],
+        "sheets": [
+            {"data": {"rowData": rows, "columnMetadata": column_metadata}}
+        ],
     }
 
 
