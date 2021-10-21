@@ -277,7 +277,6 @@ def delete_staffer(staffer_id):
 class BillSponsorshipSchema(CamelCaseSchema):
     bill_id = fields.Integer(required=True)
     legislator = fields.Nested(LegislatorSchema)
-    twitter_search_url = fields.String()
     is_sponsor = fields.Boolean()
 
 
@@ -302,7 +301,6 @@ def bill_sponsorships(bill_id):
     non_sponsorships = [
         {
             "bill_id": bill_id,
-            "twitter_search_url": get_bill_twitter_search_url(bill, legislator),
             "is_sponsor": False,
             "legislator": legislator,
         }

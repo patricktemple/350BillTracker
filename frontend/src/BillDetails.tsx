@@ -3,16 +3,14 @@ import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
 import Form from 'react-bootstrap/Form';
 import { Bill, BillSponsorship, BillAttachment } from './types';
-import useInterval from '@restart/hooks/useInterval';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import AddAttachmentModal from './AddAttachmentModal';
-import { Link } from 'react-router-dom';
 import useAutosavingFormData from './utils/useAutosavingFormData';
 import ConfirmDeleteBillModel from './ConfirmDeleteBillModal';
 import useApiFetch from './useApiFetch';
-import { ReactComponent as TwitterIcon } from './assets/twitter.svg';
+import BillSponsorList from './BillSponsorList';
 
 interface Props {
   bill: Bill;
@@ -83,10 +81,6 @@ export default function BillDetails(props: Props): ReactElement {
   }
 
   function handleTwitterSearchTermsChanged(event: any) {
-    // Hmm this won't regenerate the twitter search links for all the sponsorships
-    // Does that need to involve an async fetch of the latest terms?
-    // Or just duplicate the logic on client side
-
     setTwitterSearchTermsRaw(event.target.value);
     const twitterSearchTermsList = event.target.value
       .split(',')
@@ -95,7 +89,7 @@ export default function BillDetails(props: Props): ReactElement {
     setFormData({ ...formData, twitterSearchTerms: twitterSearchTermsList });
   }
 
-  function handleAddAttachmentClicked(event: any) {
+  function handleAddAttachmentClicked() {
     setAddAttachmentModalOpen(true);
   }
 
@@ -138,7 +132,6 @@ export default function BillDetails(props: Props): ReactElement {
     });
   }
 
-  // This is confusing
   const positiveSponsors = sponsorships?.filter((s: BillSponsorship) => s.isSponsor);
   const negativeSponsors = sponsorships?.filter((s: BillSponsorship) => !s.isSponsor);
   return (
@@ -182,31 +175,15 @@ export default function BillDetails(props: Props): ReactElement {
         </Col>
       </Form.Group>
       <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Sponsors {positiveSponsors != null && <>({positiveSponsors.length})</>}:
+        <Col lg={2}>
+          <div style={{ fontWeight: 'bold' }}>Sponsors {positiveSponsors != null && <>({positiveSponsors.length})</>}:</div>
+          <div style={{fontSize: '0.8rem', fontStyle: 'italic'}}>Note: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.</div>
         </Col>
         <Col>
           {positiveSponsors == null ? (
             'Loading...'
           ) : (
-            <Stack direction="vertical">
-              {positiveSponsors.map((s) => (
-                <div key={s.legislator.id}>
-                  <Link to={'/council-members/' + s.legislator.id}>
-                    {s.legislator.name}
-                  </Link>{' '}
-                  {s.twitterSearchUrl && (<span style={{ marginLeft: '0.5rem' }}>
-                    <a
-                      href={s.twitterSearchUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <TwitterIcon style={{width: '1rem'}}/>
-                    </a>
-                  </span>)}
-                </div>
-              ))}
-            </Stack>
+            <BillSponsorList sponsorships={positiveSponsors} twitterSearchTerms={formData.twitterSearchTerms} />
           )}
         </Col>
         <Col lg={2} style={{ fontWeight: 'bold' }}>
@@ -216,24 +193,7 @@ export default function BillDetails(props: Props): ReactElement {
           {negativeSponsors == null ? (
             'Loading...'
           ) : (
-            <Stack direction="vertical">
-              {negativeSponsors.map((s) => (
-                <div key={s.legislator.id}>
-                  <Link to={'/council-members/' + s.legislator.id}>
-                    {s.legislator.name}
-                  </Link>{' '}
-                  {s.twitterSearchUrl && (<span style={{ marginLeft: '0.5rem' }}>
-                    <a
-                      href={s.twitterSearchUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <TwitterIcon style={{width: '1rem'}}/>
-                    </a>
-                  </span>)}
-                </div>
-              ))}
-            </Stack>
+            <BillSponsorList sponsorships={negativeSponsors} twitterSearchTerms={formData.twitterSearchTerms} />
           )}
         </Col>
       </Row>

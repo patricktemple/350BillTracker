@@ -167,12 +167,11 @@ class BillSponsorship(db.Model):
     # in that case, and only fill this in for sponsorships that were added later on.
     added_at = Column(TIMESTAMP)
 
-    @property
-    def twitter_search_url(self):
-        # TODO: better way to deal with circular import?
-        from .twitter import get_bill_twitter_search_url
+    # @property
+    # def twitter_search_url(self):
+    #     from .twitter import get_bill_twitter_search_url
 
-        return get_bill_twitter_search_url(self.bill, self.legislator)
+    #     return get_bill_twitter_search_url(self.bill, self.legislator)
     
     @property
     def is_sponsor(self):
@@ -236,12 +235,3 @@ class LoginLink(db.Model):
 
     # TODO: Consider only allowing these links to be used once. Better security
     # in case of leaked browser URL, but worse UX.
-
-
-# options for showing non-sponsor tweets
-# return full legislator list when fetching sponsors (including yes and non)
-#   nice thing about this is it's a simple API from the client, kind of elegant
-#   then... is the twitter URL rendered client-side or server?
-# or, the client can separately fetch the legislator list
-# or, the client can fetch the list of sponsorships
-# let's choose option 1
