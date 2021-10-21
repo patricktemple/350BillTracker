@@ -22,7 +22,7 @@ COLUMN_TITLES = [
     "District Phone",
     "Legislative Phone",
     "Twitter",
-    "Twitter search\nNote: Note: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.",
+    "Twitter search\nNote: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.",
     "Staffers",
     "Notes",
 ]
@@ -102,7 +102,7 @@ def _create_legislator_row(legislator, bill):
             legislator.display_twitter or "", link_url=legislator.twitter_url
         ),
         Cell(
-            "Search relevant tweets" if twitter_search_url else "",
+            "Relevant tweets" if twitter_search_url else "",
             link_url=twitter_search_url,
         ),
         Cell(staffer_text),

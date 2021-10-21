@@ -20,7 +20,6 @@ import { useLocation } from 'react-router-dom';
 import LoginFromTokenPage from './LoginFromTokenPage';
 import Button from 'react-bootstrap/Button';
 import SettingsPage from './SettingsPage';
-import TwitterList from './TwitterList';
 
 function AppContent() {
   const authContext = useContext(AuthContext);
@@ -74,7 +73,6 @@ function AppContent() {
           Logout
         </a>
         <main className={styles.content}>
-          <Route path="/twitter" component={TwitterList} />
           <Route path="/" exact>
             <Redirect to="/saved-bills" />
           </Route>
