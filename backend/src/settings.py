@@ -33,5 +33,3 @@ if hostname := os.environ.get("RDS_HOSTNAME"):
 else:
     # For local development
     DATABASE_URL = os.environ["DATABASE_URL"]
-
-TWITTER_BEARER_TOKEN = os.environ["TWITTER_BEARER_TOKEN"]
