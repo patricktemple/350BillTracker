@@ -2,7 +2,7 @@ import React, { ReactElement, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
 import Form from 'react-bootstrap/Form';
-import { Bill, SingleBillSponsorship, BillAttachment } from './types';
+import { Bill, BillSponsorship, BillAttachment } from './types';
 import useInterval from '@restart/hooks/useInterval';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Row from 'react-bootstrap/Row';
@@ -41,7 +41,7 @@ export default function BillDetails(props: Props): ReactElement {
   );
 
   const [sponsorships, setSponsorships] = useState<
-    SingleBillSponsorship[] | null
+    BillSponsorship[] | null
   >(null);
   const [attachments, setAttachments] = useState<BillAttachment[] | null>(null);
 
@@ -137,6 +137,9 @@ export default function BillDetails(props: Props): ReactElement {
     });
   }
 
+  // This is confusing
+  const positiveSponsors = sponsorships?.filter((s: BillSponsorship) => s.isSponsor);
+  const negativeSponsors = sponsorships?.filter((s: BillSponsorship) => !s.isSponsor);
   return (
     <Form onSubmit={(e) => e.preventDefault()}>
       <Row className="mb-2">
@@ -179,14 +182,43 @@ export default function BillDetails(props: Props): ReactElement {
       </Form.Group>
       <Row className="mb-2">
         <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Sponsors {sponsorships != null && <>({sponsorships.length})</>}:
+          Sponsors {positiveSponsors != null && <>({positiveSponsors.length})</>}:
         </Col>
         <Col>
-          {sponsorships == null ? (
+          {positiveSponsors == null ? (
             'Loading...'
           ) : (
             <Stack direction="vertical">
-              {sponsorships.map((s) => (
+              {positiveSponsors.map((s) => (
+                <div key={s.legislator.id}>
+                  <Link to={'/council-members/' + s.legislator.id}>
+                    {s.legislator.name}
+                  </Link>{' '}
+                  <span style={{ marginLeft: '1rem' }}>
+                    [
+                    <a
+                      href={s.twitterSearchUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Search relevant tweets
+                    </a>
+                    ]
+                  </span>
+                </div>
+              ))}
+            </Stack>
+          )}
+        </Col>
+        <Col lg={2} style={{ fontWeight: 'bold' }}>
+          Non-sponsors {negativeSponsors != null && <>({negativeSponsors.length})</>}:
+        </Col>
+        <Col>
+          {negativeSponsors == null ? (
+            'Loading...'
+          ) : (
+            <Stack direction="vertical">
+              {negativeSponsors.map((s) => (
                 <div key={s.legislator.id}>
                   <Link to={'/council-members/' + s.legislator.id}>
                     {s.legislator.name}

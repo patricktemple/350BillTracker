@@ -29,6 +29,7 @@ from .models import (
 from .ses import send_login_link_email
 from .settings import APP_ORIGIN
 from .utils import now
+from .twitter import get_bill_twitter_search_url
 
 
 def camelcase(s):
@@ -273,21 +274,43 @@ def delete_staffer(staffer_id):
 
 
 # Bill sponsorships ----------------------------------------------------------------------
-class SingleBillSponsorshipsSchema(CamelCaseSchema):
+class BillSponsorshipSchema(CamelCaseSchema):
     bill_id = fields.Integer(required=True)
     legislator = fields.Nested(LegislatorSchema)
     twitter_search_url = fields.String()
+    is_sponsor = fields.Boolean()
 
 
 @app.route("/api/saved-bills/<int:bill_id>/sponsorships", methods=["GET"])
 @auth_required
 def bill_sponsorships(bill_id):
+    bill = Bill.query.get(bill_id)
+    if not bill:
+        raise exceptions.NotFound()
     sponsorships = (
         BillSponsorship.query.filter_by(bill_id=bill_id)
         .options(joinedload(BillSponsorship.legislator))
         .all()
     )
-    return SingleBillSponsorshipsSchema(many=True).jsonify(sponsorships)
+    non_sponsors = (
+        Legislator.query.filter(
+            Legislator.id.not_in([s.legislator_id for s in sponsorships])
+        )
+        .order_by(Legislator.name)
+        .all()
+    )
+    non_sponsorships = [
+        {
+            "bill_id": bill_id,
+            "twitter_search_url": get_bill_twitter_search_url(bill, legislator),
+            "is_sponsor": False,
+            "legislator": legislator,
+        }
+        for legislator in non_sponsors
+    ]
+    return BillSponsorshipSchema(many=True).jsonify(
+        sponsorships + non_sponsorships
+    )
 
 
 # Bill attachments ----------------------------------------------------------------------

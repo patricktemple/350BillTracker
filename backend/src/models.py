@@ -33,7 +33,7 @@ class TIMESTAMP(TypeDecorator):
 DEFAULT_TWITTER_SEARCH_TERMS = [
     "solar",
     "climate",
-    "wind",
+    "wind power",
     "renewable",
     "fossil fuel",
 ]
@@ -173,6 +173,11 @@ class BillSponsorship(db.Model):
         from .twitter import get_bill_twitter_search_url
 
         return get_bill_twitter_search_url(self.bill, self.legislator)
+    
+    @property
+    def is_sponsor(self):
+        # this is awkward
+        return True
 
 
 # TODO: UUIDs for some PKs?
@@ -231,3 +236,12 @@ class LoginLink(db.Model):
 
     # TODO: Consider only allowing these links to be used once. Better security
     # in case of leaked browser URL, but worse UX.
+
+
+# options for showing non-sponsor tweets
+# return full legislator list when fetching sponsors (including yes and non)
+#   nice thing about this is it's a simple API from the client, kind of elegant
+#   then... is the twitter URL rendered client-side or server?
+# or, the client can separately fetch the legislator list
+# or, the client can fetch the list of sponsorships
+# let's choose option 1

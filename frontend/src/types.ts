@@ -43,10 +43,11 @@ export interface SingleMemberSponsorship {
   legislatorId: number;
 }
 
-export interface SingleBillSponsorship {
+export interface BillSponsorship {
   billId: number;
   legislator: Legislator;
   twitterSearchUrl: string;
+  isSponsor: boolean;
 }
 
 export interface BillAttachment {
