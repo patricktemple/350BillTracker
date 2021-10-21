@@ -207,11 +207,3 @@ def test_lookup_bill_already_tracked(client):
     response_data = json.loads(response.data)[0]
     assert response_data["id"] == 1
     assert response_data["tracked"] == True
-
-
-# TODO: Add a test for adding a bill when bill already exists
-# make sure it updates existing sponsorships too
-
-
-# TODO test coverage:
-# Getting sponsorships

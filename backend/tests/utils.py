@@ -28,5 +28,9 @@ class ApiClient(FlaskClient):
 def assert_response(response, status_code, data):
     assert response.status_code == status_code
 
-    json_data = json.loads(response.data)
+    json_data = get_response_data(response)
     assert json_data == data, f"Expected: {data}\n\nActual: {json_data}"
+
+
+def get_response_data(response):
+    return json.loads(response.data)
