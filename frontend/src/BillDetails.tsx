@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import useAutosavingFormData from './utils/useAutosavingFormData';
 import ConfirmDeleteBillModel from './ConfirmDeleteBillModal';
 import useApiFetch from './useApiFetch';
+import { ReactComponent as TwitterIcon } from './assets/twitter.svg';
 
 interface Props {
   bill: Bill;
@@ -194,17 +195,15 @@ export default function BillDetails(props: Props): ReactElement {
                   <Link to={'/council-members/' + s.legislator.id}>
                     {s.legislator.name}
                   </Link>{' '}
-                  <span style={{ marginLeft: '1rem' }}>
-                    [
+                  {s.twitterSearchUrl && (<span style={{ marginLeft: '0.5rem' }}>
                     <a
                       href={s.twitterSearchUrl}
                       target="_blank"
                       rel="noreferrer"
                     >
-                      Search relevant tweets
+                      <TwitterIcon style={{width: '1rem'}}/>
                     </a>
-                    ]
-                  </span>
+                  </span>)}
                 </div>
               ))}
             </Stack>
@@ -223,17 +222,15 @@ export default function BillDetails(props: Props): ReactElement {
                   <Link to={'/council-members/' + s.legislator.id}>
                     {s.legislator.name}
                   </Link>{' '}
-                  <span style={{ marginLeft: '1rem' }}>
-                    [
+                  {s.twitterSearchUrl && (<span style={{ marginLeft: '0.5rem' }}>
                     <a
                       href={s.twitterSearchUrl}
                       target="_blank"
                       rel="noreferrer"
                     >
-                      Search relevant tweets
+                      <TwitterIcon style={{width: '1rem'}}/>
                     </a>
-                    ]
-                  </span>
+                  </span>)}
                 </div>
               ))}
             </Stack>
@@ -294,13 +291,13 @@ export default function BillDetails(props: Props): ReactElement {
       </Row>
       <Form.Group as={Row} className="mb-2">
         <Form.Label column lg={2} style={{ fontWeight: 'bold' }}>
-          Twitter search terms (comma-separated):
+          Twitter search terms:
         </Form.Label>
         <Col>
           <Form.Control
             type="text"
             size="sm"
-            placeholder="e.g. solar, climate, fossil fuels"
+            placeholder="Enter comma-separated terms, e.g. solar, climate, fossil fuels"
             value={twitterSearchTermsRaw}
             onChange={handleTwitterSearchTermsChanged}
           />
