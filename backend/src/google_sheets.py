@@ -31,7 +31,6 @@ COLUMN_TITLES = [
 COLUMN_WIDTHS = [
   150,
   200,
-  50,
   100,
   100,
   150,
@@ -53,7 +52,6 @@ class Cell:
         self.bold = bold
 
 
-# TODO: Share this with TogglSync via a utils package?
 def _get_google_credentials():
     return Credentials.from_service_account_info(
         json.loads(settings.GOOGLE_CREDENTIALS)

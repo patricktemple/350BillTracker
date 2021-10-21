@@ -21,12 +21,9 @@ interface Props {
 interface FormData {
   notes: string;
   nickname: string;
-  customTwitterSearchTerms: string;
+  twitterSearchTerms: string[];
 }
 
-// TODO: Make a LazyAccordion that only renders its context the first time that
-// it's visible, using useContext(AccordionContext). See this:
-// https://react-bootstrap.github.io/components/accordion/
 export default function BillDetails(props: Props): ReactElement {
   const { bill } = props;
 
@@ -35,9 +32,11 @@ export default function BillDetails(props: Props): ReactElement {
     {
       notes: bill.notes,
       nickname: bill.nickname,
-      customTwitterSearchTerms: bill.customTwitterSearchTerms,
-    }
+      twitterSearchTerms: bill.twitterSearchTerms,
+    },
   );
+
+  const [twitterSearchTermsRaw, setTwitterSearchTermsRaw] = useState<string>(bill.twitterSearchTerms.join(", "));
 
   const [sponsorships, setSponsorships] = useState<
     SingleBillSponsorship[] | null
@@ -84,7 +83,10 @@ export default function BillDetails(props: Props): ReactElement {
     // Hmm this won't regenerate the twitter search links for all the sponsorships
     // Does that need to involve an async fetch of the latest terms?
     // Or just duplicate the logic on client side
-    setFormData({ ...formData, customTwitterSearchTerms: event.target.value });
+
+    setTwitterSearchTermsRaw(event.target.value);
+    const twitterSearchTermsList = event.target.value.split(',').map((term: string) => term.trim()).filter(Boolean);
+    setFormData({ ...formData, twitterSearchTerms: twitterSearchTermsList });
   }
 
   function handleAddAttachmentClicked(event: any) {
@@ -250,8 +252,8 @@ export default function BillDetails(props: Props): ReactElement {
           <Form.Control
             type="text"
             size="sm"
-            placeholder='default: solar, climate, wind, renewable, fossil fuel'
-            value={formData.customTwitterSearchTerms}
+            placeholder='e.g. solar, climate, fossil fuels'
+            value={twitterSearchTermsRaw}
             onChange={handleTwitterSearchTermsChanged}
           />
         </Col>

@@ -59,6 +59,7 @@ def index(path):
 # Bills ----------------------------------------------------------------------
 
 
+
 class BillSchema(CamelCaseSchema):
     # Data pulled from the API
     id = fields.Integer(dump_only=True)
@@ -72,7 +73,7 @@ class BillSchema(CamelCaseSchema):
     tracked = fields.Boolean(dump_only=True)
     notes = fields.String(required=True)
     nickname = fields.String(required=True)
-    custom_twitter_search_terms = fields.String() # or expose as a list? this is wrong... doesn't match the type on the model
+    twitter_search_terms = fields.List(fields.String())
 
 
 @app.route("/api/saved-bills", methods=["GET"])
@@ -114,8 +115,7 @@ def update_bill(bill_id):
     bill.nickname = data["nickname"]
 
     # TODO: Sanitize this fully!
-    # Rather than show default in placeholder, why not just make it explicit?
-    bill.custom_twitter_search_terms = [t.strip() for t in data['custom_twitter_search_terms'].split(',') if t.strip()]
+    bill.twitter_search_terms = data['twitter_search_terms']
 
     db.session.commit()
 

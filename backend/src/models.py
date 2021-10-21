@@ -29,6 +29,8 @@ class UUID(TypeDecorator):
 class TIMESTAMP(TypeDecorator):
     impl = _TIMESTAMP(timezone=True)
 
+DEFAULT_TWITTER_SEARCH_TERMS = ["solar", "climate", "wind", "renewable", "fossil fuel"]
+
 
 class Bill(db.Model):
     __tablename__ = "bills"
@@ -51,7 +53,7 @@ class Bill(db.Model):
     notes = Column(Text, nullable=False, server_default="")
     nickname = Column(Text, nullable=False, server_default="")
 
-    custom_twitter_search_terms = Column(ARRAY(Text)) # list of strings? what is the type for this?
+    twitter_search_terms = Column(ARRAY(Text), nullable=False, default=DEFAULT_TWITTER_SEARCH_TERMS)
 
     sponsorships = relationship(
         "BillSponsorship", back_populates="bill", cascade="all, delete"
@@ -63,13 +65,6 @@ class Bill(db.Model):
     @property
     def display_name(self):
         return self.nickname if self.nickname else self.name
-
-    @property
-    def twitter_search_terms(self):
-        if self.custom_twitter_search_terms:
-            return self.custom_twitter_search_terms
-        
-        return ["solar", "climate", "wind", "renewable", "fossil fuel"]
 
 
 class Legislator(db.Model):

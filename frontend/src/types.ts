@@ -15,7 +15,7 @@ export interface Bill {
   // Editable fields
   notes: string;
   nickname: string;
-  customTwitterSearchTerms: string; // comma-separated
+  twitterSearchTerms: string[];
 }
 
 // TODO: Change types to reflect nullability

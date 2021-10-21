@@ -16,7 +16,7 @@ const SAVE_INTERVAL_MS = 2000;
 // useState. "saveStatus" is a string describing the current status of the save.
 export default function useAutosavingFormData<T>(
   path: string,
-  initialData: T
+  initialData: T,
 ): [T, (newData: T) => void, string] {
   const [localSaveVersion, setLocalSaveVersion] = useState<number>(0);
   const [remoteSaveVersion, setRemoteSaveVersion] = useState<number>(0);
