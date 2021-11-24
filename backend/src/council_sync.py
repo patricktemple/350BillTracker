@@ -39,12 +39,6 @@ def add_council_members():
     db.session.commit()
 
 
-def _convert_borough(city_name):
-    if city_name == "New York":
-        return "Manhattan"
-    return city_name
-
-
 def fill_council_person_data_from_api():
     """For all council members in the DB, updates their contact info and other details
     based on the Person API and our own static data.
@@ -57,8 +51,8 @@ def fill_council_person_data_from_api():
             legislator.email = data["PersonEmail"]
             legislator.district_phone = data["PersonPhone"]
             legislator.legislative_phone = data["PersonPhone2"]
-            legislator.borough = _convert_borough(data["PersonCity1"])
             legislator.website = data["PersonWWW"]
+            # Borough exists here but we prefer the cleaned static data
         except HTTPError:
             logging.exception(f"Could not get Person {legislator.id} from API")
             continue
@@ -79,9 +73,10 @@ def fill_council_person_static_data():
             legislator.twitter = legislator_data["twitter"]
             legislator.party = legislator_data["party"]
 
-            # Name exists in both sets but we can override it here so we can set
-            # a more user-friendly name than some of the formal name in the data.
+            # Name and borough both exist in the API but the static data has a
+            # cleaned-up version.
             legislator.name = legislator_data["name"]
+            legislator.borough = legislator_data["borough"]
 
     legislator_ids_from_db = set([l.id for l in legislators])
     if diff := set(STATIC_DATA_BY_LEGISLATOR_ID.keys()).difference(

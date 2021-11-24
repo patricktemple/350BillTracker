@@ -29,13 +29,23 @@ COLUMN_TITLES = [
     "Notes",
 ]
 
+BOROUGH_SORT_TABLE = {
+    "Brooklyn": 0,
+    "Manhattan": 1,
+    "Manhattan and Bronx": 2,
+    "Queens": 3,
+    "Bronx": 4,
+    "Staten Island": 5
+}
+BOROUGH_DEFAULT_SORT = 6
+
 # Width in pixels for each column. We can't dynamically set it to match the,
 # contents via the API, so instead we just hardcode them as best we can.
 COLUMN_WIDTHS = [
     150,
     150,
     200,
-    100,
+    50,
     100,
     100,
     150,
@@ -144,14 +154,17 @@ def _create_phone_bank_spreadsheet_data(bill, sponsors, non_sponsors):
     return {
         "properties": {"title": f"Phone bank for {bill.file}"},
         "sheets": [
-            {"properties": {"gridProperties": {"frozenRowCount": 1}}, "data": {"rowData": rows, "columnMetadata": column_metadata}}
+            {
+                "properties": {"gridProperties": {"frozenRowCount": 1}},
+                "data": {"rowData": rows, "columnMetadata": column_metadata},
+            }
         ],
     }
 
 
 def get_sort_key(legislator):
-    # TODO: Canonicalize the borough
-    return (legislator.borough, legislator.name)
+    sort_key = BOROUGH_SORT_TABLE.get(legislator.borough, BOROUGH_DEFAULT_SORT)
+    return (sort_key, legislator.name)
 
 
 def create_phone_bank_spreadsheet(bill_id):
