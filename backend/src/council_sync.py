@@ -145,7 +145,9 @@ def update_bill_sponsorships(bill_id, set_added_at=False):
             continue
 
         internal_sponsorship = BillSponsorship(
-            bill_id=bill_id, legislator_id=legislator_id, sponsor_sequence=sponsorship['MatterSponsorSequence']
+            bill_id=bill_id,
+            legislator_id=legislator_id,
+            sponsor_sequence=sponsorship["MatterSponsorSequence"],
         )
 
         if legislator_id in existing_sponsorships_by_id:

@@ -35,7 +35,7 @@ BOROUGH_SORT_TABLE = {
     "Manhattan and Bronx": 2,
     "Queens": 3,
     "Bronx": 4,
-    "Staten Island": 5
+    "Staten Island": 5,
 }
 BOROUGH_DEFAULT_SORT = 6
 
@@ -148,7 +148,11 @@ def _create_phone_bank_spreadsheet_data(bill, sponsorships, non_sponsors):
     rows.append(_create_title_row_data(["SPONSORS"]))
 
     for sponsorship in sponsorships:
-        rows.append(_create_legislator_row(sponsorship.legislator, bill, sponsorship.sponsor_sequence == 0))
+        rows.append(
+            _create_legislator_row(
+                sponsorship.legislator, bill, sponsorship.sponsor_sequence == 0
+            )
+        )
 
     column_metadata = [{"pixelSize": size} for size in COLUMN_WIDTHS]
     return {
