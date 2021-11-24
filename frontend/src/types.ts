@@ -47,6 +47,7 @@ export interface BillSponsorship {
   billId: number;
   legislator: Legislator;
   isSponsor: boolean;
+  sponsorSequence: number;
 }
 
 export interface BillAttachment {

@@ -100,7 +100,7 @@ def _create_row_data(cells):
     return {"values": [_create_cell_data(cell) for cell in cells]}
 
 
-def _create_legislator_row(legislator, bill):
+def _create_legislator_row(legislator, bill, is_lead_sponsor=False):
     staffer_strings = [s.display_string for s in legislator.staffers]
     staffer_text = "\n\n".join(staffer_strings)
 
@@ -108,7 +108,7 @@ def _create_legislator_row(legislator, bill):
 
     cells = [
         Cell(""),
-        Cell(legislator.name),
+        Cell(f"{legislator.name}{' (lead)' if is_lead_sponsor else ''}"),
         Cell(legislator.email),
         Cell(legislator.party),
         Cell(legislator.borough),
@@ -132,7 +132,7 @@ def _create_title_row_data(raw_values):
     return _create_row_data(cells)
 
 
-def _create_phone_bank_spreadsheet_data(bill, sponsors, non_sponsors):
+def _create_phone_bank_spreadsheet_data(bill, sponsorships, non_sponsors):
     """Generates the full body payload that the Sheets API requires for a
     phone bank spreadsheet."""
     rows = [
@@ -147,9 +147,8 @@ def _create_phone_bank_spreadsheet_data(bill, sponsors, non_sponsors):
     rows.append(_create_title_row_data([]))
     rows.append(_create_title_row_data(["SPONSORS"]))
 
-
-    for sponsor in sponsors:
-        rows.append(_create_legislator_row(sponsor, bill))
+    for sponsorship in sponsorships:
+        rows.append(_create_legislator_row(sponsorship.legislator, bill, sponsorship.sponsor_sequence == 0))
 
     column_metadata = [{"pixelSize": size} for size in COLUMN_WIDTHS]
     return {
@@ -186,7 +185,6 @@ def create_phone_bank_spreadsheet(bill_id):
     sponsorships = sorted(
         sponsorships, key=lambda s: get_sort_key(s.legislator)
     )
-    sponsors = [s.legislator for s in sponsorships]
 
     sponsor_ids = [s.legislator_id for s in sponsorships]
     non_sponsors = models.Legislator.query.filter(
@@ -195,7 +193,7 @@ def create_phone_bank_spreadsheet(bill_id):
     non_sponsors = sorted(non_sponsors, key=get_sort_key)
 
     spreadsheet_data = _create_phone_bank_spreadsheet_data(
-        bill, sponsors, non_sponsors
+        bill, sponsorships, non_sponsors
     )
 
     google_credentials = _get_google_credentials()

@@ -29,7 +29,7 @@ export default function BillSponsorList(props: Props) {
         <div key={s.legislator.id}>
           <Link to={'/council-members/' + s.legislator.id}>
             {s.legislator.name}
-          </Link>{' '}
+          </Link>{s.sponsorSequence == 0 && " (lead)"}{' '}
           {s.legislator.twitter && (
             <span style={{ marginLeft: '0.5rem' }}>
               <a
