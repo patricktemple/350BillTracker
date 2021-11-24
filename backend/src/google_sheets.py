@@ -139,16 +139,17 @@ def _create_phone_bank_spreadsheet_data(bill, sponsors, non_sponsors):
         _create_title_row_data(
             COLUMN_TITLES,
         ),
-        _create_title_row_data(["SPONSORS"]),
+        _create_title_row_data(["NON-SPONSORS"]),
     ]
-    for sponsor in sponsors:
-        rows.append(_create_legislator_row(sponsor, bill))
-
-    rows.append(_create_title_row_data([]))
-    rows.append(_create_title_row_data(["NON-SPONSORS"]))
-
     for legislator in non_sponsors:
         rows.append(_create_legislator_row(legislator, bill))
+
+    rows.append(_create_title_row_data([]))
+    rows.append(_create_title_row_data(["SPONSORS"]))
+
+
+    for sponsor in sponsors:
+        rows.append(_create_legislator_row(sponsor, bill))
 
     column_metadata = [{"pixelSize": size} for size in COLUMN_WIDTHS]
     return {
