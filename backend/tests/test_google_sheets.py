@@ -49,24 +49,19 @@ def test_generate_google_sheet(mock_build, mock_credentials):
         "properties": {"title": "Phone bank for Intro 3"},
         "sheets": [
             {
+                "properties": {"gridProperties": {"frozenRowCount": 1}},
                 "data": {
                     "rowData": [
                         {
                             "values": [
                                 {
                                     "textFormatRuns": None,
-                                    "userEnteredValue": {
-                                        "stringValue": "SPONSORS"
-                                    },
+                                    "userEnteredValue": {"stringValue": ""},
                                     "userEnteredFormat": {
                                         "wrapStrategy": "WRAP",
                                         "textFormat": {"bold": True},
                                     },
-                                }
-                            ]
-                        },
-                        {
-                            "values": [
+                                },
                                 {
                                     "textFormatRuns": None,
                                     "userEnteredValue": {
@@ -174,7 +169,29 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                 {
                                     "textFormatRuns": None,
                                     "userEnteredValue": {
-                                        "stringValue": "Sponsor"
+                                        "stringValue": "NON-SPONSORS"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                }
+                            ]
+                        },
+                        {
+                            "values": [
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {"stringValue": ""},
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Non sponsor"
                                     },
                                     "userEnteredFormat": {
                                         "wrapStrategy": "WRAP",
@@ -271,7 +288,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                                 {
                                     "textFormatRuns": None,
                                     "userEnteredValue": {
-                                        "stringValue": "NON-SPONSORS"
+                                        "stringValue": "SPONSORS"
                                     },
                                     "userEnteredFormat": {
                                         "wrapStrategy": "WRAP",
@@ -284,8 +301,16 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                             "values": [
                                 {
                                     "textFormatRuns": None,
+                                    "userEnteredValue": {"stringValue": ""},
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
                                     "userEnteredValue": {
-                                        "stringValue": "Non sponsor"
+                                        "stringValue": "Sponsor"
                                     },
                                     "userEnteredFormat": {
                                         "wrapStrategy": "WRAP",
@@ -379,8 +404,9 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                     ],
                     "columnMetadata": [
                         {"pixelSize": 150},
+                        {"pixelSize": 150},
                         {"pixelSize": 200},
-                        {"pixelSize": 100},
+                        {"pixelSize": 50},
                         {"pixelSize": 100},
                         {"pixelSize": 100},
                         {"pixelSize": 150},
@@ -388,7 +414,7 @@ def test_generate_google_sheet(mock_build, mock_credentials):
                         {"pixelSize": 250},
                         {"pixelSize": 250},
                     ],
-                }
+                },
             }
         ],
     }
