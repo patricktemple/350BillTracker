@@ -16,6 +16,7 @@ SCOPES = [
 ]
 
 COLUMN_TITLES = [
+    "",
     "Name",
     "Email",
     "Party",
@@ -28,12 +29,23 @@ COLUMN_TITLES = [
     "Notes",
 ]
 
+BOROUGH_SORT_TABLE = {
+    "Brooklyn": 0,
+    "Manhattan": 1,
+    "Manhattan and Bronx": 2,
+    "Queens": 3,
+    "Bronx": 4,
+    "Staten Island": 5,
+}
+BOROUGH_DEFAULT_SORT = 6
+
 # Width in pixels for each column. We can't dynamically set it to match the,
 # contents via the API, so instead we just hardcode them as best we can.
 COLUMN_WIDTHS = [
     150,
+    150,
     200,
-    100,
+    50,
     100,
     100,
     150,
@@ -88,14 +100,15 @@ def _create_row_data(cells):
     return {"values": [_create_cell_data(cell) for cell in cells]}
 
 
-def _create_legislator_row(legislator, bill):
+def _create_legislator_row(legislator, bill, is_lead_sponsor=False):
     staffer_strings = [s.display_string for s in legislator.staffers]
     staffer_text = "\n\n".join(staffer_strings)
 
     twitter_search_url = twitter.get_bill_twitter_search_url(bill, legislator)
 
     cells = [
-        Cell(legislator.name),
+        Cell(""),
+        Cell(f"{legislator.name}{' (lead)' if is_lead_sponsor else ''}"),
         Cell(legislator.email),
         Cell(legislator.party),
         Cell(legislator.borough),
@@ -119,36 +132,43 @@ def _create_title_row_data(raw_values):
     return _create_row_data(cells)
 
 
-def _create_phone_bank_spreadsheet_data(bill, sponsors, non_sponsors):
+def _create_phone_bank_spreadsheet_data(bill, sponsorships, non_sponsors):
     """Generates the full body payload that the Sheets API requires for a
     phone bank spreadsheet."""
     rows = [
-        _create_title_row_data(["SPONSORS"]),
         _create_title_row_data(
             COLUMN_TITLES,
         ),
+        _create_title_row_data(["NON-SPONSORS"]),
     ]
-    for sponsor in sponsors:
-        rows.append(_create_legislator_row(sponsor, bill))
-
-    rows.append(_create_title_row_data([]))
-    rows.append(_create_title_row_data(["NON-SPONSORS"]))
-
     for legislator in non_sponsors:
         rows.append(_create_legislator_row(legislator, bill))
+
+    rows.append(_create_title_row_data([]))
+    rows.append(_create_title_row_data(["SPONSORS"]))
+
+    for sponsorship in sponsorships:
+        rows.append(
+            _create_legislator_row(
+                sponsorship.legislator, bill, sponsorship.sponsor_sequence == 0
+            )
+        )
 
     column_metadata = [{"pixelSize": size} for size in COLUMN_WIDTHS]
     return {
         "properties": {"title": f"Phone bank for {bill.file}"},
         "sheets": [
-            {"data": {"rowData": rows, "columnMetadata": column_metadata}}
+            {
+                "properties": {"gridProperties": {"frozenRowCount": 1}},
+                "data": {"rowData": rows, "columnMetadata": column_metadata},
+            }
         ],
     }
 
 
 def get_sort_key(legislator):
-    # TODO: Canonicalize the borough
-    return (legislator.borough, legislator.name)
+    sort_key = BOROUGH_SORT_TABLE.get(legislator.borough, BOROUGH_DEFAULT_SORT)
+    return (sort_key, legislator.name)
 
 
 def create_phone_bank_spreadsheet(bill_id):
@@ -169,7 +189,6 @@ def create_phone_bank_spreadsheet(bill_id):
     sponsorships = sorted(
         sponsorships, key=lambda s: get_sort_key(s.legislator)
     )
-    sponsors = [s.legislator for s in sponsorships]
 
     sponsor_ids = [s.legislator_id for s in sponsorships]
     non_sponsors = models.Legislator.query.filter(
@@ -178,7 +197,7 @@ def create_phone_bank_spreadsheet(bill_id):
     non_sponsors = sorted(non_sponsors, key=get_sort_key)
 
     spreadsheet_data = _create_phone_bank_spreadsheet_data(
-        bill, sponsors, non_sponsors
+        bill, sponsorships, non_sponsors
     )
 
     google_credentials = _get_google_credentials()

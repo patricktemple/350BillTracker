@@ -92,7 +92,6 @@ def test_fill_council_person_data():
     assert corey.email == "corey@council.nyc.gov"
     assert corey.district_phone == "555-111-1111"
     assert corey.legislative_phone == "888-888-8888"
-    assert corey.borough == "Manhattan"
     assert corey.website == "https://www.example.com/"
 
 
@@ -116,6 +115,7 @@ def test_fill_council_person_static_data():
     assert corey.name == corey_static["name"]
     assert corey.twitter == corey_static["twitter"]
     assert corey.party == corey_static["party"]
+    assert corey.borough == corey_static["borough"]
     assert corey.email == "existing-email@council.nyc.gov"
 
 
@@ -177,10 +177,11 @@ def test_update_sponsorships__new_sponsor():
         responses.GET,
         url="https://webapi.legistar.com/v1/nyc/matters/1/sponsors?token=fake_token",
         json=[
-            {"MatterSponsorNameId": 1},
+            {"MatterSponsorNameId": 1, "MatterSponsorSequence": 0},
             {
                 # This one isn't found in the DB
-                "MatterSponsorNameId": 2
+                "MatterSponsorNameId": 2,
+                "MatterSponsorSequence": 1,
             },
         ],
     )
@@ -218,7 +219,7 @@ def test_update_sponsorships__sponsorship_already_exists():
     responses.add(
         responses.GET,
         url="https://webapi.legistar.com/v1/nyc/matters/1/sponsors?token=fake_token",
-        json=[{"MatterSponsorNameId": 1}],
+        json=[{"MatterSponsorNameId": 1, "MatterSponsorSequence": 0}],
     )
 
     update_all_sponsorships()

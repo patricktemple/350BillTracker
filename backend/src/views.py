@@ -273,10 +273,13 @@ def delete_staffer(staffer_id):
 
 
 # Bill sponsorships ----------------------------------------------------------------------
+
+# TODO: Separate out positive and negative sponsors into different types, this gets ugly
 class BillSponsorshipSchema(CamelCaseSchema):
     bill_id = fields.Integer(required=True)
     legislator = fields.Nested(LegislatorSchema)
     is_sponsor = fields.Boolean()
+    sponsor_sequence = fields.Integer()
 
 
 @app.route("/api/saved-bills/<int:bill_id>/sponsorships", methods=["GET"])
@@ -288,6 +291,7 @@ def bill_sponsorships(bill_id):
     sponsorships = (
         BillSponsorship.query.filter_by(bill_id=bill_id)
         .options(joinedload(BillSponsorship.legislator))
+        .order_by(BillSponsorship.sponsor_sequence)
         .all()
     )
     for sponsorship in sponsorships:

@@ -159,6 +159,8 @@ class BillSponsorship(db.Model):
     legislator = relationship(
         "Legislator", back_populates="sponsorships", order_by="Legislator.name"
     )
+    # TODO: Make this nullable=false once cron has run in prod and backfilled
+    sponsor_sequence = Column(Integer, nullable=True)
 
     # The timestamp when we first saw this sponsorship in the bill's list.
     # This is a proxy for when the sponsor actually signed on to the bill.
