@@ -16,6 +16,7 @@ SCOPES = [
 ]
 
 COLUMN_TITLES = [
+    "",
     "Name",
     "Email",
     "Party",
@@ -31,6 +32,7 @@ COLUMN_TITLES = [
 # Width in pixels for each column. We can't dynamically set it to match the,
 # contents via the API, so instead we just hardcode them as best we can.
 COLUMN_WIDTHS = [
+    150,
     150,
     200,
     100,
@@ -95,6 +97,7 @@ def _create_legislator_row(legislator, bill):
     twitter_search_url = twitter.get_bill_twitter_search_url(bill, legislator)
 
     cells = [
+        Cell(""),
         Cell(legislator.name),
         Cell(legislator.email),
         Cell(legislator.party),
@@ -123,10 +126,10 @@ def _create_phone_bank_spreadsheet_data(bill, sponsors, non_sponsors):
     """Generates the full body payload that the Sheets API requires for a
     phone bank spreadsheet."""
     rows = [
-        _create_title_row_data(["SPONSORS"]),
         _create_title_row_data(
             COLUMN_TITLES,
         ),
+        _create_title_row_data(["SPONSORS"]),
     ]
     for sponsor in sponsors:
         rows.append(_create_legislator_row(sponsor, bill))
@@ -141,7 +144,7 @@ def _create_phone_bank_spreadsheet_data(bill, sponsors, non_sponsors):
     return {
         "properties": {"title": f"Phone bank for {bill.file}"},
         "sheets": [
-            {"data": {"rowData": rows, "columnMetadata": column_metadata}}
+            {"properties": {"gridProperties": {"frozenRowCount": 1}}, "data": {"rowData": rows, "columnMetadata": column_metadata}}
         ],
     }
 
