@@ -220,3 +220,33 @@ def create_phone_bank_spreadsheet(bill_id):
     ).execute()
 
     return spreadsheet_result
+
+
+def extract_data_from_previous_power_hour(spreadsheet_id):
+    google_credentials = _get_google_credentials()
+    sheets_service = _get_sheets_service(google_credentials)
+
+    # TODO: Use a field mask instead of includeGridData=true to return less data
+    spreadsheet = (
+        sheets_service.spreadsheets().get(spreadsheetId=spreadsheet_id, includeGridData=True).execute()
+    )
+    row_data = spreadsheet['sheets'][0]['data'][0]['rowData']
+    def get_data(column):
+        if 'effectiveValue' in column:
+            return column['effectiveValue']['stringValue'] # TODO research best way for all this
+        return ""
+    def get_columns(row):
+        if 'values' in row:
+            return [get_data(column) for column in row['values']]
+        return []
+    raw_cell_data = [get_columns(row) for row in row_data]
+
+    title_row = raw_cell_data[0]
+    data_rows = raw_cell_data[1:]
+
+    # Now, for each title row, look for:
+    # Name
+    # Any other rows that are auto-generated
+    # Any other rows we don't know about
+    # Build a map of the values in the last one
+    # Then make a representation of this that can be inserted into future spreadsheets
