@@ -364,10 +364,11 @@ def delete_bill_attachment(attachment_id):
 
 
 class PowerHourSchema(CamelCaseSchema):
-    power_hour_id_to_import = fields.Integer()
-    bill_id = fields.Integer()
-    name = fields.String()
-    spreadsheet_url = fields.String()
+    power_hour_id_to_import = fields.Integer(load_only=True, missing=None)
+
+    bill_id = fields.Integer(dump_only=True)
+    name = fields.String(dump_only=True)
+    spreadsheet_url = fields.String(dump_only=True)
 
 
 # TODO: Rename phone bank to power hour for consistency
@@ -383,11 +384,14 @@ def create_spreadsheet(bill_id):
     # 1. fetch list of possible power hours (this can be done at page load time when loading power hours)
     # 2. show a modal asking which one to use
     # 3. use that one her
+    logging.info(request.json)
     data = PowerHourSchema().load(request.json)
     power_hour_id_to_import = data.get('power_hour_id_to_import')
     if power_hour_id_to_import:
         power_hour = PowerHour.query.get(power_hour_id_to_import)
         old_spreadsheet_id = power_hour.spreadsheet_id
+    else:
+        old_spreadsheet_id = None
     spreadsheet = create_phone_bank_spreadsheet(bill_id, old_spreadsheet_id)
 
     # TODO: What to do if the old power hour sheet's format is old, and the app now uses a new format?
@@ -397,6 +401,7 @@ def create_spreadsheet(bill_id):
     power_hour = PowerHour(
         bill_id=bill_id,
         spreadsheet_url=spreadsheet["spreadsheetUrl"],
+        # spreadsheet_id = , # TODO
         name=f"Power Hour Tracker (created {date.today().isoformat()})",
     )
     db.session.add(power_hour)

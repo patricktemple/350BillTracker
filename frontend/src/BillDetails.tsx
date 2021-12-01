@@ -125,7 +125,7 @@ export default function BillDetails(props: Props): ReactElement {
   function handleGeneratePhoneBankSheet() {
     setCreatePhoneBankInProgress(true);
     apiFetch(`/api/saved-bills/${bill.id}/create-phone-bank-spreadsheet`, {
-      method: 'POST'
+      method: 'POST', body: {}
     }).then((response) => {
       setCreatePhoneBankInProgress(false);
       loadAttachments();
