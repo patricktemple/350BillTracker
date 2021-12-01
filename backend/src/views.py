@@ -363,6 +363,13 @@ def delete_bill_attachment(attachment_id):
     return jsonify({})
 
 
+class PowerHourSchema(CamelCaseSchema):
+    power_hour_id_to_import = fields.Integer()
+    bill_id = fields.Integer()
+    name = fields.String()
+    spreadsheet_url = fields.String()
+
+
 # TODO: Rename phone bank to power hour for consistency
 # TODO: Migrate existing power hours
 # TODO: Now needs a separate UI to list out power hours
@@ -375,27 +382,26 @@ def create_spreadsheet(bill_id):
     # this will now be a two-phase step, from client perspective:
     # 1. fetch list of possible power hours (this can be done at page load time when loading power hours)
     # 2. show a modal asking which one to use
-    # 3. use that one here
-    # power_hour_id_to_import = None # TODO get this from schema
-    # old_spreadsheet_id = None
-    # if power_hour_id_to_import:
-    #     power_hour = PowerHour.query.get(power_hour_id_to_import)
-    #     old_spreadsheet_id = power_hour.spreadsheet_id
-    old_spreadsheet_id = '1ezKoEA1Q65zyJ3KANJ64acLOoAaph8QukSJndO1rWa4' # for testing
+    # 3. use that one her
+    data = PowerHourSchema().load(request.json)
+    power_hour_id_to_import = data.get('power_hour_id_to_import')
+    if power_hour_id_to_import:
+        power_hour = PowerHour.query.get(power_hour_id_to_import)
+        old_spreadsheet_id = power_hour.spreadsheet_id
     spreadsheet = create_phone_bank_spreadsheet(bill_id, old_spreadsheet_id)
 
     # TODO: What to do if the old power hour sheet's format is old, and the app now uses a new format?
     # I should just be careful to solidify it first... could version things but that's too much work
 
     # How to handle failures to import?
-    attachment = BillAttachment(
+    power_hour = PowerHour(
         bill_id=bill_id,
-        url=spreadsheet["spreadsheetUrl"],
+        spreadsheet_url=spreadsheet["spreadsheetUrl"],
         name=f"Power Hour Tracker (created {date.today().isoformat()})",
     )
-    db.session.add(attachment)
+    db.session.add(power_hour)
     db.session.commit()
-    return BillAttachmentSchema().jsonify(attachment)
+    return PowerHourSchema().jsonify(power_hour)
 
 
 # Login ----------------------------------------------------------------------

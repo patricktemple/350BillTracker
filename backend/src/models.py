@@ -197,7 +197,7 @@ class PowerHour(db.Model):
     # bill = relationship("Bill", back_populates="power_hours")
 
     name = Column(Text)
-    url = Column(Text, nullable=False)
+    spreadsheet_url = Column(Text, nullable=False)
     spreadsheet_id = Column(Text, nullable=False)
 
     created_at = Column(TIMESTAMP, nullable=False)

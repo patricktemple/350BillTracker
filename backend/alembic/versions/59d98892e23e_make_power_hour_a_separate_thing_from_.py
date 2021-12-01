@@ -1,8 +1,8 @@
 """Make power hour a separate thing from attachments
 
-Revision ID: 45da2149923b
+Revision ID: 59d98892e23e
 Revises: 730353dab849
-Create Date: 2021-11-30 21:29:08.692378
+Create Date: 2021-12-01 17:53:39.637733
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import src
 
 
 # revision identifiers, used by Alembic.
-revision = '45da2149923b'
+revision = '59d98892e23e'
 down_revision = '730353dab849'
 branch_labels = None
 depends_on = None
@@ -23,7 +23,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('bill_id', sa.Integer(), nullable=False),
     sa.Column('name', sa.Text(), nullable=True),
-    sa.Column('url', sa.Text(), nullable=False),
+    sa.Column('spreadsheet_url', sa.Text(), nullable=False),
     sa.Column('spreadsheet_id', sa.Text(), nullable=False),
     sa.Column('created_at', src.models.TIMESTAMP(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['bill_id'], ['bills.id'], ),
