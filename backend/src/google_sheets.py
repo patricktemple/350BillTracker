@@ -244,6 +244,37 @@ def extract_data_from_previous_power_hour(spreadsheet_id):
     title_row = raw_cell_data[0]
     data_rows = raw_cell_data[1:]
 
+    # Data structure I want:
+    # { legislator_name: {
+    #       extra_column_title_1: extra_column_value,
+    #       extra_column_title_2: extra_column_value
+    # }
+    # }
+
+    # then, when generating, for each legislator I can add the value for each extra column name
+
+    column_title_set = set(COLUMN_TITLES)
+    extra_column_titles = [] # tuple: (id, text)
+    name_column_index = None
+    for i, title in enumerate(title_row):
+        if title not in column_title_set:
+            extra_column_titles.append((i, title))
+        elif title == "Name":
+            name_column_index = i
+
+    data = {}
+    for row in data_rows:
+        if name_column_index < len(row) and (name := row[name_column_index]) is not None:
+            # Ignore empty rows, they might just be for space
+            legislator = {}
+            for index, extra_column_title in extra_column_titles:
+                if index < len(row):
+                    legislator[extra_column_title] = row[index]
+            data[name] = legislator
+    
+    return ([title[1] for title in extra_column_titles], data)
+
+
     # Now, for each title row, look for:
     # Name
     # Any other rows that are auto-generated
