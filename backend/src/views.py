@@ -19,6 +19,7 @@ from .google_sheets import create_phone_bank_spreadsheet
 from .models import (
     Bill,
     BillAttachment,
+    PowerHour,
     BillSponsorship,
     Legislator,
     LoginLink,
@@ -362,13 +363,30 @@ def delete_bill_attachment(attachment_id):
     return jsonify({})
 
 
+# TODO: Rename phone bank to power hour for consistency
+# TODO: Migrate existing power hours
+# TODO: Now needs a separate UI to list out power hours
 @app.route(
     "/api/saved-bills/<int:bill_id>/create-phone-bank-spreadsheet",
     methods=["POST"],
 )
 @auth_required
 def create_spreadsheet(bill_id):
-    spreadsheet = create_phone_bank_spreadsheet(bill_id)
+    # this will now be a two-phase step, from client perspective:
+    # 1. fetch list of possible power hours (this can be done at page load time when loading power hours)
+    # 2. show a modal asking which one to use
+    # 3. use that one here
+    power_hour_id_to_import = None # TODO get this from schema
+    spreadsheet_id = None
+    if power_hour_id_to_import:
+        power_hour = PowerHour.query.get(power_hour_id_to_import)
+        spreadsheet_id = power_hour.spreadsheet_id
+    spreadsheet = create_phone_bank_spreadsheet(bill_id, old_spreadsheet_id)
+
+    # TODO: What to do if the old power hour sheet's format is old, and the app now uses a new format?
+    # I should just be careful to solidify it first... could version things but that's too much work
+
+    # How to handle failures to import?
     attachment = BillAttachment(
         bill_id=bill_id,
         url=spreadsheet["spreadsheetUrl"],
