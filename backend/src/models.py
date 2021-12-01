@@ -194,7 +194,7 @@ class PowerHour(db.Model):
     bill_id = Column(
         Integer, ForeignKey("bills.id"), nullable=False, index=True
     )
-    bill = relationship("Bill", back_populates="power_hours")
+    # bill = relationship("Bill", back_populates="power_hours")
 
     name = Column(Text)
     url = Column(Text, nullable=False)

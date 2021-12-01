@@ -7,6 +7,7 @@ from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from sqlalchemy.orm import selectinload
 from werkzeug import exceptions
+import logging
 
 from src import app, models, settings, twitter
 
@@ -126,12 +127,13 @@ def _create_legislator_row(legislator, bill, extra_column_titles, extra_column_d
         Cell(legislator.notes or ""),
     ]
     legislator_data = extra_column_data.get(legislator.name)
-    if not legislator_data:
-        # TODO: Return warnings or something?
-        pass
-    for extra_column in extra_column_titles:
-            text = legislator_data.get(extra_column, "")
-            cells.append(Cell(text))
+    if legislator_data:
+        for extra_column in extra_column_titles:
+                text = legislator_data.get(extra_column, "")
+                cells.append(Cell(text))
+    else:
+        logging.warning(f"No legislator data for {legislator.name} in old sheet")
+        # TODO: return warnings to client somehow?
     return _create_row_data(cells)
 
 
@@ -272,8 +274,12 @@ def extract_data_from_previous_power_hour(spreadsheet_id):
     for i, title in enumerate(title_row):
         if title not in column_title_set:
             extra_column_titles.append((i, title))
-        elif title == "Name":
+        elif title == "Name": # note this fails to match the lead sponsor who has "lead" after their name
             name_column_index = i
+    
+    if name_column_index is None:
+        logging.warning(f"Could not find name column in spreadsheet {spreadsheet_id}. Title columns were {','.join(title_row)}")
+        return ([], {})
 
     data = {}
     for row in data_rows:
@@ -285,7 +291,9 @@ def extract_data_from_previous_power_hour(spreadsheet_id):
                     legislator[extra_column_title] = row[index]
             data[name] = legislator
     
-    return ([title[1] for title in extra_column_titles], data)
+    result = ([title[1] for title in extra_column_titles], data)
+    print(result, flush=True)
+    return result
 
 
     # Now, for each title row, look for:

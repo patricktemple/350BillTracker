@@ -376,11 +376,12 @@ def create_spreadsheet(bill_id):
     # 1. fetch list of possible power hours (this can be done at page load time when loading power hours)
     # 2. show a modal asking which one to use
     # 3. use that one here
-    power_hour_id_to_import = None # TODO get this from schema
-    old_spreadsheet_id = None
-    if power_hour_id_to_import:
-        power_hour = PowerHour.query.get(power_hour_id_to_import)
-        old_spreadsheet_id = power_hour.spreadsheet_id
+    # power_hour_id_to_import = None # TODO get this from schema
+    # old_spreadsheet_id = None
+    # if power_hour_id_to_import:
+    #     power_hour = PowerHour.query.get(power_hour_id_to_import)
+    #     old_spreadsheet_id = power_hour.spreadsheet_id
+    old_spreadsheet_id = '1ezKoEA1Q65zyJ3KANJ64acLOoAaph8QukSJndO1rWa4' # for testing
     spreadsheet = create_phone_bank_spreadsheet(bill_id, old_spreadsheet_id)
 
     # TODO: What to do if the old power hour sheet's format is old, and the app now uses a new format?
