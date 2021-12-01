@@ -100,7 +100,8 @@ def _create_row_data(cells):
     return {"values": [_create_cell_data(cell) for cell in cells]}
 
 
-def _create_legislator_row(legislator, bill, is_lead_sponsor=False):
+# maybe consolidate the extra column stuff into a single object
+def _create_legislator_row(legislator, bill, extra_column_titles, extra_column_data, is_lead_sponsor=False):
     staffer_strings = [s.display_string for s in legislator.staffers]
     staffer_text = "\n\n".join(staffer_strings)
 
@@ -124,6 +125,13 @@ def _create_legislator_row(legislator, bill, is_lead_sponsor=False):
         Cell(staffer_text),
         Cell(legislator.notes or ""),
     ]
+    legislator_data = extra_column_data.get(legislator.name)
+    if not legislator_data:
+        # TODO: Return warnings or something?
+        pass
+    for extra_column in extra_column_titles:
+            text = legislator_data.get(extra_column, "")
+            cells.append(Cell(text))
     return _create_row_data(cells)
 
 
@@ -132,17 +140,17 @@ def _create_title_row_data(raw_values):
     return _create_row_data(cells)
 
 
-def _create_phone_bank_spreadsheet_data(bill, sponsorships, non_sponsors):
+def _create_phone_bank_spreadsheet_data(bill, sponsorships, non_sponsors, extra_column_titles, extra_column_data):
     """Generates the full body payload that the Sheets API requires for a
     phone bank spreadsheet."""
     rows = [
         _create_title_row_data(
-            COLUMN_TITLES,
+            COLUMN_TITLES + extra_column_titles,
         ),
         _create_title_row_data(["NON-SPONSORS"]),
     ]
     for legislator in non_sponsors:
-        rows.append(_create_legislator_row(legislator, bill))
+        rows.append(_create_legislator_row(legislator, bill, extra_column_titles, extra_column_data))
 
     rows.append(_create_title_row_data([]))
     rows.append(_create_title_row_data(["SPONSORS"]))
@@ -150,7 +158,7 @@ def _create_phone_bank_spreadsheet_data(bill, sponsorships, non_sponsors):
     for sponsorship in sponsorships:
         rows.append(
             _create_legislator_row(
-                sponsorship.legislator, bill, sponsorship.sponsor_sequence == 0
+                sponsorship.legislator, bill, extra_column_titles, extra_column_data, sponsorship.sponsor_sequence == 0
             )
         )
 
@@ -171,7 +179,7 @@ def get_sort_key(legislator):
     return (sort_key, legislator.name)
 
 
-def create_phone_bank_spreadsheet(bill_id):
+def create_phone_bank_spreadsheet(bill_id, old_spreadsheet_to_import):
     """Creates a spreadsheet that's a template to run a phone bank
     for a specific bill, based on its current sponsors. The sheet will be
     owned by a robot Google account and will be made publicly editable by
@@ -196,8 +204,13 @@ def create_phone_bank_spreadsheet(bill_id):
     ).all()
     non_sponsors = sorted(non_sponsors, key=get_sort_key)
 
+    extra_column_titles = []
+    extra_column_data = {}
+    if old_spreadsheet_to_import:
+        extra_column_titles, extra_column_data = extract_data_from_previous_power_hour(old_spreadsheet_to_import)
+
     spreadsheet_data = _create_phone_bank_spreadsheet_data(
-        bill, sponsorships, non_sponsors
+        bill, sponsorships, non_sponsors, extra_column_titles, extra_column_data
     )
 
     google_credentials = _get_google_credentials()
