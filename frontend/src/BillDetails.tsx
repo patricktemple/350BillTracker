@@ -294,8 +294,7 @@ export default function BillDetails(props: Props): ReactElement {
                 <Popover.Body>
                   <p>
                     You can generate a Google Sheet for a Power Hour on this
-                    bill and keep track of these sheets as reference for future
-                    Power Hours.
+                    bill with the latest sponsorships and contact info.
                   </p>
                   <p className="mb-0">
                     These sheets are designed for Power Hours involving calls to
