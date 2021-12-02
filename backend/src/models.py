@@ -200,7 +200,7 @@ class PowerHour(db.Model):
     spreadsheet_url = Column(Text, nullable=False)
     spreadsheet_id = Column(Text, nullable=False)
 
-    created_at = Column(TIMESTAMP, nullable=False)
+    created_at = Column(TIMESTAMP, nullable=False, default=now)
 
 
 class User(db.Model):

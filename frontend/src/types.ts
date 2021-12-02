@@ -58,6 +58,14 @@ export interface BillAttachment {
   status: string;
 }
 
+export interface PowerHour {
+  id: number;
+  billId: number;
+  spreadsheetUrl: string;
+  name: string;
+  createdAt: string; // ISO DateTime
+}
+
 export interface User {
   id: Uuid;
   name: string;

@@ -181,7 +181,7 @@ def get_sort_key(legislator):
     return (sort_key, legislator.name)
 
 
-def create_phone_bank_spreadsheet(bill_id, old_spreadsheet_to_import):
+def create_power_hour(bill_id, old_spreadsheet_to_import):
     """Creates a spreadsheet that's a template to run a phone bank
     for a specific bill, based on its current sponsors. The sheet will be
     owned by a robot Google account and will be made publicly editable by

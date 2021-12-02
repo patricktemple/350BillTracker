@@ -2,13 +2,14 @@ import React, { ReactElement, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
 import Form from 'react-bootstrap/Form';
-import { Bill, BillSponsorship, BillAttachment } from './types';
+import { Bill, BillSponsorship, BillAttachment, PowerHour } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import AddAttachmentModal from './AddAttachmentModal';
 import useAutosavingFormData from './utils/useAutosavingFormData';
 import ConfirmDeleteBillModel from './ConfirmDeleteBillModal';
+import CreatePowerHourModal from './CreatePowerHourModal';
 import useApiFetch from './useApiFetch';
 import BillSponsorList from './BillSponsorList';
 
@@ -44,10 +45,15 @@ export default function BillDetails(props: Props): ReactElement {
   );
   const [attachments, setAttachments] = useState<BillAttachment[] | null>(null);
 
+  const [powerHours, setPowerHours] = useState<PowerHour[] | null>(null);
+
   const [showDeleteBillConfirmation, setShowDeleteBillConfirmation] =
     useState<boolean>(false);
 
   const [addAttachmentModalOpen, setAddAttachmentModalOpen] =
+    useState<boolean>(false);
+
+  const [createPowerHourModalOpen, setCreatePowerHourModalOpen] =
     useState<boolean>(false);
 
   const [createPhoneBankInProgress, setCreatePhoneBankInProgress] =
@@ -61,6 +67,12 @@ export default function BillDetails(props: Props): ReactElement {
     });
   }
 
+  function loadPowerHours() {
+    apiFetch(`/api/saved-bills/${bill.id}/power-hours`).then((response) => {
+      setPowerHours(response);
+    });
+  }
+
   useMountEffect(() => {
     apiFetch(`/api/saved-bills/${bill.id}/sponsorships`).then((response) => {
       setSponsorships(response);
@@ -69,6 +81,7 @@ export default function BillDetails(props: Props): ReactElement {
 
   useMountEffect(() => {
     loadAttachments();
+    loadPowerHours();
   });
 
   function handleNotesChanged(event: any) {
@@ -122,13 +135,17 @@ export default function BillDetails(props: Props): ReactElement {
     props.handleRemoveBill();
   }
 
-  function handleGeneratePhoneBankSheet() {
+  function handleCreatePowerHour(description: string, oldPowerHourId: string | null) {
+    setAddAttachmentModalOpen(false);
+
+    // This is now a little weird below: changing the button text.
+    // Maybe better to create the power hour from within the modal?
     setCreatePhoneBankInProgress(true);
     apiFetch(`/api/saved-bills/${bill.id}/create-phone-bank-spreadsheet`, {
       method: 'POST', body: {}
     }).then((response) => {
       setCreatePhoneBankInProgress(false);
-      loadAttachments();
+      loadPowerHours();
     });
   }
 
@@ -234,17 +251,6 @@ export default function BillDetails(props: Props): ReactElement {
               handleAddAttachment={handleAddAttachment}
               onHide={() => setAddAttachmentModalOpen(false)}
             />
-            <Button
-              size="sm"
-              disabled={createPhoneBankInProgress}
-              variant="outline-secondary"
-              onClick={handleGeneratePhoneBankSheet}
-              className="mb-2 d-block"
-            >
-              {createPhoneBankInProgress
-                ? 'Generating sheet...'
-                : 'Create phone bank'}
-            </Button>
           </div>
         </Col>
         <Col>
@@ -260,6 +266,48 @@ export default function BillDetails(props: Props): ReactElement {
                   &nbsp;
                   <a href="#" onClick={(e) => handleDeleteAttachment(e, a.id)}>
                     [Remove]
+                  </a>
+                </div>
+              ))}
+            </Stack>
+          )}
+        </Col>
+      </Row>
+      <Row className="mb-2">
+        <Col lg={2}>
+          <div>
+            <div style={{ fontWeight: 'bold' }}>
+              Power hours:
+            </div>
+            {powerHours != null && (
+            <><Button
+              size="sm"
+              disabled={createPhoneBankInProgress}
+              variant="outline-secondary"
+              onClick={() => setCreatePowerHourModalOpen(true)}
+              className="mb-2 d-block"
+            >
+              {createPhoneBankInProgress
+                ? 'Generating sheet...'
+                : 'Create power hour'}
+            </Button>
+            <CreatePowerHourModal
+              oldPowerHours={powerHours}
+              show={createPowerHourModalOpen}
+              handleCreatePowerHour={handleCreatePowerHour}
+              onHide={() => setCreatePowerHourModalOpen(false)}
+            /></>)}
+          </div>
+        </Col>
+        <Col>
+          {powerHours == null ? (
+            'Loading...'
+          ) : (
+            <Stack direction="vertical">
+              {powerHours.map((p) => (
+                <div key={p.id}>
+                  <a href={p.spreadsheetUrl} target="_blank" rel="noreferrer">
+                    {p.name}
                   </a>
                 </div>
               ))}

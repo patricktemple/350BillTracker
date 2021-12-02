@@ -15,7 +15,7 @@ from .app import marshmallow as ma
 from .auth import auth_required, create_jwt
 from .council_api import lookup_bill, lookup_bills
 from .council_sync import update_bill_sponsorships
-from .google_sheets import create_phone_bank_spreadsheet
+from .google_sheets import create_power_hour
 from .models import (
     Bill,
     BillAttachment,
@@ -369,6 +369,14 @@ class PowerHourSchema(CamelCaseSchema):
     bill_id = fields.Integer(dump_only=True)
     name = fields.String(dump_only=True)
     spreadsheet_url = fields.String(dump_only=True)
+    created_at = fields.DateTime()
+
+
+@app.route("/api/saved-bills/<int:bill_id>/power-hours", methods=["GET"])
+@auth_required
+def bill_power_hours(bill_id):
+    power_hours = PowerHour.query.filter_by(bill_id=bill_id).all()
+    return PowerHourSchema(many=True).jsonify(power_hours)
 
 
 # TODO: Rename phone bank to power hour for consistency
@@ -392,7 +400,7 @@ def create_spreadsheet(bill_id):
         old_spreadsheet_id = power_hour.spreadsheet_id
     else:
         old_spreadsheet_id = None
-    spreadsheet = create_phone_bank_spreadsheet(bill_id, old_spreadsheet_id)
+    spreadsheet = create_power_hour(bill_id, old_spreadsheet_id)
 
     # TODO: What to do if the old power hour sheet's format is old, and the app now uses a new format?
     # I should just be careful to solidify it first... could version things but that's too much work
@@ -401,8 +409,8 @@ def create_spreadsheet(bill_id):
     power_hour = PowerHour(
         bill_id=bill_id,
         spreadsheet_url=spreadsheet["spreadsheetUrl"],
-        # spreadsheet_id = , # TODO
-        name=f"Power Hour Tracker (created {date.today().isoformat()})",
+        spreadsheet_id=spreadsheet["spreadsheetId"],
+        name=f"Power Hour Tracker (created {date.today().isoformat()})", # TODO: Make this eastern time, or client render
     )
     db.session.add(power_hour)
     db.session.commit()
