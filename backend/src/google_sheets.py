@@ -1,13 +1,13 @@
 from __future__ import print_function
 
 import json
+import logging
 
 from google.auth.transport.requests import Request
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from sqlalchemy.orm import selectinload
 from werkzeug import exceptions
-import logging
 
 from src import app, models, settings, twitter
 
@@ -102,7 +102,13 @@ def _create_row_data(cells):
 
 
 # maybe consolidate the extra column stuff into a single object
-def _create_legislator_row(legislator, bill, extra_column_titles, extra_column_data, is_lead_sponsor=False):
+def _create_legislator_row(
+    legislator,
+    bill,
+    extra_column_titles,
+    extra_column_data,
+    is_lead_sponsor=False,
+):
     staffer_strings = [s.display_string for s in legislator.staffers]
     staffer_text = "\n\n".join(staffer_strings)
 
@@ -129,10 +135,12 @@ def _create_legislator_row(legislator, bill, extra_column_titles, extra_column_d
     legislator_data = extra_column_data.get(legislator.name)
     if legislator_data:
         for extra_column in extra_column_titles:
-                text = legislator_data.get(extra_column, "")
-                cells.append(Cell(text))
+            text = legislator_data.get(extra_column, "")
+            cells.append(Cell(text))
     else:
-        logging.warning(f"No legislator data for {legislator.name} in old sheet")
+        logging.warning(
+            f"No legislator data for {legislator.name} in old sheet"
+        )
         # TODO: return warnings to client somehow?
     return _create_row_data(cells)
 
@@ -142,7 +150,9 @@ def _create_title_row_data(raw_values):
     return _create_row_data(cells)
 
 
-def _create_phone_bank_spreadsheet_data(bill, sponsorships, non_sponsors, extra_column_titles, extra_column_data):
+def _create_phone_bank_spreadsheet_data(
+    bill, sponsorships, non_sponsors, extra_column_titles, extra_column_data
+):
     """Generates the full body payload that the Sheets API requires for a
     phone bank spreadsheet."""
     rows = [
@@ -152,7 +162,11 @@ def _create_phone_bank_spreadsheet_data(bill, sponsorships, non_sponsors, extra_
         _create_title_row_data(["NON-SPONSORS"]),
     ]
     for legislator in non_sponsors:
-        rows.append(_create_legislator_row(legislator, bill, extra_column_titles, extra_column_data))
+        rows.append(
+            _create_legislator_row(
+                legislator, bill, extra_column_titles, extra_column_data
+            )
+        )
 
     rows.append(_create_title_row_data([]))
     rows.append(_create_title_row_data(["SPONSORS"]))
@@ -160,7 +174,11 @@ def _create_phone_bank_spreadsheet_data(bill, sponsorships, non_sponsors, extra_
     for sponsorship in sponsorships:
         rows.append(
             _create_legislator_row(
-                sponsorship.legislator, bill, extra_column_titles, extra_column_data, sponsorship.sponsor_sequence == 0
+                sponsorship.legislator,
+                bill,
+                extra_column_titles,
+                extra_column_data,
+                sponsorship.sponsor_sequence == 0,
             )
         )
 
@@ -209,10 +227,17 @@ def create_power_hour(bill_id, old_spreadsheet_to_import):
     extra_column_titles = []
     extra_column_data = {}
     if old_spreadsheet_to_import:
-        extra_column_titles, extra_column_data = extract_data_from_previous_power_hour(old_spreadsheet_to_import)
+        (
+            extra_column_titles,
+            extra_column_data,
+        ) = extract_data_from_previous_power_hour(old_spreadsheet_to_import)
 
     spreadsheet_data = _create_phone_bank_spreadsheet_data(
-        bill, sponsorships, non_sponsors, extra_column_titles, extra_column_data
+        bill,
+        sponsorships,
+        non_sponsors,
+        extra_column_titles,
+        extra_column_data,
     )
 
     google_credentials = _get_google_credentials()
@@ -243,17 +268,24 @@ def extract_data_from_previous_power_hour(spreadsheet_id):
 
     # TODO: Use a field mask instead of includeGridData=true to return less data
     spreadsheet = (
-        sheets_service.spreadsheets().get(spreadsheetId=spreadsheet_id, includeGridData=True).execute()
+        sheets_service.spreadsheets()
+        .get(spreadsheetId=spreadsheet_id, includeGridData=True)
+        .execute()
     )
-    row_data = spreadsheet['sheets'][0]['data'][0]['rowData']
+    row_data = spreadsheet["sheets"][0]["data"][0]["rowData"]
+
     def get_data(column):
-        if 'effectiveValue' in column:
-            return column['effectiveValue']['stringValue'] # TODO research best way for all this
+        if "effectiveValue" in column:
+            return column["effectiveValue"][
+                "stringValue"
+            ]  # TODO research best way for all this
         return ""
+
     def get_columns(row):
-        if 'values' in row:
-            return [get_data(column) for column in row['values']]
+        if "values" in row:
+            return [get_data(column) for column in row["values"]]
         return []
+
     raw_cell_data = [get_columns(row) for row in row_data]
 
     title_row = raw_cell_data[0]
@@ -269,32 +301,38 @@ def extract_data_from_previous_power_hour(spreadsheet_id):
     # then, when generating, for each legislator I can add the value for each extra column name
 
     column_title_set = set(COLUMN_TITLES)
-    extra_column_titles = [] # tuple: (id, text)
+    extra_column_titles = []  # tuple: (id, text)
     name_column_index = None
     for i, title in enumerate(title_row):
         if title not in column_title_set:
             extra_column_titles.append((i, title))
-        elif title == "Name": # note this fails to match the lead sponsor who has "lead" after their name
+        elif (
+            title == "Name"
+        ):  # note this fails to match the lead sponsor who has "lead" after their name
             name_column_index = i
-    
+
     if name_column_index is None:
-        logging.warning(f"Could not find name column in spreadsheet {spreadsheet_id}. Title columns were {','.join(title_row)}")
+        logging.warning(
+            f"Could not find name column in spreadsheet {spreadsheet_id}. Title columns were {','.join(title_row)}"
+        )
         return ([], {})
 
     data = {}
     for row in data_rows:
-        if name_column_index < len(row) and (name := row[name_column_index]) is not None:
+        if (
+            name_column_index < len(row)
+            and (name := row[name_column_index]) is not None
+        ):
             # Ignore empty rows, they might just be for space
             legislator = {}
             for index, extra_column_title in extra_column_titles:
                 if index < len(row):
                     legislator[extra_column_title] = row[index]
             data[name] = legislator
-    
+
     result = ([title[1] for title in extra_column_titles], data)
     print(result, flush=True)
     return result
-
 
     # Now, for each title row, look for:
     # Name

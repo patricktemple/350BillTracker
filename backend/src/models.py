@@ -184,7 +184,6 @@ class BillAttachment(db.Model):
     url = Column(Text, nullable=False)
 
 
-
 # TODO: UUIDs for some PKs?
 # Inherit from attachment? Probably not worth it...
 class PowerHour(db.Model):

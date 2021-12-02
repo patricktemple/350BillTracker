@@ -19,10 +19,10 @@ from .google_sheets import create_power_hour
 from .models import (
     Bill,
     BillAttachment,
-    PowerHour,
     BillSponsorship,
     Legislator,
     LoginLink,
+    PowerHour,
     Staffer,
     User,
     db,
@@ -394,7 +394,7 @@ def create_spreadsheet(bill_id):
     # 3. use that one her
     logging.info(request.json)
     data = PowerHourSchema().load(request.json)
-    power_hour_id_to_import = data.get('power_hour_id_to_import')
+    power_hour_id_to_import = data.get("power_hour_id_to_import")
     if power_hour_id_to_import:
         power_hour = PowerHour.query.get(power_hour_id_to_import)
         old_spreadsheet_id = power_hour.spreadsheet_id
@@ -410,7 +410,7 @@ def create_spreadsheet(bill_id):
         bill_id=bill_id,
         spreadsheet_url=spreadsheet["spreadsheetUrl"],
         spreadsheet_id=spreadsheet["spreadsheetId"],
-        name=f"Power Hour Tracker (created {date.today().isoformat()})", # TODO: Make this eastern time, or client render
+        name=f"Power Hour Tracker (created {date.today().isoformat()})",  # TODO: Make this eastern time, or client render
     )
     db.session.add(power_hour)
     db.session.commit()

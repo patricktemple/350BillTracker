@@ -135,14 +135,18 @@ export default function BillDetails(props: Props): ReactElement {
     props.handleRemoveBill();
   }
 
-  function handleCreatePowerHour(description: string, oldPowerHourId: string | null) {
+  function handleCreatePowerHour(
+    description: string,
+    oldPowerHourId: string | null
+  ) {
     setAddAttachmentModalOpen(false);
 
     // This is now a little weird below: changing the button text.
     // Maybe better to create the power hour from within the modal?
     setCreatePhoneBankInProgress(true);
     apiFetch(`/api/saved-bills/${bill.id}/create-phone-bank-spreadsheet`, {
-      method: 'POST', body: {}
+      method: 'POST',
+      body: {}
     }).then((response) => {
       setCreatePhoneBankInProgress(false);
       loadPowerHours();
@@ -276,27 +280,28 @@ export default function BillDetails(props: Props): ReactElement {
       <Row className="mb-2">
         <Col lg={2}>
           <div>
-            <div style={{ fontWeight: 'bold' }}>
-              Power hours:
-            </div>
+            <div style={{ fontWeight: 'bold' }}>Power hours:</div>
             {powerHours != null && (
-            <><Button
-              size="sm"
-              disabled={createPhoneBankInProgress}
-              variant="outline-secondary"
-              onClick={() => setCreatePowerHourModalOpen(true)}
-              className="mb-2 d-block"
-            >
-              {createPhoneBankInProgress
-                ? 'Generating sheet...'
-                : 'Create power hour'}
-            </Button>
-            <CreatePowerHourModal
-              oldPowerHours={powerHours}
-              show={createPowerHourModalOpen}
-              handleCreatePowerHour={handleCreatePowerHour}
-              onHide={() => setCreatePowerHourModalOpen(false)}
-            /></>)}
+              <>
+                <Button
+                  size="sm"
+                  disabled={createPhoneBankInProgress}
+                  variant="outline-secondary"
+                  onClick={() => setCreatePowerHourModalOpen(true)}
+                  className="mb-2 d-block"
+                >
+                  {createPhoneBankInProgress
+                    ? 'Generating sheet...'
+                    : 'Create power hour'}
+                </Button>
+                <CreatePowerHourModal
+                  oldPowerHours={powerHours}
+                  show={createPowerHourModalOpen}
+                  handleCreatePowerHour={handleCreatePowerHour}
+                  onHide={() => setCreatePowerHourModalOpen(false)}
+                />
+              </>
+            )}
           </div>
         </Col>
         <Col>

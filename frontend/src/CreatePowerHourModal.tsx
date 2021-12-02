@@ -8,7 +8,10 @@ import Modal from 'react-bootstrap/Modal';
 interface Props {
   oldPowerHours: PowerHour[];
   show: boolean;
-  handleCreatePowerHour: (description: string, oldPowerHourId: string | null) => void;
+  handleCreatePowerHour: (
+    description: string,
+    oldPowerHourId: string | null
+  ) => void;
   onHide: () => void;
 }
 
@@ -20,7 +23,6 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
     const description = descriptionRef.current!.value;
     const selectValue = selectRef.current!.value;
     // TODO: Controlled component?
-
 
     console.log({ description, selectValue });
     props.handleCreatePowerHour(description, selectValue);
@@ -48,8 +50,9 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
           <Form.Group className="mb-3">
             <Form.Label>Import from previous power hour</Form.Label>
             <Form.Select ref={selectRef}>
-                {props.oldPowerHours.map(p => (
-              <option key={p.id}>{p.name}</option>))}
+              {props.oldPowerHours.map((p) => (
+                <option key={p.id}>{p.name}</option>
+              ))}
             </Form.Select>
           </Form.Group>
 
