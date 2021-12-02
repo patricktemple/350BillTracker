@@ -107,6 +107,7 @@ def _create_legislator_row(
     bill,
     extra_column_titles,
     extra_column_data,
+    output_messages,
     is_lead_sponsor=False,
 ):
     staffer_strings = [s.display_string for s in legislator.staffers]
@@ -138,10 +139,13 @@ def _create_legislator_row(
             text = legislator_data.get(extra_column, "")
             cells.append(Cell(text))
     else:
+        # TODO: Make sure this doesn't appear when there's no sheet at all
+        output_messages.append(
+            f"Could not find {legislator.name} under the Name column in the old sheet. Make sure the name matches exactly. This person did not have any extra fields copied."
+        )
         logging.warning(
             f"No legislator data for {legislator.name} in old sheet"
         )
-        # TODO: return warnings to client somehow?
     return _create_row_data(cells)
 
 
@@ -157,6 +161,7 @@ def _create_phone_bank_spreadsheet_data(
     non_sponsors,
     extra_column_titles,
     extra_column_data,
+    output_messages,
 ):
     """Generates the full body payload that the Sheets API requires for a
     phone bank spreadsheet."""
@@ -169,7 +174,11 @@ def _create_phone_bank_spreadsheet_data(
     for legislator in non_sponsors:
         rows.append(
             _create_legislator_row(
-                legislator, bill, extra_column_titles, extra_column_data
+                legislator,
+                bill,
+                extra_column_titles,
+                extra_column_data,
+                output_messages,
             )
         )
 
@@ -183,6 +192,7 @@ def _create_phone_bank_spreadsheet_data(
                 bill,
                 extra_column_titles,
                 extra_column_data,
+                output_messages,
                 sponsorship.sponsor_sequence == 0,
             )
         )
@@ -235,10 +245,10 @@ def create_power_hour(bill_id, power_hour_title, old_spreadsheet_to_import):
         (
             extra_column_titles,
             extra_column_data,
-            import_messages,
-        ) = extract_data_from_previous_power_hour(old_spreadsheet_to_import)
+            output_messages,
+        ) = _extract_data_from_previous_power_hour(old_spreadsheet_to_import)
     else:
-        import_messages = []
+        output_messages = []
 
     spreadsheet_data = _create_phone_bank_spreadsheet_data(
         bill,
@@ -247,6 +257,7 @@ def create_power_hour(bill_id, power_hour_title, old_spreadsheet_to_import):
         non_sponsors,
         extra_column_titles,
         extra_column_data,
+        output_messages,
     )
 
     google_credentials = _get_google_credentials()
@@ -268,12 +279,12 @@ def create_power_hour(bill_id, power_hour_title, old_spreadsheet_to_import):
         fields="id",
     ).execute()
 
-    import_messages.append("Spreadsheet was created")
+    output_messages.append("Spreadsheet was created")
 
-    return (spreadsheet_result, import_messages)
+    return (spreadsheet_result, output_messages)
 
 
-def extract_data_from_previous_power_hour(spreadsheet_id):
+def _extract_data_from_previous_power_hour(spreadsheet_id):
     google_credentials = _get_google_credentials()
     sheets_service = _get_sheets_service(google_credentials)
 

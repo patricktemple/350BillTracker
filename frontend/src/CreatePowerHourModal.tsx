@@ -5,8 +5,10 @@ import Button from 'react-bootstrap/Button';
 import { Bill, CreatePowerHourResponse, PowerHour } from './types';
 import Modal from 'react-bootstrap/Modal';
 import useApiFetch from './useApiFetch';
+import { MdHelpOutline } from 'react-icons/md';
 import Alert from 'react-bootstrap/Alert';
-
+import Popover from 'react-bootstrap/Popover';
+import Overlay from 'react-bootstrap/Overlay';
 import moment from 'moment';
 
 interface Props {
@@ -32,6 +34,8 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
   const [powerHourResult, setPowerHourResult] = useState<PowerHour | null>(
     null
   );
+
+  const [importHelpShown, setImportHelpShown] = useState<boolean>(false);
 
   const apiFetch = useApiFetch();
 
@@ -80,6 +84,9 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
     'MMM D YYYY'
   )})`;
 
+  const helpIconRef = useRef<HTMLAnchorElement>(null); // TODO type this
+
+  // TODO: Make date dyamic in the help text
   return (
     <Modal show={props.show} onHide={handleHide} size="xl">
       <Modal.Header closeButton>
@@ -98,7 +105,63 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Copy data from previous power hour</Form.Label>
+            <Form.Label>
+              Copy data from previous power hour{' '}
+              <a
+                href="#"
+                ref={helpIconRef}
+                onClick={() => setImportHelpShown(!importHelpShown)}
+              >
+                <MdHelpOutline />
+              </a>
+            </Form.Label>
+            <Overlay
+              target={helpIconRef.current}
+              show={importHelpShown}
+              placement="right"
+            >
+              <Popover style={{ width: '600px', maxWidth: '600px' }}>
+                <Popover.Header as="h3">
+                  Importing from old spreadsheets
+                </Popover.Header>
+                <Popover.Body>
+                  <p>
+                    When you create a Power Hour, it generates a new Google
+                    Sheet with the latest sponsor list and contact info.
+                  </p>
+                  <p>
+                    However, you may want to carry over some information from
+                    this bill&apos;s previous power hour into the new
+                    spreadsheet. For example, suppose that that last week had a
+                    power hour on the same bill, and that spreadsheet had added
+                    a column called <em>Summary of action June 10</em> to track
+                    how the conversation went with each concil member. You can
+                    import that column into the new spreadsheet so that new
+                    callers have that context.
+                  </p>
+                  <p>
+                    It searches for this information in the old sheet like this:
+                    <ol>
+                      <li>You choose which sheet to import from, if any</li>
+                      <li>
+                        The tool looks for a <em>Name</em> column in the top row
+                        of the old sheet. It uses this column to find each
+                        council member by an exact match of their name.
+                      </li>
+                      <li>
+                        If any extra columns were added to the old sheet, those
+                        are copied into the new sheet next to the correct
+                        council member.
+                      </li>
+                      <li>
+                        Auto-generated columns (such as Twitter, phone number)
+                        are recreated fresh in the new sheet
+                      </li>
+                    </ol>
+                  </p>
+                </Popover.Body>
+              </Popover>
+            </Overlay>
             <Form.Select
               ref={selectRef}
               disabled={
