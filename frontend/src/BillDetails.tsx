@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useState, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
 import Form from 'react-bootstrap/Form';
@@ -12,6 +12,9 @@ import ConfirmDeleteBillModel from './ConfirmDeleteBillModal';
 import CreatePowerHourModal from './CreatePowerHourModal';
 import useApiFetch from './useApiFetch';
 import BillSponsorList from './BillSponsorList';
+import Popover from 'react-bootstrap/Popover';
+import Overlay from 'react-bootstrap/Overlay';
+import { MdHelpOutline } from 'react-icons/md';
 
 interface Props {
   bill: Bill;
@@ -145,6 +148,11 @@ export default function BillDetails(props: Props): ReactElement {
   const negativeSponsors = sponsorships?.filter(
     (s: BillSponsorship) => !s.isSponsor
   );
+
+  const powerHourHelpRef = useRef<HTMLSpanElement>(null);
+  const [powerHourHelpVisible, setPowerHourHelpVisible] = useState<boolean>(false);
+
+
   return (
     <Form onSubmit={(e) => e.preventDefault()}>
       <Row className="mb-2">
@@ -266,7 +274,17 @@ export default function BillDetails(props: Props): ReactElement {
       <Row className="mb-2">
         <Col lg={2}>
           <div>
-            <div style={{ fontWeight: 'bold' }}>Power hours:</div>
+            <div style={{ fontWeight: 'bold' }}>Power hours <span onClick={() => setPowerHourHelpVisible(!powerHourHelpVisible)} ref={powerHourHelpRef} style={{cursor: 'pointer' }}><MdHelpOutline /></span></div>
+            <Overlay target={powerHourHelpRef.current} placement='right' show={powerHourHelpVisible}>
+              <Popover style={{width: '500px', maxWidth: '500px'}}>
+              <Popover.Header as="h3">Power hours</Popover.Header>
+              <Popover.Body>
+                <p>You can generate a Google Sheet for a Power Hour on this bill and keep track of these sheets as
+                reference for future Power Hours.</p>
+                <p className="mb-0">These sheets are designed for Power Hours involving calls to a bunch of legislators pushing them to sponsor the bill. For other kinds of Power Hour, such as calls to the governor or calls not related to a City Council bill, this may not be useful.</p>
+              </Popover.Body>
+              </Popover>
+              </Overlay>
             {powerHours != null && (
               <>
                 <Button
