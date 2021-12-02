@@ -301,7 +301,7 @@ export default function BillDetails(props: Props): ReactElement {
                     These sheets are designed for Power Hours involving calls to
                     a bunch of legislators pushing them to sponsor the bill. For
                     other kinds of Power Hour, such as calls to the governor or
-                    calls not related to a City Council bill, this may not be
+                    calls not related to a specific bill, this may not be
                     useful.
                   </p>
                 </Popover.Body>
