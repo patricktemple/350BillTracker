@@ -368,7 +368,7 @@ class PowerHourSchema(CamelCaseSchema):
     power_hour_id_to_import = fields.Integer(load_only=True, missing=None)
 
     bill_id = fields.Integer(dump_only=True)
-    name = fields.String()
+    title = fields.String()
     spreadsheet_url = fields.String(dump_only=True)
     created_at = fields.DateTime()
 
@@ -412,18 +412,17 @@ def create_spreadsheet(bill_id):
 
     # TODO: Also set the spreadsheet name to the title from the form
     spreadsheet, messages = create_power_hour(
-        bill_id, data["name"], old_spreadsheet_id
+        bill_id, data["title"], old_spreadsheet_id
     )
 
     # TODO: What to do if the old power hour sheet's format is old, and the app now uses a new format?
     # I should just be careful to solidify it first... could version things but that's too much work
 
-    # How to handle failures to import?
     power_hour = PowerHour(
         bill_id=bill_id,
         spreadsheet_url=spreadsheet["spreadsheetUrl"],
         spreadsheet_id=spreadsheet["spreadsheetId"],
-        name=data["name"],
+        title=data["title"],
     )
     db.session.add(power_hour)
     db.session.commit()

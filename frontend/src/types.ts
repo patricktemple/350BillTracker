@@ -62,7 +62,7 @@ export interface PowerHour {
   id: number;
   billId: number;
   spreadsheetUrl: string;
-  name: string;
+  title: string;
   createdAt: string; // ISO DateTime
 }
 

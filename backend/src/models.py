@@ -185,7 +185,6 @@ class BillAttachment(db.Model):
 
 
 # TODO: UUIDs for some PKs?
-# Inherit from attachment? Probably not worth it...
 class PowerHour(db.Model):
     __tablename__ = "power_hours"
 
@@ -193,9 +192,8 @@ class PowerHour(db.Model):
     bill_id = Column(
         Integer, ForeignKey("bills.id"), nullable=False, index=True
     )
-    # bill = relationship("Bill", back_populates="power_hours")
 
-    name = Column(Text)
+    title = Column(Text)
     spreadsheet_url = Column(Text, nullable=False)
     spreadsheet_id = Column(Text, nullable=False)
 

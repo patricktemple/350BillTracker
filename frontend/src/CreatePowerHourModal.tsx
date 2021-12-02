@@ -47,6 +47,9 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
     const selectValue = selectRef.current!.value;
     // TODO: Controlled component?
 
+    // Problem: once power hours is created, it shows up in the list of power hours in the modal
+    // before the modal closes, which is a tad confusing
+
     console.log(selectRef.current!);
     console.log({ title, selectValue });
 
@@ -56,7 +59,7 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
       {
         method: 'POST',
         body: {
-          name: title, // TODO: Use title as name in backend too
+          title,
           powerHourIdToImport:
             selectValue !== DO_NOT_IMPORT_VALUE ? selectValue : null
         }
@@ -71,14 +74,11 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
     e.preventDefault();
   }
 
-  // TODO: Identify the latest power hour and default to it
   // Also, give a little text explanation of what is happening here
-
-  // Maybe use React Bootstrap alert component to make the messages look better?
 
   const defaultTitle = `Power Hour for ${props.bill.file} (${moment().format(
     'MMM D YYYY'
-  )})`; // TODO add bill name to this title
+  )})`;
 
   return (
     <Modal show={props.show} onHide={handleHide} size="xl">
@@ -114,7 +114,7 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
                     value={p.id}
                     selected={i === props.oldPowerHours.length - 1}
                   >
-                    {p.name}
+                    {p.title}
                     {i == props.oldPowerHours.length - 1 && ' (latest)'}
                   </option>
                 ))}

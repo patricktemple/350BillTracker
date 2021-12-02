@@ -1,8 +1,8 @@
-"""Make power hour a separate thing from attachments
+"""Separate out power hour from attachemtns in model
 
-Revision ID: 59d98892e23e
+Revision ID: cb9ba28ca160
 Revises: 730353dab849
-Create Date: 2021-12-01 17:53:39.637733
+Create Date: 2021-12-02 17:21:08.052682
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import src
 
 
 # revision identifiers, used by Alembic.
-revision = '59d98892e23e'
+revision = 'cb9ba28ca160'
 down_revision = '730353dab849'
 branch_labels = None
 depends_on = None
@@ -22,7 +22,7 @@ def upgrade():
     op.create_table('power_hours',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('bill_id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.Text(), nullable=True),
+    sa.Column('title', sa.Text(), nullable=True),
     sa.Column('spreadsheet_url', sa.Text(), nullable=False),
     sa.Column('spreadsheet_id', sa.Text(), nullable=False),
     sa.Column('created_at', src.models.TIMESTAMP(timezone=True), nullable=False),
