@@ -84,9 +84,9 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
     'MMM D YYYY'
   )})`;
 
-  const helpIconRef = useRef<HTMLAnchorElement>(null); // TODO type this
+  const helpIconRef = useRef<HTMLSpanElement>(null); // TODO type this
 
-  // TODO: Make date dyamic in the help text
+  const lastWeekText = moment().subtract(7, 'days').format('MM/D');
   return (
     <Modal show={props.show} onHide={handleHide} size="xl">
       <Modal.Header closeButton>
@@ -107,13 +107,13 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
           <Form.Group className="mb-3">
             <Form.Label>
               Copy data from previous power hour{' '}
-              <a
-                href="#"
+              <span
+                style={{cursor: 'pointer'}}
                 ref={helpIconRef}
                 onClick={() => setImportHelpShown(!importHelpShown)}
               >
                 <MdHelpOutline />
-              </a>
+              </span>
             </Form.Label>
             <Overlay
               target={helpIconRef.current}
@@ -134,7 +134,7 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
                     this bill&apos;s previous power hour into the new
                     spreadsheet. For example, suppose that that last week had a
                     power hour on the same bill, and that spreadsheet had added
-                    a column called <em>Summary of action June 10</em> to track
+                    a column called <em>Summary of action {lastWeekText}</em> to track
                     how the conversation went with each concil member. You can
                     import that column into the new spreadsheet so that new
                     callers have that context.
