@@ -57,7 +57,7 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
   // TODO: Identify the latest power hour and default to it
   // Also, give a little text explanation of what is happening here
 
-  const defaultTitle = `Power Hour - ${moment().format('MM/DD/YYYY')}`; // TODO add bill name to this title
+  const defaultTitle = `Power Hour for ${props.bill.file} (${moment().format('MMM D YYYY')})`; // TODO add bill name to this title
 
   return (
     <Modal show={props.show} onHide={props.onHide} size="xl">

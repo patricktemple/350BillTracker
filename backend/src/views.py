@@ -403,7 +403,7 @@ def create_spreadsheet(bill_id):
         old_spreadsheet_id = None
 
     # TODO: Also set the spreadsheet name to the title from the form
-    spreadsheet = create_power_hour(bill_id, old_spreadsheet_id)
+    spreadsheet = create_power_hour(bill_id, data['name'], old_spreadsheet_id)
 
     # TODO: What to do if the old power hour sheet's format is old, and the app now uses a new format?
     # I should just be careful to solidify it first... could version things but that's too much work

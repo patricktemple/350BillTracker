@@ -151,7 +151,7 @@ def _create_title_row_data(raw_values):
 
 
 def _create_phone_bank_spreadsheet_data(
-    bill, sponsorships, non_sponsors, extra_column_titles, extra_column_data
+    bill, sheet_title, sponsorships, non_sponsors, extra_column_titles, extra_column_data
 ):
     """Generates the full body payload that the Sheets API requires for a
     phone bank spreadsheet."""
@@ -184,7 +184,7 @@ def _create_phone_bank_spreadsheet_data(
 
     column_metadata = [{"pixelSize": size} for size in COLUMN_WIDTHS]
     return {
-        "properties": {"title": f"Phone bank for {bill.file}"},
+        "properties": {"title": sheet_title},
         "sheets": [
             {
                 "properties": {"gridProperties": {"frozenRowCount": 1}},
@@ -199,7 +199,7 @@ def get_sort_key(legislator):
     return (sort_key, legislator.name)
 
 
-def create_power_hour(bill_id, old_spreadsheet_to_import):
+def create_power_hour(bill_id, power_hour_title, old_spreadsheet_to_import):
     """Creates a spreadsheet that's a template to run a phone bank
     for a specific bill, based on its current sponsors. The sheet will be
     owned by a robot Google account and will be made publicly editable by
@@ -234,6 +234,7 @@ def create_power_hour(bill_id, old_spreadsheet_to_import):
 
     spreadsheet_data = _create_phone_bank_spreadsheet_data(
         bill,
+        power_hour_title,
         sponsorships,
         non_sponsors,
         extra_column_titles,
