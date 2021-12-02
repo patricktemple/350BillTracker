@@ -136,7 +136,7 @@ export default function BillDetails(props: Props): ReactElement {
   }
 
   function handleCreatePowerHour(
-    description: string,
+    title: string,
     oldPowerHourId: string | null
   ) {
     setAddAttachmentModalOpen(false);
@@ -146,7 +146,10 @@ export default function BillDetails(props: Props): ReactElement {
     setCreatePhoneBankInProgress(true);
     apiFetch(`/api/saved-bills/${bill.id}/create-phone-bank-spreadsheet`, {
       method: 'POST',
-      body: {}
+      body: {
+        name: title, // TODO: Use title as name in backend too
+        powerHourIdToImport: oldPowerHourId,
+      }
     }).then((response) => {
       setCreatePhoneBankInProgress(false);
       loadPowerHours();

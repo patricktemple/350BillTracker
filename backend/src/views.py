@@ -364,10 +364,11 @@ def delete_bill_attachment(attachment_id):
 
 
 class PowerHourSchema(CamelCaseSchema):
+    id = fields.String(dump_only=True)
     power_hour_id_to_import = fields.Integer(load_only=True, missing=None)
 
     bill_id = fields.Integer(dump_only=True)
-    name = fields.String(dump_only=True)
+    name = fields.String()
     spreadsheet_url = fields.String(dump_only=True)
     created_at = fields.DateTime()
 
@@ -400,6 +401,8 @@ def create_spreadsheet(bill_id):
         old_spreadsheet_id = power_hour.spreadsheet_id
     else:
         old_spreadsheet_id = None
+
+    # TODO: Also set the spreadsheet name to the title from the form
     spreadsheet = create_power_hour(bill_id, old_spreadsheet_id)
 
     # TODO: What to do if the old power hour sheet's format is old, and the app now uses a new format?
@@ -410,7 +413,7 @@ def create_spreadsheet(bill_id):
         bill_id=bill_id,
         spreadsheet_url=spreadsheet["spreadsheetUrl"],
         spreadsheet_id=spreadsheet["spreadsheetId"],
-        name=f"Power Hour Tracker (created {date.today().isoformat()})",  # TODO: Make this eastern time, or client render
+        name=data['name'],
     )
     db.session.add(power_hour)
     db.session.commit()

@@ -5,31 +5,39 @@ import Button from 'react-bootstrap/Button';
 import { Bill, PowerHour } from './types';
 import Modal from 'react-bootstrap/Modal';
 
+import moment from 'moment';
+
 interface Props {
   oldPowerHours: PowerHour[];
   show: boolean;
   handleCreatePowerHour: (
-    description: string,
+    title: string,
     oldPowerHourId: string | null
   ) => void;
   onHide: () => void;
 }
 
+const DO_NOT_IMPORT_VALUE = "none";
+
 export default function CreatePowerHourModal(props: Props): ReactElement {
-  const descriptionRef = useRef<HTMLInputElement>(null);
+  const titleRef = useRef<HTMLInputElement>(null);
   const selectRef = useRef<HTMLSelectElement>(null);
 
   function handleSubmit(e: any) {
-    const description = descriptionRef.current!.value;
+    const title = titleRef.current!.value;
     const selectValue = selectRef.current!.value;
     // TODO: Controlled component?
 
-    console.log({ description, selectValue });
-    props.handleCreatePowerHour(description, selectValue);
+    console.log(selectRef.current!);
+    console.log({ title, selectValue });
+    props.handleCreatePowerHour(title, selectValue !== DO_NOT_IMPORT_VALUE ? selectValue : null);
     e.preventDefault();
   }
 
   // TODO: Identify the latest power hour and default to it
+  // Also, give a little text explanation of what is happening here
+
+  const defaultTitle = `Power Hour - ${moment().format('MM/DD/YYYY')}`; // TODO add bill name to this title
 
   return (
     <Modal show={props.show} onHide={props.onHide} size="xl">
@@ -39,20 +47,21 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
-            <Form.Label>Name</Form.Label>
+            <Form.Label>Title</Form.Label>
             <Form.Control
               type="text"
-              ref={descriptionRef}
-              defaultValue="Power Hour TODO name this"
+              ref={titleRef}
+              defaultValue={defaultTitle}
             />
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Import from previous power hour</Form.Label>
-            <Form.Select ref={selectRef}>
-              {props.oldPowerHours.map((p) => (
-                <option key={p.id}>{p.name}</option>
+            <Form.Label>Import data from previous power hour</Form.Label>
+            <Form.Select ref={selectRef} disabled={props.oldPowerHours.length == 0}>
+              {props.oldPowerHours.length > 0 && props.oldPowerHours.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
               ))}
+              <option value={DO_NOT_IMPORT_VALUE}>{props.oldPowerHours.length > 0 ? "Do not import" : "This bill has no previous power hours"}</option>
             </Form.Select>
           </Form.Group>
 

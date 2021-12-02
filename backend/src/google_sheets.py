@@ -133,7 +133,7 @@ def _create_legislator_row(
         Cell(legislator.notes or ""),
     ]
     legislator_data = extra_column_data.get(legislator.name)
-    if legislator_data:
+    if legislator_data is not None:
         for extra_column in extra_column_titles:
             text = legislator_data.get(extra_column, "")
             cells.append(Cell(text))
