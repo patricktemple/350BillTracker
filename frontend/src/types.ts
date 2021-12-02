@@ -66,6 +66,11 @@ export interface PowerHour {
   createdAt: string; // ISO DateTime
 }
 
+export interface CreatePowerHourResponse {
+  messages: string[];
+  powerHour: PowerHour;
+}
+
 export interface User {
   id: Uuid;
   name: string;

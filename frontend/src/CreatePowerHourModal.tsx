@@ -2,9 +2,10 @@ import React, { useState, useRef, ReactElement } from 'react';
 import BillList from './BillList';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { Bill, PowerHour } from './types';
+import { Bill, CreatePowerHourResponse, PowerHour } from './types';
 import Modal from 'react-bootstrap/Modal';
 import useApiFetch from './useApiFetch';
+import Alert from 'react-bootstrap/Alert';
 
 import moment from 'moment';
 
@@ -25,7 +26,21 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
   const [createPowerHourInProgress, setCreatePowerHourInProgress] =
     useState<boolean>(false);
 
+  const [createPowerHourMessages, setCreatePowerHourMessages] = useState<
+    string[]
+  >([]);
+  const [powerHourResult, setPowerHourResult] = useState<PowerHour | null>(
+    null
+  );
+
   const apiFetch = useApiFetch();
+
+  function handleHide() {
+    setCreatePowerHourMessages([]);
+    setCreatePowerHourInProgress(false);
+    setPowerHourResult(null);
+    props.onHide();
+  }
 
   function handleSubmit(e: any) {
     const title = titleRef.current!.value;
@@ -46,8 +61,10 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
             selectValue !== DO_NOT_IMPORT_VALUE ? selectValue : null
         }
       }
-    ).then(() => {
+    ).then((response: CreatePowerHourResponse) => {
+      setCreatePowerHourMessages(response.messages);
       setCreatePowerHourInProgress(false);
+      setPowerHourResult(response.powerHour);
       props.handlePowerHourCreated();
     });
 
@@ -57,31 +74,37 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
   // TODO: Identify the latest power hour and default to it
   // Also, give a little text explanation of what is happening here
 
-  const defaultTitle = `Power Hour for ${props.bill.file} (${moment().format('MMM D YYYY')})`; // TODO add bill name to this title
+  // Maybe use React Bootstrap alert component to make the messages look better?
+
+  const defaultTitle = `Power Hour for ${props.bill.file} (${moment().format(
+    'MMM D YYYY'
+  )})`; // TODO add bill name to this title
 
   return (
-    <Modal show={props.show} onHide={props.onHide} size="xl">
+    <Modal show={props.show} onHide={handleHide} size="xl">
       <Modal.Header closeButton>
         <Modal.Title>Create a Power Hour</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
-            <Form.Label>Title</Form.Label>
+            <Form.Label>Spreadsheet title</Form.Label>
             <Form.Control
               type="text"
               ref={titleRef}
               defaultValue={defaultTitle}
-              disabled={createPowerHourInProgress}
+              disabled={createPowerHourInProgress || !!powerHourResult}
             />
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Import data from previous power hour</Form.Label>
+            <Form.Label>Copy data from previous power hour</Form.Label>
             <Form.Select
               ref={selectRef}
               disabled={
-                createPowerHourInProgress || props.oldPowerHours.length == 0
+                createPowerHourInProgress ||
+                !!powerHourResult ||
+                props.oldPowerHours.length == 0
               }
             >
               {props.oldPowerHours.length > 0 &&
@@ -98,16 +121,40 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
             </Form.Select>
           </Form.Group>
 
-          <Button
-            variant="primary"
-            type="submit"
-            className="mb-2"
-            disabled={createPowerHourInProgress}
-          >
-            {createPowerHourInProgress
-              ? 'Generating...'
-              : 'Generate spreadsheet'}
-          </Button>
+          {powerHourResult ? (
+            <>
+              <Alert variant="primary">
+                <p>
+                  {createPowerHourMessages.map((m) => (
+                    <div key={m}>{m}</div>
+                  ))}
+                </p>
+                <p className="mb-0" style={{ fontWeight: 'bold' }}>
+                  <a
+                    href={powerHourResult.spreadsheetUrl}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    Open spreadsheet
+                  </a>
+                </p>
+              </Alert>
+              <Button variant="primary" className="mb-2" onClick={handleHide}>
+                Close
+              </Button>
+            </>
+          ) : (
+            <Button
+              variant="primary"
+              type="submit"
+              className="mb-2"
+              disabled={createPowerHourInProgress || !!powerHourResult}
+            >
+              {createPowerHourInProgress
+                ? 'Generating...'
+                : 'Generate spreadsheet'}
+            </Button>
+          )}
         </Form>
       </Modal.Body>
     </Modal>

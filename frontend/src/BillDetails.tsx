@@ -136,7 +136,6 @@ export default function BillDetails(props: Props): ReactElement {
   }
 
   function handlePowerHourCreated() {
-    setCreatePowerHourModalOpen(false);
     loadPowerHours();
   }
 

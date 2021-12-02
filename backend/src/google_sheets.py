@@ -151,7 +151,12 @@ def _create_title_row_data(raw_values):
 
 
 def _create_phone_bank_spreadsheet_data(
-    bill, sheet_title, sponsorships, non_sponsors, extra_column_titles, extra_column_data
+    bill,
+    sheet_title,
+    sponsorships,
+    non_sponsors,
+    extra_column_titles,
+    extra_column_data,
 ):
     """Generates the full body payload that the Sheets API requires for a
     phone bank spreadsheet."""
@@ -230,7 +235,10 @@ def create_power_hour(bill_id, power_hour_title, old_spreadsheet_to_import):
         (
             extra_column_titles,
             extra_column_data,
+            import_messages,
         ) = extract_data_from_previous_power_hour(old_spreadsheet_to_import)
+    else:
+        import_messages = []
 
     spreadsheet_data = _create_phone_bank_spreadsheet_data(
         bill,
@@ -260,12 +268,16 @@ def create_power_hour(bill_id, power_hour_title, old_spreadsheet_to_import):
         fields="id",
     ).execute()
 
-    return spreadsheet_result
+    import_messages.append("Spreadsheet was created")
+
+    return (spreadsheet_result, import_messages)
 
 
 def extract_data_from_previous_power_hour(spreadsheet_id):
     google_credentials = _get_google_credentials()
     sheets_service = _get_sheets_service(google_credentials)
+
+    import_messages = []
 
     # TODO: Use a field mask instead of includeGridData=true to return less data
     spreadsheet = (
@@ -313,10 +325,13 @@ def extract_data_from_previous_power_hour(spreadsheet_id):
             name_column_index = i
 
     if name_column_index is None:
-        logging.warning(
-            f"Could not find name column in spreadsheet {spreadsheet_id}. Title columns were {','.join(title_row)}"
+        import_messages.append(
+            "Could not find a 'Name' column at the top of the old spreadsheet, so no columns were copied over"
         )
-        return ([], {})
+        logging.warning(
+            f"Could not find Name column in spreadsheet {spreadsheet_id}. Title columns were {','.join(title_row)}"
+        )
+        return ([], {}, import_messages)
 
     data = {}
     for row in data_rows:
@@ -331,7 +346,19 @@ def extract_data_from_previous_power_hour(spreadsheet_id):
                     legislator[extra_column_title] = row[index]
             data[name] = legislator
 
-    result = ([title[1] for title in extra_column_titles], data)
+    titles = [title[1] for title in extra_column_titles]
+    if titles:
+        for title in titles:
+            import_messages.append(f"Copied column '{title}' to new sheet")
+    else:
+        import_messages.append(
+            f"Did not find any extra columns in the old sheet to import"
+        )
+
+        # TODO: The fact that we don't validate the set of council members on the spot means that if
+        # we want to have messages about "cannot find council member" then that logic is separated into create_spreadsheet
+        # which seems weird?
+    result = (titles, data, import_messages)
     print(result, flush=True)
     return result
 

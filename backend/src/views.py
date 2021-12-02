@@ -373,6 +373,11 @@ class PowerHourSchema(CamelCaseSchema):
     created_at = fields.DateTime()
 
 
+class CreatePowerHourSchema(CamelCaseSchema):
+    power_hour = fields.Nested(PowerHourSchema)
+    messages = fields.List(fields.String())
+
+
 @app.route("/api/saved-bills/<int:bill_id>/power-hours", methods=["GET"])
 @auth_required
 def bill_power_hours(bill_id):
@@ -382,7 +387,6 @@ def bill_power_hours(bill_id):
 
 # TODO: Rename phone bank to power hour for consistency
 # TODO: Migrate existing power hours
-# TODO: Now needs a separate UI to list out power hours
 @app.route(
     "/api/saved-bills/<int:bill_id>/create-phone-bank-spreadsheet",
     methods=["POST"],
@@ -403,7 +407,9 @@ def create_spreadsheet(bill_id):
         old_spreadsheet_id = None
 
     # TODO: Also set the spreadsheet name to the title from the form
-    spreadsheet = create_power_hour(bill_id, data['name'], old_spreadsheet_id)
+    spreadsheet, messages = create_power_hour(
+        bill_id, data["name"], old_spreadsheet_id
+    )
 
     # TODO: What to do if the old power hour sheet's format is old, and the app now uses a new format?
     # I should just be careful to solidify it first... could version things but that's too much work
@@ -417,7 +423,10 @@ def create_spreadsheet(bill_id):
     )
     db.session.add(power_hour)
     db.session.commit()
-    return PowerHourSchema().jsonify(power_hour)
+
+    return CreatePowerHourSchema().jsonify(
+        {"messages": messages, "power_hour": power_hour}
+    )
 
 
 # Login ----------------------------------------------------------------------
