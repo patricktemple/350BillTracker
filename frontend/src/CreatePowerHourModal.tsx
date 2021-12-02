@@ -140,7 +140,7 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
                     callers have that context.
                   </p>
                   <p>
-                    It searches for this information in the old sheet like this:
+                    Importing from an old spreadsheet works like this:
                     <ol>
                       <li>You choose which sheet to import from, if any</li>
                       <li>
@@ -155,7 +155,7 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
                       </li>
                       <li>
                         Auto-generated columns (such as Twitter, phone number)
-                        are recreated fresh in the new sheet
+                        are recreated fresh in the new sheet.
                       </li>
                     </ol>
                   </p>
