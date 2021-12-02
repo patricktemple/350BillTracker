@@ -4,16 +4,15 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Bill, PowerHour } from './types';
 import Modal from 'react-bootstrap/Modal';
+import useApiFetch from './useApiFetch';
 
 import moment from 'moment';
 
 interface Props {
+  bill: Bill;
   oldPowerHours: PowerHour[];
   show: boolean;
-  handleCreatePowerHour: (
-    title: string,
-    oldPowerHourId: string | null
-  ) => void;
+  handlePowerHourCreated: () => void;
   onHide: () => void;
 }
 
@@ -23,6 +22,11 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
   const titleRef = useRef<HTMLInputElement>(null);
   const selectRef = useRef<HTMLSelectElement>(null);
 
+  const [createPowerHourInProgress, setCreatePowerHourInProgress] = useState<boolean>(false);
+
+  const apiFetch = useApiFetch();
+
+
   function handleSubmit(e: any) {
     const title = titleRef.current!.value;
     const selectValue = selectRef.current!.value;
@@ -30,7 +34,19 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
 
     console.log(selectRef.current!);
     console.log({ title, selectValue });
-    props.handleCreatePowerHour(title, selectValue !== DO_NOT_IMPORT_VALUE ? selectValue : null);
+
+    setCreatePowerHourInProgress(true);
+    apiFetch(`/api/saved-bills/${props.bill.id}/create-phone-bank-spreadsheet`, {
+        method: 'POST',
+        body: {
+          name: title, // TODO: Use title as name in backend too
+          powerHourIdToImport: selectValue !== DO_NOT_IMPORT_VALUE ? selectValue : null,
+        }
+      }).then(() => {
+        setCreatePowerHourInProgress(false);
+        props.handlePowerHourCreated();
+      });
+
     e.preventDefault();
   }
 
@@ -52,12 +68,13 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
               type="text"
               ref={titleRef}
               defaultValue={defaultTitle}
+              disabled={createPowerHourInProgress}
             />
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label>Import data from previous power hour</Form.Label>
-            <Form.Select ref={selectRef} disabled={props.oldPowerHours.length == 0}>
+            <Form.Select ref={selectRef} disabled={createPowerHourInProgress || props.oldPowerHours.length == 0}>
               {props.oldPowerHours.length > 0 && props.oldPowerHours.map((p) => (
                 <option key={p.id} value={p.id}>{p.name}</option>
               ))}
@@ -65,8 +82,8 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
             </Form.Select>
           </Form.Group>
 
-          <Button variant="primary" type="submit" className="mb-2">
-            Generate spreadsheet
+          <Button variant="primary" type="submit" className="mb-2" disabled={createPowerHourInProgress}>
+            {createPowerHourInProgress ? "Generating..." : "Generate spreadsheet"}
           </Button>
         </Form>
       </Modal.Body>

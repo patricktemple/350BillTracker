@@ -135,25 +135,11 @@ export default function BillDetails(props: Props): ReactElement {
     props.handleRemoveBill();
   }
 
-  function handleCreatePowerHour(
-    title: string,
-    oldPowerHourId: string | null
-  ) {
-    setAddAttachmentModalOpen(false);
+  function handlePowerHourCreated(
 
-    // This is now a little weird below: changing the button text.
-    // Maybe better to create the power hour from within the modal?
-    setCreatePhoneBankInProgress(true);
-    apiFetch(`/api/saved-bills/${bill.id}/create-phone-bank-spreadsheet`, {
-      method: 'POST',
-      body: {
-        name: title, // TODO: Use title as name in backend too
-        powerHourIdToImport: oldPowerHourId,
-      }
-    }).then((response) => {
-      setCreatePhoneBankInProgress(false);
-      loadPowerHours();
-    });
+  ) {
+    setCreatePowerHourModalOpen(false);
+    loadPowerHours();
   }
 
   const positiveSponsors = sponsorships?.filter(
@@ -298,9 +284,10 @@ export default function BillDetails(props: Props): ReactElement {
                     : 'Create power hour'}
                 </Button>
                 <CreatePowerHourModal
+                  bill={bill}
                   oldPowerHours={powerHours}
                   show={createPowerHourModalOpen}
-                  handleCreatePowerHour={handleCreatePowerHour}
+                  handlePowerHourCreated={handlePowerHourCreated}
                   onHide={() => setCreatePowerHourModalOpen(false)}
                 />
               </>
