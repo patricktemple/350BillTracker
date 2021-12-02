@@ -296,11 +296,12 @@ export default function BillDetails(props: Props): ReactElement {
             'Loading...'
           ) : (
             <Stack direction="vertical">
-              {powerHours.map((p) => (
+              {powerHours.map((p, i) => (
                 <div key={p.id}>
                   <a href={p.spreadsheetUrl} target="_blank" rel="noreferrer">
                     {p.name}
                   </a>
+                  {i == powerHours.length - 1 && ' (latest)'}
                 </div>
               ))}
             </Stack>

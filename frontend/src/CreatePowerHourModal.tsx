@@ -108,9 +108,14 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
               }
             >
               {props.oldPowerHours.length > 0 &&
-                props.oldPowerHours.map((p) => (
-                  <option key={p.id} value={p.id}>
+                props.oldPowerHours.map((p, i) => (
+                  <option
+                    key={p.id}
+                    value={p.id}
+                    selected={i === props.oldPowerHours.length - 1}
+                  >
                     {p.name}
+                    {i == props.oldPowerHours.length - 1 && ' (latest)'}
                   </option>
                 ))}
               <option value={DO_NOT_IMPORT_VALUE}>

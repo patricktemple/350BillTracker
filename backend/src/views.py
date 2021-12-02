@@ -381,7 +381,11 @@ class CreatePowerHourSchema(CamelCaseSchema):
 @app.route("/api/saved-bills/<int:bill_id>/power-hours", methods=["GET"])
 @auth_required
 def bill_power_hours(bill_id):
-    power_hours = PowerHour.query.filter_by(bill_id=bill_id).all()
+    power_hours = (
+        PowerHour.query.filter_by(bill_id=bill_id)
+        .order_by(PowerHour.created_at)
+        .all()
+    )
     return PowerHourSchema(many=True).jsonify(power_hours)
 
 
