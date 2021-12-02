@@ -16,16 +16,16 @@ interface Props {
   onHide: () => void;
 }
 
-const DO_NOT_IMPORT_VALUE = "none";
+const DO_NOT_IMPORT_VALUE = 'none';
 
 export default function CreatePowerHourModal(props: Props): ReactElement {
   const titleRef = useRef<HTMLInputElement>(null);
   const selectRef = useRef<HTMLSelectElement>(null);
 
-  const [createPowerHourInProgress, setCreatePowerHourInProgress] = useState<boolean>(false);
+  const [createPowerHourInProgress, setCreatePowerHourInProgress] =
+    useState<boolean>(false);
 
   const apiFetch = useApiFetch();
-
 
   function handleSubmit(e: any) {
     const title = titleRef.current!.value;
@@ -36,16 +36,20 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
     console.log({ title, selectValue });
 
     setCreatePowerHourInProgress(true);
-    apiFetch(`/api/saved-bills/${props.bill.id}/create-phone-bank-spreadsheet`, {
+    apiFetch(
+      `/api/saved-bills/${props.bill.id}/create-phone-bank-spreadsheet`,
+      {
         method: 'POST',
         body: {
           name: title, // TODO: Use title as name in backend too
-          powerHourIdToImport: selectValue !== DO_NOT_IMPORT_VALUE ? selectValue : null,
+          powerHourIdToImport:
+            selectValue !== DO_NOT_IMPORT_VALUE ? selectValue : null
         }
-      }).then(() => {
-        setCreatePowerHourInProgress(false);
-        props.handlePowerHourCreated();
-      });
+      }
+    ).then(() => {
+      setCreatePowerHourInProgress(false);
+      props.handlePowerHourCreated();
+    });
 
     e.preventDefault();
   }
@@ -74,16 +78,35 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
 
           <Form.Group className="mb-3">
             <Form.Label>Import data from previous power hour</Form.Label>
-            <Form.Select ref={selectRef} disabled={createPowerHourInProgress || props.oldPowerHours.length == 0}>
-              {props.oldPowerHours.length > 0 && props.oldPowerHours.map((p) => (
-                <option key={p.id} value={p.id}>{p.name}</option>
-              ))}
-              <option value={DO_NOT_IMPORT_VALUE}>{props.oldPowerHours.length > 0 ? "Do not import" : "This bill has no previous power hours"}</option>
+            <Form.Select
+              ref={selectRef}
+              disabled={
+                createPowerHourInProgress || props.oldPowerHours.length == 0
+              }
+            >
+              {props.oldPowerHours.length > 0 &&
+                props.oldPowerHours.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              <option value={DO_NOT_IMPORT_VALUE}>
+                {props.oldPowerHours.length > 0
+                  ? 'Do not import'
+                  : 'This bill has no previous power hours'}
+              </option>
             </Form.Select>
           </Form.Group>
 
-          <Button variant="primary" type="submit" className="mb-2" disabled={createPowerHourInProgress}>
-            {createPowerHourInProgress ? "Generating..." : "Generate spreadsheet"}
+          <Button
+            variant="primary"
+            type="submit"
+            className="mb-2"
+            disabled={createPowerHourInProgress}
+          >
+            {createPowerHourInProgress
+              ? 'Generating...'
+              : 'Generate spreadsheet'}
           </Button>
         </Form>
       </Modal.Body>

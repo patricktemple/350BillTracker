@@ -413,7 +413,7 @@ def create_spreadsheet(bill_id):
         bill_id=bill_id,
         spreadsheet_url=spreadsheet["spreadsheetUrl"],
         spreadsheet_id=spreadsheet["spreadsheetId"],
-        name=data['name'],
+        name=data["name"],
     )
     db.session.add(power_hour)
     db.session.commit()
