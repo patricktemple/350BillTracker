@@ -59,7 +59,7 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
 
     setCreatePowerHourInProgress(true);
     apiFetch(
-      `/api/saved-bills/${props.bill.id}/create-phone-bank-spreadsheet`,
+      `/api/saved-bills/${props.bill.id}/power-hours`,
       {
         method: 'POST',
         body: {

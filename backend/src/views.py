@@ -364,8 +364,8 @@ def delete_bill_attachment(attachment_id):
 
 
 class PowerHourSchema(CamelCaseSchema):
-    id = fields.String(dump_only=True)
-    power_hour_id_to_import = fields.Integer(load_only=True, missing=None)
+    id = fields.UUID(dump_only=True)
+    power_hour_id_to_import = fields.UUID(load_only=True, missing=None)
 
     bill_id = fields.Integer(dump_only=True)
     title = fields.String()
@@ -389,10 +389,9 @@ def bill_power_hours(bill_id):
     return PowerHourSchema(many=True).jsonify(power_hours)
 
 
-# TODO: Rename phone bank to power hour for consistency
 # TODO: Migrate existing power hours
 @app.route(
-    "/api/saved-bills/<int:bill_id>/create-phone-bank-spreadsheet",
+    "/api/saved-bills/<int:bill_id>/power-hours",
     methods=["POST"],
 )
 @auth_required
