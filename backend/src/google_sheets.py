@@ -254,6 +254,7 @@ def create_power_hour(
         import_data = _extract_data_from_previous_power_hour(
             old_spreadsheet_to_import
         )
+        logging.info(import_data)
     else:
         import_data = None
 
@@ -291,16 +292,14 @@ def _get_raw_cell_data(spreadsheet):
     2D array of cell data strings."""
     row_data = spreadsheet["sheets"][0]["data"][0]["rowData"]
 
-    def get_data(column):
-        if "effectiveValue" in column:
-            return column["effectiveValue"][
-                "stringValue"
-            ]  # TODO research best way for all this
+    def get_data(cell):
+        if "formattedValue" in cell:
+            return cell["formattedValue"]
         return ""
 
     def get_columns(row):
         if "values" in row:
-            return [get_data(column) for column in row["values"]]
+            return [get_data(cell) for cell in row["values"]]
         return []
 
     return [get_columns(row) for row in row_data]
@@ -310,6 +309,9 @@ def _extract_data_from_previous_spreadsheet(
     spreadsheet_cells,
 ) -> PowerHourImportData:
     import_messages = []
+
+    if not spreadsheet_cells:
+        return PowerHourImportData(None, None, ["Old spreadsheet was empty"])
 
     title_row = spreadsheet_cells[0]
     data_rows = spreadsheet_cells[1:]
@@ -354,16 +356,17 @@ def _extract_data_from_previous_spreadsheet(
         import_messages.append(
             f"Did not find any extra columns in the old sheet to import"
         )
+    logging.info(extra_columns_by_legislator_name)
 
     # Now rekey by legislator ID
     legislators = Legislator.query.all()
     column_data_by_legislator_id: Dict[int, Dict[str, str]] = {}
     for legislator in legislators:
-        legislator_data = extra_columns_by_legislator_name.get(
-            legislator.name
-        ) or extra_columns_by_legislator_name.get(
-            _get_sponsor_name_text(legislator.name, True)
-        )
+        legislator_data = extra_columns_by_legislator_name.get(legislator.name)
+        if legislator_data is None:
+            legislator_data = extra_columns_by_legislator_name.get(
+                _get_sponsor_name_text(legislator.name, True)
+            )
         if legislator_data is not None:
             column_data_by_legislator_id[legislator.id] = legislator_data
         else:
