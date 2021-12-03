@@ -396,11 +396,6 @@ def bill_power_hours(bill_id):
 )
 @auth_required
 def create_spreadsheet(bill_id):
-    # this will now be a two-phase step, from client perspective:
-    # 1. fetch list of possible power hours (this can be done at page load time when loading power hours)
-    # 2. show a modal asking which one to use
-    # 3. use that one her
-    logging.info(request.json)
     data = PowerHourSchema().load(request.json)
     power_hour_id_to_import = data.get("power_hour_id_to_import")
     if power_hour_id_to_import:
@@ -413,9 +408,6 @@ def create_spreadsheet(bill_id):
     spreadsheet, messages = create_power_hour(
         bill_id, data["title"], old_spreadsheet_id
     )
-
-    # TODO: What to do if the old power hour sheet's format is old, and the app now uses a new format?
-    # I should just be careful to solidify it first... could version things but that's too much work
 
     power_hour = PowerHour(
         bill_id=bill_id,

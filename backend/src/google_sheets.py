@@ -8,8 +8,11 @@ from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from sqlalchemy.orm import selectinload
 from werkzeug import exceptions
+from dataclasses import dataclass
+from typing import List, Dict, Optional, Tuple
+from src.models import Legislator, Bill
 
-from src import app, models, settings, twitter
+from src import app, settings, twitter
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -56,6 +59,7 @@ COLUMN_WIDTHS = [
 ]
 
 
+# TODO: Make this a dataclass
 class Cell:
     value = None  # str
     link_url = None  # str
@@ -65,6 +69,15 @@ class Cell:
         self.value = value
         self.link_url = link_url
         self.bold = bold
+
+
+@dataclass
+class PowerHourImportData:
+    """TODO comment"""
+
+    extra_column_titles: List[str]
+    column_data_by_legislator_name: Dict[str, Dict[str, str]]
+    import_messages: List[str]
 
 
 def _get_google_credentials():
@@ -103,12 +116,10 @@ def _create_row_data(cells):
 
 # maybe consolidate the extra column stuff into a single object
 def _create_legislator_row(
-    legislator,
-    bill,
-    extra_column_titles,
-    extra_column_data,
-    output_messages,
-    is_lead_sponsor=False,
+    legislator: Legislator,
+    bill: Bill,
+    import_data: PowerHourImportData,
+    is_lead_sponsor: bool = False,
 ):
     staffer_strings = [s.display_string for s in legislator.staffers]
     staffer_text = "\n\n".join(staffer_strings)
@@ -133,14 +144,15 @@ def _create_legislator_row(
         Cell(staffer_text),
         Cell(legislator.notes or ""),
     ]
-    legislator_data = extra_column_data.get(legislator.name)
+    legislator_data = import_data.column_data_by_legislator_name.get(legislator.name)
     if legislator_data is not None:
-        for extra_column in extra_column_titles:
+        for extra_column in import_data.extra_column_titles:
             text = legislator_data.get(extra_column, "")
             cells.append(Cell(text))
     else:
         # TODO: Make sure this doesn't appear when there's no sheet at all
-        output_messages.append(
+        # IT's weird that this is now modifying the import data... :/
+        import_data.import_messages.append(
             f"Could not find {legislator.name} under the Name column in the old sheet. Make sure the name matches exactly. This person did not have any extra fields copied."
         )
         logging.warning(
@@ -159,15 +171,13 @@ def _create_phone_bank_spreadsheet_data(
     sheet_title,
     sponsorships,
     non_sponsors,
-    extra_column_titles,
-    extra_column_data,
-    output_messages,
+    import_data: PowerHourImportData
 ):
     """Generates the full body payload that the Sheets API requires for a
     phone bank spreadsheet."""
     rows = [
         _create_title_row_data(
-            COLUMN_TITLES + extra_column_titles,
+            COLUMN_TITLES + import_data.extra_column_titles,
         ),
         _create_title_row_data(["NON-SPONSORS"]),
     ]
@@ -176,9 +186,7 @@ def _create_phone_bank_spreadsheet_data(
             _create_legislator_row(
                 legislator,
                 bill,
-                extra_column_titles,
-                extra_column_data,
-                output_messages,
+                import_data
             )
         )
 
@@ -190,9 +198,7 @@ def _create_phone_bank_spreadsheet_data(
             _create_legislator_row(
                 sponsorship.legislator,
                 bill,
-                extra_column_titles,
-                extra_column_data,
-                output_messages,
+                import_data,
                 sponsorship.sponsor_sequence == 0,
             )
         )
@@ -214,15 +220,15 @@ def get_sort_key(legislator):
     return (sort_key, legislator.name)
 
 
-def create_power_hour(bill_id, power_hour_title, old_spreadsheet_to_import):
+def create_power_hour(bill_id: int, power_hour_title: str, old_spreadsheet_to_import: str) -> Tuple[Dict, List[str]]:
     """Creates a spreadsheet that's a template to run a phone bank
     for a specific bill, based on its current sponsors. The sheet will be
     owned by a robot Google account and will be made publicly editable by
     anyone with the link."""
     bill = (
-        models.Bill.query.filter_by(id=bill_id)
+        Bill.query.filter_by(id=bill_id)
         .options(
-            selectinload(models.Bill.sponsorships),
+            selectinload(Bill.sponsorships),
             selectinload("sponsorships.legislator.staffers"),
         )
         .one()
@@ -234,30 +240,22 @@ def create_power_hour(bill_id, power_hour_title, old_spreadsheet_to_import):
     )
 
     sponsor_ids = [s.legislator_id for s in sponsorships]
-    non_sponsors = models.Legislator.query.filter(
-        models.Legislator.id.not_in(sponsor_ids)
+    non_sponsors = Legislator.query.filter(
+        Legislator.id.not_in(sponsor_ids)
     ).all()
     non_sponsors = sorted(non_sponsors, key=get_sort_key)
 
-    extra_column_titles = []
-    extra_column_data = {}
     if old_spreadsheet_to_import:
-        (
-            extra_column_titles,
-            extra_column_data,
-            output_messages,
-        ) = _extract_data_from_previous_power_hour(old_spreadsheet_to_import)
+        import_data = _extract_data_from_previous_power_hour(old_spreadsheet_to_import)
     else:
-        output_messages = []
+        import_data = None
 
     spreadsheet_data = _create_phone_bank_spreadsheet_data(
         bill,
         power_hour_title,
         sponsorships,
         non_sponsors,
-        extra_column_titles,
-        extra_column_data,
-        output_messages,
+        import_data
     )
 
     google_credentials = _get_google_credentials()
@@ -279,12 +277,12 @@ def create_power_hour(bill_id, power_hour_title, old_spreadsheet_to_import):
         fields="id",
     ).execute()
 
-    output_messages.append("Spreadsheet was created")
+    import_data.import_messages.append("Spreadsheet was created")
 
-    return (spreadsheet_result, output_messages)
+    return (spreadsheet_result, import_data.import_messages)
 
 
-def _extract_data_from_previous_power_hour(spreadsheet_id):
+def _extract_data_from_previous_power_hour(spreadsheet_id) -> Optional[PowerHourImportData]:
     google_credentials = _get_google_credentials()
     sheets_service = _get_sheets_service(google_credentials)
 
@@ -315,15 +313,6 @@ def _extract_data_from_previous_power_hour(spreadsheet_id):
     title_row = raw_cell_data[0]
     data_rows = raw_cell_data[1:]
 
-    # Data structure I want:
-    # { legislator_name: {
-    #       extra_column_title_1: extra_column_value,
-    #       extra_column_title_2: extra_column_value
-    # }
-    # }
-
-    # then, when generating, for each legislator I can add the value for each extra column name
-
     column_title_set = set(COLUMN_TITLES)
     extra_column_titles = []  # tuple: (id, text)
     name_column_index = None
@@ -342,7 +331,7 @@ def _extract_data_from_previous_power_hour(spreadsheet_id):
         logging.warning(
             f"Could not find Name column in spreadsheet {spreadsheet_id}. Title columns were {','.join(title_row)}"
         )
-        return ([], {}, import_messages)
+        return None
 
     data = {}
     for row in data_rows:
@@ -369,13 +358,4 @@ def _extract_data_from_previous_power_hour(spreadsheet_id):
         # TODO: The fact that we don't validate the set of council members on the spot means that if
         # we want to have messages about "cannot find council member" then that logic is separated into create_spreadsheet
         # which seems weird?
-    result = (titles, data, import_messages)
-    print(result, flush=True)
-    return result
-
-    # Now, for each title row, look for:
-    # Name
-    # Any other rows that are auto-generated
-    # Any other rows we don't know about
-    # Build a map of the values in the last one
-    # Then make a representation of this that can be inserted into future spreadsheets
+    return PowerHourImportData(extra_column_titles=titles, column_data_by_legislator_name=data, import_messages=import_messages)
