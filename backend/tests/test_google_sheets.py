@@ -16,7 +16,9 @@ from src.utils import now
 
 @patch("src.google_sheets.Credentials")
 @patch("src.google_sheets.build")
-def test_generate_google_sheet__no_import(mock_build, mock_credentials, snapshot):
+def test_generate_google_sheet__no_import(
+    mock_build, mock_credentials, snapshot
+):
     mock_sheets_service = MagicMock()
     mock_drive_service = MagicMock()
 
@@ -56,9 +58,7 @@ def test_generate_google_sheet__no_import(mock_build, mock_credentials, snapshot
     )
     assert messages == ["Spreadsheet was created"]
 
-    mock_sheets_service.spreadsheets().create.assert_called_with(
-        body=snapshot
-    )
+    mock_sheets_service.spreadsheets().create.assert_called_with(body=snapshot)
     mock_sheets_service.spreadsheets().create().execute.assert_called()
 
     mock_drive_service.permissions().create.assert_called_with(
@@ -70,7 +70,9 @@ def test_generate_google_sheet__no_import(mock_build, mock_credentials, snapshot
 
 @patch("src.google_sheets.Credentials")
 @patch("src.google_sheets.build")
-def test_generate_google_sheet__with_import(mock_build, mock_credentials, snapshot):
+def test_generate_google_sheet__with_import(
+    mock_build, mock_credentials, snapshot
+):
     mock_sheets_service = MagicMock()
     mock_drive_service = MagicMock()
 
@@ -141,9 +143,7 @@ def test_generate_google_sheet__with_import(mock_build, mock_credentials, snapsh
 
     # TODO: Assert on the contents of the body that's passed in, not just the snapshot.
     # Needs a matcher.
-    mock_sheets_service.spreadsheets().create.assert_called_with(
-        body=snapshot
-    )
+    mock_sheets_service.spreadsheets().create.assert_called_with(body=snapshot)
     mock_sheets_service.spreadsheets().create().execute.assert_called()
 
 
