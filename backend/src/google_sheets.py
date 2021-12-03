@@ -32,6 +32,7 @@ COLUMN_TITLES = [
     "Staffers",
     "Notes",
 ]
+COLUMN_TITLE_SET = set(COLUMN_TITLES)
 
 BOROUGH_SORT_TABLE = {
     "Brooklyn": 0,
@@ -76,7 +77,7 @@ class PowerHourImportData:
     """TODO comment"""
 
     extra_column_titles: List[str]
-    column_data_by_legislator_name: Dict[str, Dict[str, str]]
+    column_data_by_legislator_id: Dict[id, Dict[str, str]]
     import_messages: List[str]
 
 
@@ -144,21 +145,16 @@ def _create_legislator_row(
         Cell(staffer_text),
         Cell(legislator.notes or ""),
     ]
-    legislator_data = import_data.column_data_by_legislator_name.get(
-        legislator.name
+    legislator_data = import_data.column_data_by_legislator_id.get(
+        legislator.id
     )
     if legislator_data is not None:
         for extra_column in import_data.extra_column_titles:
             text = legislator_data.get(extra_column, "")
             cells.append(Cell(text))
     else:
-        # TODO: Make sure this doesn't appear when there's no sheet at all
-        # IT's weird that this is now modifying the import data... :/
-        import_data.import_messages.append(
-            f"Could not find {legislator.name} under the Name column in the old sheet. Make sure the name matches exactly. This person did not have any extra fields copied."
-        )
         logging.warning(
-            f"No legislator data for {legislator.name} in old sheet"
+            f"No legislator data for {legislator.name} in import data"
         )
     return _create_row_data(cells)
 
@@ -278,20 +274,9 @@ def create_power_hour(
     return (spreadsheet_result, import_data.import_messages)
 
 
-def _extract_data_from_previous_power_hour(
-    spreadsheet_id,
-) -> Optional[PowerHourImportData]:
-    google_credentials = _get_google_credentials()
-    sheets_service = _get_sheets_service(google_credentials)
-
-    import_messages = []
-
-    # TODO: Use a field mask instead of includeGridData=true to return less data
-    spreadsheet = (
-        sheets_service.spreadsheets()
-        .get(spreadsheetId=spreadsheet_id, includeGridData=True)
-        .execute()
-    )
+def _get_raw_cell_data(spreadsheet):
+    """Takes in a deeply nested Google Spreadsheet object and simplifies it into a
+        2D array of cell data strings."""
     row_data = spreadsheet["sheets"][0]["data"][0]["rowData"]
 
     def get_data(column):
@@ -306,17 +291,35 @@ def _extract_data_from_previous_power_hour(
             return [get_data(column) for column in row["values"]]
         return []
 
-    raw_cell_data = [get_columns(row) for row in row_data]
+    return [get_columns(row) for row in row_data]
+
+def _extract_data_from_previous_power_hour(
+    spreadsheet_id,
+) -> Optional[PowerHourImportData]:
+    google_credentials = _get_google_credentials()
+    sheets_service = _get_sheets_service(google_credentials)
+
+    import_messages = []
+
+    # TODO: Use a field mask instead of includeGridData=true to return less data
+    spreadsheet = (
+        sheets_service.spreadsheets()
+        .get(spreadsheetId=spreadsheet_id, includeGridData=True)
+        .execute()
+    )
+
+    raw_cell_data = _get_raw_cell_data(spreadsheet)
 
     title_row = raw_cell_data[0]
     data_rows = raw_cell_data[1:]
 
-    column_title_set = set(COLUMN_TITLES)
-    extra_column_titles = []  # tuple: (id, text)
+    # Look through the column titles, pick out the Name column and any other
+    # columns that aren't part of the standard set. We'll copy those over.
+    extra_column_title_indices: Tuple[int, str] = []
     name_column_index = None
     for i, title in enumerate(title_row):
-        if title not in column_title_set:
-            extra_column_titles.append((i, title))
+        if title not in COLUMN_TITLE_SET:
+            extra_column_title_indices.append((i, title))
         elif (
             title == "Name"
         ):  # note this fails to match the lead sponsor who has "lead" after their name
@@ -331,20 +334,20 @@ def _extract_data_from_previous_power_hour(
         )
         return None
 
-    data = {}
+    extra_columns_by_legislator_name: Dict[str, Dict[str, str]] = {}
     for row in data_rows:
         if (
             name_column_index < len(row)
             and (name := row[name_column_index]) is not None
         ):
             # Ignore empty rows, they might just be for space
-            legislator = {}
-            for index, extra_column_title in extra_column_titles:
+            legislator_extra_columns: Dict[str, str] = {}
+            for index, extra_column_title in extra_column_title_indices:
                 if index < len(row):
-                    legislator[extra_column_title] = row[index]
-            data[name] = legislator
+                    legislator_extra_columns[extra_column_title] = row[index]
+            extra_columns_by_legislator_name[name] = legislator_extra_columns
 
-    titles = [title[1] for title in extra_column_titles]
+    titles = [column[1] for column in extra_column_title_indices]
     if titles:
         for title in titles:
             import_messages.append(f"Copied column '{title}' to new sheet")
@@ -353,11 +356,23 @@ def _extract_data_from_previous_power_hour(
             f"Did not find any extra columns in the old sheet to import"
         )
 
-        # TODO: The fact that we don't validate the set of council members on the spot means that if
-        # we want to have messages about "cannot find council member" then that logic is separated into create_spreadsheet
-        # which seems weird?
+    # Now rekey by legislator ID
+    legislators = Legislator.query.all()
+    column_data_by_legislator_id: Dict[int, Dict[str, str]] = {}
+    for legislator in legislators:
+        legislator_data = extra_columns_by_legislator_name.get(legislator.name)
+        if legislator_data is not None:
+            column_data_by_legislator_id[legislator.id] = legislator_data
+        else:
+            import_messages.append(
+            f"Could not find {legislator.name} under the Name column in the old sheet. Make sure the name matches exactly. This person did not have any extra fields copied."
+        )
+    
+    logging.info(extra_columns_by_legislator_name)
+    logging.info(column_data_by_legislator_id)
+
     return PowerHourImportData(
         extra_column_titles=titles,
-        column_data_by_legislator_name=data,
+        column_data_by_legislator_id=column_data_by_legislator_id,
         import_messages=import_messages,
     )
