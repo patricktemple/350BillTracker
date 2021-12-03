@@ -1,6 +1,7 @@
 import json
 from re import L
 from unittest.mock import MagicMock, patch
+
 import pytest
 
 from src import app
@@ -11,7 +12,6 @@ from src.google_sheets import (
 )
 from src.models import Bill, BillSponsorship, Legislator, PowerHour, db
 from src.utils import now
-
 
 
 @patch("src.google_sheets.Credentials")
