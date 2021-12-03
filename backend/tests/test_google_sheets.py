@@ -1,21 +1,26 @@
+import json
 from re import L
 from unittest.mock import MagicMock, patch
+import pytest
 
 from src import app
 from src.google_sheets import (
+    _extract_data_from_previous_power_hour,
     _extract_data_from_previous_spreadsheet,
     create_power_hour,
 )
-from src.models import Bill, BillSponsorship, Legislator, db
+from src.models import Bill, BillSponsorship, Legislator, PowerHour, db
 from src.utils import now
+
 
 
 @patch("src.google_sheets.Credentials")
 @patch("src.google_sheets.build")
-def test_generate_google_sheet(mock_build, mock_credentials):
+def test_generate_google_sheet__no_import(mock_build, mock_credentials):
     mock_sheets_service = MagicMock()
     mock_drive_service = MagicMock()
 
+    # TODO: Figure out how to reuse this as a fixture
     def side_effect(service, version, credentials=None):
         if service == "sheets":
             return mock_sheets_service
@@ -46,9 +51,10 @@ def test_generate_google_sheet(mock_build, mock_credentials):
         "spreadsheetId": "test_spreadsheet"
     }
 
-    create_power_hour(
+    _, messages = create_power_hour(
         1234, title="My power hour", old_spreadsheet_to_import=None
     )
+    assert messages == ["Spreadsheet was created"]
 
     # TODO: Use a snapshot or something
     expected_data = {
@@ -325,30 +331,519 @@ def test_generate_google_sheet(mock_build, mock_credentials):
     )
 
 
+@patch("src.google_sheets.Credentials")
+@patch("src.google_sheets.build")
+def test_generate_google_sheet__with_import(mock_build, mock_credentials):
+    mock_sheets_service = MagicMock()
+    mock_drive_service = MagicMock()
+
+    # TODO: Share this setup in a fixture
+    def side_effect(service, version, credentials=None):
+        if service == "sheets":
+            return mock_sheets_service
+        if service == "drive":
+            return mock_drive_service
+        raise ValueError("wrong service")
+
+    mock_build.side_effect = side_effect
+
+    mock_sheets_service.spreadsheets.return_value.get.return_value.execute.return_value = {
+        "sheets": [
+            {
+                "data": [
+                    {
+                        "rowData": [
+                            {
+                                "values": [
+                                    {"formattedValue": "Name"},
+                                    {"formattedValue": "Extra column"},
+                                ]
+                            },
+                            {
+                                "values": [
+                                    {"formattedValue": "Brad Lander"},
+                                    {"formattedValue": "Called"},
+                                ]
+                            },
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+
+    bill = Bill(
+        id=1234,
+        file="Intro 3",
+        name="Ban oil",
+        title="Ban all oil",
+        intro_date=now(),
+    )
+    db.session.add(bill)
+
+    non_sponsor = Legislator(id=1, name="Missing Person")
+    sponsor = Legislator(id=2, name="Brad Lander")
+    db.session.add(sponsor)
+    db.session.add(non_sponsor)
+
+    db.session.add(BillSponsorship(legislator_id=sponsor.id, bill_id=bill.id))
+    db.session.commit()
+
+    mock_sheets_service.spreadsheets().create().execute.return_value = {
+        "spreadsheetId": "test_spreadsheet"
+    }
+
+    _, messages = create_power_hour(
+        1234, title="My power hour", old_spreadsheet_to_import="123"
+    )
+    assert messages == [
+        "Copied column 'Extra column' to new sheet",
+        "Could not find Missing Person under the Name column in the old sheet. Make sure the name matches exactly.",
+        "Spreadsheet was created",
+    ]
+
+    # TODO: Use a snapshot or something
+    expected_data = {
+        "properties": {"title": "My power hour"},
+        "sheets": [
+            {
+                "properties": {"gridProperties": {"frozenRowCount": 1}},
+                "data": {
+                    "rowData": [
+                        {
+                            "values": [
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {"stringValue": ""},
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Name"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Email"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Party"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Borough"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "District Phone"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Legislative Phone"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Twitter"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Twitter search\nNote: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this."
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Staffers"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Notes"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Extra column"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                            ]
+                        },
+                        {
+                            "values": [
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "NON-SPONSORS"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                }
+                            ]
+                        },
+                        {
+                            "values": [
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {"stringValue": ""},
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Missing Person"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "None"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "None"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "None"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "None"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "None"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {"stringValue": ""},
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {"stringValue": ""},
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {"stringValue": ""},
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {"stringValue": ""},
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                            ]
+                        },
+                        {"values": []},
+                        {
+                            "values": [
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "SPONSORS"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                }
+                            ]
+                        },
+                        {
+                            "values": [
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {"stringValue": ""},
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Brad Lander"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "None"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "None"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "None"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "None"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "None"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {"stringValue": ""},
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {"stringValue": ""},
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {"stringValue": ""},
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {"stringValue": ""},
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Called"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": False},
+                                    },
+                                },
+                            ]
+                        },
+                    ],
+                    "columnMetadata": [
+                        {"pixelSize": 150},
+                        {"pixelSize": 150},
+                        {"pixelSize": 200},
+                        {"pixelSize": 50},
+                        {"pixelSize": 100},
+                        {"pixelSize": 100},
+                        {"pixelSize": 150},
+                        {"pixelSize": 200},
+                        {"pixelSize": 250},
+                        {"pixelSize": 250},
+                    ],
+                },
+            }
+        ],
+    }
+    assert "Called" in json.dumps(
+        expected_data
+    )  # SUPER dumb to assert on this, use a matcher
+    assert "Extra column" in json.dumps(expected_data)
+    mock_sheets_service.spreadsheets().create.assert_called_with(
+        body=expected_data
+    )
+    mock_sheets_service.spreadsheets().create().execute.assert_called()
+
+
 # # TODO Add test for creating a google sheet with imported data
 # # Then add tests for importing data:
 # # When it has no columns to import
 # # When it can't find the name field
 # # When it finds the name, and some legislators are present and some are not
-# @patch("src.google_sheets.Credentials")
-# @patch("src.google_sheets.build")
-# def test_extract_data_from_previous_power_hour(mock_build, mock_credentials):
-#     mock_sheets_service = MagicMock()
+@patch("src.google_sheets.Credentials")
+@patch("src.google_sheets.build")
+def test_extract_data_from_previous_power_hour(mock_build, mock_credentials):
+    mock_sheets_service = MagicMock()
 
-#     # TODO share this with function above
-#     def side_effect(service, version, credentials=None):
-#         if service == "sheets":
-#             return mock_sheets_service
-#         raise ValueError("wrong service")
+    mock_build.return_value = mock_sheets_service
+    mock_sheets_service.spreadsheets.return_value.get.return_value.execute.return_value = {
+        "sheets": [
+            {
+                "data": [
+                    {
+                        "rowData": [
+                            {
+                                "values": [
+                                    {"formattedValue": "Name"},
+                                    {"formattedValue": "Extra column"},
+                                ]
+                            },
+                            {
+                                "values": [
+                                    {"formattedValue": "Brad Lander"},
+                                    {"formattedValue": "Called"},
+                                ]
+                            },
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
 
-#     mock_build.side_effect = side_effect
-
-#     # TODO: Use a field mask instead of includeGridData=true to return less data
-#     spreadsheet = (
-#         sheets_service.spreadsheets()
-#         .get(spreadsheetId=spreadsheet_id, includeGridData=True)
-#         .execute()
-#     )
+    result = _extract_data_from_previous_power_hour("abc")
+    print(result)
 
 
 def test_extract_data_from_previous_spreadsheet():
