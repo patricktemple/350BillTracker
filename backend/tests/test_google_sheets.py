@@ -139,49 +139,12 @@ def test_generate_google_sheet__with_import(mock_build, mock_credentials, snapsh
         "Spreadsheet was created",
     ]
 
-    # assert "Called" in json.dumps(
-    #     expected_data
-    # )  # SUPER dumb to assert on this, use a matcher
-    # assert "Extra column" in json.dumps(expected_data)
+    # TODO: Assert on the contents of the body that's passed in, not just the snapshot.
+    # Needs a matcher.
     mock_sheets_service.spreadsheets().create.assert_called_with(
         body=snapshot
     )
     mock_sheets_service.spreadsheets().create().execute.assert_called()
-
-
-@patch("src.google_sheets.Credentials")
-@patch("src.google_sheets.build")
-def test_extract_data_from_previous_power_hour(mock_build, mock_credentials):
-    mock_sheets_service = MagicMock()
-
-    mock_build.return_value = mock_sheets_service
-    mock_sheets_service.spreadsheets.return_value.get.return_value.execute.return_value = {
-        "sheets": [
-            {
-                "data": [
-                    {
-                        "rowData": [
-                            {
-                                "values": [
-                                    {"formattedValue": "Name"},
-                                    {"formattedValue": "Extra column"},
-                                ]
-                            },
-                            {
-                                "values": [
-                                    {"formattedValue": "Brad Lander"},
-                                    {"formattedValue": "Called"},
-                                ]
-                            },
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
-
-    result = _extract_data_from_previous_power_hour("abc")
-    print(result)
 
 
 def test_extract_data_from_previous_spreadsheet():
