@@ -34,9 +34,6 @@
             <class 'dict'> {
               'pixelSize': 250,
             },
-            <class 'dict'> {
-              'pixelSize': 250,
-            },
           ],
           'rowData': <class 'list'> [
             <class 'dict'> {
@@ -164,18 +161,6 @@
                     'stringValue': 'Staffers',
                   },
                 },
-                <class 'dict'> {
-                  'textFormatRuns': None,
-                  'userEnteredFormat': <class 'dict'> {
-                    'textFormat': <class 'dict'> {
-                      'bold': True,
-                    },
-                    'wrapStrategy': 'WRAP',
-                  },
-                  'userEnteredValue': <class 'dict'> {
-                    'stringValue': 'Notes',
-                  },
-                },
               ],
             },
             <class 'dict'> {
@@ -278,18 +263,6 @@
                   },
                   'userEnteredValue': <class 'dict'> {
                     'stringValue': 'None',
-                  },
-                },
-                <class 'dict'> {
-                  'textFormatRuns': None,
-                  'userEnteredFormat': <class 'dict'> {
-                    'textFormat': <class 'dict'> {
-                      'bold': False,
-                    },
-                    'wrapStrategy': 'WRAP',
-                  },
-                  'userEnteredValue': <class 'dict'> {
-                    'stringValue': '',
                   },
                 },
                 <class 'dict'> {
@@ -472,18 +445,6 @@
                     'stringValue': '',
                   },
                 },
-                <class 'dict'> {
-                  'textFormatRuns': None,
-                  'userEnteredFormat': <class 'dict'> {
-                    'textFormat': <class 'dict'> {
-                      'bold': False,
-                    },
-                    'wrapStrategy': 'WRAP',
-                  },
-                  'userEnteredValue': <class 'dict'> {
-                    'stringValue': '',
-                  },
-                },
               ],
             },
           ],
@@ -529,9 +490,6 @@
             },
             <class 'dict'> {
               'pixelSize': 200,
-            },
-            <class 'dict'> {
-              'pixelSize': 250,
             },
             <class 'dict'> {
               'pixelSize': 250,
@@ -661,18 +619,6 @@
                   },
                   'userEnteredValue': <class 'dict'> {
                     'stringValue': 'Staffers',
-                  },
-                },
-                <class 'dict'> {
-                  'textFormatRuns': None,
-                  'userEnteredFormat': <class 'dict'> {
-                    'textFormat': <class 'dict'> {
-                      'bold': True,
-                    },
-                    'wrapStrategy': 'WRAP',
-                  },
-                  'userEnteredValue': <class 'dict'> {
-                    'stringValue': 'Notes',
                   },
                 },
                 <class 'dict'> {
@@ -827,18 +773,6 @@
                     'stringValue': '',
                   },
                 },
-                <class 'dict'> {
-                  'textFormatRuns': None,
-                  'userEnteredFormat': <class 'dict'> {
-                    'textFormat': <class 'dict'> {
-                      'bold': False,
-                    },
-                    'wrapStrategy': 'WRAP',
-                  },
-                  'userEnteredValue': <class 'dict'> {
-                    'stringValue': '',
-                  },
-                },
               ],
             },
             <class 'dict'> {
@@ -945,18 +879,6 @@
                   },
                   'userEnteredValue': <class 'dict'> {
                     'stringValue': 'None',
-                  },
-                },
-                <class 'dict'> {
-                  'textFormatRuns': None,
-                  'userEnteredFormat': <class 'dict'> {
-                    'textFormat': <class 'dict'> {
-                      'bold': False,
-                    },
-                    'wrapStrategy': 'WRAP',
-                  },
-                  'userEnteredValue': <class 'dict'> {
-                    'stringValue': '',
                   },
                 },
                 <class 'dict'> {
