@@ -12,6 +12,7 @@ attrs==21.2.0
     # via
     #   flake8-bugbear
     #   pytest
+    #   syrupy
 black==21.6b0
     # via fourmat
 boto3==1.18.53
@@ -33,6 +34,8 @@ click==8.0.1
     #   black
     #   flask
     #   fourmat
+colored==1.4.3
+    # via syrupy
 cryptography==3.4.8
     # via pyjwt
 flake8==3.9.2
@@ -144,6 +147,7 @@ pytest==6.2.5
     # via
     #   -r requirements.in
     #   pytest-dotenv
+    #   syrupy
 pytest-dotenv==0.5.2
     # via -r requirements.in
 python-dateutil==2.8.2
@@ -180,6 +184,8 @@ sqlalchemy==1.4.25
     #   alembic
     #   flask-sqlalchemy
     #   marshmallow-sqlalchemy
+syrupy==1.5.0
+    # via -r requirements.in
 toml==0.10.2
     # via
     #   black

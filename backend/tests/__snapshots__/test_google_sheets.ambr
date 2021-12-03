@@ -1,0 +1,1022 @@
+# name: test_generate_google_sheet__no_import
+  <class 'dict'> {
+    'properties': <class 'dict'> {
+      'title': 'My power hour',
+    },
+    'sheets': <class 'list'> [
+      <class 'dict'> {
+        'data': <class 'dict'> {
+          'columnMetadata': <class 'list'> [
+            <class 'dict'> {
+              'pixelSize': 150,
+            },
+            <class 'dict'> {
+              'pixelSize': 150,
+            },
+            <class 'dict'> {
+              'pixelSize': 200,
+            },
+            <class 'dict'> {
+              'pixelSize': 50,
+            },
+            <class 'dict'> {
+              'pixelSize': 100,
+            },
+            <class 'dict'> {
+              'pixelSize': 100,
+            },
+            <class 'dict'> {
+              'pixelSize': 150,
+            },
+            <class 'dict'> {
+              'pixelSize': 200,
+            },
+            <class 'dict'> {
+              'pixelSize': 250,
+            },
+            <class 'dict'> {
+              'pixelSize': 250,
+            },
+          ],
+          'rowData': <class 'list'> [
+            <class 'dict'> {
+              'values': <class 'list'> [
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Name',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Email',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Party',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Borough',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'District Phone',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Legislative Phone',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Twitter',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '
+                      Twitter search
+                      Note: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.
+                    ',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Staffers',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Notes',
+                  },
+                },
+              ],
+            },
+            <class 'dict'> {
+              'values': <class 'list'> [
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'NON-SPONSORS',
+                  },
+                },
+              ],
+            },
+            <class 'dict'> {
+              'values': <class 'list'> [
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Non sponsor',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+              ],
+            },
+            <class 'dict'> {
+              'values': <class 'list'> [
+              ],
+            },
+            <class 'dict'> {
+              'values': <class 'list'> [
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'SPONSORS',
+                  },
+                },
+              ],
+            },
+            <class 'dict'> {
+              'values': <class 'list'> [
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Sponsor',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        'properties': <class 'dict'> {
+          'gridProperties': <class 'dict'> {
+            'frozenRowCount': 1,
+          },
+        },
+      },
+    ],
+  }
+---
+# name: test_generate_google_sheet__with_import
+  <class 'dict'> {
+    'properties': <class 'dict'> {
+      'title': 'My power hour',
+    },
+    'sheets': <class 'list'> [
+      <class 'dict'> {
+        'data': <class 'dict'> {
+          'columnMetadata': <class 'list'> [
+            <class 'dict'> {
+              'pixelSize': 150,
+            },
+            <class 'dict'> {
+              'pixelSize': 150,
+            },
+            <class 'dict'> {
+              'pixelSize': 200,
+            },
+            <class 'dict'> {
+              'pixelSize': 50,
+            },
+            <class 'dict'> {
+              'pixelSize': 100,
+            },
+            <class 'dict'> {
+              'pixelSize': 100,
+            },
+            <class 'dict'> {
+              'pixelSize': 150,
+            },
+            <class 'dict'> {
+              'pixelSize': 200,
+            },
+            <class 'dict'> {
+              'pixelSize': 250,
+            },
+            <class 'dict'> {
+              'pixelSize': 250,
+            },
+          ],
+          'rowData': <class 'list'> [
+            <class 'dict'> {
+              'values': <class 'list'> [
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Name',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Email',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Party',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Borough',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'District Phone',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Legislative Phone',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Twitter',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '
+                      Twitter search
+                      Note: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.
+                    ',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Staffers',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Notes',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Extra column',
+                  },
+                },
+              ],
+            },
+            <class 'dict'> {
+              'values': <class 'list'> [
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'NON-SPONSORS',
+                  },
+                },
+              ],
+            },
+            <class 'dict'> {
+              'values': <class 'list'> [
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Missing Person',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+              ],
+            },
+            <class 'dict'> {
+              'values': <class 'list'> [
+              ],
+            },
+            <class 'dict'> {
+              'values': <class 'list'> [
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'SPONSORS',
+                  },
+                },
+              ],
+            },
+            <class 'dict'> {
+              'values': <class 'list'> [
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Brad Lander',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Called',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        'properties': <class 'dict'> {
+          'gridProperties': <class 'dict'> {
+            'frozenRowCount': 1,
+          },
+        },
+      },
+    ],
+  }
+---
