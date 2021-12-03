@@ -15,13 +15,14 @@ from .app import marshmallow as ma
 from .auth import auth_required, create_jwt
 from .council_api import lookup_bill, lookup_bills
 from .council_sync import update_bill_sponsorships
-from .google_sheets import create_phone_bank_spreadsheet
+from .google_sheets import create_power_hour
 from .models import (
     Bill,
     BillAttachment,
     BillSponsorship,
     Legislator,
     LoginLink,
+    PowerHour,
     Staffer,
     User,
     db,
@@ -362,21 +363,63 @@ def delete_bill_attachment(attachment_id):
     return jsonify({})
 
 
+class PowerHourSchema(CamelCaseSchema):
+    id = fields.UUID(dump_only=True)
+    power_hour_id_to_import = fields.UUID(load_only=True, missing=None)
+
+    bill_id = fields.Integer(dump_only=True)
+    title = fields.String()
+    spreadsheet_url = fields.String(dump_only=True)
+    created_at = fields.DateTime()
+
+
+class CreatePowerHourSchema(CamelCaseSchema):
+    power_hour = fields.Nested(PowerHourSchema)
+    messages = fields.List(fields.String())
+
+
+@app.route("/api/saved-bills/<int:bill_id>/power-hours", methods=["GET"])
+@auth_required
+def bill_power_hours(bill_id):
+    power_hours = (
+        PowerHour.query.filter_by(bill_id=bill_id)
+        .order_by(PowerHour.created_at)
+        .all()
+    )
+    return PowerHourSchema(many=True).jsonify(power_hours)
+
+
+# TODO: Migrate existing power hours
 @app.route(
-    "/api/saved-bills/<int:bill_id>/create-phone-bank-spreadsheet",
+    "/api/saved-bills/<int:bill_id>/power-hours",
     methods=["POST"],
 )
 @auth_required
 def create_spreadsheet(bill_id):
-    spreadsheet = create_phone_bank_spreadsheet(bill_id)
-    attachment = BillAttachment(
-        bill_id=bill_id,
-        url=spreadsheet["spreadsheetUrl"],
-        name=f"Power Hour Tracker (created {date.today().isoformat()})",
+    data = PowerHourSchema().load(request.json)
+    power_hour_id_to_import = data.get("power_hour_id_to_import")
+    if power_hour_id_to_import:
+        power_hour = PowerHour.query.get(power_hour_id_to_import)
+        old_spreadsheet_id = power_hour.spreadsheet_id
+    else:
+        old_spreadsheet_id = None
+
+    spreadsheet, messages = create_power_hour(
+        bill_id, data["title"], old_spreadsheet_id
     )
-    db.session.add(attachment)
+
+    power_hour = PowerHour(
+        bill_id=bill_id,
+        spreadsheet_url=spreadsheet["spreadsheetUrl"],
+        spreadsheet_id=spreadsheet["spreadsheetId"],
+        title=data["title"],
+    )
+    db.session.add(power_hour)
     db.session.commit()
-    return BillAttachmentSchema().jsonify(attachment)
+
+    return CreatePowerHourSchema().jsonify(
+        {"messages": messages, "power_hour": power_hour}
+    )
 
 
 # Login ----------------------------------------------------------------------

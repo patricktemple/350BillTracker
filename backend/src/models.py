@@ -184,6 +184,21 @@ class BillAttachment(db.Model):
     url = Column(Text, nullable=False)
 
 
+class PowerHour(db.Model):
+    __tablename__ = "power_hours"
+
+    id = Column(UUID, primary_key=True, default=uuid4)
+    bill_id = Column(
+        Integer, ForeignKey("bills.id"), nullable=False, index=True
+    )
+
+    title = Column(Text)
+    spreadsheet_url = Column(Text, nullable=False)
+    spreadsheet_id = Column(Text, nullable=False)
+
+    created_at = Column(TIMESTAMP, nullable=False, default=now)
+
+
 class User(db.Model):
     __tablename__ = "users"
     id = Column(UUID, primary_key=True, default=uuid4)

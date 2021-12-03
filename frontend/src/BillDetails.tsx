@@ -1,16 +1,20 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useState, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
 import Form from 'react-bootstrap/Form';
-import { Bill, BillSponsorship, BillAttachment } from './types';
+import { Bill, BillSponsorship, BillAttachment, PowerHour } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import AddAttachmentModal from './AddAttachmentModal';
 import useAutosavingFormData from './utils/useAutosavingFormData';
 import ConfirmDeleteBillModel from './ConfirmDeleteBillModal';
+import CreatePowerHourModal from './CreatePowerHourModal';
 import useApiFetch from './useApiFetch';
 import BillSponsorList from './BillSponsorList';
+import Popover from 'react-bootstrap/Popover';
+import Overlay from 'react-bootstrap/Overlay';
+import { MdHelpOutline } from 'react-icons/md';
 
 interface Props {
   bill: Bill;
@@ -44,10 +48,15 @@ export default function BillDetails(props: Props): ReactElement {
   );
   const [attachments, setAttachments] = useState<BillAttachment[] | null>(null);
 
+  const [powerHours, setPowerHours] = useState<PowerHour[] | null>(null);
+
   const [showDeleteBillConfirmation, setShowDeleteBillConfirmation] =
     useState<boolean>(false);
 
   const [addAttachmentModalOpen, setAddAttachmentModalOpen] =
+    useState<boolean>(false);
+
+  const [createPowerHourModalOpen, setCreatePowerHourModalOpen] =
     useState<boolean>(false);
 
   const [createPhoneBankInProgress, setCreatePhoneBankInProgress] =
@@ -61,6 +70,12 @@ export default function BillDetails(props: Props): ReactElement {
     });
   }
 
+  function loadPowerHours() {
+    apiFetch(`/api/saved-bills/${bill.id}/power-hours`).then((response) => {
+      setPowerHours(response);
+    });
+  }
+
   useMountEffect(() => {
     apiFetch(`/api/saved-bills/${bill.id}/sponsorships`).then((response) => {
       setSponsorships(response);
@@ -69,6 +84,7 @@ export default function BillDetails(props: Props): ReactElement {
 
   useMountEffect(() => {
     loadAttachments();
+    loadPowerHours();
   });
 
   function handleNotesChanged(event: any) {
@@ -122,14 +138,8 @@ export default function BillDetails(props: Props): ReactElement {
     props.handleRemoveBill();
   }
 
-  function handleGeneratePhoneBankSheet() {
-    setCreatePhoneBankInProgress(true);
-    apiFetch(`/api/saved-bills/${bill.id}/create-phone-bank-spreadsheet`, {
-      method: 'POST'
-    }).then((response) => {
-      setCreatePhoneBankInProgress(false);
-      loadAttachments();
-    });
+  function handlePowerHourCreated() {
+    loadPowerHours();
   }
 
   const positiveSponsors = sponsorships?.filter(
@@ -138,6 +148,11 @@ export default function BillDetails(props: Props): ReactElement {
   const negativeSponsors = sponsorships?.filter(
     (s: BillSponsorship) => !s.isSponsor
   );
+
+  const powerHourHelpRef = useRef<HTMLSpanElement>(null);
+  const [powerHourHelpVisible, setPowerHourHelpVisible] =
+    useState<boolean>(false);
+
   return (
     <Form onSubmit={(e) => e.preventDefault()}>
       <Row className="mb-2">
@@ -234,17 +249,6 @@ export default function BillDetails(props: Props): ReactElement {
               handleAddAttachment={handleAddAttachment}
               onHide={() => setAddAttachmentModalOpen(false)}
             />
-            <Button
-              size="sm"
-              disabled={createPhoneBankInProgress}
-              variant="outline-secondary"
-              onClick={handleGeneratePhoneBankSheet}
-              className="mb-2 d-block"
-            >
-              {createPhoneBankInProgress
-                ? 'Generating sheet...'
-                : 'Create phone bank'}
-            </Button>
           </div>
         </Col>
         <Col>
@@ -261,6 +265,82 @@ export default function BillDetails(props: Props): ReactElement {
                   <a href="#" onClick={(e) => handleDeleteAttachment(e, a.id)}>
                     [Remove]
                   </a>
+                </div>
+              ))}
+            </Stack>
+          )}
+        </Col>
+      </Row>
+      <Row className="mb-2">
+        <Col lg={2}>
+          <div>
+            <div style={{ fontWeight: 'bold' }}>
+              Power hours{' '}
+              <span
+                onClick={() => setPowerHourHelpVisible(!powerHourHelpVisible)}
+                ref={powerHourHelpRef}
+                style={{ cursor: 'pointer' }}
+              >
+                <MdHelpOutline />
+              </span>
+            </div>
+            <Overlay
+              target={powerHourHelpRef.current}
+              placement="right"
+              show={powerHourHelpVisible}
+            >
+              <Popover style={{ width: '500px', maxWidth: '500px' }}>
+                <Popover.Header as="h3">Power hours</Popover.Header>
+                <Popover.Body>
+                  <p>
+                    You can generate a Google Sheet for a Power Hour on this
+                    bill with the latest sponsorships and contact info.
+                  </p>
+                  <p className="mb-0">
+                    These sheets are designed for Power Hours involving calls to
+                    a bunch of legislators pushing them to sponsor the bill. For
+                    other kinds of Power Hour, such as calls to the governor or
+                    calls not related to a specific bill, this may not be
+                    useful.
+                  </p>
+                </Popover.Body>
+              </Popover>
+            </Overlay>
+            {powerHours != null && (
+              <>
+                <Button
+                  size="sm"
+                  disabled={createPhoneBankInProgress}
+                  variant="outline-secondary"
+                  onClick={() => setCreatePowerHourModalOpen(true)}
+                  className="mb-2 d-block"
+                >
+                  {createPhoneBankInProgress
+                    ? 'Generating sheet...'
+                    : 'Create power hour'}
+                </Button>
+                <CreatePowerHourModal
+                  bill={bill}
+                  oldPowerHours={powerHours}
+                  show={createPowerHourModalOpen}
+                  handlePowerHourCreated={handlePowerHourCreated}
+                  onHide={() => setCreatePowerHourModalOpen(false)}
+                />
+              </>
+            )}
+          </div>
+        </Col>
+        <Col>
+          {powerHours == null ? (
+            'Loading...'
+          ) : (
+            <Stack direction="vertical">
+              {powerHours.map((p, i) => (
+                <div key={p.id}>
+                  <a href={p.spreadsheetUrl} target="_blank" rel="noreferrer">
+                    {p.title}
+                  </a>
+                  {i == powerHours.length - 1 && ' (latest)'}
                 </div>
               ))}
             </Stack>
