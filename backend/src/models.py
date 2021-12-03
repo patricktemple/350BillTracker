@@ -70,6 +70,9 @@ class Bill(db.Model):
     attachments = relationship(
         "BillAttachment", back_populates="bill", cascade="all, delete"
     )
+    power_hours = relationship(
+        "PowerHour", back_populates="bill", cascade="all, delete"
+    )
 
     @property
     def display_name(self):
@@ -197,6 +200,9 @@ class PowerHour(db.Model):
     spreadsheet_id = Column(Text, nullable=False)
 
     created_at = Column(TIMESTAMP, nullable=False, default=now)
+    bill = relationship(
+        "Bill", back_populates="power_hours"
+    )
 
 
 class User(db.Model):
