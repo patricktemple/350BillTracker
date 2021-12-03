@@ -16,6 +16,8 @@ import Popover from 'react-bootstrap/Popover';
 import Overlay from 'react-bootstrap/Overlay';
 import { MdHelpOutline } from 'react-icons/md';
 
+import { ReactComponent as TwitterIcon } from './assets/twitter.svg';
+
 interface Props {
   bill: Bill;
   handleRemoveBill: () => void;
@@ -151,6 +153,10 @@ export default function BillDetails(props: Props): ReactElement {
 
   const powerHourHelpRef = useRef<HTMLSpanElement>(null);
   const [powerHourHelpVisible, setPowerHourHelpVisible] =
+    useState<boolean>(false);
+
+  const twitterSearchHelpRef = useRef<HTMLSpanElement>(null);
+  const [twitterSearchHelpVisible, setTwitterSearchHelpVisible] =
     useState<boolean>(false);
 
   return (
@@ -349,7 +355,40 @@ export default function BillDetails(props: Props): ReactElement {
       </Row>
       <Form.Group as={Row} className="mb-2">
         <Form.Label column lg={2} style={{ fontWeight: 'bold' }}>
-          Twitter search terms:
+          Twitter search terms{' '}
+          <span
+            onClick={() =>
+              setTwitterSearchHelpVisible(!twitterSearchHelpVisible)
+            }
+            ref={twitterSearchHelpRef}
+            style={{ cursor: 'pointer' }}
+          >
+            <MdHelpOutline />
+          </span>
+          <Overlay
+            target={twitterSearchHelpRef.current}
+            placement="right"
+            show={twitterSearchHelpVisible}
+          >
+            <Popover style={{ width: '500px', maxWidth: '500px' }}>
+              <Popover.Header as="h3">Twitter search keywords</Popover.Header>
+              <Popover.Body>
+                <p>
+                  It&apos;s often helpful to search council members&apos;
+                  Twitter accounts for keywords related to a bill, while
+                  researching their stance on the bill.
+                </p>
+                <p className="mb-0">
+                  You can keywords for the bill here, comma-separated. Then
+                  all the <TwitterIcon style={{ width: '1rem' }} /> icons above, next to the 
+                  council members,
+                  will link to a search of that council member&apos;s Twitter
+                  history for those terms. (In the Power Hour spreadsheets, the{' '}
+                  <em>Relevant tweets</em> links do these same searches.)
+                </p>
+              </Popover.Body>
+            </Popover>
+          </Overlay>
         </Form.Label>
         <Col>
           <Form.Control
