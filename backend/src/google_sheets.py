@@ -354,7 +354,6 @@ def _extract_data_from_previous_spreadsheet(
         import_messages.append(
             f"Did not find any extra columns in the old sheet to import"
         )
-    logging.info(extra_columns_by_legislator_name)
 
     # Now rekey by legislator ID
     legislators = Legislator.query.all()
