@@ -404,7 +404,6 @@ def create_spreadsheet(bill_id):
     else:
         old_spreadsheet_id = None
 
-    # TODO: Also set the spreadsheet name to the title from the form
     spreadsheet, messages = create_power_hour(
         bill_id, data["title"], old_spreadsheet_id
     )
