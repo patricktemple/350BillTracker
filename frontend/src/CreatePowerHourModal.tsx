@@ -27,8 +27,8 @@ interface BodyProps {
 
 const DO_NOT_IMPORT_VALUE = 'none';
 
-// Separate this out so that a new component is created each time the modal
-// re-appears
+// Separate the body out from the modal so that it's recreated whenever the modal
+// disappears and reappears (in order to refresh its state).
 function PowerHourModalBody(props: BodyProps): ReactElement {
   const titleRef = useRef<HTMLInputElement>(null);
   const selectRef = useRef<HTMLSelectElement>(null);
