@@ -58,17 +58,14 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
     console.log({ title, selectValue });
 
     setCreatePowerHourInProgress(true);
-    apiFetch(
-      `/api/saved-bills/${props.bill.id}/power-hours`,
-      {
-        method: 'POST',
-        body: {
-          title,
-          powerHourIdToImport:
-            selectValue !== DO_NOT_IMPORT_VALUE ? selectValue : null
-        }
+    apiFetch(`/api/saved-bills/${props.bill.id}/power-hours`, {
+      method: 'POST',
+      body: {
+        title,
+        powerHourIdToImport:
+          selectValue !== DO_NOT_IMPORT_VALUE ? selectValue : null
       }
-    ).then((response: CreatePowerHourResponse) => {
+    }).then((response: CreatePowerHourResponse) => {
       setCreatePowerHourMessages(response.messages);
       setCreatePowerHourInProgress(false);
       setPowerHourResult(response.powerHour);

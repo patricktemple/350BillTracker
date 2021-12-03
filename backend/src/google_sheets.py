@@ -2,17 +2,17 @@ from __future__ import print_function
 
 import json
 import logging
+from dataclasses import dataclass
+from typing import Dict, List, Optional, Tuple
 
 from google.auth.transport.requests import Request
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from sqlalchemy.orm import selectinload
 from werkzeug import exceptions
-from dataclasses import dataclass
-from typing import List, Dict, Optional, Tuple
-from src.models import Legislator, Bill
 
 from src import app, settings, twitter
+from src.models import Bill, Legislator
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -144,7 +144,9 @@ def _create_legislator_row(
         Cell(staffer_text),
         Cell(legislator.notes or ""),
     ]
-    legislator_data = import_data.column_data_by_legislator_name.get(legislator.name)
+    legislator_data = import_data.column_data_by_legislator_name.get(
+        legislator.name
+    )
     if legislator_data is not None:
         for extra_column in import_data.extra_column_titles:
             text = legislator_data.get(extra_column, "")
@@ -171,7 +173,7 @@ def _create_phone_bank_spreadsheet_data(
     sheet_title,
     sponsorships,
     non_sponsors,
-    import_data: PowerHourImportData
+    import_data: PowerHourImportData,
 ):
     """Generates the full body payload that the Sheets API requires for a
     phone bank spreadsheet."""
@@ -182,13 +184,7 @@ def _create_phone_bank_spreadsheet_data(
         _create_title_row_data(["NON-SPONSORS"]),
     ]
     for legislator in non_sponsors:
-        rows.append(
-            _create_legislator_row(
-                legislator,
-                bill,
-                import_data
-            )
-        )
+        rows.append(_create_legislator_row(legislator, bill, import_data))
 
     rows.append(_create_title_row_data([]))
     rows.append(_create_title_row_data(["SPONSORS"]))
@@ -220,7 +216,9 @@ def get_sort_key(legislator):
     return (sort_key, legislator.name)
 
 
-def create_power_hour(bill_id: int, power_hour_title: str, old_spreadsheet_to_import: str) -> Tuple[Dict, List[str]]:
+def create_power_hour(
+    bill_id: int, power_hour_title: str, old_spreadsheet_to_import: str
+) -> Tuple[Dict, List[str]]:
     """Creates a spreadsheet that's a template to run a phone bank
     for a specific bill, based on its current sponsors. The sheet will be
     owned by a robot Google account and will be made publicly editable by
@@ -246,16 +244,14 @@ def create_power_hour(bill_id: int, power_hour_title: str, old_spreadsheet_to_im
     non_sponsors = sorted(non_sponsors, key=get_sort_key)
 
     if old_spreadsheet_to_import:
-        import_data = _extract_data_from_previous_power_hour(old_spreadsheet_to_import)
+        import_data = _extract_data_from_previous_power_hour(
+            old_spreadsheet_to_import
+        )
     else:
         import_data = None
 
     spreadsheet_data = _create_phone_bank_spreadsheet_data(
-        bill,
-        power_hour_title,
-        sponsorships,
-        non_sponsors,
-        import_data
+        bill, power_hour_title, sponsorships, non_sponsors, import_data
     )
 
     google_credentials = _get_google_credentials()
@@ -282,7 +278,9 @@ def create_power_hour(bill_id: int, power_hour_title: str, old_spreadsheet_to_im
     return (spreadsheet_result, import_data.import_messages)
 
 
-def _extract_data_from_previous_power_hour(spreadsheet_id) -> Optional[PowerHourImportData]:
+def _extract_data_from_previous_power_hour(
+    spreadsheet_id,
+) -> Optional[PowerHourImportData]:
     google_credentials = _get_google_credentials()
     sheets_service = _get_sheets_service(google_credentials)
 
@@ -358,4 +356,8 @@ def _extract_data_from_previous_power_hour(spreadsheet_id) -> Optional[PowerHour
         # TODO: The fact that we don't validate the set of council members on the spot means that if
         # we want to have messages about "cannot find council member" then that logic is separated into create_spreadsheet
         # which seems weird?
-    return PowerHourImportData(extra_column_titles=titles, column_data_by_legislator_name=data, import_messages=import_messages)
+    return PowerHourImportData(
+        extra_column_titles=titles,
+        column_data_by_legislator_name=data,
+        import_messages=import_messages,
+    )
