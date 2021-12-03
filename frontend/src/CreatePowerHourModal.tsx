@@ -1,5 +1,4 @@
 import React, { useState, useRef, ReactElement } from 'react';
-import BillList from './BillList';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Bill, CreatePowerHourResponse, PowerHour } from './types';
@@ -49,7 +48,6 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
   function handleSubmit(e: any) {
     const title = titleRef.current!.value;
     const selectValue = selectRef.current!.value;
-    // TODO: Controlled component?
 
     // Problem: once power hours is created, it shows up in the list of power hours in the modal
     // before the modal closes, which is a tad confusing
@@ -74,8 +72,6 @@ export default function CreatePowerHourModal(props: Props): ReactElement {
 
     e.preventDefault();
   }
-
-  // Also, give a little text explanation of what is happening here
 
   const defaultTitle = `Power Hour for ${props.bill.file} (${moment().format(
     'MMM D YYYY'

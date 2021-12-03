@@ -115,7 +115,6 @@ def _create_row_data(cells):
     return {"values": [_create_cell_data(cell) for cell in cells]}
 
 
-# maybe consolidate the extra column stuff into a single object
 def _create_legislator_row(
     legislator: Legislator,
     bill: Bill,
@@ -174,11 +173,11 @@ def _create_phone_bank_spreadsheet_data(
 ):
     """Generates the full body payload that the Sheets API requires for a
     phone bank spreadsheet."""
+
+    extra_titles = import_data.extra_column_titles if import_data else []
     rows = [
         _create_title_row_data(
-            COLUMN_TITLES + import_data.extra_column_titles
-            if import_data
-            else [],
+            COLUMN_TITLES + extra_titles,
         ),
         _create_title_row_data(["NON-SPONSORS"]),
     ]
@@ -254,7 +253,6 @@ def create_power_hour(
         import_data = _extract_data_from_previous_power_hour(
             old_spreadsheet_to_import
         )
-        logging.info(import_data)
     else:
         import_data = None
 

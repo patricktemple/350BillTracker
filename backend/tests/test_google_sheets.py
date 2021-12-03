@@ -64,7 +64,118 @@ def test_generate_google_sheet__no_import(mock_build, mock_credentials):
                 "properties": {"gridProperties": {"frozenRowCount": 1}},
                 "data": {
                     "rowData": [
-                        {"values": []},
+                        {
+                            "values": [
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {"stringValue": ""},
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Name"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Email"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Party"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Borough"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "District Phone"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Legislative Phone"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Twitter"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Twitter search\nNote: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this."
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Staffers"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                                {
+                                    "textFormatRuns": None,
+                                    "userEnteredValue": {
+                                        "stringValue": "Notes"
+                                    },
+                                    "userEnteredFormat": {
+                                        "wrapStrategy": "WRAP",
+                                        "textFormat": {"bold": True},
+                                    },
+                                },
+                            ]
+                        },
                         {
                             "values": [
                                 {
@@ -806,11 +917,6 @@ def test_generate_google_sheet__with_import(mock_build, mock_credentials):
     mock_sheets_service.spreadsheets().create().execute.assert_called()
 
 
-# # TODO Add test for creating a google sheet with imported data
-# # Then add tests for importing data:
-# # When it has no columns to import
-# # When it can't find the name field
-# # When it finds the name, and some legislators are present and some are not
 @patch("src.google_sheets.Credentials")
 @patch("src.google_sheets.build")
 def test_extract_data_from_previous_power_hour(mock_build, mock_credentials):
@@ -898,6 +1004,3 @@ def test_extract_data_from_previous_spreadsheet_no_name():
     assert result.import_messages == [
         "Could not find a 'Name' column at the top of the old spreadsheet, so nothing was copied over"
     ]
-
-
-# Need to test how the generation uses the imported data, and the whole thing connected via mocked google APIs
