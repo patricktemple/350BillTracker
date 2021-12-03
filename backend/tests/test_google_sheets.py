@@ -400,7 +400,9 @@ def test_extract_data_from_previous_spreadsheet_no_name():
     result = _extract_data_from_previous_spreadsheet(cell_data)
 
     assert not result.column_data_by_legislator_id
-    assert result.import_messages == ["Could not find a 'Name' column at the top of the old spreadsheet, so nothing was copied over"]
+    assert result.import_messages == [
+        "Could not find a 'Name' column at the top of the old spreadsheet, so nothing was copied over"
+    ]
 
 
 # Need to test how the generation uses the imported data, and the whole thing connected via mocked google APIs
