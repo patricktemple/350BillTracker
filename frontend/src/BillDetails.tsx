@@ -379,11 +379,12 @@ export default function BillDetails(props: Props): ReactElement {
                   researching their stance on the bill.
                 </p>
                 <p className="mb-0">
-                  Define keywords for the bill here, comma-separated, and then
-                  all the <TwitterIcon style={{ width: '1rem' }} /> icons above
+                  You can keywords for the bill here, comma-separated. Then
+                  all the <TwitterIcon style={{ width: '1rem' }} /> icons above, next to the 
+                  council members,
                   will link to a search of that council member&apos;s Twitter
                   history for those terms. (In the Power Hour spreadsheets, the{' '}
-                  <em>Relevant tweets</em> link do the same.)
+                  <em>Relevant tweets</em> links do these same searches.)
                 </p>
               </Popover.Body>
             </Popover>
