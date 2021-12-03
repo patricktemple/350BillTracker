@@ -74,7 +74,7 @@ class Cell:
 
 @dataclass
 class PowerHourImportData:
-    """TODO comment"""
+    """Data about a previous power hour that will be copied into a new sheet."""
 
     extra_column_titles: List[str]
     column_data_by_legislator_id: Dict[id, Dict[str, str]]
@@ -119,7 +119,7 @@ def _create_row_data(cells):
 def _create_legislator_row(
     legislator: Legislator,
     bill: Bill,
-    import_data: PowerHourImportData,
+    import_data: Optional[PowerHourImportData],
     is_lead_sponsor: bool = False,
 ):
     staffer_strings = [s.display_string for s in legislator.staffers]
@@ -145,17 +145,18 @@ def _create_legislator_row(
         Cell(staffer_text),
         Cell(legislator.notes or ""),
     ]
-    legislator_data = import_data.column_data_by_legislator_id.get(
-        legislator.id
-    )
-    if legislator_data is not None:
-        for extra_column in import_data.extra_column_titles:
-            text = legislator_data.get(extra_column, "")
-            cells.append(Cell(text))
-    else:
-        logging.warning(
-            f"No legislator data for {legislator.name} in import data"
+    if import_data:
+        legislator_data = import_data.column_data_by_legislator_id.get(
+            legislator.id
         )
+        if legislator_data is not None:
+            for extra_column in import_data.extra_column_titles:
+                text = legislator_data.get(extra_column, "")
+                cells.append(Cell(text))
+        else:
+            logging.warning(
+                f"No legislator data for {legislator.name} in import data"
+            )
     return _create_row_data(cells)
 
 
@@ -169,13 +170,13 @@ def _create_phone_bank_spreadsheet_data(
     sheet_title,
     sponsorships,
     non_sponsors,
-    import_data: PowerHourImportData,
+    import_data: Optional[PowerHourImportData],
 ):
     """Generates the full body payload that the Sheets API requires for a
     phone bank spreadsheet."""
     rows = [
         _create_title_row_data(
-            COLUMN_TITLES + import_data.extra_column_titles,
+            COLUMN_TITLES + import_data.extra_column_titles if import_data else [],
         ),
         _create_title_row_data(["NON-SPONSORS"]),
     ]
@@ -217,7 +218,7 @@ def _get_sponsor_name_text(legislator_name, is_lead):
 
 
 def create_power_hour(
-    bill_id: int, power_hour_title: str, old_spreadsheet_to_import: str
+    bill_id: int, title: str, old_spreadsheet_to_import: str
 ) -> Tuple[Dict, List[str]]:
     """Creates a spreadsheet that's a template to run a phone bank
     for a specific bill, based on its current sponsors. The sheet will be
@@ -251,7 +252,7 @@ def create_power_hour(
         import_data = None
 
     spreadsheet_data = _create_phone_bank_spreadsheet_data(
-        bill, power_hour_title, sponsorships, non_sponsors, import_data
+        bill, title, sponsorships, non_sponsors, import_data
     )
 
     google_credentials = _get_google_credentials()
@@ -273,9 +274,10 @@ def create_power_hour(
         fields="id",
     ).execute()
 
-    import_data.import_messages.append("Spreadsheet was created")
+    output_messages = import_data.import_messages if import_data else []
+    output_messages.append("Spreadsheet was created")
 
-    return (spreadsheet_result, import_data.import_messages)
+    return (spreadsheet_result, output_messages)
 
 
 def _get_raw_cell_data(spreadsheet):
@@ -374,6 +376,7 @@ def _extract_data_from_previous_power_hour(
             import_messages.append(
                 f"Could not find {legislator.name} under the Name column in the old sheet. Make sure the name matches exactly. This person did not have any extra fields copied."
             )
+    
 
     logging.info(extra_columns_by_legislator_name)
     logging.info(column_data_by_legislator_id)
