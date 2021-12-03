@@ -129,7 +129,7 @@ def _create_legislator_row(
 
     cells = [
         Cell(""),
-        Cell(f"{legislator.name}{' (lead)' if is_lead_sponsor else ''}"),
+        Cell(_get_sponsor_name_text(legislator.name, is_lead_sponsor)),
         Cell(legislator.email),
         Cell(legislator.party),
         Cell(legislator.borough),
@@ -212,6 +212,10 @@ def get_sort_key(legislator):
     return (sort_key, legislator.name)
 
 
+def _get_sponsor_name_text(legislator_name, is_lead):
+    return f"{legislator_name}{' (lead)' if is_lead else ''}"
+
+
 def create_power_hour(
     bill_id: int, power_hour_title: str, old_spreadsheet_to_import: str
 ) -> Tuple[Dict, List[str]]:
@@ -276,7 +280,7 @@ def create_power_hour(
 
 def _get_raw_cell_data(spreadsheet):
     """Takes in a deeply nested Google Spreadsheet object and simplifies it into a
-        2D array of cell data strings."""
+    2D array of cell data strings."""
     row_data = spreadsheet["sheets"][0]["data"][0]["rowData"]
 
     def get_data(column):
@@ -292,6 +296,7 @@ def _get_raw_cell_data(spreadsheet):
         return []
 
     return [get_columns(row) for row in row_data]
+
 
 def _extract_data_from_previous_power_hour(
     spreadsheet_id,
@@ -320,9 +325,7 @@ def _extract_data_from_previous_power_hour(
     for i, title in enumerate(title_row):
         if title not in COLUMN_TITLE_SET:
             extra_column_title_indices.append((i, title))
-        elif (
-            title == "Name"
-        ):  # note this fails to match the lead sponsor who has "lead" after their name
+        elif title == "Name":
             name_column_index = i
 
     if name_column_index is None:
@@ -336,11 +339,11 @@ def _extract_data_from_previous_power_hour(
 
     extra_columns_by_legislator_name: Dict[str, Dict[str, str]] = {}
     for row in data_rows:
+        # Ignore empty rows, which may have fewer cells in the array
         if (
             name_column_index < len(row)
             and (name := row[name_column_index]) is not None
         ):
-            # Ignore empty rows, they might just be for space
             legislator_extra_columns: Dict[str, str] = {}
             for index, extra_column_title in extra_column_title_indices:
                 if index < len(row):
@@ -360,14 +363,18 @@ def _extract_data_from_previous_power_hour(
     legislators = Legislator.query.all()
     column_data_by_legislator_id: Dict[int, Dict[str, str]] = {}
     for legislator in legislators:
-        legislator_data = extra_columns_by_legislator_name.get(legislator.name)
+        legislator_data = extra_columns_by_legislator_name.get(
+            legislator.name
+        ) or extra_columns_by_legislator_name.get(
+            _get_sponsor_name_text(legislator.name, True)
+        )
         if legislator_data is not None:
             column_data_by_legislator_id[legislator.id] = legislator_data
         else:
             import_messages.append(
-            f"Could not find {legislator.name} under the Name column in the old sheet. Make sure the name matches exactly. This person did not have any extra fields copied."
-        )
-    
+                f"Could not find {legislator.name} under the Name column in the old sheet. Make sure the name matches exactly. This person did not have any extra fields copied."
+            )
+
     logging.info(extra_columns_by_legislator_name)
     logging.info(column_data_by_legislator_id)
 
