@@ -30,7 +30,6 @@ COLUMN_TITLES = [
     "Twitter",
     "Twitter search\nNote: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.",
     "Staffers",
-    "Notes",
 ]
 COLUMN_TITLE_SET = set(COLUMN_TITLES)
 
@@ -55,7 +54,6 @@ COLUMN_WIDTHS = [
     100,
     150,
     200,
-    250,
     250,
 ]
 
@@ -142,7 +140,6 @@ def _create_legislator_row(
             link_url=twitter_search_url,
         ),
         Cell(staffer_text),
-        Cell(legislator.notes or ""),
     ]
     if import_data:
         legislator_data = import_data.column_data_by_legislator_id.get(
