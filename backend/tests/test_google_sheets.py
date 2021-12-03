@@ -385,3 +385,22 @@ def test_extract_data_from_previous_spreadsheet():
         "Copied column 'Summary of action' to new sheet",
         "Could not find Retired Person under the Name column in the old sheet. Make sure the name matches exactly.",
     ]
+
+
+def test_extract_data_from_previous_spreadsheet_no_name():
+    corey = Legislator(id=1, name="Corey D. Johnson")
+    db.session.add(corey)
+    db.session.commit()
+
+    cell_data = [
+        ["Name typoed", "Email", "Summary of action"],
+        ["Corey D. Johnson", "cojo@council.ny.gov", "Left a voicemail"],
+    ]
+
+    result = _extract_data_from_previous_spreadsheet(cell_data)
+
+    assert not result.column_data_by_legislator_id
+    assert result.import_messages == ["Could not find a 'Name' column at the top of the old spreadsheet, so nothing was copied over"]
+
+
+# Need to test how the generation uses the imported data, and the whole thing connected via mocked google APIs

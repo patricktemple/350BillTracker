@@ -308,7 +308,7 @@ def _get_raw_cell_data(spreadsheet):
 
 def _extract_data_from_previous_spreadsheet(
     spreadsheet_cells,
-) -> Optional[PowerHourImportData]:
+) -> PowerHourImportData:
     import_messages = []
 
     title_row = spreadsheet_cells[0]
@@ -326,12 +326,12 @@ def _extract_data_from_previous_spreadsheet(
 
     if name_column_index is None:
         import_messages.append(
-            "Could not find a 'Name' column at the top of the old spreadsheet, so no columns were copied over"
+            "Could not find a 'Name' column at the top of the old spreadsheet, so nothing was copied over"
         )
         logging.warning(
             f"Could not find Name column in spreadsheet. Title columns were {','.join(title_row)}"
         )
-        return None
+        return PowerHourImportData(None, None, import_messages)
 
     extra_columns_by_legislator_name: Dict[str, Dict[str, str]] = {}
     for row in data_rows:
