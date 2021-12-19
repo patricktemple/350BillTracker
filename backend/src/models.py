@@ -78,6 +78,11 @@ class Bill(db.Model):
     def display_name(self):
         return self.nickname if self.nickname else self.name
 
+class Person(db.Model):
+    # This is the internal ID shared by all people
+    id = Column(Integer, primary_key=True)
+    type = Column()
+
 
 class Legislator(db.Model):
     __tablename__ = "legislators"
