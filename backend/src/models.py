@@ -46,19 +46,11 @@ class Party(enum.Enum):
     OTHER = 3
 
 
+# Bills -------------------------------------------------------
+
+
 class Bill(db.Model):
     __tablename__ = "bills"
-
-    # These are all auto-populated by the API:
-    id = Column(Integer, primary_key=True)
-    status = Column(Text)
-    # body = Column(Text)  I don't think this is used at all...
-#
-
-
-
-class Bill(db.Model):
-    __tablename__ = "bill"
 
     class BillType(enum.Enum):
         CITY = 1
@@ -144,8 +136,11 @@ class StateAssemblyBillVersion(db.Model):
     version_name = Column(Text, nullable=False)
 
 
+# Person -------------------------------------------------------------
+
+
 class Person(db.Model):
-    __tablename__= "people"
+    __tablename__= "persons"
 
     class PersonType(enum.Enum):
         CITY_COUNCIL_MEMBER = 1
@@ -209,6 +204,28 @@ class CityCouncilMember(db.Model):
     party = Column(Text)
 
 
+
+class StateSenator(db.Model):
+    __tablename__ = "state_senators"
+
+    # Foreign key to Person parent table
+    person_id = Column(UUID, ForeignKey(Person.id), nullable=False)
+
+    # These are added by our static data
+    party = Column(Text)
+
+
+
+class StateAssemblyMember(db.Model):
+    __tablename__ = "state_assembly_members"
+
+    # Foreign key to Person parent table
+    person_id = Column(UUID, ForeignKey(Person.id), nullable=False)
+
+    # These are added by our static data
+    party = Column(Text)
+
+
 # Staffers have a single boss. They're one to many.
 class Staffer(db.Model):
     __tablename__ = "staffers"
@@ -233,6 +250,9 @@ class Staffer(db.Model):
         title_string = f"{self.title} - " if self.title else ""
 
         return f"{title_string}{self.name} ({contact_string})"
+
+
+# Sponsorships -----------------------------------------------------
 
 
 class CityBillSponsorship(db.Model):
@@ -260,16 +280,6 @@ class CityBillSponsorship(db.Model):
     # and we don't know the date that those were added. We leave added_at as null,
     # in that case, and only fill this in for sponsorships that were added later on.
     added_at = Column(TIMESTAMP)
-
-
-class StateSenator(db.Model):
-    __tablename__ = "state_senators"
-
-    # Foreign key to Person parent table
-    person_id = Column(UUID, ForeignKey(Person.id), nullable=False)
-
-    # These are added by our static data
-    party = Column(Text)
 
 
 class StateSenateSponsorship(db.Model):
@@ -302,16 +312,6 @@ class StateSenateSponsorship(db.Model):
     # added_at = Column(TIMESTAMP)
 
 
-class StateAssemblyMember(db.Model):
-    __tablename__ = "state_assembly_members"
-
-    # Foreign key to Person parent table
-    person_id = Column(UUID, ForeignKey(Person.id), nullable=False)
-
-    # These are added by our static data
-    party = Column(Text)
-
-
 class StateAssemblySponsorship(db.Model):
     __tablename__ = "state_assembly_sponsorships"
 
@@ -342,10 +342,13 @@ class StateAssemblySponsorship(db.Model):
     # added_at = Column(TIMESTAMP)
 
 
-# TODO: UUIDs for some PKs?
+# Bill attachments --------------------------------------------------
+
+
 class BillAttachment(db.Model):
     __tablename__ = "bill_attachments"
 
+    # TODO: Make this a UUID
     id = Column(Integer, primary_key=True)
     bill_id = Column(
         Integer, ForeignKey("bills.id"), nullable=False, index=True
@@ -372,6 +375,10 @@ class PowerHour(db.Model):
     bill = relationship(
         "Bill", back_populates="power_hours"
     )
+
+
+
+# Users --------------------------------------------
 
 
 class User(db.Model):
