@@ -167,9 +167,8 @@ class Person(db.Model):
 
     type = Column(PersonType, nullable=False)
     city_council_member = relationship("CityCouncilMember", back_populates="person", uselist=False)
-    staffer = relationship("Staffer", primaryjoin="Staffer.person_id == Person.id", back_populates="person", uselist=False)
-
-    staffers = relationship("Staffer", primaryjoin="Staffer.boss_id == Person.id", back_populates="boss")
+    staffer = relationship("Staffer", back_populates="person", uselist=False)
+    staffers = relationship("Staffer", back_populates="boss")
 
     @property
     def display_twitter(self):
@@ -186,6 +185,7 @@ class CityCouncilMember(db.Model):
     __tablename__ = "city_council_members"
 
     # Foreign key to Person parent table
+    # Possibly we want to add "lazy=joined" below and on all similar relationships
     person_id = Column(UUID, ForeignKey(Person.id), nullable=False)
 
     # ID of the City Council API object, which is also called Person
@@ -241,8 +241,8 @@ class Staffer(db.Model):
 
     boss_id = Column(UUID, ForeignKey=Person.id, nullable=False, index=True)
 
-    person = relationship("Person", primarjoin=lambda: Staffer.person_id == Person.id, back_populates="staffer")
-    boss = relationship("Person", primaryjoin=lambda: Staffer.boss_id == Person.id, back_populates="staffers")
+    person = relationship("Person", foreign_keys=[person_id], back_populates="staffer")
+    boss = relationship("Person", foreign_keys=[boss_id], back_populates="staffers")
 
     @property
     def display_string(self):
