@@ -10,6 +10,7 @@ from sqlalchemy import (
     Text,
     TypeDecorator,
     sql,
+    Enum
 )
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.dialects.postgresql import TIMESTAMP as _TIMESTAMP
@@ -63,7 +64,7 @@ class Bill(db.Model):
     name = Column(Text, nullable=False)
 
     # Info on child objects:
-    type = Column(BillType, nullable=False)
+    type = Column(Enum(BillType), nullable=False)
     city_bill = relationship("CityBill", back_populates="bill", uselist=False)
     state_bill = relationship("StateBill", back_populates="bill", uselist=False)
 
@@ -124,19 +125,19 @@ class StateBill(db.Model):
 
 
 class StateSenateBillVersion(db.Model):
-    __table__ = "state_senate_bill_versions"
+    __tablename__ = "state_senate_bill_versions"
 
     id = Column(UUID, primary_key=True)
-    bill_id = Column(UUID, ForeignKey(StateBill.id))
+    bill_id = Column(UUID, ForeignKey(StateBill.bill_id), index=True)
     version_name = Column(Text, nullable=False)
 
 
 class StateAssemblyBillVersion(db.Model):
     # Use a base class for this and senate versions, maybe? and same for sponsorships
-    __table__ = "state_assembly_bill_versions"
+    __tablename__ = "state_assembly_bill_versions"
 
     id = Column(UUID, primary_key=True)
-    bill_id = Column(UUID, ForeignKey(StateBill.id))
+    bill_id = Column(UUID, ForeignKey(StateBill.bill_id), index=True)
     version_name = Column(Text, nullable=False)
 
 
@@ -165,7 +166,7 @@ class Person(db.Model):
     # Track our own info on the person
     notes = Column(Text)
 
-    type = Column(PersonType, nullable=False)
+    type = Column(Enum(PersonType), nullable=False)
     city_council_member = relationship("CityCouncilMember", back_populates="person", uselist=False)
     staffer = relationship("Staffer", back_populates="person", uselist=False)
     staffers = relationship("Staffer", back_populates="boss")
@@ -186,7 +187,7 @@ class CityCouncilMember(db.Model):
 
     # Foreign key to Person parent table
     # Possibly we want to add "lazy=joined" below and on all similar relationships
-    person_id = Column(UUID, ForeignKey(Person.id), nullable=False)
+    person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)
 
     # ID of the City Council API object, which is also called Person
     city_council_person_id = Column(Integer, nullable=False) # index maybe?
@@ -213,7 +214,7 @@ class StateSenator(db.Model):
     __tablename__ = "state_senators"
 
     # Foreign key to Person parent table
-    person_id = Column(UUID, ForeignKey(Person.id), nullable=False)
+    person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)
 
     # These are added by our static data
     party = Column(Text)
@@ -224,7 +225,7 @@ class StateAssemblyMember(db.Model):
     __tablename__ = "state_assembly_members"
 
     # Foreign key to Person parent table
-    person_id = Column(UUID, ForeignKey(Person.id), nullable=False)
+    person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)
 
     # These are added by our static data
     party = Column(Text)
@@ -237,9 +238,9 @@ class Staffer(db.Model):
     # Can I configure all these "subtypes" to automatically fetch their parent data?
 
     # ID of the person themselves:
-    person_id = Column(UUID, ForeignKey=Person.id, primary_key=True)
+    person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)
 
-    boss_id = Column(UUID, ForeignKey=Person.id, nullable=False, index=True)
+    boss_id = Column(UUID, ForeignKey(Person.id), nullable=False, index=True)
 
     person = relationship("Person", foreign_keys=[person_id], back_populates="staffer")
     boss = relationship("Person", foreign_keys=[boss_id], back_populates="staffers")
