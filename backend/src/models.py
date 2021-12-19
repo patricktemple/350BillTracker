@@ -46,6 +46,9 @@ class Party(enum.Enum):
     OTHER = 3
 
 
+# TODO: Figure out all indexes
+
+
 # Bills -------------------------------------------------------
 
 
@@ -57,11 +60,19 @@ class Bill(db.Model):
         STATE = 2
 
     id = Column(UUID, primary_key=True)
-    type = Column(BillType, nullable=False)
     name = Column(Text, nullable=False)
-    status = Column(Text, nullable=False) # ??? here or in subclass?
 
+    # Info on child objects:
+    type = Column(BillType, nullable=False)
     city_bill = relationship("CityBill", back_populates="bill", uselist=False)
+    state_bill = relationship("StateBill", back_populates="bill", uselist=False)
+
+    # Data we track
+    notes = Column(Text, nullable=False, server_default="")
+    nickname = Column(Text, nullable=False, server_default="")
+    twitter_search_terms = Column(
+        ARRAY(Text), nullable=False, default=DEFAULT_TWITTER_SEARCH_TERMS
+    )
 
     power_hours = relationship(
         "PowerHour", back_populates="bill", cascade="all, delete"
@@ -69,15 +80,6 @@ class Bill(db.Model):
     attachments = relationship(
         "BillAttachment", back_populates="bill", cascade="all, delete"
     )
-
-    twitter_search_terms = Column(
-        ARRAY(Text), nullable=False, default=DEFAULT_TWITTER_SEARCH_TERMS
-    )
-
-
-    # Data we track
-    notes = Column(Text, nullable=False, server_default="")
-    nickname = Column(Text, nullable=False, server_default="")
 
 
     @property
@@ -103,9 +105,11 @@ class CityBill(db.Model):
 
     intro_date = Column(TIMESTAMP, nullable=False)
 
+    status = Column(Text, nullable=False) # ??? here or in subclass?
+
     # Question: should bill sponsorships exict on the parent bill or on each type of bill?
     sponsorships = relationship(
-        "CityBillSponsorship", back_populates="bill", cascade="all, delete"
+        "CitySponsorship", back_populates="bill", cascade="all, delete"
     )
     
     @property
@@ -193,7 +197,7 @@ class CityCouncilMember(db.Model):
     # District phone is stored in Person.phone
     legislative_phone = Column(Text)
 
-    sponsorships = relationship("CityBillSponsorship", back_populates="city_council_member")
+    sponsorships = relationship("CitySponsorship", back_populates="city_council_member")
 
     person = relationship("Person")
 
@@ -255,8 +259,8 @@ class Staffer(db.Model):
 # Sponsorships -----------------------------------------------------
 
 
-class CityBillSponsorship(db.Model):
-    __tablename__ = "city_bill_sponsorships"
+class CitySponsorship(db.Model):
+    __tablename__ = "city_sponsorships"
 
     bill_id = Column(
         Integer, ForeignKey("city_bills.bill_id"), nullable=False, primary_key=True
@@ -294,10 +298,10 @@ class StateSenateSponsorship(db.Model):
         "StateSenateBillVersion", back_populates="sponsorships"# , order_by="Bill.name"
     )
 
-    state_senator_id = Column(
+    senator_id = Column(
         UUID, ForeignKey(StateSenator.person_id), nullable=False
     )
-    state_senator = relationship(
+    senator = relationship(
         StateSenator, back_populates="sponsorships" #
     )
 
@@ -324,10 +328,10 @@ class StateAssemblySponsorship(db.Model):
         StateAssemblyBillVersion, back_populates="sponsorships"# , order_by="Bill.name"
     )
 
-    state_senator_id = Column(
+    assembly_member_id = Column(
         UUID, ForeignKey(StateSenator.person_id), nullable=False
     )
-    state_senator = relationship(
+    assembly_member = relationship(
         StateSenator, back_populates="sponsorships" #
     )
 
