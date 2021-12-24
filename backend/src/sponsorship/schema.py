@@ -1,7 +1,7 @@
 from marshmallow import fields
 
 from ..bill.schema import BillSchema
-from ..legislator.schema import LegislatorSchema
+from ..person.schema import LegislatorSchema
 from ..schema import CamelCaseSchema
 
 

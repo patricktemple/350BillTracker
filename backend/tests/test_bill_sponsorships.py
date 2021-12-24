@@ -1,6 +1,6 @@
 from src import app
 from src.bill.models import Bill
-from src.legislator.models import Legislator
+from src.person.models import Legislator
 from src.models import db
 from src.sponsorship.models import BillSponsorship
 from src.utils import now

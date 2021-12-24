@@ -4,7 +4,7 @@ from werkzeug import exceptions
 from ..app import app
 from ..auth import auth_required
 from ..bill.models import Bill
-from ..legislator.models import Legislator
+from ..person.models import Legislator
 from ..models import db
 from .models import BillSponsorship
 from .schema import BillSponsorshipSchema, SingleMemberSponsorshipsSchema

@@ -1,8 +1,8 @@
 from uuid import uuid4
 
 from src import app
-from src.legislator.models import Legislator, Staffer
 from src.models import db
+from src.person.models import Legislator, Staffer
 
 from .utils import assert_response
 

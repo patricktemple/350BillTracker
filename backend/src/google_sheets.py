@@ -11,7 +11,7 @@ from sqlalchemy.orm import selectinload
 
 from . import settings, twitter
 from .bill.models import Bill
-from .legislator.models import Legislator
+from .person.models import Legislator
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
