@@ -15,7 +15,7 @@ from src.bill_notifications import (
 )
 from src.legislator.models import Legislator
 from src.models import db
-from src.sponsorships.models import BillSponsorship
+from src.sponsorship.models import BillSponsorship
 from src.user.models import User
 from src.utils import now
 

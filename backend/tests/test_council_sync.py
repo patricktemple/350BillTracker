@@ -13,7 +13,7 @@ from src.council_sync import (
 )
 from src.legislator.models import Legislator
 from src.models import db
-from src.sponsorships.models import BillSponsorship
+from src.sponsorship.models import BillSponsorship
 from src.static_data import STATIC_DATA_BY_LEGISLATOR_ID
 
 

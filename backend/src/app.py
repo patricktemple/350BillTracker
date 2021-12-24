@@ -20,7 +20,5 @@ logging.basicConfig(
 from . import models, cron, views  # noqa: F401 isort:skip
 from .bill import views  # noqa: F401 isort:skip
 from .legislator import views
-from .sponsorships import views
+from .sponsorship import views
 from .user import views
-
-# TODO: Be consistent on plural!

@@ -13,7 +13,7 @@ from src.google_sheets import (
 )
 from src.legislator.models import Legislator
 from src.models import PowerHour, db
-from src.sponsorships.models import BillSponsorship
+from src.sponsorship.models import BillSponsorship
 from src.utils import now
 
 
