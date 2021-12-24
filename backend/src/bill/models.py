@@ -1,14 +1,8 @@
 from uuid import uuid4
 
-import flask
-from flask import jsonify, render_template, request
-from flask_sqlalchemy import SQLAlchemy
-from marshmallow import fields
 from sqlalchemy import Column, ForeignKey, Integer, Text
 from sqlalchemy.dialects.postgresql import ARRAY
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import joinedload, relationship
-from werkzeug import exceptions
+from sqlalchemy.orm import relationship
 
 from ..app import app
 from ..models import TIMESTAMP, UUID, db

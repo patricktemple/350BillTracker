@@ -1,17 +1,8 @@
-import logging
-import re
-import secrets
-from datetime import date, timedelta
-
-import flask
-from flask import jsonify, render_template, request
-from marshmallow import fields
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
 from werkzeug import exceptions
 
 from ..app import app
-from ..auth import auth_required, create_jwt
+from ..auth import auth_required
 from ..bill.models import Bill
 from ..legislator.models import Legislator
 from ..models import db

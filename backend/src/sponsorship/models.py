@@ -1,16 +1,4 @@
-from uuid import uuid4
-
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import (
-    Boolean,
-    CheckConstraint,
-    Column,
-    ForeignKey,
-    Integer,
-    Text,
-    TypeDecorator,
-    sql,
-)
+from sqlalchemy import Column, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
 from ..models import TIMESTAMP, db

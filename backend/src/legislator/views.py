@@ -1,23 +1,11 @@
-import logging
 import re
-from datetime import date, timedelta
-from uuid import uuid4
 
-import flask
-from flask import jsonify, render_template, request
-from marshmallow import fields
-from sqlalchemy.dialects.postgresql import ARRAY
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import joinedload, relationship
+from flask import jsonify, request
 from werkzeug import exceptions
 
 from ..app import app
-from ..auth import auth_required, create_jwt
-from ..council_api import lookup_bill, lookup_bills
-from ..council_sync import update_bill_sponsorships
+from ..auth import auth_required
 from ..models import db
-from ..schema import CamelCaseSchema
-from ..utils import now
 from .models import Legislator, Staffer
 from .schema import LegislatorSchema, StafferSchema
 
