@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 import responses
 from freezegun import freeze_time
 
+from src.bill.models import Bill
 from src.council_sync import (
     add_council_members,
     fill_council_person_data_from_api,
@@ -10,7 +11,9 @@ from src.council_sync import (
     sync_bill_updates,
     update_all_sponsorships,
 )
-from src.models import Bill, BillSponsorship, Legislator, db
+from src.legislator.models import Legislator
+from src.models import db
+from src.sponsorship.models import BillSponsorship
 from src.static_data import STATIC_DATA_BY_LEGISLATOR_ID
 
 

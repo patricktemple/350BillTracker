@@ -3,7 +3,9 @@ import json
 import responses
 
 from src import app
-from src.models import DEFAULT_TWITTER_SEARCH_TERMS, Bill, Legislator, db
+from src.bill.models import DEFAULT_TWITTER_SEARCH_TERMS, Bill
+from src.legislator.models import Legislator
+from src.models import db
 from src.utils import now
 
 from .utils import assert_response

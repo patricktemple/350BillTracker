@@ -7,8 +7,8 @@ import jwt
 from flask import request
 from werkzeug import exceptions
 
-from .models import User
 from .settings import JWT_SECRET
+from .user.models import User
 
 JWT_ALGORITHM = "HS256"
 

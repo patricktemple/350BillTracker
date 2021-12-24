@@ -5,14 +5,13 @@ import logging
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
-from google.auth.transport.requests import Request
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from sqlalchemy.orm import selectinload
-from werkzeug import exceptions
 
-from src import app, settings, twitter
-from src.models import Bill, Legislator
+from . import settings, twitter
+from .bill.models import Bill
+from .legislator.models import Legislator
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -349,7 +348,7 @@ def _extract_data_from_previous_spreadsheet(
             import_messages.append(f"Copied column '{title}' to new sheet")
     else:
         import_messages.append(
-            f"Did not find any extra columns in the old sheet to import"
+            "Did not find any extra columns in the old sheet to import"
         )
 
     # Now rekey by legislator ID
