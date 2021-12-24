@@ -2,7 +2,8 @@ import json
 from datetime import datetime, timedelta
 from unittest.mock import patch
 
-from src.models import LoginLink, db
+from src.models import db
+from src.user.models import LoginLink
 
 
 @patch("src.ses.client")

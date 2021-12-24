@@ -4,7 +4,8 @@ from freezegun import freeze_time
 
 from src.app import app
 from src.auth import auth_required, create_jwt
-from src.models import User, db
+from src.models import db
+from src.user.models import User
 
 
 @app.route(

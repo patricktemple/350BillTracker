@@ -8,8 +8,8 @@ from sqlalchemy.orm import selectinload
 
 from .bill.views import Bill
 from .legislator.models import Legislator
-from .models import User
 from .ses import send_email
+from .user.models import User
 
 
 @dataclass
