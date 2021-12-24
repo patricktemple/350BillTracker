@@ -14,7 +14,8 @@ from src.bill_notifications import (
     send_bill_update_notifications,
 )
 from src.legislator.models import Legislator
-from src.models import BillSponsorship, User, db
+from src.models import User, db
+from src.sponsorships.models import BillSponsorship
 from src.utils import now
 
 

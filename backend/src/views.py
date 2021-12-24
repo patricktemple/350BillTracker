@@ -18,14 +18,7 @@ from .bill.schema import BillSchema
 from .google_sheets import create_power_hour
 from .legislator.models import Legislator
 from .legislator.schema import LegislatorSchema
-from .models import (
-    BillAttachment,
-    BillSponsorship,
-    LoginLink,
-    PowerHour,
-    User,
-    db,
-)
+from .models import BillAttachment, LoginLink, PowerHour, User, db
 from .schema import CamelCaseSchema
 from .ses import send_login_link_email
 from .settings import APP_ORIGIN
@@ -42,74 +35,6 @@ def healthz():
 @app.route("/<path:path>")
 def index(path):
     return render_template("index.html")
-
-
-# Sponsorships ---------------------------------------------------------------
-
-
-class SingleMemberSponsorshipsSchema(CamelCaseSchema):
-    legislator_id = fields.Integer(required=True)
-    bill = fields.Nested(BillSchema)
-
-
-@app.route(
-    "/api/legislators/<int:legislator_id>/sponsorships", methods=["GET"]
-)
-@auth_required
-def legislator_sponsorships(legislator_id):
-    sponsorships = (
-        BillSponsorship.query.filter_by(legislator_id=legislator_id)
-        .options(joinedload(BillSponsorship.bill))
-        .all()
-    )
-    return SingleMemberSponsorshipsSchema(many=True).jsonify(sponsorships)
-
-
-# Bill sponsorships ----------------------------------------------------------------------
-
-# TODO: Separate out positive and negative sponsors into different types, this gets ugly
-class BillSponsorshipSchema(CamelCaseSchema):
-    bill_id = fields.Integer(required=True)
-    legislator = fields.Nested(LegislatorSchema)
-    is_sponsor = fields.Boolean()
-    sponsor_sequence = fields.Integer()
-
-
-@app.route("/api/saved-bills/<int:bill_id>/sponsorships", methods=["GET"])
-@auth_required
-def bill_sponsorships(bill_id):
-    bill = Bill.query.get(bill_id)
-    if not bill:
-        raise exceptions.NotFound()
-    sponsorships = (
-        BillSponsorship.query.filter_by(bill_id=bill_id)
-        .options(joinedload(BillSponsorship.legislator))
-        .order_by(BillSponsorship.sponsor_sequence)
-        .all()
-    )
-    for sponsorship in sponsorships:
-        # This is not a field on the SQLA object, but we set it so that it gets
-        # serialized into the response.
-        sponsorship.is_sponsor = True
-
-    non_sponsors = (
-        Legislator.query.filter(
-            Legislator.id.not_in([s.legislator_id for s in sponsorships])
-        )
-        .order_by(Legislator.name)
-        .all()
-    )
-    non_sponsorships = [
-        {
-            "bill_id": bill_id,
-            "is_sponsor": False,
-            "legislator": legislator,
-        }
-        for legislator in non_sponsors
-    ]
-    return BillSponsorshipSchema(many=True).jsonify(
-        sponsorships + non_sponsorships
-    )
 
 
 # Bill attachments ----------------------------------------------------------------------

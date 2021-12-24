@@ -11,7 +11,8 @@ from .council_api import (
     lookup_bill,
 )
 from .legislator.models import Legislator
-from .models import BillSponsorship, db
+from .models import db
+from .sponsorships.models import BillSponsorship
 from .static_data import STATIC_DATA_BY_LEGISLATOR_ID
 from .utils import now
 

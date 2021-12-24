@@ -12,7 +12,8 @@ from src.google_sheets import (
     create_power_hour,
 )
 from src.legislator.models import Legislator
-from src.models import BillSponsorship, PowerHour, db
+from src.models import PowerHour, db
+from src.sponsorships.models import BillSponsorship
 from src.utils import now
 
 
