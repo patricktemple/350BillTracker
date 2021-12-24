@@ -1,8 +1,8 @@
 from unittest.mock import patch
 
 from src import app
-from src.bill.models import Bill
-from src.models import PowerHour, db
+from src.bill.models import Bill, PowerHour
+from src.models import db
 from src.utils import now
 
 from .utils import get_response_data
@@ -38,7 +38,7 @@ def test_get_power_hours(client):
     assert response_data[0]["createdAt"] == "2021-01-01T00:00:00+00:00"
 
 
-@patch("src.views.create_power_hour")
+@patch("src.bill.views.create_power_hour")
 def test_create_power_hour__no_import(mock_create_power_hour, client):
     bill = Bill(
         id=1, name="name", file="file", title="title", intro_date=now()
@@ -65,7 +65,7 @@ def test_create_power_hour__no_import(mock_create_power_hour, client):
     assert power_hour.spreadsheet_id == "1"
 
 
-@patch("src.views.create_power_hour")
+@patch("src.bill.views.create_power_hour")
 def test_create_power_hour__with_import(mock_create_power_hour, client):
     bill = Bill(
         id=1, name="name", file="file", title="title", intro_date=now()

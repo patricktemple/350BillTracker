@@ -16,8 +16,8 @@ from ..auth import auth_required, create_jwt
 from ..council_api import lookup_bill, lookup_bills
 from ..council_sync import update_bill_sponsorships
 from ..models import db
+from ..schema import CamelCaseSchema
 from ..utils import now
-from ..views import CamelCaseSchema
 from .models import Legislator, Staffer
 from .schema import LegislatorSchema, StafferSchema
 

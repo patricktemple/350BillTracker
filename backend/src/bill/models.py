@@ -4,7 +4,7 @@ import flask
 from flask import jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import fields
-from sqlalchemy import Column, Integer, Text
+from sqlalchemy import Column, ForeignKey, Integer, Text
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload, relationship
@@ -63,3 +63,33 @@ class Bill(db.Model):
     @property
     def display_name(self):
         return self.nickname if self.nickname else self.name
+
+
+# TODO: UUIDs for some PKs?
+class BillAttachment(db.Model):
+    __tablename__ = "bill_attachments"
+
+    id = Column(Integer, primary_key=True)
+    bill_id = Column(
+        Integer, ForeignKey("bills.id"), nullable=False, index=True
+    )
+    bill = relationship("Bill", back_populates="attachments")
+
+    name = Column(Text)
+    url = Column(Text, nullable=False)
+
+
+class PowerHour(db.Model):
+    __tablename__ = "power_hours"
+
+    id = Column(UUID, primary_key=True, default=uuid4)
+    bill_id = Column(
+        Integer, ForeignKey("bills.id"), nullable=False, index=True
+    )
+
+    title = Column(Text)
+    spreadsheet_url = Column(Text, nullable=False)
+    spreadsheet_id = Column(Text, nullable=False)
+
+    created_at = Column(TIMESTAMP, nullable=False, default=now)
+    bill = relationship("Bill", back_populates="power_hours")
