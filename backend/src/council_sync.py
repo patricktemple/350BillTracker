@@ -9,9 +9,10 @@ from .council_api import (
     get_person,
     lookup_bill,
 )
-from .models import Bill, BillSponsorship, Legislator, db
+from .models import BillSponsorship, Legislator, db
 from .static_data import STATIC_DATA_BY_LEGISLATOR_ID
 from .utils import now
+from .resources.bill import Bill
 
 # Legislators ----------------------------------------------------------------
 
