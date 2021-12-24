@@ -12,7 +12,7 @@ from .council_api import (
 from .models import BillSponsorship, Legislator, db
 from .static_data import STATIC_DATA_BY_LEGISLATOR_ID
 from .utils import now
-from .resources.bill import Bill
+from .bill.models import Bill
 
 # Legislators ----------------------------------------------------------------
 
