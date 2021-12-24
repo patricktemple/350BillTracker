@@ -4,6 +4,7 @@ from uuid import uuid4
 import responses
 
 from src.app import app
+from src.bill.models import Bill
 from src.bill_notifications import (
     BillDiff,
     BillSnapshot,
@@ -12,7 +13,7 @@ from src.bill_notifications import (
     _get_bill_update_subject_line,
     send_bill_update_notifications,
 )
-from src.models import Bill, BillSponsorship, Legislator, User, db
+from src.models import BillSponsorship, Legislator, User, db
 from src.utils import now
 
 

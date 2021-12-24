@@ -12,8 +12,8 @@ from sqlalchemy.orm import selectinload
 from werkzeug import exceptions
 
 from src import app, settings, twitter
-from src.models import Legislator
 from src.bill.models import Bill
+from src.models import Legislator
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",

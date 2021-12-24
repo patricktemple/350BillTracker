@@ -30,7 +30,6 @@ class TIMESTAMP(TypeDecorator):
     impl = _TIMESTAMP(timezone=True)
 
 
-
 class Legislator(db.Model):
     __tablename__ = "legislators"
 
@@ -152,9 +151,7 @@ class PowerHour(db.Model):
     spreadsheet_id = Column(Text, nullable=False)
 
     created_at = Column(TIMESTAMP, nullable=False, default=now)
-    bill = relationship(
-        "Bill", back_populates="power_hours"
-    )
+    bill = relationship("Bill", back_populates="power_hours")
 
 
 class User(db.Model):

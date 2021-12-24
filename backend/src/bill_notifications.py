@@ -6,8 +6,8 @@ from botocore.exceptions import ClientError
 from flask import render_template
 from sqlalchemy.orm import selectinload
 
-from .models import Legislator, User
 from .bill.views import Bill
+from .models import Legislator, User
 from .ses import send_email
 
 

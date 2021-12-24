@@ -1,28 +1,18 @@
 from uuid import uuid4
 
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import (
-    Column,
-    Integer,
-    Text,
-)
-from sqlalchemy.dialects.postgresql import ARRAY
-from sqlalchemy.orm import relationship
-
-
-from ..utils import now
-from ..models import db, TIMESTAMP, UUID
-
-
 import flask
 from flask import jsonify, render_template, request
+from flask_sqlalchemy import SQLAlchemy
 from marshmallow import fields
+from sqlalchemy import Column, Integer, Text
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, relationship
 from werkzeug import exceptions
 
 from ..app import app
-
+from ..models import TIMESTAMP, UUID, db
+from ..utils import now
 
 # Model -----------------------------------------------------------------------
 
@@ -33,6 +23,7 @@ DEFAULT_TWITTER_SEARCH_TERMS = [
     "renewable",
     "fossil fuel",
 ]
+
 
 class Bill(db.Model):
     __tablename__ = "bills"
@@ -72,4 +63,3 @@ class Bill(db.Model):
     @property
     def display_name(self):
         return self.nickname if self.nickname else self.name
-

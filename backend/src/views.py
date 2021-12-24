@@ -13,7 +13,8 @@ from werkzeug import exceptions
 from .app import app
 from .app import marshmallow as ma
 from .auth import auth_required, create_jwt
-
+from .bill.models import Bill
+from .bill.schema import BillSchema
 from .google_sheets import create_power_hour
 from .models import (
     BillAttachment,
@@ -25,13 +26,11 @@ from .models import (
     User,
     db,
 )
-from .bill.models import Bill
-from .bill.schema import BillSchema
+from .schema import CamelCaseSchema
 from .ses import send_login_link_email
 from .settings import APP_ORIGIN
 from .twitter import get_bill_twitter_search_url
 from .utils import now
-from .schema import CamelCaseSchema
 
 
 @app.route("/healthz", methods=["GET"])

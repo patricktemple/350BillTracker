@@ -1,5 +1,6 @@
 from src import app
-from src.models import Bill, BillAttachment, db
+from src.bill.models import Bill
+from src.models import BillAttachment, db
 from src.utils import now
 
 from .utils import assert_response

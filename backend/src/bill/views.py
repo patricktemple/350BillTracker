@@ -1,35 +1,26 @@
-from uuid import uuid4
-
-from ..council_sync import update_bill_sponsorships
-from sqlalchemy.dialects.postgresql import ARRAY
-from sqlalchemy.orm import relationship
-from ..auth import auth_required, create_jwt
-
-
-from ..council_api import lookup_bill, lookup_bills
-from ..utils import now
-from ..views import CamelCaseSchema
-
-from .models import Bill
-from ..models import db
-
 import logging
 from datetime import date, timedelta
+from uuid import uuid4
 
 import flask
 from flask import jsonify, render_template, request
 from marshmallow import fields
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, relationship
 from werkzeug import exceptions
-from .schema import BillSchema
 
 from ..app import app
-
-
+from ..auth import auth_required, create_jwt
+from ..council_api import lookup_bill, lookup_bills
+from ..council_sync import update_bill_sponsorships
+from ..models import db
+from ..utils import now
+from ..views import CamelCaseSchema
+from .models import Bill
+from .schema import BillSchema
 
 # Views ----------------------------------------------------------------------
-
 
 
 @app.route("/api/saved-bills", methods=["GET"])

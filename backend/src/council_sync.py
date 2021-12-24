@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 
 from requests import HTTPError
 
+from .bill.models import Bill
 from .council_api import (
     get_bill_sponsors,
     get_current_council_members,
@@ -12,7 +13,6 @@ from .council_api import (
 from .models import BillSponsorship, Legislator, db
 from .static_data import STATIC_DATA_BY_LEGISLATOR_ID
 from .utils import now
-from .bill.models import Bill
 
 # Legislators ----------------------------------------------------------------
 

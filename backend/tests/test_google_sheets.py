@@ -5,12 +5,13 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from src import app
+from src.bill.models import Bill
 from src.google_sheets import (
     _extract_data_from_previous_power_hour,
     _extract_data_from_previous_spreadsheet,
     create_power_hour,
 )
-from src.models import Bill, BillSponsorship, Legislator, PowerHour, db
+from src.models import BillSponsorship, Legislator, PowerHour, db
 from src.utils import now
 
 

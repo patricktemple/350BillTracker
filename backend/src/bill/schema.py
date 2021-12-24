@@ -1,5 +1,7 @@
 from marshmallow import fields
+
 from ..schema import CamelCaseSchema
+
 
 class BillSchema(CamelCaseSchema):
     # Data pulled from the API

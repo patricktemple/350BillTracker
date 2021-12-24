@@ -1,7 +1,8 @@
 from unittest.mock import patch
 
 from src import app
-from src.models import Bill, PowerHour, db
+from src.bill.models import Bill
+from src.models import PowerHour, db
 from src.utils import now
 
 from .utils import get_response_data
