@@ -3,6 +3,7 @@ from uuid import uuid4
 import pytest
 
 from src import app, models
+from src.user.models import User
 
 from .utils import ApiClient
 
@@ -43,7 +44,7 @@ def user_name():
 def client(user_id, user_email, user_name):
     app.app.test_client_class = ApiClient
     with app.app.test_client() as client:
-        user = models.User(id=user_id, name=user_name, email=user_email)
+        user = User(id=user_id, name=user_name, email=user_email)
         models.db.session.add(user)
         models.db.session.commit()
 

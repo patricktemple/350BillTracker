@@ -1,4 +1,5 @@
-from src.models import User, db
+from src.models import db
+from src.user.models import User
 
 from .utils import assert_response
 

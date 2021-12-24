@@ -18,3 +18,7 @@ logging.basicConfig(
 )
 
 from . import models, cron, views  # noqa: F401 isort:skip
+from .bill import views as bill_views  # noqa: F401 isort:skip
+from .legislator import views as legislator_views  # noqa: F401 isort:skip
+from .sponsorship import views as sponsorship_views  # noqa: F401 isort:skip
+from .user import views as user_views  # noqa: F401 isort:skip
