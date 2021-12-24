@@ -11,9 +11,9 @@ from googleapiclient.discovery import build
 from sqlalchemy.orm import selectinload
 from werkzeug import exceptions
 
-from src import app, settings, twitter
-from src.bill.models import Bill
-from src.models import Legislator
+from . import app, settings, twitter
+from .bill.models import Bill
+from .legislator.models import Legislator
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",

@@ -16,13 +16,13 @@ from .auth import auth_required, create_jwt
 from .bill.models import Bill
 from .bill.schema import BillSchema
 from .google_sheets import create_power_hour
+from .legislator.models import Legislator
+from .legislator.schema import LegislatorSchema
 from .models import (
     BillAttachment,
     BillSponsorship,
-    Legislator,
     LoginLink,
     PowerHour,
-    Staffer,
     User,
     db,
 )
@@ -44,54 +44,12 @@ def index(path):
     return render_template("index.html")
 
 
-# Legislators ----------------------------------------------------------------------
-
-
-class LegislatorSchema(CamelCaseSchema):
-    # Data synced from the API
-    name = fields.String(dump_only=True)
-    id = fields.Integer(dump_only=True)
-    term_start = fields.DateTime(dump_only=True)
-    term_end = fields.DateTime(dump_only=True)
-    email = fields.String(dump_only=True)
-    district_phone = fields.String(dump_only=True)
-    legislative_phone = fields.String(dump_only=True)
-    borough = fields.String(dump_only=True)
-    website = fields.String(dump_only=True)
-
-    # Static data that we add in
-    twitter = fields.String(dump_only=True)
-
-    # TODO: Make this an enum!
-    party = fields.String(dump_only=True)
-
-    # Extra data we track
-    notes = fields.String(missing=None)
+# Sponsorships ---------------------------------------------------------------
 
 
 class SingleMemberSponsorshipsSchema(CamelCaseSchema):
     legislator_id = fields.Integer(required=True)
     bill = fields.Nested(BillSchema)
-
-
-@app.route("/api/legislators", methods=["GET"])
-@auth_required
-def get_legislators():
-    legislators = Legislator.query.order_by(Legislator.name).all()
-    return LegislatorSchema(many=True).jsonify(legislators)
-
-
-@app.route("/api/legislators/<int:legislator_id>", methods=["PUT"])
-@auth_required
-def update_legislator(legislator_id):
-    data = LegislatorSchema().load(request.json)
-
-    legislator = Legislator.query.get(legislator_id)
-    legislator.notes = data["notes"]
-
-    db.session.commit()
-
-    return jsonify({})
 
 
 @app.route(
@@ -105,66 +63,6 @@ def legislator_sponsorships(legislator_id):
         .all()
     )
     return SingleMemberSponsorshipsSchema(many=True).jsonify(sponsorships)
-
-
-# Staffers ----------------------------------------------------------------------
-
-
-class StafferSchema(CamelCaseSchema):
-    id = fields.UUID()
-    name = fields.String()
-    title = fields.String(missing=None)
-    email = fields.Email(missing=None)
-    phone = fields.String(missing=None)
-    twitter = fields.String(missing=None)
-    # TODO: Move twitter validation into schema
-
-
-@app.route("/api/legislators/<int:legislator_id>/staffers", methods=["GET"])
-@auth_required
-def legislator_staffers(legislator_id):
-    staffers = Staffer.query.filter_by(legislator_id=legislator_id).all()
-    return StafferSchema(many=True).jsonify(staffers)
-
-
-@app.route("/api/legislators/<int:legislator_id>/staffers", methods=["POST"])
-@auth_required
-def add_legislator_staffer(legislator_id):
-    data = StafferSchema().load(request.json)
-    twitter = data["twitter"]
-    if twitter:
-        if twitter.startswith("@"):
-            twitter = twitter[1:]
-        pattern = re.compile("^[A-Za-z0-9_]{1,15}$")
-        if not pattern.match(twitter):
-            raise exceptions.UnprocessableEntity(f"Invalid Twitter: {twitter}")
-
-    staffer = Staffer(
-        legislator_id=legislator_id,
-        name=data["name"],
-        title=data["title"],
-        phone=data["phone"],
-        email=data["email"],
-        twitter=twitter,
-    )
-    db.session.add(staffer)
-    db.session.commit()
-
-    # TODO: Return the object in all Creates, to be consistent
-    return jsonify({})
-
-
-@app.route("/api/legislators/-/staffers/<uuid:staffer_id>", methods=["DELETE"])
-@auth_required
-def delete_staffer(staffer_id):
-    staffer = Staffer.query.get(staffer_id)
-    if not staffer:
-        raise exceptions.NotFound()
-    db.session.delete(staffer)
-    db.session.commit()
-
-    # TODO: Return the object in all Creates, to be consistent
-    return jsonify({})
 
 
 # Bill sponsorships ----------------------------------------------------------------------

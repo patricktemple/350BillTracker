@@ -11,7 +11,8 @@ from src.council_sync import (
     sync_bill_updates,
     update_all_sponsorships,
 )
-from src.models import BillSponsorship, Legislator, db
+from src.legislator.models import Legislator
+from src.models import BillSponsorship, db
 from src.static_data import STATIC_DATA_BY_LEGISLATOR_ID
 
 

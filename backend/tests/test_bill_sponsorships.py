@@ -1,6 +1,7 @@
 from src import app
 from src.bill.models import Bill
-from src.models import BillSponsorship, Legislator, db
+from src.legislator.models import Legislator
+from src.models import BillSponsorship, db
 from src.utils import now
 
 from .utils import get_response_data
