@@ -9,6 +9,7 @@ from ..models import db
 from .models import BillSponsorship
 from .schema import BillSponsorshipSchema, SingleMemberSponsorshipsSchema
 
+
 @app.route(
     "/api/legislators/<int:legislator_id>/sponsorships", methods=["GET"]
 )
