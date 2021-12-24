@@ -1,7 +1,8 @@
 from uuid import uuid4
 
-from sqlalchemy import Column, ForeignKey, Integer, Text
+from sqlalchemy import Column, ForeignKey, Integer, Text, Enum
 from sqlalchemy.orm import relationship
+import enum
 
 from ..models import TIMESTAMP, UUID, db
 
@@ -9,9 +10,9 @@ class Person(db.Model):
     __tablename__= "persons"
 
     class PersonType(enum.Enum):
-        CITY_COUNCIL_MEMBER = 1
-        STATE_ASSEMBLY_MEMBER = 2
-        STATE_SENATOR = 3
+        COUNCIL_MEMBER = 1
+        ASSEMBLY_MEMBER = 2
+        SENATOR = 3
         STAFFER = 4 # this might be problematic...
 
     # This is the internal ID shared by all people
@@ -28,9 +29,16 @@ class Person(db.Model):
     notes = Column(Text)
 
     type = Column(Enum(PersonType), nullable=False)
-    city_council_member = relationship("CityCouncilMember", back_populates="person", uselist=False)
+    council_member = relationship("CouncilMember", back_populates="person", uselist=False)
+    senator = relationship("Senator", back_populates="person", uselist=False)
+    assembly_member = relationship("AssemblyMember", back_populates="person", uselist=False)
+
     staffer = relationship("Staffer", back_populates="person", uselist=False)
     staffers = relationship("Staffer", back_populates="boss")
+
+
+    # These are added by our static data
+    party = Column(Text)
 
     @property
     def display_twitter(self):
@@ -42,8 +50,8 @@ class Person(db.Model):
         )
 
 
-class CityCouncilMember(db.Model):
-    __tablename__ = "city_council_members"
+class CouncilMember(db.Model):
+    __tablename__ = "council_members"
 
     # Foreign key to Person parent table
     # Possibly we want to add "lazy=joined" below and on all similar relationships
@@ -58,34 +66,30 @@ class CityCouncilMember(db.Model):
     # District phone is stored in Person.phone
     legislative_phone = Column(Text)
 
-    sponsorships = relationship("CitySponsorship", back_populates="city_council_member")
+    sponsorships = relationship("CitySponsorship", back_populates="council_member")
 
-    person = relationship("Person")
+    person = relationship("Person", back_populates="council_member")
 
     borough = Column(Text)
     website = Column(Text)
 
-    # These are added by our static data
-    party = Column(Text)
-
 
 
 class StateSenator(db.Model):
-    __tablename__ = "state_senators"
+    __tablename__ = "senators"
 
     # Foreign key to Person parent table
     person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)
-
-    # These are added by our static data
-    party = Column(Text)
+    person = relationship("Person", back_populates="senator")
 
 
 
 class StateAssemblyMember(db.Model):
-    __tablename__ = "state_assembly_members"
+    __tablename__ = "assembly_members"
 
     # Foreign key to Person parent table
     person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)
+    person = relationship("Person", back_populates="assembly_member")
 
     # These are added by our static data
     party = Column(Text)
