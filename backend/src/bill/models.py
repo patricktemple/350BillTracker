@@ -8,8 +8,6 @@ from ..app import app
 from ..models import TIMESTAMP, UUID, db
 from ..utils import now
 
-# Model -----------------------------------------------------------------------
-
 DEFAULT_TWITTER_SEARCH_TERMS = [
     "solar",
     "climate",

@@ -9,9 +9,6 @@ from ..models import db
 from .models import BillSponsorship
 from .schema import BillSponsorshipSchema, SingleMemberSponsorshipsSchema
 
-# Sponsorships ---------------------------------------------------------------
-
-
 @app.route(
     "/api/legislators/<int:legislator_id>/sponsorships", methods=["GET"]
 )
@@ -23,9 +20,6 @@ def legislator_sponsorships(legislator_id):
         .all()
     )
     return SingleMemberSponsorshipsSchema(many=True).jsonify(sponsorships)
-
-
-# Bill sponsorships ----------------------------------------------------------------------
 
 
 @app.route("/api/saved-bills/<int:bill_id>/sponsorships", methods=["GET"])
