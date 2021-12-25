@@ -92,10 +92,10 @@ def search_bills():
     # Check whether or not we're already tracking this bill
     external_bills_ids = [b['city_bill']["city_bill_id"] for b in external_bills]
     tracked_bills = CityBill.query.filter(CityBill.city_bill_id.in_(external_bills_ids)).all()
-    tracked_bill_ids = set([t.id for t in tracked_bills])
+    tracked_bill_ids = set([t.city_bill_id for t in tracked_bills])
 
     for bill in external_bills:
-        bill["tracked"] = bill["id"] in tracked_bill_ids
+        bill["tracked"] = bill['city_bill']["city_bill_id"] in tracked_bill_ids
 
     return BillSchema(many=True).jsonify(external_bills)
 
