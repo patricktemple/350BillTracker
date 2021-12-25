@@ -9,7 +9,7 @@ from alembic import op
 import sqlalchemy as sa
 import src
 from sqlalchemy.dialects import postgresql
-from src.models import DEFAULT_TWITTER_SEARCH_TERMS
+from src.bill.models import DEFAULT_TWITTER_SEARCH_TERMS
 
 # revision identifiers, used by Alembic.
 revision = 'b343b7a84a2f'
