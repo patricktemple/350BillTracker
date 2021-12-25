@@ -124,7 +124,7 @@ def sync_bill_updates():
     pass
 
 
-def update_bill_sponsorships(bill_id, set_added_at=False):
+def update_bill_sponsorships(city_bill, set_added_at=False):
     """
     Updates sponsorships for a given bill:
     1) Deletes any previous sponsorships
@@ -132,53 +132,54 @@ def update_bill_sponsorships(bill_id, set_added_at=False):
     3) If new sponsors aren't in the existing legislators (e.g. they're not longer in office),
        ignore them.
     """
-    # existing_sponsorships = BillSponsorship.query.filter_by(
-    #     bill_id=bill_id
-    # ).all()
-    # existing_sponsorships_by_id = {
-    #     s.legislator_id: s for s in existing_sponsorships
-    # }
+    existing_sponsorships = CitySponsorship.query.filter_by(
+        bill_id=city_bill.bill_id
+    ).all()
+    existing_sponsorships_by_city_council_id = {
+        s.city_council_person_id: s for s in existing_sponsorships
+    }
 
-    # new_sponsorships = get_bill_sponsors(bill_id)
+    new_sponsorships = get_bill_sponsors(city_bill.city_bill_id)
 
-    # existing_legislators = CouncilMember.query.filter(
-    #     CouncilMember.id.in_([s["MatterSponsorNameId"] for s in new_sponsorships])
-    # ).all()
-    # existing_legislator_ids = {l.id for l in existing_legislators}
+    new_council_members = CouncilMember.query.filter(
+        CouncilMember.city_council_person_id.in_([s["MatterSponsorNameId"] for s in new_sponsorships])
+    ).all()
+    new_council_members_by_id = {c.city_council_person_id: c for c in new_council_members}
 
-    # for sponsorship in new_sponsorships:
-    #     legislator_id = sponsorship["MatterSponsorNameId"]
+    # THIS is super confusing, rewrite it and simplify
+    for sponsorship in new_sponsorships:
+        council_member_person_id = sponsorship["MatterSponsorNameId"]
 
-    #     if legislator_id not in existing_legislator_ids:
-    #         # Can't insert the sponsorship without its foreign key object
-    #         # TODO: Instead, insert a stub for them or something
-    #         logging.warning(
-    #             f"Did not find legislator {legislator_id} in db, ignoring..."
-    #         )
-    #         continue
+        if council_member_person_id not in new_council_members_by_id:
+            # Can't insert the sponsorship without its foreign key object
+            # TODO: Instead, insert a stub for them or something
+            logging.warning(
+                f"Did not find legislator {council_member_person_id} in db, ignoring..."
+            )
+            continue
 
-    #     internal_sponsorship = BillSponsorship(
-    #         bill_id=bill_id,
-    #         legislator_id=legislator_id,
-    #         sponsor_sequence=sponsorship["MatterSponsorSequence"],
-    #     )
+        internal_sponsorship = CitySponsorship(
+            bill_id=city_bill.bill_id,
+            council_member_id=new_council_members_by_id[council_member_person_id].person_id,
+            sponsor_sequence=sponsorship["MatterSponsorSequence"],
+        )
 
-    #     if legislator_id in existing_sponsorships_by_id:
-    #         # Remove sponsors from this set until we're left with only those
-    #         # sponsorships that were rescinded recently.
-    #         del existing_sponsorships_by_id[legislator_id]
-    #     elif set_added_at:
-    #         internal_sponsorship.added_at = now()
+        if council_member_person_id in existing_sponsorships_by_city_council_id:
+            # Remove sponsors from this set until we're left with only those
+            # sponsorships that were rescinded recently.
+            del existing_sponsorships_by_city_council_id[council_member_person_id]
+        elif set_added_at:
+            internal_sponsorship.added_at = now()
 
-    #     db.session.merge(internal_sponsorship)
+        db.session.merge(internal_sponsorship)
 
-    # for lost_sponsor in existing_sponsorships_by_id.values():
-    #     db.session.delete(lost_sponsor)
+    for lost_sponsor in existing_sponsorships_by_city_council_id.values():
+        db.session.delete(lost_sponsor)
 
 
 def update_all_sponsorships():
     bills = Bill.query.all()
     for bill in bills:
         logging.info(f"Updating sponsorships for bill {bill.id} {bill.name}")
-        update_bill_sponsorships(bill.id, set_added_at=True)
+        update_bill_sponsorships(bill.city_bill, set_added_at=True)
         db.session.commit()

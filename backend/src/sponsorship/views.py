@@ -23,7 +23,7 @@ def council_member_sponsorships(council_member_id):
     return CouncilMemberSponsorshipSchema(many=True).jsonify(sponsorships)
 
 
-@app.route("/api/city-bills/<int:bill_id>/sponsorships", methods=["GET"])
+@app.route("/api/city-bills/<uuid:bill_id>/sponsorships", methods=["GET"])
 @auth_required
 def city_bill_sponsorships(bill_id):
     city_bill = CityBill.query.get(bill_id)

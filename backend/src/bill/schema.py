@@ -33,7 +33,7 @@ class StateBillSchema(CamelCaseSchema):
 
 class BillSchema(CamelCaseSchema):
     # Data pulled from the API
-    id = fields.Integer(dump_only=True)
+    id = fields.UUID(dump_only=True)
     name = fields.String(dump_only=True)
 
 
@@ -49,7 +49,7 @@ class BillSchema(CamelCaseSchema):
 
 # Bill attachments ----------------------------------------------------------------------
 class BillAttachmentSchema(CamelCaseSchema):
-    id = fields.Integer()
+    id = fields.UUID()
     bill_id = fields.Integer()
     name = fields.String()
     url = fields.String()

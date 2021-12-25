@@ -1,4 +1,5 @@
 import logging
+from uuid import uuid4
 
 from flask import jsonify, request
 from werkzeug import exceptions
@@ -43,20 +44,21 @@ def track_city_bill():
     logging.info(f"Saving bill {city_bill_id}, council API returned {bill_data}")
 
     bill = Bill(
+        id=uuid4(),
         type=Bill.BillType.CITY,
         name=bill_data['name']
     )
     bill.city_bill = CityBill(**bill_data['city_bill'])
     db.session.add(bill)
 
-    # update_bill_sponsorships(bill_id)
+    update_bill_sponsorships(bill.city_bill)
 
     db.session.commit()
 
     return jsonify({})
 
 
-@app.route("/api/saved-bills/<int:bill_id>", methods=["PUT"])
+@app.route("/api/saved-bills/<uuid:bill_id>", methods=["PUT"])
 @auth_required
 def update_bill(bill_id):
     # TODO implement
@@ -73,7 +75,7 @@ def update_bill(bill_id):
     return jsonify({})
 
 
-@app.route("/api/saved-bills/<int:bill_id>", methods=["DELETE"])
+@app.route("/api/saved-bills/<uuid:bill_id>", methods=["DELETE"])
 @auth_required
 def delete_bill(bill_id):
     # TODO set the cascades correctly
@@ -102,7 +104,7 @@ def search_bills():
     return BillSchema(many=True).jsonify(external_bills)
 
 
-@app.route("/api/saved-bills/<int:bill_id>/power-hours", methods=["GET"])
+@app.route("/api/saved-bills/<uuid:bill_id>/power-hours", methods=["GET"])
 @auth_required
 def bill_power_hours(bill_id):
     power_hours = (
@@ -115,7 +117,7 @@ def bill_power_hours(bill_id):
 
 # TODO: Migrate existing power hours
 @app.route(
-    "/api/saved-bills/<int:bill_id>/power-hours",
+    "/api/saved-bills/<uuid:bill_id>/power-hours",
     methods=["POST"],
 )
 @auth_required
@@ -146,14 +148,14 @@ def create_spreadsheet(bill_id):
     )
 
 
-@app.route("/api/saved-bills/<int:bill_id>/attachments", methods=["GET"])
+@app.route("/api/saved-bills/<uuid:bill_id>/attachments", methods=["GET"])
 @auth_required
 def bill_attachments(bill_id):
     attachments = BillAttachment.query.filter_by(bill_id=bill_id).all()
     return BillAttachmentSchema(many=True).jsonify(attachments)
 
 
-@app.route("/api/saved-bills/<int:bill_id>/attachments", methods=["POST"])
+@app.route("/api/saved-bills/<uuid:bill_id>/attachments", methods=["POST"])
 @auth_required
 def add_bill_attachment(bill_id):
     data = BillAttachmentSchema().load(request.json)
@@ -170,7 +172,7 @@ def add_bill_attachment(bill_id):
 
 
 @app.route(
-    "/api/saved-bills/-/attachments/<int:attachment_id>", methods=["DELETE"]
+    "/api/saved-bills/-/attachments/<uuid:attachment_id>", methods=["DELETE"]
 )
 @auth_required
 def delete_bill_attachment(attachment_id):

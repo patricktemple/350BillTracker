@@ -55,6 +55,7 @@ class CouncilMember(db.Model):
     person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)
 
     # ID of the City Council API object, which is also called Person
+    # Make this unique
     city_council_person_id = Column(Integer, nullable=False) # index maybe?
 
     term_start = Column(TIMESTAMP)

@@ -42,8 +42,8 @@ class Bill(db.Model):
 
     # Info on child objects:
     type = Column(Enum(BillType), nullable=False)
-    city_bill = relationship("CityBill", back_populates="bill", uselist=False)
-    state_bill = relationship("StateBill", back_populates="bill", uselist=False)
+    city_bill = relationship("CityBill", back_populates="bill", uselist=False, cascade="all, delete")
+    state_bill = relationship("StateBill", back_populates="bill", uselist=False, cascade="all, delete")
 
     # Data we track
     notes = Column(Text, nullable=False, server_default="")

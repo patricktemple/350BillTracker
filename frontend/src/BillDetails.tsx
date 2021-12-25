@@ -79,7 +79,7 @@ export default function BillDetails(props: Props): ReactElement {
   }
 
   useMountEffect(() => {
-    apiFetch(`/api/saved-bills/${bill.id}/sponsorships`).then((response) => {
+    apiFetch(`/api/city-bills/${bill.id}/sponsorships`).then((response) => {
       setSponsorships(response);
     });
   });
