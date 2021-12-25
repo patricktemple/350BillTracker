@@ -17,7 +17,7 @@ class CitySponsorship(db.Model):
     bill = relationship(Bill, primaryjoin="Bill.id==CityBill.bill_id")
 
     council_member_id = Column(
-        Integer, ForeignKey("city_council_members.person_id"), nullable=False, primary_key=True
+        Integer, ForeignKey("council_members.person_id"), nullable=False, primary_key=True
     )
     council_member = relationship(
         CouncilMember, back_populates="sponsorships" # , order_by="CityCouncilMember.name" # ugh --- this should order by Person.name?
