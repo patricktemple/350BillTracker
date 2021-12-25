@@ -7,7 +7,7 @@ from ..app import app
 from ..auth import auth_required
 from ..models import db
 from .models import Person, Staffer
-from .schema import PersonSchema, StafferSchema
+from .schema import PersonSchema, CreateStafferSchema
 
 
 @app.route("/api/persons", methods=["GET"])
@@ -33,14 +33,13 @@ def update_legislator(person_id):
 @app.route("/api/persons/<uuid:person_id>/staffers", methods=["GET"])
 @auth_required
 def person_staffers(person_id):
-    staffers = Staffer.query.filter_by(boss_id=person_id).all()
-    return StafferSchema(many=True).jsonify(staffers)
+    person = Person.query.get(person_id)
+    return PersonSchema(many=True).jsonify(person.staffer_persons)
 
-# TODO: Look at StafferSchema, it might need changes
 @app.route("/api/persons/<uuid:person_id>/staffers", methods=["POST"])
 @auth_required
 def add_person_staffer(person_id):
-    data = StafferSchema().load(request.json)
+    data = CreateStafferSchema().load(request.json)
     twitter = data["twitter"]
     if twitter:
         if twitter.startswith("@"):
@@ -49,18 +48,18 @@ def add_person_staffer(person_id):
         if not pattern.match(twitter):
             raise exceptions.UnprocessableEntity(f"Invalid Twitter: {twitter}")
 
-    person = Person(
+    staffer_person = Person(
         name=data["name"],
         title=data["title"],
         phone=data["phone"],
         email=data["email"],
+        twitter=twitter,
         type=Person.PersonType.STAFFER,
     )
-    person.staffer = Staffer(
+    staffer_person.staffer = Staffer(
         boss_id=person_id,
-        twitter=twitter,
     )
-    db.session.add(person)
+    db.session.add(staffer_person)
     db.session.commit()
 
     # TODO: Return the object in all Creates, to be consistent

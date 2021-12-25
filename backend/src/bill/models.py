@@ -100,7 +100,7 @@ class CityBill(db.Model):
     bill_id = Column(UUID, ForeignKey(Bill.id), primary_key=True)
 
     # ID in the City Council API
-    city_bill_id = Column(Integer, nullable=False)
+    city_bill_id = Column(Integer, nullable=False, unique=True, index=True)
 
     file = Column(Text, nullable=False)  # e.g. Int 2317-2021
 
@@ -112,7 +112,6 @@ class CityBill(db.Model):
 
     status = Column(Text, nullable=False) # ??? here or in subclass?
 
-    # Question: should bill sponsorships exict on the parent bill or on each type of bill?
     sponsorships = relationship(
         "CitySponsorship", back_populates="city_bill", cascade="all, delete"
     )
@@ -132,6 +131,7 @@ class StateBill(db.Model):
 
 
 # TODO: Figure out how to identify the active version
+# TODO: Maybe just as composite natural key on the bill id and version?
 class SenateBillVersion(db.Model):
     __tablename__ = "senate_bill_versions"
 

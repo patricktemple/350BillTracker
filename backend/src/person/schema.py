@@ -21,8 +21,12 @@ class AssemblyMemberSchema(CamelCaseSchema):
     pass
 
 
-class StafferSchema(CamelCaseSchema):
-    pass
+class CreateStafferSchema(CamelCaseSchema):
+    name = fields.String()
+    phone = fields.String(missing=None)
+    email = fields.String(missing=None)
+    twitter = fields.String(missing=None)
+    title = fields.String(missing=None)
 
 
 class PersonSchema(CamelCaseSchema):

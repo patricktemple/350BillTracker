@@ -55,8 +55,7 @@ class CouncilMember(db.Model):
     person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)
 
     # ID of the City Council API object, which is also called Person
-    # Make this unique
-    city_council_person_id = Column(Integer, nullable=False) # index maybe?
+    city_council_person_id = Column(Integer, nullable=False, index=True, unique=True) # index maybe?
 
     term_start = Column(TIMESTAMP)
     term_end = Column(TIMESTAMP)
@@ -126,5 +125,8 @@ class Staffer(db.Model):
 Person.staffer = relationship(Staffer, foreign_keys=[Staffer.person_id], back_populates="person", uselist=False)
 Person.staffers = relationship("Staffer", foreign_keys=[Staffer.boss_id], back_populates="boss")
 
+# This naming is SO confusing!!! Do better than this. Maybe call Senator/Staffer etc "SenatorInfo" or "SenatorDetails" or something like that?
+
 # Needs a double join I think
-# Person.staffer_persons = relationship("Person", primaryjoin=remote(Person.id), viewonly=True)
+Person.staffer_person = relationship(Person, secondary="staffers_2", primaryjoin=Person.id==Staffer.person_id, secondaryjoin=Staffer.boss_id==Person.id, back_populates="staffer_persons", viewonly=True)
+Person.staffer_persons = relationship(Person, secondary="staffers_2", primaryjoin=Person.id==Staffer.boss_id, secondaryjoin=Staffer.person_id==Person.id, back_populates="staffer_person", viewonly=True)
