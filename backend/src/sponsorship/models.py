@@ -1,5 +1,5 @@
 from sqlalchemy import Column, ForeignKey, Integer
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, foreign, remote
 
 from ..models import TIMESTAMP, db, UUID
 from ..person.models import Senator, AssemblyMember, CouncilMember, Person
@@ -14,16 +14,12 @@ class CitySponsorship(db.Model):
     city_bill = relationship(
         CityBill, back_populates="sponsorships" # , order_by="Bill.name" # PROBLEM with this order by
     )
-    bill = relationship(Bill, primaryjoin="Bill.id==CityBill.bill_id")
 
     council_member_id = Column(
         UUID, ForeignKey("council_members.person_id"), nullable=False, primary_key=True
     )
     council_member = relationship(
         CouncilMember, back_populates="sponsorships" # , order_by="CityCouncilMember.name" # ugh --- this should order by Person.name?
-    )
-    person = relationship(
-        Person, primaryjoin="Person.id==CitySponsorship.council_member_id"
     )
 
     # TODO: Make this nullable=false once cron has run in prod and backfilled
@@ -34,6 +30,13 @@ class CitySponsorship(db.Model):
     # and we don't know the date that those were added. We leave added_at as null,
     # in that case, and only fill this in for sponsorships that were added later on.
     added_at = Column(TIMESTAMP)
+
+
+
+CitySponsorship.bill = relationship(Bill, primaryjoin=remote(Bill.id)==foreign(CitySponsorship.bill_id), viewonly=True)
+CitySponsorship.person = relationship(
+        Person, primaryjoin=remote(Person.id)==foreign(CitySponsorship.council_member_id), viewonly=True
+    )
 
 
 class SenateSponsorship(db.Model):

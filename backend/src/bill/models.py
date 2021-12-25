@@ -37,7 +37,7 @@ class Bill(db.Model):
         CITY = 1
         STATE = 2
 
-    id = Column(UUID, primary_key=True)
+    id = Column(UUID, primary_key=True, default=uuid4)
     name = Column(Text, nullable=False)
 
     # Info on child objects:
@@ -68,7 +68,7 @@ class Bill(db.Model):
 class BillAttachment(db.Model):
     __tablename__ = "bill_attachments_2"
 
-    id = Column(UUID, primary_key=True)
+    id = Column(UUID, primary_key=True, default=uuid4)
     bill_id = Column(
         UUID, ForeignKey("bills_2.id"), nullable=False, index=True
     )
@@ -116,7 +116,7 @@ class CityBill(db.Model):
 
     # Question: should bill sponsorships exict on the parent bill or on each type of bill?
     sponsorships = relationship(
-        "CitySponsorship", back_populates="bill", cascade="all, delete"
+        "CitySponsorship", back_populates="city_bill", cascade="all, delete"
     )
 
     @property
@@ -128,6 +128,7 @@ class StateBill(db.Model):
     __tablename__ = "state_bills"
 
     bill_id = Column(UUID, ForeignKey(Bill.id), primary_key=True)
+    bill = relationship(Bill, back_populates="state_bill")
 
 
 # TODO: Figure out how to identify the active version
@@ -137,6 +138,7 @@ class SenateBillVersion(db.Model):
     id = Column(UUID, primary_key=True)
     bill_id = Column(UUID, ForeignKey(StateBill.bill_id), index=True)
     version_name = Column(Text, nullable=False)
+    sponsorships = relationship("SenateSponsorship", back_populates="senate_version")
 
 
 class AssemblyBillVersion(db.Model):
@@ -146,3 +148,4 @@ class AssemblyBillVersion(db.Model):
     id = Column(UUID, primary_key=True)
     bill_id = Column(UUID, ForeignKey(StateBill.bill_id), index=True)
     version_name = Column(Text, nullable=False)
+    sponsorships = relationship("AssemblySponsorship", back_populates="assembly_version")

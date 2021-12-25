@@ -85,7 +85,7 @@ def fill_council_person_static_data():
             council_member.person.name = member_data["name"]
             council_member.borough = member_data["borough"]
 
-    legislator_ids_from_db = set([l.id for l in council_members])
+    legislator_ids_from_db = set([l.city_council_person_id for l in council_members])
     if diff := set(COUNCIL_DATA_BY_LEGISLATOR_ID.keys()).difference(
         legislator_ids_from_db
     ):

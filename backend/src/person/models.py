@@ -16,7 +16,7 @@ class Person(db.Model):
         STAFFER = 4 # this might be problematic...
 
     # This is the internal ID shared by all people
-    id = Column(UUID, primary_key=True)
+    id = Column(UUID, primary_key=True, default=uuid4)
 
     name = Column(Text, nullable=False)
     title = Column(Text)
@@ -32,9 +32,6 @@ class Person(db.Model):
     council_member = relationship("CouncilMember", back_populates="person", uselist=False)
     senator = relationship("Senator", back_populates="person", uselist=False)
     assembly_member = relationship("AssemblyMember", back_populates="person", uselist=False)
-
-    staffer = relationship("Staffer", back_populates="person", uselist=False)
-    staffers = relationship("Staffer", back_populates="boss")
 
 
     # These are added by our static data
@@ -81,6 +78,7 @@ class Senator(db.Model):
     # Foreign key to Person parent table
     person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)
     person = relationship("Person", back_populates="senator")
+    sponsorships = relationship("SenateSponsorship", back_populates="senator")
 
 
 
@@ -91,7 +89,10 @@ class AssemblyMember(db.Model):
     person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)
     person = relationship("Person", back_populates="assembly_member")
 
+    sponsorships = relationship("AssemblySponsorship", back_populates="assembly_member")
+
     # These are added by our static data
+    # TODO remove this
     party = Column(Text)
 
 
@@ -118,3 +119,7 @@ class Staffer(db.Model):
             contact_string = "No contact info"
         title_string = f"{self.title} - " if self.title else ""
         return f"{title_string}{self.name} ({contact_string})"
+
+
+Person.staffer = relationship(Staffer, foreign_keys=[Staffer.person_id], back_populates="person", uselist=False)
+Person.staffers = relationship("Staffer", foreign_keys=[Staffer.boss_id], back_populates="boss")
