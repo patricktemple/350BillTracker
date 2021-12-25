@@ -33,16 +33,16 @@ export default function SavedBillsPage({
     loadBillList();
   });
 
-  function handleTrackBill(id: number) {
+  function handleTrackBill(cityBillId: number) {
     apiFetch('/api/saved-bills', {
       method: 'POST',
-      body: { id }
+      body: { cityBillId }
     }).then((response) => {
       loadBillList();
     });
   }
 
-  function handleRemoveBill(billId: number) {
+  function handleRemoveBill(billId: string) {
     apiFetch(`/api/saved-bills/` + billId, {
       method: 'DELETE'
     }).then((response) => {
@@ -72,7 +72,7 @@ export default function SavedBillsPage({
                 <Accordion.Item key={bill.id} eventKey={bill.id.toString()}>
                   <Accordion.Header>
                     <strong>{bill.nickname || bill.name}</strong>&nbsp;(
-                    {bill.file})
+                    {bill.cityBill!.file})
                   </Accordion.Header>
                   <LazyAccordionBody eventKey={bill.id.toString()}>
                     <BillDetails

@@ -9,7 +9,7 @@ import useApiFetch from './useApiFetch';
 interface Props {
   show: boolean;
   handleHide: () => void;
-  handleTrackBill: (id: number) => void;
+  handleTrackBill: (cityBillId: number) => void;
 }
 
 export default function SearchBillsModal(props: Props): ReactElement {

@@ -165,7 +165,7 @@ export default function BillDetails(props: Props): ReactElement {
         <Col lg={2} style={{ fontWeight: 'bold' }}>
           File:
         </Col>
-        <Col>{bill.file}</Col>
+        <Col>{bill.cityBill!.file}</Col>
       </Row>
       <Row className="mb-2">
         <Col lg={2} style={{ fontWeight: 'bold' }}>
@@ -177,13 +177,13 @@ export default function BillDetails(props: Props): ReactElement {
         <Col lg={2} style={{ fontWeight: 'bold' }}>
           Description:
         </Col>
-        <Col>{bill.title}</Col>
+        <Col>{bill.cityBill!.title}</Col>
       </Row>
       <Row className="mb-2">
         <Col lg={2} style={{ fontWeight: 'bold' }}>
           Status:
         </Col>
-        <Col>{bill.status}</Col>
+        <Col>{bill.cityBill!.status}</Col>
       </Row>
       <Form.Group as={Row} className="mb-2">
         <Form.Label column lg={2} style={{ fontWeight: 'bold' }}>

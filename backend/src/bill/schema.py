@@ -9,6 +9,12 @@ class CityBillSchema(CamelCaseSchema):
     file = fields.String(dump_only=True)
     title = fields.String(dump_only=True)
     status = fields.String(dump_only=True)
+    council_body = fields.String(dump_only=True)
+    city_bill_id = fields.Integer(dump_only=True)
+
+
+class TrackCityBillSchema(CamelCaseSchema):
+    city_bill_id = fields.Integer()
 
 
 class SenateBillVersionSchema(CamelCaseSchema):
@@ -29,8 +35,6 @@ class BillSchema(CamelCaseSchema):
     # Data pulled from the API
     id = fields.Integer(dump_only=True)
     name = fields.String(dump_only=True)
-    title = fields.String(dump_only=True)
-    status = fields.String(dump_only=True)
 
 
     # Data that we track

@@ -61,19 +61,19 @@ export default function LegislatorDetailsPanel(props: Props) {
     useState<boolean>(false);
 
   const [formData, setFormData, saveStatus] = useAutosavingFormData<FormData>(
-    '/api/legislators/' + legislator.id,
+    '/api/persons/' + legislator.id,
     { notes: legislator.notes }
   );
   const apiFetch = useApiFetch();
 
   function loadStaffers() {
-    apiFetch(`/api/legislators/${legislator.id}/staffers`).then((response) => {
+    apiFetch(`/api/persons/${legislator.id}/staffers`).then((response) => {
       setStaffers(response);
     });
   }
 
   useMountEffect(() => {
-    apiFetch(`/api/legislators/${legislator.id}/sponsorships`).then(
+    apiFetch(`/api/persons/${legislator.id}/sponsorships`).then(
       (response) => {
         setSponsorships(response);
       }
@@ -93,7 +93,7 @@ export default function LegislatorDetailsPanel(props: Props) {
     twitter: string
   ) {
     setAddStafferModalVisible(false);
-    apiFetch(`/api/legislators/${legislator.id}/staffers`, {
+    apiFetch(`/api/persons/${legislator.id}/staffers`, {
       method: 'POST',
       body: {
         name: name || null,
@@ -110,7 +110,7 @@ export default function LegislatorDetailsPanel(props: Props) {
   function handleRemoveStaffer(e: any, id: Uuid) {
     e.preventDefault();
     // TODO: Show a confirmation?
-    apiFetch(`/api/legislators/-/staffers/` + id, {
+    apiFetch(`/api/persons/-/staffers/` + id, {
       method: 'DELETE'
     }).then((response) => {
       loadStaffers();
@@ -222,7 +222,7 @@ export default function LegislatorDetailsPanel(props: Props) {
             <Stack direction="vertical">
               {sponsorships.map((s) => (
                 <Link to={'/saved-bills/' + s.bill.id} key={s.bill.id}>
-                  {s.bill.file}: <em>{s.bill.nickname || s.bill.name}</em>
+                  {s.bill.cityBill!.file}: <em>{s.bill.nickname || s.bill.name}</em>
                 </Link>
               ))}
             </Stack>

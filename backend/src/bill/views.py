@@ -15,6 +15,7 @@ from .schema import (
     BillSchema,
     CreatePowerHourSchema,
     PowerHourSchema,
+    TrackCityBillSchema
 )
 
 # Views ----------------------------------------------------------------------
@@ -30,15 +31,16 @@ def bills():
 # Rename to city-bills?
 @app.route("/api/saved-bills", methods=["POST"])
 @auth_required
-def save_bill():
-    bill_id = request.json["city_bill_id"]
-    if CityBill.query.get(bill_id):
+def track_city_bill():
+    data = TrackCityBillSchema().load(request.json)
+    city_bill_id = data["city_bill_id"]
+    if CityBill.query.filter_by(city_bill_id=city_bill_id).one_or_none():
         # There's a race condition of checking this and then inserting,
         # but in that rare case it will hit the DB unique constraint instead.
         raise exceptions.Conflict()
 
-    bill_data = lookup_bill(bill_id)
-    logging.info(f"Saving bill {bill_id}, council API returned {bill_data}")
+    bill_data = lookup_bill(city_bill_id)
+    logging.info(f"Saving bill {city_bill_id}, council API returned {bill_data}")
 
     bill = Bill(
         type=Bill.BillType.CITY,

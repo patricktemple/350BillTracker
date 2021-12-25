@@ -2,20 +2,29 @@
 
 export type Uuid = string;
 
-export interface Bill {
-  // Non-editable fields
-  id: number;
-  file: string;
-  name: string;
+export type BillType = "CITY" | "STATE";
+
+export interface CityBill {
   title: string;
   status: string;
+  file: string;
+  cityBillId: number;
+  councilBody: string; // this is the committee name
+}
+
+export interface Bill {
+  // Non-editable fields
+  id: string;
+  name: string;
   tracked: boolean;
-  body: string;
 
   // Editable fields
   notes: string;
   nickname: string;
   twitterSearchTerms: string[];
+
+  type: BillType;
+  cityBill: CityBill | null;
 }
 
 // TODO: Change types to reflect nullability

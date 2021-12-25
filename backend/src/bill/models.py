@@ -117,6 +117,8 @@ class CityBill(db.Model):
         "CitySponsorship", back_populates="city_bill", cascade="all, delete"
     )
 
+    council_body = Column(Text)
+
     @property
     def tracked(self):
         return True
