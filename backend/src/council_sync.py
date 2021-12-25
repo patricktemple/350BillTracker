@@ -24,26 +24,28 @@ def add_council_members():
     to be filled in with other sources."""
     members = get_current_council_members()
 
-    # Problem: This is now duplicating people because they have a new ID each time...
-    # TODO fix this.
-
     for member in members:
-        person = Person(type=Person.PersonType.COUNCIL_MEMBER,
-            name=member["OfficeRecordFullName"],
-            title="City Council Member", # TODO
-        )
-        person.council_member = CouncilMember(
-            city_council_person_id=member["OfficeRecordPersonId"],
-            term_start=datetime.fromisoformat(
-                member["OfficeRecordStartDate"]
-            ).replace(tzinfo=timezone.utc),
-            term_end=datetime.fromisoformat(
-                member["OfficeRecordEndDate"]
-            ).replace(tzinfo=timezone.utc),
-        )
-        # TODO: Merge is probably not concurrency friendly. Do insert+on_conflict_do_update
-        # TODO figure out if merge works with this nested data
-        db.session.merge(person)
+        city_council_person_id=member["OfficeRecordPersonId"]
+
+        existing_council_member = CouncilMember.query.filter_by(city_council_person_id=city_council_person_id).one_or_none()
+        if existing_council_member:
+            council_member = existing_council_member
+            person = existing_council_member.person
+        else:
+            person = Person(type=Person.PersonType.COUNCIL_MEMBER)
+            person.council_member = CouncilMember()
+            council_member = person.council_member
+            db.session.add(person)
+
+        person.name = member["OfficeRecordFullName"]
+        person.title = "City Council Member" # TODO
+        council_member.city_council_person_id = city_council_person_id
+        council_member.term_start = datetime.fromisoformat(
+                    member["OfficeRecordStartDate"]
+                ).replace(tzinfo=timezone.utc)
+        council_member.term_end = datetime.fromisoformat(
+                    member["OfficeRecordEndDate"]
+                ).replace(tzinfo=timezone.utc)
 
     db.session.commit()
 
@@ -136,7 +138,7 @@ def update_bill_sponsorships(city_bill, set_added_at=False):
         bill_id=city_bill.bill_id
     ).all()
     existing_sponsorships_by_city_council_id = {
-        s.city_council_person_id: s for s in existing_sponsorships
+        s.council_member.city_council_person_id: s for s in existing_sponsorships
     }
 
     new_sponsorships = get_bill_sponsors(city_bill.city_bill_id)
