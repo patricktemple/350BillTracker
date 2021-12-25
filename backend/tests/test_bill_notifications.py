@@ -13,8 +13,8 @@ from src.bill_notifications import (
     _get_bill_update_subject_line,
     send_bill_update_notifications,
 )
-from src.person.models import Legislator
 from src.models import db
+from src.person.models import Legislator
 from src.sponsorship.models import BillSponsorship
 from src.user.models import User
 from src.utils import now

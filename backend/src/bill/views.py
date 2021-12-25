@@ -10,13 +10,13 @@ from ..council_api import lookup_bill, lookup_bills
 from ..council_sync import update_bill_sponsorships
 from ..google_sheets import create_power_hour
 from ..models import db
-from .models import Bill, BillAttachment, PowerHour, CityBill
+from .models import Bill, BillAttachment, CityBill, PowerHour
 from .schema import (
     BillAttachmentSchema,
     BillSchema,
     CreatePowerHourSchema,
     PowerHourSchema,
-    TrackCityBillSchema
+    TrackCityBillSchema,
 )
 
 # Views ----------------------------------------------------------------------
@@ -41,14 +41,12 @@ def track_city_bill():
         raise exceptions.Conflict()
 
     bill_data = lookup_bill(city_bill_id)
-    logging.info(f"Saving bill {city_bill_id}, council API returned {bill_data}")
-
-    bill = Bill(
-        id=uuid4(),
-        type=Bill.BillType.CITY,
-        name=bill_data['name']
+    logging.info(
+        f"Saving bill {city_bill_id}, council API returned {bill_data}"
     )
-    bill.city_bill = CityBill(**bill_data['city_bill'])
+
+    bill = Bill(id=uuid4(), type=Bill.BillType.CITY, name=bill_data["name"])
+    bill.city_bill = CityBill(**bill_data["city_bill"])
     db.session.add(bill)
 
     update_bill_sponsorships(bill.city_bill)
@@ -94,12 +92,16 @@ def search_bills():
     external_bills = lookup_bills(file)
 
     # Check whether or not we're already tracking this bill
-    external_bills_ids = [b['city_bill']["city_bill_id"] for b in external_bills]
-    tracked_bills = CityBill.query.filter(CityBill.city_bill_id.in_(external_bills_ids)).all()
+    external_bills_ids = [
+        b["city_bill"]["city_bill_id"] for b in external_bills
+    ]
+    tracked_bills = CityBill.query.filter(
+        CityBill.city_bill_id.in_(external_bills_ids)
+    ).all()
     tracked_bill_ids = set([t.city_bill_id for t in tracked_bills])
 
     for bill in external_bills:
-        bill["tracked"] = bill['city_bill']["city_bill_id"] in tracked_bill_ids
+        bill["tracked"] = bill["city_bill"]["city_bill_id"] in tracked_bill_ids
 
     return BillSchema(many=True).jsonify(external_bills)
 

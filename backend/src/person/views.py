@@ -7,7 +7,7 @@ from ..app import app
 from ..auth import auth_required
 from ..models import db
 from .models import Person, Staffer
-from .schema import PersonSchema, CreateStafferSchema
+from .schema import CreateStafferSchema, PersonSchema
 
 
 @app.route("/api/persons", methods=["GET"])
@@ -35,6 +35,7 @@ def update_legislator(person_id):
 def person_staffers(person_id):
     person = Person.query.get(person_id)
     return PersonSchema(many=True).jsonify(person.staffer_persons)
+
 
 @app.route("/api/persons/<uuid:person_id>/staffers", methods=["POST"])
 @auth_required

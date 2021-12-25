@@ -4,8 +4,8 @@ import responses
 
 from src import app
 from src.bill.models import DEFAULT_TWITTER_SEARCH_TERMS, Bill
-from src.person.models import Legislator
 from src.models import db
+from src.person.models import Legislator
 from src.utils import now
 
 from .utils import assert_response

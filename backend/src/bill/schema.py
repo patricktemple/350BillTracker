@@ -21,7 +21,6 @@ class SenateBillVersionSchema(CamelCaseSchema):
     version_name = fields.String(dump_only=True)
 
 
-
 class AssemblyBillVersionSchema(CamelCaseSchema):
     version_name = fields.String(dump_only=True)
 
@@ -36,13 +35,12 @@ class BillSchema(CamelCaseSchema):
     id = fields.UUID(dump_only=True)
     name = fields.String(dump_only=True)
 
-
     # Data that we track
     tracked = fields.Boolean(dump_only=True)
     notes = fields.String(required=True)
     nickname = fields.String(required=True)
     twitter_search_terms = fields.List(fields.String(), required=True)
-    type = EnumField(Bill.BillType) #  TODO dump_only?
+    type = EnumField(Bill.BillType)  #  TODO dump_only?
     city_bill = fields.Nested(CityBillSchema)
     state_bill = fields.Nested(StateBillSchema)
 

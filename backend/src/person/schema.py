@@ -17,6 +17,7 @@ class CouncilMemberSchema(CamelCaseSchema):
 class SenatorSchema(CamelCaseSchema):
     pass
 
+
 class AssemblyMemberSchema(CamelCaseSchema):
     pass
 
@@ -40,7 +41,7 @@ class PersonSchema(CamelCaseSchema):
     # Static data that we add in
     twitter = fields.String(dump_only=True)
 
-    type = EnumField(Person.PersonType) # dump_only?
+    type = EnumField(Person.PersonType)  # dump_only?
 
     # Extra data we track
     notes = fields.String(missing=None)

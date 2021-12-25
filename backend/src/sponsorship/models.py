@@ -1,25 +1,39 @@
 from sqlalchemy import Column, ForeignKey, Integer
-from sqlalchemy.orm import relationship, foreign, remote
+from sqlalchemy.orm import foreign, relationship, remote
 
-from ..models import TIMESTAMP, db, UUID
-from ..person.models import Senator, AssemblyMember, CouncilMember, Person
-from ..bill.models import CityBill, SenateBillVersion, AssemblyBillVersion, Bill
+from ..bill.models import (
+    AssemblyBillVersion,
+    Bill,
+    CityBill,
+    SenateBillVersion,
+)
+from ..models import TIMESTAMP, UUID, db
+from ..person.models import AssemblyMember, CouncilMember, Person, Senator
+
 
 class CitySponsorship(db.Model):
     __tablename__ = "city_sponsorships"
 
     bill_id = Column(
-        UUID, ForeignKey("city_bills.bill_id"), nullable=False, primary_key=True
+        UUID,
+        ForeignKey("city_bills.bill_id"),
+        nullable=False,
+        primary_key=True,
     )
     city_bill = relationship(
-        CityBill, back_populates="sponsorships" # , order_by="Bill.name" # PROBLEM with this order by
+        CityBill,
+        back_populates="sponsorships",  # , order_by="Bill.name" # PROBLEM with this order by
     )
 
     council_member_id = Column(
-        UUID, ForeignKey("council_members.person_id"), nullable=False, primary_key=True
+        UUID,
+        ForeignKey("council_members.person_id"),
+        nullable=False,
+        primary_key=True,
     )
     council_member = relationship(
-        CouncilMember, back_populates="sponsorships" # , order_by="CityCouncilMember.name" # ugh --- this should order by Person.name?
+        CouncilMember,
+        back_populates="sponsorships",  # , order_by="CityCouncilMember.name" # ugh --- this should order by Person.name?
     )
 
     # TODO: Make this nullable=false once cron has run in prod and backfilled
@@ -32,11 +46,17 @@ class CitySponsorship(db.Model):
     added_at = Column(TIMESTAMP)
 
 
-
-CitySponsorship.bill = relationship(Bill, primaryjoin=remote(Bill.id)==foreign(CitySponsorship.bill_id), viewonly=True)
+CitySponsorship.bill = relationship(
+    Bill,
+    primaryjoin=remote(Bill.id) == foreign(CitySponsorship.bill_id),
+    viewonly=True,
+)
 CitySponsorship.person = relationship(
-        Person, primaryjoin=remote(Person.id)==foreign(CitySponsorship.council_member_id), viewonly=True
-    )
+    Person,
+    primaryjoin=remote(Person.id)
+    == foreign(CitySponsorship.council_member_id),
+    viewonly=True,
+)
 
 
 class SenateSponsorship(db.Model):
@@ -48,15 +68,12 @@ class SenateSponsorship(db.Model):
         UUID, ForeignKey(SenateBillVersion.id), nullable=False
     )
     senate_version = relationship(
-        SenateBillVersion, back_populates="sponsorships"# , order_by="Bill.name"
+        SenateBillVersion,
+        back_populates="sponsorships",  # , order_by="Bill.name"
     )
 
-    senator_id = Column(
-        UUID, ForeignKey(Senator.person_id), nullable=False
-    )
-    senator = relationship(
-        Senator, back_populates="sponsorships" #
-    )
+    senator_id = Column(UUID, ForeignKey(Senator.person_id), nullable=False)
+    senator = relationship(Senator, back_populates="sponsorships")  #
 
     # # TODO: Make this nullable=false once cron has run in prod and backfilled
     # sponsor_sequence = Column(Integer, nullable=True)
@@ -78,14 +95,15 @@ class AssemblySponsorship(db.Model):
         UUID, ForeignKey(AssemblyBillVersion.id), nullable=False
     )
     assembly_version = relationship(
-        AssemblyBillVersion, back_populates="sponsorships"# , order_by="Bill.name"
+        AssemblyBillVersion,
+        back_populates="sponsorships",  # , order_by="Bill.name"
     )
 
     assembly_member_id = Column(
         UUID, ForeignKey(AssemblyMember.person_id), nullable=False
     )
     assembly_member = relationship(
-        AssemblyMember, back_populates="sponsorships" #
+        AssemblyMember, back_populates="sponsorships"  #
     )
 
     # # TODO: Make this nullable=false once cron has run in prod and backfilled

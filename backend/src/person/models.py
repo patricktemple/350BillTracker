@@ -1,19 +1,20 @@
+import enum
 from uuid import uuid4
 
-from sqlalchemy import Column, ForeignKey, Integer, Text, Enum
-from sqlalchemy.orm import relationship, remote, foreign
-import enum
+from sqlalchemy import Column, Enum, ForeignKey, Integer, Text
+from sqlalchemy.orm import foreign, relationship, remote
 
 from ..models import TIMESTAMP, UUID, db
 
+
 class Person(db.Model):
-    __tablename__= "persons"
+    __tablename__ = "persons"
 
     class PersonType(enum.Enum):
         COUNCIL_MEMBER = 1
         ASSEMBLY_MEMBER = 2
         SENATOR = 3
-        STAFFER = 4 # this might be problematic...
+        STAFFER = 4  # this might be problematic...
 
     # This is the internal ID shared by all people
     id = Column(UUID, primary_key=True, default=uuid4)
@@ -29,10 +30,13 @@ class Person(db.Model):
     notes = Column(Text)
 
     type = Column(Enum(PersonType), nullable=False)
-    council_member = relationship("CouncilMember", back_populates="person", uselist=False)
+    council_member = relationship(
+        "CouncilMember", back_populates="person", uselist=False
+    )
     senator = relationship("Senator", back_populates="person", uselist=False)
-    assembly_member = relationship("AssemblyMember", back_populates="person", uselist=False)
-
+    assembly_member = relationship(
+        "AssemblyMember", back_populates="person", uselist=False
+    )
 
     # These are added by our static data
     party = Column(Text)
@@ -40,6 +44,7 @@ class Person(db.Model):
     @property
     def display_twitter(self):
         return "@" + self.twitter if self.twitter else None
+
     @property
     def twitter_url(self):
         return (
@@ -55,7 +60,9 @@ class CouncilMember(db.Model):
     person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)
 
     # ID of the City Council API object, which is also called Person
-    city_council_person_id = Column(Integer, nullable=False, index=True, unique=True) # index maybe?
+    city_council_person_id = Column(
+        Integer, nullable=False, index=True, unique=True
+    )  # index maybe?
 
     term_start = Column(TIMESTAMP)
     term_end = Column(TIMESTAMP)
@@ -63,13 +70,14 @@ class CouncilMember(db.Model):
     # District phone is stored in Person.phone
     legislative_phone = Column(Text)
 
-    sponsorships = relationship("CitySponsorship", back_populates="council_member")
+    sponsorships = relationship(
+        "CitySponsorship", back_populates="council_member"
+    )
 
     person = relationship("Person", back_populates="council_member")
 
     borough = Column(Text)
     website = Column(Text)
-
 
 
 class Senator(db.Model):
@@ -81,7 +89,6 @@ class Senator(db.Model):
     sponsorships = relationship("SenateSponsorship", back_populates="senator")
 
 
-
 class AssemblyMember(db.Model):
     __tablename__ = "assembly_members"
 
@@ -89,7 +96,9 @@ class AssemblyMember(db.Model):
     person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)
     person = relationship("Person", back_populates="assembly_member")
 
-    sponsorships = relationship("AssemblySponsorship", back_populates="assembly_member")
+    sponsorships = relationship(
+        "AssemblySponsorship", back_populates="assembly_member"
+    )
 
     # These are added by our static data
     # TODO remove this
@@ -107,8 +116,12 @@ class Staffer(db.Model):
 
     boss_id = Column(UUID, ForeignKey(Person.id), nullable=False, index=True)
 
-    person = relationship("Person", foreign_keys=[person_id], back_populates="staffer")
-    boss = relationship("Person", foreign_keys=[boss_id], back_populates="staffers")
+    person = relationship(
+        "Person", foreign_keys=[person_id], back_populates="staffer"
+    )
+    boss = relationship(
+        "Person", foreign_keys=[boss_id], back_populates="staffers"
+    )
 
     @property
     def display_string(self):
@@ -122,11 +135,32 @@ class Staffer(db.Model):
 
 
 # TODO: Should this actually point to the Staffer Person object to be consistent?
-Person.staffer = relationship(Staffer, foreign_keys=[Staffer.person_id], back_populates="person", uselist=False)
-Person.staffers = relationship("Staffer", foreign_keys=[Staffer.boss_id], back_populates="boss")
+Person.staffer = relationship(
+    Staffer,
+    foreign_keys=[Staffer.person_id],
+    back_populates="person",
+    uselist=False,
+)
+Person.staffers = relationship(
+    "Staffer", foreign_keys=[Staffer.boss_id], back_populates="boss"
+)
 
 # This naming is SO confusing!!! Do better than this. Maybe call Senator/Staffer etc "SenatorInfo" or "SenatorDetails" or something like that?
 
 # Needs a double join I think
-Person.staffer_person = relationship(Person, secondary="staffers_2", primaryjoin=Person.id==Staffer.person_id, secondaryjoin=Staffer.boss_id==Person.id, back_populates="staffer_persons", viewonly=True)
-Person.staffer_persons = relationship(Person, secondary="staffers_2", primaryjoin=Person.id==Staffer.boss_id, secondaryjoin=Staffer.person_id==Person.id, back_populates="staffer_person", viewonly=True)
+Person.staffer_person = relationship(
+    Person,
+    secondary="staffers_2",
+    primaryjoin=Person.id == Staffer.person_id,
+    secondaryjoin=Staffer.boss_id == Person.id,
+    back_populates="staffer_persons",
+    viewonly=True,
+)
+Person.staffer_persons = relationship(
+    Person,
+    secondary="staffers_2",
+    primaryjoin=Person.id == Staffer.boss_id,
+    secondaryjoin=Staffer.person_id == Person.id,
+    back_populates="staffer_person",
+    viewonly=True,
+)

@@ -10,12 +10,11 @@ from .council_api import (
     get_person,
     lookup_bill,
 )
-from .person.models import Person, CouncilMember
 from .models import db
+from .person.models import CouncilMember, Person
 from .sponsorship.models import CitySponsorship
 from .static_data import COUNCIL_DATA_BY_LEGISLATOR_ID
 from .utils import now
-
 
 
 def add_council_members():
@@ -25,9 +24,11 @@ def add_council_members():
     members = get_current_council_members()
 
     for member in members:
-        city_council_person_id=member["OfficeRecordPersonId"]
+        city_council_person_id = member["OfficeRecordPersonId"]
 
-        existing_council_member = CouncilMember.query.filter_by(city_council_person_id=city_council_person_id).one_or_none()
+        existing_council_member = CouncilMember.query.filter_by(
+            city_council_person_id=city_council_person_id
+        ).one_or_none()
         if existing_council_member:
             council_member = existing_council_member
             person = existing_council_member.person
@@ -38,14 +39,14 @@ def add_council_members():
             db.session.add(person)
 
         person.name = member["OfficeRecordFullName"]
-        person.title = "City Council Member" # TODO
+        person.title = "City Council Member"  # TODO
         council_member.city_council_person_id = city_council_person_id
         council_member.term_start = datetime.fromisoformat(
-                    member["OfficeRecordStartDate"]
-                ).replace(tzinfo=timezone.utc)
+            member["OfficeRecordStartDate"]
+        ).replace(tzinfo=timezone.utc)
         council_member.term_end = datetime.fromisoformat(
-                    member["OfficeRecordEndDate"]
-                ).replace(tzinfo=timezone.utc)
+            member["OfficeRecordEndDate"]
+        ).replace(tzinfo=timezone.utc)
 
     db.session.commit()
 
@@ -66,7 +67,9 @@ def fill_council_person_data_from_api():
             council_member.website = data["PersonWWW"]
             # Borough exists here but we prefer the cleaned static data
         except HTTPError:
-            logging.exception(f"Could not get Person {council_member.city_council_person_id} from API")
+            logging.exception(
+                f"Could not get Person {council_member.city_council_person_id} from API"
+            )
             continue
 
     db.session.commit()
@@ -76,7 +79,9 @@ def fill_council_person_static_data():
     council_members = CouncilMember.query.all()
 
     for council_member in council_members:
-        member_data = COUNCIL_DATA_BY_LEGISLATOR_ID.get(council_member.city_council_person_id)
+        member_data = COUNCIL_DATA_BY_LEGISLATOR_ID.get(
+            council_member.city_council_person_id
+        )
         if not member_data:
             logging.warning(
                 f"Found a legislator without static data: {council_member.city_council_person_id} {council_member.person.name}"
@@ -90,7 +95,9 @@ def fill_council_person_static_data():
             council_member.person.name = member_data["name"]
             council_member.borough = member_data["borough"]
 
-    legislator_ids_from_db = set([l.city_council_person_id for l in council_members])
+    legislator_ids_from_db = set(
+        [l.city_council_person_id for l in council_members]
+    )
     if diff := set(COUNCIL_DATA_BY_LEGISLATOR_ID.keys()).difference(
         legislator_ids_from_db
     ):
@@ -138,15 +145,20 @@ def update_bill_sponsorships(city_bill, set_added_at=False):
         bill_id=city_bill.bill_id
     ).all()
     existing_sponsorships_by_city_council_id = {
-        s.council_member.city_council_person_id: s for s in existing_sponsorships
+        s.council_member.city_council_person_id: s
+        for s in existing_sponsorships
     }
 
     new_sponsorships = get_bill_sponsors(city_bill.city_bill_id)
 
     new_council_members = CouncilMember.query.filter(
-        CouncilMember.city_council_person_id.in_([s["MatterSponsorNameId"] for s in new_sponsorships])
+        CouncilMember.city_council_person_id.in_(
+            [s["MatterSponsorNameId"] for s in new_sponsorships]
+        )
     ).all()
-    new_council_members_by_id = {c.city_council_person_id: c for c in new_council_members}
+    new_council_members_by_id = {
+        c.city_council_person_id: c for c in new_council_members
+    }
 
     # THIS is super confusing, rewrite it and simplify
     for sponsorship in new_sponsorships:
@@ -162,14 +174,21 @@ def update_bill_sponsorships(city_bill, set_added_at=False):
 
         internal_sponsorship = CitySponsorship(
             bill_id=city_bill.bill_id,
-            council_member_id=new_council_members_by_id[council_member_person_id].person_id,
+            council_member_id=new_council_members_by_id[
+                council_member_person_id
+            ].person_id,
             sponsor_sequence=sponsorship["MatterSponsorSequence"],
         )
 
-        if council_member_person_id in existing_sponsorships_by_city_council_id:
+        if (
+            council_member_person_id
+            in existing_sponsorships_by_city_council_id
+        ):
             # Remove sponsors from this set until we're left with only those
             # sponsorships that were rescinded recently.
-            del existing_sponsorships_by_city_council_id[council_member_person_id]
+            del existing_sponsorships_by_city_council_id[
+                council_member_person_id
+            ]
         elif set_added_at:
             internal_sponsorship.added_at = now()
 

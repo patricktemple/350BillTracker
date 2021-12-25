@@ -3,8 +3,8 @@ from datetime import date, datetime, timezone
 import requests
 
 from src.settings import CITY_COUNCIL_API_TOKEN
-from .bill.models import Bill
 
+from .bill.models import Bill
 from .utils import now
 
 # See http://webapi.legistar.com/Help for an overview of resources.
@@ -38,14 +38,14 @@ def _convert_matter_to_bill(matter):
     into our own format."""
     return {
         "type": Bill.BillType.CITY,
-        "name": matter["MatterName"], # TODO figure this out
+        "name": matter["MatterName"],  # TODO figure this out
         "city_bill": {
             "file": matter["MatterFile"],
             "council_body": matter["MatterBodyName"],
             "title": matter["MatterTitle"],
             "city_bill_id": matter["MatterId"],
             "intro_date": datetime.fromisoformat(
-            matter["MatterIntroDate"]
+                matter["MatterIntroDate"]
             ).replace(tzinfo=timezone.utc),
             "status": matter["MatterStatusName"],
         },

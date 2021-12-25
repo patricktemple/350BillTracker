@@ -18,7 +18,6 @@ class CityBillSponsorshipSchema(CamelCaseSchema):
     sponsor_sequence = fields.Integer()
 
 
-
 """
 Several options
 

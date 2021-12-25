@@ -1,9 +1,9 @@
+import enum
 from uuid import uuid4
 
-from sqlalchemy import Column, ForeignKey, Integer, Text, Enum
+from sqlalchemy import Column, Enum, ForeignKey, Integer, Text
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import relationship
-import enum
 
 from ..app import app
 from ..models import TIMESTAMP, UUID, db
@@ -16,6 +16,7 @@ DEFAULT_TWITTER_SEARCH_TERMS = [
     "renewable",
     "fossil fuel",
 ]
+
 
 class Party(enum.Enum):
     DEMOCRATIC = 1
@@ -42,8 +43,15 @@ class Bill(db.Model):
 
     # Info on child objects:
     type = Column(Enum(BillType), nullable=False)
-    city_bill = relationship("CityBill", back_populates="bill", uselist=False, cascade="all, delete")
-    state_bill = relationship("StateBill", back_populates="bill", uselist=False, cascade="all, delete")
+    city_bill = relationship(
+        "CityBill", back_populates="bill", uselist=False, cascade="all, delete"
+    )
+    state_bill = relationship(
+        "StateBill",
+        back_populates="bill",
+        uselist=False,
+        cascade="all, delete",
+    )
 
     # Data we track
     notes = Column(Text, nullable=False, server_default="")
@@ -58,7 +66,6 @@ class Bill(db.Model):
     attachments = relationship(
         "BillAttachment", back_populates="bill", cascade="all, delete"
     )
-
 
     @property
     def display_name(self):
@@ -110,7 +117,7 @@ class CityBill(db.Model):
 
     intro_date = Column(TIMESTAMP, nullable=False)
 
-    status = Column(Text, nullable=False) # ??? here or in subclass?
+    status = Column(Text, nullable=False)  # ??? here or in subclass?
 
     sponsorships = relationship(
         "CitySponsorship", back_populates="city_bill", cascade="all, delete"
@@ -138,7 +145,9 @@ class SenateBillVersion(db.Model):
     id = Column(UUID, primary_key=True)
     bill_id = Column(UUID, ForeignKey(StateBill.bill_id), index=True)
     version_name = Column(Text, nullable=False)
-    sponsorships = relationship("SenateSponsorship", back_populates="senate_version")
+    sponsorships = relationship(
+        "SenateSponsorship", back_populates="senate_version"
+    )
 
 
 class AssemblyBillVersion(db.Model):
@@ -148,4 +157,6 @@ class AssemblyBillVersion(db.Model):
     id = Column(UUID, primary_key=True)
     bill_id = Column(UUID, ForeignKey(StateBill.bill_id), index=True)
     version_name = Column(Text, nullable=False)
-    sponsorships = relationship("AssemblySponsorship", back_populates="assembly_version")
+    sponsorships = relationship(
+        "AssemblySponsorship", back_populates="assembly_version"
+    )

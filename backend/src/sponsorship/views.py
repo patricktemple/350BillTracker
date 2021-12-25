@@ -4,14 +4,15 @@ from werkzeug import exceptions
 from ..app import app
 from ..auth import auth_required
 from ..bill.models import Bill, CityBill
-from ..person.models import Person
 from ..models import db
+from ..person.models import Person
 from .models import CitySponsorship
 from .schema import CityBillSponsorshipSchema, CouncilMemberSponsorshipSchema
 
 
 @app.route(
-    "/api/council-members/<uuid:council_member_id>/sponsorships", methods=["GET"]
+    "/api/council-members/<uuid:council_member_id>/sponsorships",
+    methods=["GET"],
 )
 @auth_required
 def council_member_sponsorships(council_member_id):
@@ -42,7 +43,8 @@ def city_bill_sponsorships(bill_id):
 
     non_sponsors = (
         Person.query.filter(
-            Person.id.not_in([s.council_member_id for s in sponsorships]) & (Person.type == Person.PersonType.COUNCIL_MEMBER)
+            Person.id.not_in([s.council_member_id for s in sponsorships])
+            & (Person.type == Person.PersonType.COUNCIL_MEMBER)
         )
         .order_by(Person.name)
         .all()
