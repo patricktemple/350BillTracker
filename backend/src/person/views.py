@@ -6,40 +6,40 @@ from werkzeug import exceptions
 from ..app import app
 from ..auth import auth_required
 from ..models import db
-from .models import Legislator, Staffer
-from .schema import LegislatorSchema, StafferSchema
+from .models import Person, Staffer
+from .schema import PersonSchema, StafferSchema
 
 
-@app.route("/api/legislators", methods=["GET"])
+@app.route("/api/persons", methods=["GET"])
 @auth_required
-def get_legislators():
-    legislators = Legislator.query.order_by(Legislator.name).all()
-    return LegislatorSchema(many=True).jsonify(legislators)
+def get_persons():
+    persons = Person.query.order_by(Person.name).all()
+    return PersonSchema(many=True).jsonify(persons)
 
 
-@app.route("/api/legislators/<int:legislator_id>", methods=["PUT"])
+@app.route("/api/persons/<int:person_id>", methods=["PUT"])
 @auth_required
-def update_legislator(legislator_id):
-    data = LegislatorSchema().load(request.json)
+def update_legislator(person_id):
+    data = PersonSchema().load(request.json)
 
-    legislator = Legislator.query.get(legislator_id)
-    legislator.notes = data["notes"]
+    person = Person.query.get(person_id)
+    person.notes = data["notes"]
 
     db.session.commit()
 
     return jsonify({})
 
 
-@app.route("/api/legislators/<int:legislator_id>/staffers", methods=["GET"])
+@app.route("/api/persons/<int:person_id>/staffers", methods=["GET"])
 @auth_required
-def legislator_staffers(legislator_id):
-    staffers = Staffer.query.filter_by(legislator_id=legislator_id).all()
+def person_staffers(person_id):
+    staffers = Staffer.query.filter_by(boss_id=person_id).all()
     return StafferSchema(many=True).jsonify(staffers)
 
-
-@app.route("/api/legislators/<int:legislator_id>/staffers", methods=["POST"])
+# TODO: Look at StafferSchema, it might need changes
+@app.route("/api/persons/<int:person_id>/staffers", methods=["POST"])
 @auth_required
-def add_legislator_staffer(legislator_id):
+def add_person_staffer(person_id):
     data = StafferSchema().load(request.json)
     twitter = data["twitter"]
     if twitter:
@@ -49,22 +49,25 @@ def add_legislator_staffer(legislator_id):
         if not pattern.match(twitter):
             raise exceptions.UnprocessableEntity(f"Invalid Twitter: {twitter}")
 
-    staffer = Staffer(
-        legislator_id=legislator_id,
+    person = Person(
         name=data["name"],
         title=data["title"],
         phone=data["phone"],
         email=data["email"],
+        type=Person.PersonType.STAFFER,
+    )
+    person.staffer = Staffer(
+        boss_id=person_id,
         twitter=twitter,
     )
-    db.session.add(staffer)
+    db.session.add(person)
     db.session.commit()
 
     # TODO: Return the object in all Creates, to be consistent
     return jsonify({})
 
 
-@app.route("/api/legislators/-/staffers/<uuid:staffer_id>", methods=["DELETE"])
+@app.route("/api/persons/-/staffers/<uuid:staffer_id>", methods=["DELETE"])
 @auth_required
 def delete_staffer(staffer_id):
     staffer = Staffer.query.get(staffer_id)
