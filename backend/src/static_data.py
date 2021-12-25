@@ -10,7 +10,7 @@ R = "R"
 # The API does provide "name", but we have it here too so allow overriding
 # the rendering of the name, and also because it makes this dict much easier
 # to read.
-STATIC_DATA_BY_LEGISLATOR_ID = {
+COUNCIL_DATA_BY_LEGISLATOR_ID = {
     7739: {
         "name": "Adrienne E. Adams",
         "twitter": "AdrienneEAdams1",

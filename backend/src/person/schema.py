@@ -3,6 +3,29 @@ from marshmallow import fields
 from ..schema import CamelCaseSchema
 
 
+class CouncilMemberSchema(CamelCaseSchema):
+    term_start = fields.DateTime(dump_only=True)
+    term_end = fields.DateTime(dump_only=True)
+    borough = fields.String(dump_only=True)
+    website = fields.String(dump_only=True)
+    legislative_phone = fields.String(dump_only=True)
+
+
+# I'm not actually sure we'll  need these schemas:
+class SenatorSchema(CamelCaseSchema):
+    # person = fields.Nested(PersonSchema)
+    pass
+
+class AssemblyMemberSchema(CamelCaseSchema):
+    # person = fields.Nested(PersonSchema)
+    pass
+
+
+class StafferSchema(CamelCaseSchema):
+    # person = fields.Nested(PersonSchema)
+    pass
+
+
 class PersonSchema(CamelCaseSchema):
     # Data synced from the API
     name = fields.String(dump_only=True)
@@ -30,23 +53,3 @@ class PersonSchema(CamelCaseSchema):
     council_member = fields.Nested(CouncilMemberSchema)
     senator = fields.Nested(SenatorSchema)
     assembly_member = fields.Nested(AssemblyMemberSchema)
-
-
-class CouncilMemberSchema(CamelCaseSchema):
-    term_start = fields.DateTime(dump_only=True)
-    term_end = fields.DateTime(dump_only=True)
-    borough = fields.String(dump_only=True)
-    website = fields.String(dump_only=True)
-    legislative_phone = fields.String(dump_only=True)
-
-
-# I'm not actually sure we'll  need these schemas:
-class SenatorSchema(CamelCaseSchema):
-    person = fields.Nested(PersonSchema)
-
-class AssemblyMemberSchema(CamelCaseSchema):
-    person = fields.Nested(PersonSchema)
-
-
-class StafferSchema(CamelCaseSchema):
-    person = fields.Nested(PersonSchema)

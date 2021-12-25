@@ -100,8 +100,9 @@ class StateBill(db.Model):
     bill_id = Column(UUID, ForeignKey(Bill.id), primary_key=True)
 
 
+# TODO: Figure out how to identify the active version
 class StateSenateBillVersion(db.Model):
-    __tablename__ = "state_senate_bill_versions"
+    __tablename__ = "senate_bill_versions"
 
     id = Column(UUID, primary_key=True)
     bill_id = Column(UUID, ForeignKey(StateBill.bill_id), index=True)
@@ -110,7 +111,7 @@ class StateSenateBillVersion(db.Model):
 
 class StateAssemblyBillVersion(db.Model):
     # Use a base class for this and senate versions, maybe? and same for sponsorships
-    __tablename__ = "state_assembly_bill_versions"
+    __tablename__ = "assembly_bill_versions"
 
     id = Column(UUID, primary_key=True)
     bill_id = Column(UUID, ForeignKey(StateBill.bill_id), index=True)

@@ -10,13 +10,12 @@ from .council_api import (
     get_person,
     lookup_bill,
 )
-from .person.models import Legislator
+from .person.models import Person, CouncilMember
 from .models import db
 from .sponsorship.models import BillSponsorship
-from .static_data import STATIC_DATA_BY_LEGISLATOR_ID
+from .static_data import COUNCIL_DATA_BY_LEGISLATOR_ID
 from .utils import now
 
-# Legislators ----------------------------------------------------------------
 
 
 def add_council_members():
@@ -26,9 +25,12 @@ def add_council_members():
     members = get_current_council_members()
 
     for member in members:
-        legislator = Legislator(
+        person = Person(type=Person.PersonType.COUNCIL_MEMBER,
             name=member["OfficeRecordFullName"],
-            id=member["OfficeRecordPersonId"],
+            title="City Council Member", # TODO
+        )
+        person.council_member = CouncilMember(
+            city_council_person_id=member["OfficeRecordPersonId"],
             term_start=datetime.fromisoformat(
                 member["OfficeRecordStartDate"]
             ).replace(tzinfo=timezone.utc),
@@ -37,7 +39,8 @@ def add_council_members():
             ).replace(tzinfo=timezone.utc),
         )
         # TODO: Merge is probably not concurrency friendly. Do insert+on_conflict_do_update
-        db.session.merge(legislator)
+        # TODO figure out if merge works with this nested data
+        db.session.merge(person)
 
     db.session.commit()
 
@@ -46,47 +49,48 @@ def fill_council_person_data_from_api():
     """For all council members in the DB, updates their contact info and other details
     based on the Person API and our own static data.
     """
-    legislators = Legislator.query.all()
+    council_members = CouncilMember.query.all()
 
-    for legislator in legislators:
+    # TODO make sure the query joined loads the persons
+    for council_member in council_members:
         try:
-            data = get_person(legislator.id)
-            legislator.email = data["PersonEmail"]
-            legislator.district_phone = data["PersonPhone"]
-            legislator.legislative_phone = data["PersonPhone2"]
-            legislator.website = data["PersonWWW"]
+            data = get_person(council_member.city_council_person_id)
+            council_member.person.email = data["PersonEmail"]
+            council_member.person.phone = data["PersonPhone"]
+            council_member.phone = data["PersonPhone2"]
+            council_member.website = data["PersonWWW"]
             # Borough exists here but we prefer the cleaned static data
         except HTTPError:
-            logging.exception(f"Could not get Person {legislator.id} from API")
+            logging.exception(f"Could not get Person {council_member.city_council_person_id} from API")
             continue
 
     db.session.commit()
 
 
 def fill_council_person_static_data():
-    legislators = Legislator.query.all()
+    council_members = CouncilMember.query.all()
 
-    for legislator in legislators:
-        legislator_data = STATIC_DATA_BY_LEGISLATOR_ID.get(legislator.id)
-        if not legislator_data:
+    for council_member in council_members:
+        member_data = COUNCIL_DATA_BY_LEGISLATOR_ID.get(council_member.city_council_person_id)
+        if not member_data:
             logging.warning(
-                f"Found a legislator without static data: {legislator.id} {legislator.name}"
+                f"Found a legislator without static data: {council_member.city_council_person_id} {council_member.person.name}"
             )
         else:
-            legislator.twitter = legislator_data["twitter"]
-            legislator.party = legislator_data["party"]
+            council_member.person.twitter = member_data["twitter"]
+            council_member.person.party = member_data["party"]
 
             # Name and borough both exist in the API but the static data has a
             # cleaned-up version.
-            legislator.name = legislator_data["name"]
-            legislator.borough = legislator_data["borough"]
+            council_member.person.name = member_data["name"]
+            council_member.borough = member_data["borough"]
 
-    legislator_ids_from_db = set([l.id for l in legislators])
-    if diff := set(STATIC_DATA_BY_LEGISLATOR_ID.keys()).difference(
+    legislator_ids_from_db = set([l.id for l in council_members])
+    if diff := set(COUNCIL_DATA_BY_LEGISLATOR_ID.keys()).difference(
         legislator_ids_from_db
     ):
         unmatched_static_data = [
-            STATIC_DATA_BY_LEGISLATOR_ID[id] for id in diff
+            COUNCIL_DATA_BY_LEGISLATOR_ID[id] for id in diff
         ]
         logging.warning(
             f"Static data has some legislators not in the DB: {unmatched_static_data}"
@@ -99,6 +103,7 @@ def fill_council_person_static_data():
 
 
 def _update_bill(bill_id):
+    # TODO: Update this to do council specific bill object too
     bill_data = lookup_bill(bill_id)
     logging.info(f"Updating bill {bill_id} and got {bill_data}")
 
@@ -131,8 +136,8 @@ def update_bill_sponsorships(bill_id, set_added_at=False):
 
     new_sponsorships = get_bill_sponsors(bill_id)
 
-    existing_legislators = Legislator.query.filter(
-        Legislator.id.in_([s["MatterSponsorNameId"] for s in new_sponsorships])
+    existing_legislators = CouncilMember.query.filter(
+        CouncilMember.id.in_([s["MatterSponsorNameId"] for s in new_sponsorships])
     ).all()
     existing_legislator_ids = {l.id for l in existing_legislators}
 

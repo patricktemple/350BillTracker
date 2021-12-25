@@ -3,20 +3,42 @@ from marshmallow import fields
 from ..schema import CamelCaseSchema
 
 
+class CityBillSchema(CamelCaseSchema):
+    file = fields.String(dump_only=True)
+    title = fields.String(dump_only=True)
+    status = fields.String(dump_only=True)
+
+
+class SenateBillVersionSchema(CamelCaseSchema):
+    version_name = fields.String(dump_only=True)
+
+
+
+class AssemblyBillVersionSchema(CamelCaseSchema):
+    version_name = fields.String(dump_only=True)
+
+
+class StateBillSchema(CamelCaseSchema):
+    active_senate_version = fields.Nested(SenateBillVersionSchema)
+    active_assembly_version = fields.Nested(AssemblyBillVersionSchema)
+
+
 class BillSchema(CamelCaseSchema):
     # Data pulled from the API
     id = fields.Integer(dump_only=True)
     name = fields.String(dump_only=True)
     title = fields.String(dump_only=True)
     status = fields.String(dump_only=True)
-    body = fields.String(dump_only=True)
-    file = fields.String(dump_only=True)
+
 
     # Data that we track
     tracked = fields.Boolean(dump_only=True)
     notes = fields.String(required=True)
     nickname = fields.String(required=True)
     twitter_search_terms = fields.List(fields.String(), required=True)
+    type = fields.String(dump_only=True)   # todo enum
+    city_bill = fields.Nested(CityBillSchema)
+    state_bill = fields.Nested(StateBillSchema)
 
 
 # Bill attachments ----------------------------------------------------------------------
