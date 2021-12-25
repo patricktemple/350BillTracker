@@ -63,7 +63,7 @@ def fill_council_person_data_from_api():
             data = get_person(council_member.city_council_person_id)
             council_member.person.email = data["PersonEmail"]
             council_member.person.phone = data["PersonPhone"]
-            council_member.phone = data["PersonPhone2"]
+            council_member.legislative_phone = data["PersonPhone2"]
             council_member.website = data["PersonWWW"]
             # Borough exists here but we prefer the cleaned static data
         except HTTPError:

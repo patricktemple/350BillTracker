@@ -7,6 +7,9 @@ from sqlalchemy.orm import foreign, relationship, remote
 from ..models import TIMESTAMP, UUID, db
 
 
+# TODO: Fix all eager loading
+
+
 class Person(db.Model):
     __tablename__ = "persons"
 
