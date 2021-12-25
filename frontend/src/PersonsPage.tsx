@@ -37,8 +37,9 @@ export default function ConcilMembersPage({
     const lowerFilterText = filterText.toLowerCase();
     filteredPersons = persons.filter(
       (p) =>
+        p.type == 'COUNCIL_MEMBER' && (
         p.name.toLowerCase().includes(lowerFilterText) ||
-        p.councilMember?.borough?.toLowerCase().includes(lowerFilterText)
+        p.councilMember?.borough?.toLowerCase().includes(lowerFilterText))
     );
   }
 

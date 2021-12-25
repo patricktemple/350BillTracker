@@ -1,7 +1,7 @@
 import logging
 from time import sleep
 
-from . import council_sync, models
+from . import council_sync, models, bill_notifications
 from .app import app
 from .settings import ENABLE_CRON
 
@@ -14,17 +14,17 @@ def cron_command():
         if ENABLE_CRON:
             try:
                 logging.info("Syncing data...")
-                logging.info("Adding council members")
-                council_sync.add_council_members()
+                # logging.info("Adding council members")
+                # council_sync.add_council_members()
 
-                logging.info("Updating council member contact info")
-                council_sync.fill_council_person_data_from_api()
+                # logging.info("Updating council member contact info")
+                # council_sync.fill_council_person_data_from_api()
 
-                logging.info("Refreshing council_member_static_data")
-                # TODO: This doesn't need to run at cron time though! Just once on startup
-                council_sync.fill_council_person_static_data()
+                # logging.info("Refreshing council_member_static_data")
+                # # TODO: This doesn't need to run at cron time though! Just once on startup
+                # council_sync.fill_council_person_static_data()
 
-                # bill_snapshots = bill_notifications.snapshot_bills()
+                bill_snapshots = bill_notifications.snapshot_bills()
 
                 logging.info("Syncing all bill updates")
                 council_sync.sync_bill_updates()
@@ -35,9 +35,9 @@ def cron_command():
                 logging.info(
                     "Checking if bills have changed, and sending notifications if so"
                 )
-                # bill_notifications.send_bill_update_notifications(
-                #     bill_snapshots
-                # )
+                bill_notifications.send_bill_update_notifications(
+                    bill_snapshots
+                )
 
                 logging.info("Cron run complete")
             except Exception as e:

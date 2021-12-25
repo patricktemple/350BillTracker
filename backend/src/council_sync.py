@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 from requests import HTTPError
 
-from .bill.models import Bill
+from .bill.models import CityBill, Bill
 from .council_api import (
     get_bill_sponsors,
     get_current_council_members,
@@ -114,23 +114,21 @@ def fill_council_person_static_data():
 # Bills ----------------------------------------------------------------------
 
 
-def _update_bill(bill_id):
-    # TODO: Update this to do council specific bill object too
-    # bill_data = lookup_bill(bill_id)
-    # logging.info(f"Updating bill {bill_id} and got {bill_data}")
+def _update_bill(bill):
+    bill_data = lookup_bill(bill.city_bill.city_bill_id)
+    logging.info(f"Updating bill {bill.city_bill.city_bill_id} and got {bill_data}")
 
-    # Bill.query.filter_by(id=bill_id).one()  # ensure bill exists
-    # db.session.merge(Bill(**bill_data))
-    pass
+    bill.name = bill_data['name']
+    for key in bill_data['city_bill'].keys():
+        setattr(bill.city_bill, key, bill_data['city_bill'][key])
 
 
 def sync_bill_updates():
-    # bills = Bill.query.all()
+    bills = Bill.query.filter_by(type=Bill.BillType.CITY).all()
 
-    # for bill in bills:
-    #     _update_bill(bill.id)
-    #     db.session.commit()
-    pass
+    for bill in bills:
+        _update_bill(bill)
+        db.session.commit()
 
 
 def update_bill_sponsorships(city_bill, set_added_at=False):
