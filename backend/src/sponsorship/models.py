@@ -2,8 +2,8 @@ from sqlalchemy import Column, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
 from ..models import TIMESTAMP, db, UUID
-from ..person.models import Senator, AssemblyMember, CouncilMember
-from ..bill.models import CityBill, SenateBillVersion, AssemblyBillVersion
+from ..person.models import Senator, AssemblyMember, CouncilMember, Person
+from ..bill.models import CityBill, SenateBillVersion, AssemblyBillVersion, Bill
 
 class CitySponsorship(db.Model):
     __tablename__ = "city_sponsorships"
@@ -14,6 +14,7 @@ class CitySponsorship(db.Model):
     city_bill = relationship(
         CityBill, back_populates="sponsorships" # , order_by="Bill.name" # PROBLEM with this order by
     )
+    bill = relationship(Bill, primaryjoin="Bill.id==CityBill.bill_id")
 
     council_member_id = Column(
         Integer, ForeignKey("city_council_members.person_id"), nullable=False, primary_key=True
@@ -21,6 +22,10 @@ class CitySponsorship(db.Model):
     council_member = relationship(
         CouncilMember, back_populates="sponsorships" # , order_by="CityCouncilMember.name" # ugh --- this should order by Person.name?
     )
+    person = relationship(
+        Person, primaryjoin="Person.id==CitySponsorship.council_member_id"
+    )
+
     # TODO: Make this nullable=false once cron has run in prod and backfilled
     sponsor_sequence = Column(Integer, nullable=True)
     # The timestamp when we first saw this sponsorship in the bill's list.

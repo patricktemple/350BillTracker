@@ -3,36 +3,36 @@ from werkzeug import exceptions
 
 from ..app import app
 from ..auth import auth_required
-from ..bill.models import Bill
-from ..person.models import Legislator
+from ..bill.models import Bill, CityBill
+from ..person.models import Person
 from ..models import db
-from .models import BillSponsorship
-from .schema import BillSponsorshipSchema, SingleMemberSponsorshipsSchema
+from .models import CitySponsorship
+from .schema import CityBillSponsorshipSchema, CouncilMemberSponsorshipSchema
 
 
 @app.route(
-    "/api/legislators/<int:legislator_id>/sponsorships", methods=["GET"]
+    "/api/council-members/<int:council_member_id>/sponsorships", methods=["GET"]
 )
 @auth_required
-def legislator_sponsorships(legislator_id):
+def council_member_sponsorships(council_member_id):
     sponsorships = (
-        BillSponsorship.query.filter_by(legislator_id=legislator_id)
-        .options(joinedload(BillSponsorship.bill))
+        CitySponsorship.query.filter_by(council_member_id=council_member_id)
+        .options(joinedload(CitySponsorship.bill))
         .all()
     )
-    return SingleMemberSponsorshipsSchema(many=True).jsonify(sponsorships)
+    return CouncilMemberSponsorshipSchema(many=True).jsonify(sponsorships)
 
 
-@app.route("/api/saved-bills/<int:bill_id>/sponsorships", methods=["GET"])
+@app.route("/api/city-bills/<int:bill_id>/sponsorships", methods=["GET"])
 @auth_required
-def bill_sponsorships(bill_id):
-    bill = Bill.query.get(bill_id)
-    if not bill:
+def city_bill_sponsorships(bill_id):
+    city_bill = CityBill.query.get(bill_id)
+    if not city_bill:
         raise exceptions.NotFound()
     sponsorships = (
-        BillSponsorship.query.filter_by(bill_id=bill_id)
-        .options(joinedload(BillSponsorship.legislator))
-        .order_by(BillSponsorship.sponsor_sequence)
+        CitySponsorship.query.filter_by(bill_id=bill_id)
+        .options(joinedload(CitySponsorship.person))
+        .order_by(CitySponsorship.sponsor_sequence)
         .all()
     )
     for sponsorship in sponsorships:
@@ -41,20 +41,20 @@ def bill_sponsorships(bill_id):
         sponsorship.is_sponsor = True
 
     non_sponsors = (
-        Legislator.query.filter(
-            Legislator.id.not_in([s.legislator_id for s in sponsorships])
+        Person.query.filter(
+            Person.id.not_in([s.council_member_id for s in sponsorships]) & (Person.type == Person.PersonType.COUNCIL_MEMBER)
         )
-        .order_by(Legislator.name)
+        .order_by(Person.name)
         .all()
     )
     non_sponsorships = [
         {
             "bill_id": bill_id,
             "is_sponsor": False,
-            "legislator": legislator,
+            "person": person,
         }
-        for legislator in non_sponsors
+        for person in non_sponsors
     ]
-    return BillSponsorshipSchema(many=True).jsonify(
+    return CityBillSponsorshipSchema(many=True).jsonify(
         sponsorships + non_sponsorships
     )

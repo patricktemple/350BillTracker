@@ -13,18 +13,15 @@ class CouncilMemberSchema(CamelCaseSchema):
     legislative_phone = fields.String(dump_only=True)
 
 
-# I'm not actually sure we'll  need these schemas:
+# I'm not actually sure we'll need these schemas yet:
 class SenatorSchema(CamelCaseSchema):
-    # person = fields.Nested(PersonSchema)
     pass
 
 class AssemblyMemberSchema(CamelCaseSchema):
-    # person = fields.Nested(PersonSchema)
     pass
 
 
 class StafferSchema(CamelCaseSchema):
-    # person = fields.Nested(PersonSchema)
     pass
 
 
