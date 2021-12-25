@@ -167,10 +167,7 @@ export default function PersonDetailsPanel(props: Props) {
         </Col>
         <Col>
           {person.twitter && (
-            <a
-              href={`https://twitter.com/${person.twitter}`}
-              target="twitter"
-            >
+            <a href={`https://twitter.com/${person.twitter}`} target="twitter">
               @{person.twitter}
             </a>
           )}
@@ -222,7 +219,8 @@ export default function PersonDetailsPanel(props: Props) {
             <Stack direction="vertical">
               {sponsorships.map((s) => (
                 <Link to={'/saved-bills/' + s.bill.id} key={s.bill.id}>
-                  {s.bill.cityBill!.file}: <em>{s.bill.nickname || s.bill.name}</em>
+                  {s.bill.cityBill!.file}:{' '}
+                  <em>{s.bill.nickname || s.bill.name}</em>
                 </Link>
               ))}
             </Stack>

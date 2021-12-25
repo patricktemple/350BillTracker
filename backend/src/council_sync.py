@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 from requests import HTTPError
 
-from .bill.models import CityBill, Bill
+from .bill.models import Bill, CityBill
 from .council_api import (
     get_bill_sponsors,
     get_current_council_members,
@@ -116,11 +116,13 @@ def fill_council_person_static_data():
 
 def _update_bill(bill):
     bill_data = lookup_bill(bill.city_bill.city_bill_id)
-    logging.info(f"Updating bill {bill.city_bill.city_bill_id} and got {bill_data}")
+    logging.info(
+        f"Updating bill {bill.city_bill.city_bill_id} and got {bill_data}"
+    )
 
-    bill.name = bill_data['name']
-    for key in bill_data['city_bill'].keys():
-        setattr(bill.city_bill, key, bill_data['city_bill'][key])
+    bill.name = bill_data["name"]
+    for key in bill_data["city_bill"].keys():
+        setattr(bill.city_bill, key, bill_data["city_bill"][key])
 
 
 def sync_bill_updates():

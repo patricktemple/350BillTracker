@@ -2,7 +2,7 @@
 
 export type Uuid = string;
 
-export type BillType = "CITY" | "STATE";
+export type BillType = 'CITY' | 'STATE';
 
 export interface CityBill {
   title: string;
@@ -27,7 +27,7 @@ export interface Bill {
   cityBill: CityBill | null;
 }
 
-export type PersonType = "COUNCIL_MEMBER" | "SENATOR" | "ASSEMBLY_MEMBER";
+export type PersonType = 'COUNCIL_MEMBER' | 'SENATOR' | 'ASSEMBLY_MEMBER';
 
 export interface CouncilMember {
   legislativePhone: string;

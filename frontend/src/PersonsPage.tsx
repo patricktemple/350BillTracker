@@ -37,9 +37,9 @@ export default function ConcilMembersPage({
     const lowerFilterText = filterText.toLowerCase();
     filteredPersons = persons.filter(
       (p) =>
-        p.type == 'COUNCIL_MEMBER' && (
-        p.name.toLowerCase().includes(lowerFilterText) ||
-        p.councilMember?.borough?.toLowerCase().includes(lowerFilterText))
+        p.type == 'COUNCIL_MEMBER' &&
+        (p.name.toLowerCase().includes(lowerFilterText) ||
+          p.councilMember?.borough?.toLowerCase().includes(lowerFilterText))
     );
   }
 
@@ -61,13 +61,12 @@ export default function ConcilMembersPage({
             />
             <Accordion defaultActiveKey={personId}>
               {filteredPersons.map((person) => (
-                <Accordion.Item
-                  key={person.id}
-                  eventKey={person.id}
-                >
+                <Accordion.Item key={person.id} eventKey={person.id}>
                   <Accordion.Header>
                     <strong>{person.name}</strong>
-                    {person.councilMember?.borough && <>&nbsp;({person.councilMember.borough})</>}
+                    {person.councilMember?.borough && (
+                      <>&nbsp;({person.councilMember.borough})</>
+                    )}
                   </Accordion.Header>
                   <LazyAccordionBody eventKey={person.id}>
                     <PersonDetailsPanel person={person} />

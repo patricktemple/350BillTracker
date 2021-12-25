@@ -27,9 +27,7 @@ export default function BillSponsorList(props: Props) {
     <Stack direction="vertical">
       {props.sponsorships.map((s) => (
         <div key={s.person.id}>
-          <Link to={'/council-members/' + s.person.id}>
-            {s.person.name}
-          </Link>
+          <Link to={'/council-members/' + s.person.id}>{s.person.name}</Link>
           {s.sponsorSequence == 0 && ' (lead)'}{' '}
           {s.person.twitter && (
             <span style={{ marginLeft: '0.5rem' }}>

@@ -7,7 +7,7 @@ from flask import render_template
 from sqlalchemy.orm import selectinload
 
 from .bill.views import CityBill
-from .person.models import Person, CouncilMember
+from .person.models import CouncilMember, Person
 from .ses import send_email
 from .user.models import User
 
@@ -34,7 +34,9 @@ class BillSnapshot:
 def snapshot_bills():
     """Snapshots the state of all bills. Used to calculate the diff produced by
     a cron job run, so that we can send out email notifications of bill status changes."""
-    city_bills = CityBill.query.options(selectinload(CityBill.sponsorships)).all()
+    city_bills = CityBill.query.options(
+        selectinload(CityBill.sponsorships)
+    ).all()
 
     snapshots_by_bill_id = {}
     for city_bill in city_bills:
@@ -109,7 +111,9 @@ def _convert_bill_diff_to_template_variables(diff: BillDiff):
 
         sponsor_text = f"{old_sponsor_count} sponsors --> {new_sponsor_count} sponsors ({', '.join(explanations)})"
     else:
-        sponsor_text = f"{len(diff.city_bill.sponsorships)} sponsors (unchanged)"
+        sponsor_text = (
+            f"{len(diff.city_bill.sponsorships)} sponsors (unchanged)"
+        )
         sponsor_color = "black"
 
     return {
@@ -150,7 +154,9 @@ def _send_bill_update_emails(bill_diffs):
 def _calculate_bill_diffs(snapshots_by_bill_id):
     """Looks at the before and after states of all bills, and collapses this info
     info a form that's useful for further processing when building emails."""
-    city_bills = CityBill.query.all() # options(selectinload("sponsorships.person")).all()
+    city_bills = (
+        CityBill.query.all()
+    )  # options(selectinload("sponsorships.person")).all()
 
     bill_diffs = []
     for city_bill in city_bills:

@@ -77,10 +77,7 @@ function AppContent() {
             <Redirect to="/saved-bills" />
           </Route>
           <Route path="/saved-bills/:billId?" exact component={BillsPage} />
-          <Route
-            path="/council-members/:personId?"
-            component={PersonsPage}
-          />
+          <Route path="/council-members/:personId?" component={PersonsPage} />
           <Route path="/settings" component={SettingsPage} />
         </main>
       </div>

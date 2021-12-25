@@ -51,9 +51,9 @@ function PowerHourModalBody(props: BodyProps): ReactElement {
 
   const apiFetch = useApiFetch();
 
-  const defaultTitle = `Power Hour for ${props.bill.cityBill!.file} (${moment().format(
-    'MMM D YYYY'
-  )})`;
+  const defaultTitle = `Power Hour for ${
+    props.bill.cityBill!.file
+  } (${moment().format('MMM D YYYY')})`;
   const lastWeekText = moment().subtract(7, 'days').format('MM/D');
 
   function handleSubmit(e: any) {
