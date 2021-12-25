@@ -1,6 +1,8 @@
 from marshmallow import fields
+from marshmallow_enum import EnumField
 
 from ..schema import CamelCaseSchema
+from .models import Person
 
 
 class CouncilMemberSchema(CamelCaseSchema):
@@ -37,10 +39,7 @@ class PersonSchema(CamelCaseSchema):
     # Static data that we add in
     twitter = fields.String(dump_only=True)
 
-    type = fields.String(dump_only=True) # TODO enum!!!
-
-    # TODO: Make this an enum!
-## unclear which level this goes into
+    type = EnumField(Person.PersonType) # dump_only?
 
     # Extra data we track
     notes = fields.String(missing=None)

@@ -1,7 +1,9 @@
 from sqlalchemy import Column, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
-from ..models import TIMESTAMP, db
+from ..models import TIMESTAMP, db, UUID
+from ..person.models import Senator, AssemblyMember, CouncilMember
+from ..bill.models import CityBill, SenateBillVersion, AssemblyBillVersion
 
 class CitySponsorship(db.Model):
     __tablename__ = "city_sponsorships"
@@ -10,14 +12,14 @@ class CitySponsorship(db.Model):
         Integer, ForeignKey("city_bills.bill_id"), nullable=False, primary_key=True
     )
     city_bill = relationship(
-        "Bill", back_populates="sponsorships", order_by="Bill.name"
+        CityBill, back_populates="sponsorships", order_by="Bill.name" # PROBLEM with this order by
     )
 
-    city_council_member_id = Column(
+    council_member_id = Column(
         Integer, ForeignKey("city_council_members.person_id"), nullable=False, primary_key=True
     )
-    city_council_member = relationship(
-        "CityCouncilMember", back_populates="sponsorships", order_by="CityCouncilMember.name" # ugh --- this should order by Person.name?
+    council_member = relationship(
+        CouncilMember, back_populates="sponsorships", order_by="CityCouncilMember.name" # ugh --- this should order by Person.name?
     )
     # TODO: Make this nullable=false once cron has run in prod and backfilled
     sponsor_sequence = Column(Integer, nullable=True)
@@ -29,23 +31,23 @@ class CitySponsorship(db.Model):
     added_at = Column(TIMESTAMP)
 
 
-class StateSenateSponsorship(db.Model):
-    __tablename__ = "state_senate_sponsorships"
+class SenateSponsorship(db.Model):
+    __tablename__ = "senate_sponsorships"
 
     id = Column(UUID, primary_key=True)
 
     senate_version_id = Column(
-        Integer, ForeignKey(StateSenateBillVersion.id), nullable=False
+        Integer, ForeignKey(SenateBillVersion.id), nullable=False
     )
     senate_version = relationship(
-        "StateSenateBillVersion", back_populates="sponsorships"# , order_by="Bill.name"
+        SenateBillVersion, back_populates="sponsorships"# , order_by="Bill.name"
     )
 
     senator_id = Column(
-        UUID, ForeignKey(StateSenator.person_id), nullable=False
+        UUID, ForeignKey(Senator.person_id), nullable=False
     )
     senator = relationship(
-        StateSenator, back_populates="sponsorships" #
+        Senator, back_populates="sponsorships" #
     )
 
     # # TODO: Make this nullable=false once cron has run in prod and backfilled
@@ -59,23 +61,23 @@ class StateSenateSponsorship(db.Model):
     # added_at = Column(TIMESTAMP)
 
 
-class StateAssemblySponsorship(db.Model):
-    __tablename__ = "state_assembly_sponsorships"
+class AssemblySponsorship(db.Model):
+    __tablename__ = "assembly_sponsorships"
 
     id = Column(UUID, primary_key=True)
 
     assembly_version_id = Column(
-        Integer, ForeignKey(StateAssemblyBillVersion.id), nullable=False
+        Integer, ForeignKey(AssemblyBillVersion.id), nullable=False
     )
     assembly_version = relationship(
-        StateAssemblyBillVersion, back_populates="sponsorships"# , order_by="Bill.name"
+        AssemblyBillVersion, back_populates="sponsorships"# , order_by="Bill.name"
     )
 
     assembly_member_id = Column(
-        UUID, ForeignKey(StateSenator.person_id), nullable=False
+        UUID, ForeignKey(AssemblyMember.person_id), nullable=False
     )
     assembly_member = relationship(
-        StateSenator, back_populates="sponsorships" #
+        AssemblyMember, back_populates="sponsorships" #
     )
 
     # # TODO: Make this nullable=false once cron has run in prod and backfilled

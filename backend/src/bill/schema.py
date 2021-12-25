@@ -1,6 +1,8 @@
 from marshmallow import fields
+from marshmallow_enum import EnumField
 
 from ..schema import CamelCaseSchema
+from .models import Bill
 
 
 class CityBillSchema(CamelCaseSchema):
@@ -36,7 +38,7 @@ class BillSchema(CamelCaseSchema):
     notes = fields.String(required=True)
     nickname = fields.String(required=True)
     twitter_search_terms = fields.List(fields.String(), required=True)
-    type = fields.String(dump_only=True)   # todo enum
+    type = EnumField(Bill.BillType) #  TODO dump_only?
     city_bill = fields.Nested(CityBillSchema)
     state_bill = fields.Nested(StateBillSchema)
 

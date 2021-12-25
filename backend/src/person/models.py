@@ -75,7 +75,7 @@ class CouncilMember(db.Model):
 
 
 
-class StateSenator(db.Model):
+class Senator(db.Model):
     __tablename__ = "senators"
 
     # Foreign key to Person parent table
@@ -84,7 +84,7 @@ class StateSenator(db.Model):
 
 
 
-class StateAssemblyMember(db.Model):
+class AssemblyMember(db.Model):
     __tablename__ = "assembly_members"
 
     # Foreign key to Person parent table
