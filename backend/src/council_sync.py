@@ -12,7 +12,7 @@ from .council_api import (
 )
 from .person.models import Person, CouncilMember
 from .models import db
-from .sponsorship.models import BillSponsorship
+from .sponsorship.models import CitySponsorship
 from .static_data import COUNCIL_DATA_BY_LEGISLATOR_ID
 from .utils import now
 
@@ -104,19 +104,21 @@ def fill_council_person_static_data():
 
 def _update_bill(bill_id):
     # TODO: Update this to do council specific bill object too
-    bill_data = lookup_bill(bill_id)
-    logging.info(f"Updating bill {bill_id} and got {bill_data}")
+    # bill_data = lookup_bill(bill_id)
+    # logging.info(f"Updating bill {bill_id} and got {bill_data}")
 
-    Bill.query.filter_by(id=bill_id).one()  # ensure bill exists
-    db.session.merge(Bill(**bill_data))
+    # Bill.query.filter_by(id=bill_id).one()  # ensure bill exists
+    # db.session.merge(Bill(**bill_data))
+    pass
 
 
 def sync_bill_updates():
-    bills = Bill.query.all()
+    # bills = Bill.query.all()
 
-    for bill in bills:
-        _update_bill(bill.id)
-        db.session.commit()
+    # for bill in bills:
+    #     _update_bill(bill.id)
+    #     db.session.commit()
+    pass
 
 
 def update_bill_sponsorships(bill_id, set_added_at=False):
@@ -127,48 +129,48 @@ def update_bill_sponsorships(bill_id, set_added_at=False):
     3) If new sponsors aren't in the existing legislators (e.g. they're not longer in office),
        ignore them.
     """
-    existing_sponsorships = BillSponsorship.query.filter_by(
-        bill_id=bill_id
-    ).all()
-    existing_sponsorships_by_id = {
-        s.legislator_id: s for s in existing_sponsorships
-    }
+    # existing_sponsorships = BillSponsorship.query.filter_by(
+    #     bill_id=bill_id
+    # ).all()
+    # existing_sponsorships_by_id = {
+    #     s.legislator_id: s for s in existing_sponsorships
+    # }
 
-    new_sponsorships = get_bill_sponsors(bill_id)
+    # new_sponsorships = get_bill_sponsors(bill_id)
 
-    existing_legislators = CouncilMember.query.filter(
-        CouncilMember.id.in_([s["MatterSponsorNameId"] for s in new_sponsorships])
-    ).all()
-    existing_legislator_ids = {l.id for l in existing_legislators}
+    # existing_legislators = CouncilMember.query.filter(
+    #     CouncilMember.id.in_([s["MatterSponsorNameId"] for s in new_sponsorships])
+    # ).all()
+    # existing_legislator_ids = {l.id for l in existing_legislators}
 
-    for sponsorship in new_sponsorships:
-        legislator_id = sponsorship["MatterSponsorNameId"]
+    # for sponsorship in new_sponsorships:
+    #     legislator_id = sponsorship["MatterSponsorNameId"]
 
-        if legislator_id not in existing_legislator_ids:
-            # Can't insert the sponsorship without its foreign key object
-            # TODO: Instead, insert a stub for them or something
-            logging.warning(
-                f"Did not find legislator {legislator_id} in db, ignoring..."
-            )
-            continue
+    #     if legislator_id not in existing_legislator_ids:
+    #         # Can't insert the sponsorship without its foreign key object
+    #         # TODO: Instead, insert a stub for them or something
+    #         logging.warning(
+    #             f"Did not find legislator {legislator_id} in db, ignoring..."
+    #         )
+    #         continue
 
-        internal_sponsorship = BillSponsorship(
-            bill_id=bill_id,
-            legislator_id=legislator_id,
-            sponsor_sequence=sponsorship["MatterSponsorSequence"],
-        )
+    #     internal_sponsorship = BillSponsorship(
+    #         bill_id=bill_id,
+    #         legislator_id=legislator_id,
+    #         sponsor_sequence=sponsorship["MatterSponsorSequence"],
+    #     )
 
-        if legislator_id in existing_sponsorships_by_id:
-            # Remove sponsors from this set until we're left with only those
-            # sponsorships that were rescinded recently.
-            del existing_sponsorships_by_id[legislator_id]
-        elif set_added_at:
-            internal_sponsorship.added_at = now()
+    #     if legislator_id in existing_sponsorships_by_id:
+    #         # Remove sponsors from this set until we're left with only those
+    #         # sponsorships that were rescinded recently.
+    #         del existing_sponsorships_by_id[legislator_id]
+    #     elif set_added_at:
+    #         internal_sponsorship.added_at = now()
 
-        db.session.merge(internal_sponsorship)
+    #     db.session.merge(internal_sponsorship)
 
-    for lost_sponsor in existing_sponsorships_by_id.values():
-        db.session.delete(lost_sponsor)
+    # for lost_sponsor in existing_sponsorships_by_id.values():
+    #     db.session.delete(lost_sponsor)
 
 
 def update_all_sponsorships():

@@ -9,7 +9,7 @@ class CitySponsorship(db.Model):
     __tablename__ = "city_sponsorships"
 
     bill_id = Column(
-        Integer, ForeignKey("city_bills.bill_id"), nullable=False, primary_key=True
+        UUID, ForeignKey("city_bills.bill_id"), nullable=False, primary_key=True
     )
     city_bill = relationship(
         CityBill, back_populates="sponsorships" # , order_by="Bill.name" # PROBLEM with this order by
@@ -17,7 +17,7 @@ class CitySponsorship(db.Model):
     bill = relationship(Bill, primaryjoin="Bill.id==CityBill.bill_id")
 
     council_member_id = Column(
-        Integer, ForeignKey("council_members.person_id"), nullable=False, primary_key=True
+        UUID, ForeignKey("council_members.person_id"), nullable=False, primary_key=True
     )
     council_member = relationship(
         CouncilMember, back_populates="sponsorships" # , order_by="CityCouncilMember.name" # ugh --- this should order by Person.name?
@@ -42,7 +42,7 @@ class SenateSponsorship(db.Model):
     id = Column(UUID, primary_key=True)
 
     senate_version_id = Column(
-        Integer, ForeignKey(SenateBillVersion.id), nullable=False
+        UUID, ForeignKey(SenateBillVersion.id), nullable=False
     )
     senate_version = relationship(
         SenateBillVersion, back_populates="sponsorships"# , order_by="Bill.name"
@@ -72,7 +72,7 @@ class AssemblySponsorship(db.Model):
     id = Column(UUID, primary_key=True)
 
     assembly_version_id = Column(
-        Integer, ForeignKey(AssemblyBillVersion.id), nullable=False
+        UUID, ForeignKey(AssemblyBillVersion.id), nullable=False
     )
     assembly_version = relationship(
         AssemblyBillVersion, back_populates="sponsorships"# , order_by="Bill.name"

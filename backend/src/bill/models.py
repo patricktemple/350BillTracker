@@ -30,7 +30,8 @@ class Party(enum.Enum):
 
 
 class Bill(db.Model):
-    __tablename__ = "bills"
+    # TODO: Once PR is ready, fix this table name:
+    __tablename__ = "bills_2"
 
     class BillType(enum.Enum):
         CITY = 1
@@ -62,6 +63,35 @@ class Bill(db.Model):
     @property
     def display_name(self):
         return self.nickname if self.nickname else self.name
+
+
+class BillAttachment(db.Model):
+    __tablename__ = "bill_attachments_2"
+
+    id = Column(UUID, primary_key=True)
+    bill_id = Column(
+        UUID, ForeignKey("bills_2.id"), nullable=False, index=True
+    )
+    bill = relationship("Bill", back_populates="attachments")
+
+    name = Column(Text)
+    url = Column(Text, nullable=False)
+
+
+class PowerHour(db.Model):
+    __tablename__ = "power_hours_2"
+
+    id = Column(UUID, primary_key=True, default=uuid4)
+    bill_id = Column(
+        UUID, ForeignKey("bills_2.id"), nullable=False, index=True
+    )
+
+    title = Column(Text)
+    spreadsheet_url = Column(Text, nullable=False)
+    spreadsheet_id = Column(Text, nullable=False)
+
+    created_at = Column(TIMESTAMP, nullable=False, default=now)
+    bill = relationship("Bill", back_populates="power_hours")
 
 
 # TODO: This model is more complicated, more correct for maintenance but maybe will take

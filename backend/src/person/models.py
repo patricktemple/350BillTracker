@@ -97,7 +97,7 @@ class AssemblyMember(db.Model):
 
 # Staffers have a single boss. They're one to many.
 class Staffer(db.Model):
-    __tablename__ = "staffers"
+    __tablename__ = "staffers_2"
 
     # Can I configure all these "subtypes" to automatically fetch their parent data?
 

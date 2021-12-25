@@ -11,7 +11,7 @@ from sqlalchemy.orm import selectinload
 
 from . import settings, twitter
 from .bill.models import Bill
-from .person.models import Legislator
+from .person.models import Person, CouncilMember
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -112,47 +112,47 @@ def _create_row_data(cells):
     return {"values": [_create_cell_data(cell) for cell in cells]}
 
 
-def _create_legislator_row(
-    legislator: Legislator,
-    bill: Bill,
-    import_data: Optional[PowerHourImportData],
-    is_lead_sponsor: bool = False,
-):
-    staffer_strings = [s.display_string for s in legislator.staffers]
-    staffer_text = "\n\n".join(staffer_strings)
+# def _create_legislator_row(
+#     legislator: Legislator,
+#     bill: Bill,
+#     import_data: Optional[PowerHourImportData],
+#     is_lead_sponsor: bool = False,
+# ):
+#     staffer_strings = [s.display_string for s in legislator.staffers]
+#     staffer_text = "\n\n".join(staffer_strings)
 
-    twitter_search_url = twitter.get_bill_twitter_search_url(bill, legislator)
+#     twitter_search_url = twitter.get_bill_twitter_search_url(bill, legislator)
 
-    cells = [
-        Cell(""),
-        Cell(_get_sponsor_name_text(legislator.name, is_lead_sponsor)),
-        Cell(legislator.email),
-        Cell(legislator.party),
-        Cell(legislator.borough),
-        Cell(legislator.district_phone),
-        Cell(legislator.legislative_phone),
-        Cell(
-            legislator.display_twitter or "", link_url=legislator.twitter_url
-        ),
-        Cell(
-            "Relevant tweets" if twitter_search_url else "",
-            link_url=twitter_search_url,
-        ),
-        Cell(staffer_text),
-    ]
-    if import_data:
-        legislator_data = import_data.column_data_by_legislator_id.get(
-            legislator.id
-        )
-        if legislator_data is not None:
-            for extra_column in import_data.extra_column_titles:
-                text = legislator_data.get(extra_column, "")
-                cells.append(Cell(text))
-        else:
-            logging.warning(
-                f"No legislator data for {legislator.name} in import data"
-            )
-    return _create_row_data(cells)
+#     cells = [
+#         Cell(""),
+#         Cell(_get_sponsor_name_text(legislator.name, is_lead_sponsor)),
+#         Cell(legislator.email),
+#         Cell(legislator.party),
+#         Cell(legislator.borough),
+#         Cell(legislator.district_phone),
+#         Cell(legislator.legislative_phone),
+#         Cell(
+#             legislator.display_twitter or "", link_url=legislator.twitter_url
+#         ),
+#         Cell(
+#             "Relevant tweets" if twitter_search_url else "",
+#             link_url=twitter_search_url,
+#         ),
+#         Cell(staffer_text),
+#     ]
+#     if import_data:
+#         legislator_data = import_data.column_data_by_legislator_id.get(
+#             legislator.id
+#         )
+#         if legislator_data is not None:
+#             for extra_column in import_data.extra_column_titles:
+#                 text = legislator_data.get(extra_column, "")
+#                 cells.append(Cell(text))
+#         else:
+#             logging.warning(
+#                 f"No legislator data for {legislator.name} in import data"
+#             )
+#     return _create_row_data(cells)
 
 
 def _create_title_row_data(raw_values):
@@ -167,42 +167,43 @@ def _create_phone_bank_spreadsheet_data(
     non_sponsors,
     import_data: Optional[PowerHourImportData],
 ):
-    """Generates the full body payload that the Sheets API requires for a
-    phone bank spreadsheet."""
+    return None
+    # """Generates the full body payload that the Sheets API requires for a
+    # phone bank spreadsheet."""
 
-    extra_titles = import_data.extra_column_titles if import_data else []
-    rows = [
-        _create_title_row_data(
-            COLUMN_TITLES + extra_titles,
-        ),
-        _create_title_row_data(["NON-SPONSORS"]),
-    ]
-    for legislator in non_sponsors:
-        rows.append(_create_legislator_row(legislator, bill, import_data))
+    # extra_titles = import_data.extra_column_titles if import_data else []
+    # rows = [
+    #     _create_title_row_data(
+    #         COLUMN_TITLES + extra_titles,
+    #     ),
+    #     _create_title_row_data(["NON-SPONSORS"]),
+    # ]
+    # for legislator in non_sponsors:
+    #     rows.append(_create_legislator_row(legislator, bill, import_data))
 
-    rows.append(_create_title_row_data([]))
-    rows.append(_create_title_row_data(["SPONSORS"]))
+    # rows.append(_create_title_row_data([]))
+    # rows.append(_create_title_row_data(["SPONSORS"]))
 
-    for sponsorship in sponsorships:
-        rows.append(
-            _create_legislator_row(
-                sponsorship.legislator,
-                bill,
-                import_data,
-                sponsorship.sponsor_sequence == 0,
-            )
-        )
+    # for sponsorship in sponsorships:
+    #     rows.append(
+    #         _create_legislator_row(
+    #             sponsorship.legislator,
+    #             bill,
+    #             import_data,
+    #             sponsorship.sponsor_sequence == 0,
+    #         )
+    #     )
 
-    column_metadata = [{"pixelSize": size} for size in COLUMN_WIDTHS]
-    return {
-        "properties": {"title": sheet_title},
-        "sheets": [
-            {
-                "properties": {"gridProperties": {"frozenRowCount": 1}},
-                "data": {"rowData": rows, "columnMetadata": column_metadata},
-            }
-        ],
-    }
+    # column_metadata = [{"pixelSize": size} for size in COLUMN_WIDTHS]
+    # return {
+    #     "properties": {"title": sheet_title},
+    #     "sheets": [
+    #         {
+    #             "properties": {"gridProperties": {"frozenRowCount": 1}},
+    #             "data": {"rowData": rows, "columnMetadata": column_metadata},
+    #         }
+    #     ],
+    # }
 
 
 def get_sort_key(legislator):
@@ -221,64 +222,65 @@ def create_power_hour(
     for a specific bill, based on its current sponsors. The sheet will be
     owned by a robot Google account and will be made publicly editable by
     anyone with the link."""
+    return None
 
-    logging.info(
-        f"Creating new power hour titled {title}, importing old spreadsheet {old_spreadsheet_to_import}"
-    )
-    bill = (
-        Bill.query.filter_by(id=bill_id)
-        .options(
-            selectinload(Bill.sponsorships),
-            selectinload("sponsorships.legislator.staffers"),
-        )
-        .one()
-    )
+    # logging.info(
+    #     f"Creating new power hour titled {title}, importing old spreadsheet {old_spreadsheet_to_import}"
+    # )
+    # bill = (
+    #     Bill.query.filter_by(id=bill_id)
+    #     .options(
+    #         selectinload(Bill.sponsorships),
+    #         selectinload("sponsorships.legislator.staffers"),
+    #     )
+    #     .one()
+    # )
 
-    sponsorships = bill.sponsorships
-    sponsorships = sorted(
-        sponsorships, key=lambda s: get_sort_key(s.legislator)
-    )
+    # sponsorships = bill.sponsorships
+    # sponsorships = sorted(
+    #     sponsorships, key=lambda s: get_sort_key(s.legislator)
+    # )
 
-    sponsor_ids = [s.legislator_id for s in sponsorships]
-    non_sponsors = Legislator.query.filter(
-        Legislator.id.not_in(sponsor_ids)
-    ).all()
-    non_sponsors = sorted(non_sponsors, key=get_sort_key)
+    # sponsor_ids = [s.legislator_id for s in sponsorships]
+    # non_sponsors = Legislator.query.filter(
+    #     Legislator.id.not_in(sponsor_ids)
+    # ).all()
+    # non_sponsors = sorted(non_sponsors, key=get_sort_key)
 
-    if old_spreadsheet_to_import:
-        import_data = _extract_data_from_previous_power_hour(
-            old_spreadsheet_to_import
-        )
-    else:
-        import_data = None
+    # if old_spreadsheet_to_import:
+    #     import_data = _extract_data_from_previous_power_hour(
+    #         old_spreadsheet_to_import
+    #     )
+    # else:
+    #     import_data = None
 
-    spreadsheet_data = _create_phone_bank_spreadsheet_data(
-        bill, title, sponsorships, non_sponsors, import_data
-    )
+    # spreadsheet_data = _create_phone_bank_spreadsheet_data(
+    #     bill, title, sponsorships, non_sponsors, import_data
+    # )
 
-    google_credentials = _get_google_credentials()
-    sheets_service = _get_sheets_service(google_credentials)
+    # google_credentials = _get_google_credentials()
+    # sheets_service = _get_sheets_service(google_credentials)
 
-    spreadsheet_result = (
-        sheets_service.spreadsheets().create(body=spreadsheet_data).execute()
-    )
+    # spreadsheet_result = (
+    #     sheets_service.spreadsheets().create(body=spreadsheet_data).execute()
+    # )
 
-    # That sheet is initially only accessible to our robot account, so make it public.
-    drive_service = _get_drive_service(google_credentials)
-    user_permission = {
-        "type": "anyone",
-        "role": "writer",
-    }
-    drive_service.permissions().create(
-        fileId=spreadsheet_result["spreadsheetId"],
-        body=user_permission,
-        fields="id",
-    ).execute()
+    # # That sheet is initially only accessible to our robot account, so make it public.
+    # drive_service = _get_drive_service(google_credentials)
+    # user_permission = {
+    #     "type": "anyone",
+    #     "role": "writer",
+    # }
+    # drive_service.permissions().create(
+    #     fileId=spreadsheet_result["spreadsheetId"],
+    #     body=user_permission,
+    #     fields="id",
+    # ).execute()
 
-    output_messages = import_data.import_messages if import_data else []
-    output_messages.append("Spreadsheet was created")
+    # output_messages = import_data.import_messages if import_data else []
+    # output_messages.append("Spreadsheet was created")
 
-    return (spreadsheet_result, output_messages)
+    # return (spreadsheet_result, output_messages)
 
 
 def _get_raw_cell_data(spreadsheet):
@@ -302,76 +304,77 @@ def _get_raw_cell_data(spreadsheet):
 def _extract_data_from_previous_spreadsheet(
     spreadsheet_cells,
 ) -> PowerHourImportData:
-    import_messages = []
+    return None
+    # import_messages = []
 
-    if not spreadsheet_cells:
-        return PowerHourImportData(None, None, ["Old spreadsheet was empty"])
+    # if not spreadsheet_cells:
+    #     return PowerHourImportData(None, None, ["Old spreadsheet was empty"])
 
-    title_row = spreadsheet_cells[0]
-    data_rows = spreadsheet_cells[1:]
+    # title_row = spreadsheet_cells[0]
+    # data_rows = spreadsheet_cells[1:]
 
-    # Look through the column titles, pick out the Name column and any other
-    # columns that aren't part of the standard set. We'll copy those over.
-    extra_column_title_indices: Tuple[int, str] = []
-    name_column_index = None
-    for i, title in enumerate(title_row):
-        if title not in COLUMN_TITLE_SET:
-            extra_column_title_indices.append((i, title))
-        elif title == "Name":
-            name_column_index = i
+    # # Look through the column titles, pick out the Name column and any other
+    # # columns that aren't part of the standard set. We'll copy those over.
+    # extra_column_title_indices: Tuple[int, str] = []
+    # name_column_index = None
+    # for i, title in enumerate(title_row):
+    #     if title not in COLUMN_TITLE_SET:
+    #         extra_column_title_indices.append((i, title))
+    #     elif title == "Name":
+    #         name_column_index = i
 
-    if name_column_index is None:
-        import_messages.append(
-            "Could not find a 'Name' column at the top of the old spreadsheet, so nothing was copied over"
-        )
-        logging.warning(
-            f"Could not find Name column in spreadsheet. Title columns were {','.join(title_row)}"
-        )
-        return PowerHourImportData(None, None, import_messages)
+    # if name_column_index is None:
+    #     import_messages.append(
+    #         "Could not find a 'Name' column at the top of the old spreadsheet, so nothing was copied over"
+    #     )
+    #     logging.warning(
+    #         f"Could not find Name column in spreadsheet. Title columns were {','.join(title_row)}"
+    #     )
+    #     return PowerHourImportData(None, None, import_messages)
 
-    extra_columns_by_legislator_name: Dict[str, Dict[str, str]] = {}
-    for row in data_rows:
-        # Ignore empty rows, which may have fewer cells in the array
-        if (
-            name_column_index < len(row)
-            and (name := row[name_column_index]) is not None
-        ):
-            legislator_extra_columns: Dict[str, str] = {}
-            for index, extra_column_title in extra_column_title_indices:
-                if index < len(row):
-                    legislator_extra_columns[extra_column_title] = row[index]
-            extra_columns_by_legislator_name[name] = legislator_extra_columns
+    # extra_columns_by_legislator_name: Dict[str, Dict[str, str]] = {}
+    # for row in data_rows:
+    #     # Ignore empty rows, which may have fewer cells in the array
+    #     if (
+    #         name_column_index < len(row)
+    #         and (name := row[name_column_index]) is not None
+    #     ):
+    #         legislator_extra_columns: Dict[str, str] = {}
+    #         for index, extra_column_title in extra_column_title_indices:
+    #             if index < len(row):
+    #                 legislator_extra_columns[extra_column_title] = row[index]
+    #         extra_columns_by_legislator_name[name] = legislator_extra_columns
 
-    titles = [column[1] for column in extra_column_title_indices]
-    if titles:
-        for title in titles:
-            import_messages.append(f"Copied column '{title}' to new sheet")
-    else:
-        import_messages.append(
-            "Did not find any extra columns in the old sheet to import"
-        )
+    # titles = [column[1] for column in extra_column_title_indices]
+    # if titles:
+    #     for title in titles:
+    #         import_messages.append(f"Copied column '{title}' to new sheet")
+    # else:
+    #     import_messages.append(
+    #         "Did not find any extra columns in the old sheet to import"
+    #     )
 
-    # Now rekey by legislator ID
-    legislators = Legislator.query.all()
-    column_data_by_legislator_id: Dict[int, Dict[str, str]] = {}
-    for legislator in legislators:
-        legislator_data = extra_columns_by_legislator_name.get(legislator.name)
-        if legislator_data is None:
-            legislator_data = extra_columns_by_legislator_name.get(
-                _get_sponsor_name_text(legislator.name, True)
-            )
-        if legislator_data is not None:
-            column_data_by_legislator_id[legislator.id] = legislator_data
-        else:
-            import_messages.append(
-                f"Could not find {legislator.name} under the Name column in the old sheet. Make sure the name matches exactly."
-            )
+    # # Now rekey by legislator ID
+    # legislators = Legislator.query.all()
+    # column_data_by_legislator_id: Dict[int, Dict[str, str]] = {}
+    # for legislator in legislators:
+    #     legislator_data = extra_columns_by_legislator_name.get(legislator.name)
+    #     if legislator_data is None:
+    #         legislator_data = extra_columns_by_legislator_name.get(
+    #             _get_sponsor_name_text(legislator.name, True)
+    #         )
+    #     if legislator_data is not None:
+    #         column_data_by_legislator_id[legislator.id] = legislator_data
+    #     else:
+    #         import_messages.append(
+    #             f"Could not find {legislator.name} under the Name column in the old sheet. Make sure the name matches exactly."
+    #         )
 
-    return PowerHourImportData(
-        extra_column_titles=titles,
-        column_data_by_legislator_id=column_data_by_legislator_id,
-        import_messages=import_messages,
-    )
+    # return PowerHourImportData(
+    #     extra_column_titles=titles,
+    #     column_data_by_legislator_id=column_data_by_legislator_id,
+    #     import_messages=import_messages,
+    # )
 
 
 def _extract_data_from_previous_power_hour(
