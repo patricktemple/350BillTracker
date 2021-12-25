@@ -11,9 +11,9 @@ from sqlalchemy.orm import selectinload
 
 from . import settings, twitter
 from .bill.models import Bill, CityBill
+from .models import UUID
 from .person.models import CouncilMember, Person
 from .sponsorship.models import CitySponsorship
-from .models import UUID
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -120,21 +120,28 @@ def _create_legislator_row(
     import_data: Optional[PowerHourImportData],
     is_lead_sponsor: bool = False,
 ):
-    staffer_strings = [s.display_string for s in council_member.person.staffer_persons]
+    staffer_strings = [
+        s.display_string for s in council_member.person.staffer_persons
+    ]
     staffer_text = "\n\n".join(staffer_strings)
 
-    twitter_search_url = twitter.get_bill_twitter_search_url(city_bill.bill, council_member.person)
+    twitter_search_url = twitter.get_bill_twitter_search_url(
+        city_bill.bill, council_member.person
+    )
 
     cells = [
         Cell(""),
-        Cell(_get_sponsor_name_text(council_member.person.name, is_lead_sponsor)),
+        Cell(
+            _get_sponsor_name_text(council_member.person.name, is_lead_sponsor)
+        ),
         Cell(council_member.person.email),
         Cell(council_member.person.party),
         Cell(council_member.borough),
         Cell(council_member.person.phone),
         Cell(council_member.legislative_phone),
         Cell(
-            council_member.person.display_twitter or "", link_url=council_member.person.twitter_url
+            council_member.person.display_twitter or "",
+            link_url=council_member.person.twitter_url,
         ),
         Cell(
             "Relevant tweets" if twitter_search_url else "",
@@ -180,7 +187,9 @@ def _create_phone_bank_spreadsheet_data(
         _create_title_row_data(["NON-SPONSORS"]),
     ]
     for non_sponsor in non_sponsors:
-        rows.append(_create_legislator_row(non_sponsor, city_bill, import_data))
+        rows.append(
+            _create_legislator_row(non_sponsor, city_bill, import_data)
+        )
 
     rows.append(_create_title_row_data([]))
     rows.append(_create_title_row_data(["SPONSORS"]))
@@ -208,7 +217,9 @@ def _create_phone_bank_spreadsheet_data(
 
 
 def get_sort_key(council_member):
-    sort_key = BOROUGH_SORT_TABLE.get(council_member.borough, BOROUGH_DEFAULT_SORT)
+    sort_key = BOROUGH_SORT_TABLE.get(
+        council_member.borough, BOROUGH_DEFAULT_SORT
+    )
     return (sort_key, council_member.person.name)
 
 
@@ -341,7 +352,9 @@ def _extract_data_from_previous_spreadsheet(
             for index, extra_column_title in extra_column_title_indices:
                 if index < len(row):
                     legislator_extra_columns[extra_column_title] = row[index]
-            extra_columns_by_council_member_name[name] = legislator_extra_columns
+            extra_columns_by_council_member_name[
+                name
+            ] = legislator_extra_columns
 
     titles = [column[1] for column in extra_column_title_indices]
     if titles:
@@ -356,13 +369,17 @@ def _extract_data_from_previous_spreadsheet(
     council_members = CouncilMember.query.all()
     column_data_by_council_member_id: Dict[UUID, Dict[str, str]] = {}
     for council_member in council_members:
-        council_member_data = extra_columns_by_council_member_name.get(council_member.person.name)
+        council_member_data = extra_columns_by_council_member_name.get(
+            council_member.person.name
+        )
         if council_member_data is None:
             council_member_data = extra_columns_by_council_member_name.get(
                 _get_sponsor_name_text(council_member.person.name, True)
             )
         if council_member_data is not None:
-            column_data_by_council_member_id[council_member.person_id] = council_member_data
+            column_data_by_council_member_id[
+                council_member.person_id
+            ] = council_member_data
         else:
             import_messages.append(
                 f"Could not find {council_member.person.name} under the Name column in the old sheet. Make sure the name matches exactly."

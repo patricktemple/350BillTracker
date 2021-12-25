@@ -14,6 +14,4 @@ def get_twitter_search_url(twitter_handle, search_terms):
 def get_bill_twitter_search_url(bill: Bill, person: Person):
     if not person.twitter:
         return None
-    return get_twitter_search_url(
-        person.twitter, bill.twitter_search_terms
-    )
+    return get_twitter_search_url(person.twitter, bill.twitter_search_terms)
