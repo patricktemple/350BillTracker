@@ -12,14 +12,14 @@ class CitySponsorship(db.Model):
         Integer, ForeignKey("city_bills.bill_id"), nullable=False, primary_key=True
     )
     city_bill = relationship(
-        CityBill, back_populates="sponsorships", order_by="Bill.name" # PROBLEM with this order by
+        CityBill, back_populates="sponsorships" # , order_by="Bill.name" # PROBLEM with this order by
     )
 
     council_member_id = Column(
         Integer, ForeignKey("city_council_members.person_id"), nullable=False, primary_key=True
     )
     council_member = relationship(
-        CouncilMember, back_populates="sponsorships", order_by="CityCouncilMember.name" # ugh --- this should order by Person.name?
+        CouncilMember, back_populates="sponsorships" # , order_by="CityCouncilMember.name" # ugh --- this should order by Person.name?
     )
     # TODO: Make this nullable=false once cron has run in prod and backfilled
     sponsor_sequence = Column(Integer, nullable=True)
