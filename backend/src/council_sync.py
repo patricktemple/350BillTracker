@@ -24,6 +24,9 @@ def add_council_members():
     to be filled in with other sources."""
     members = get_current_council_members()
 
+    # Problem: This is now duplicating people because they have a new ID each time...
+    # TODO fix this.
+
     for member in members:
         person = Person(type=Person.PersonType.COUNCIL_MEMBER,
             name=member["OfficeRecordFullName"],

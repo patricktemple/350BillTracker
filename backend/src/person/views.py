@@ -17,7 +17,7 @@ def get_persons():
     return PersonSchema(many=True).jsonify(persons)
 
 
-@app.route("/api/persons/<int:person_id>", methods=["PUT"])
+@app.route("/api/persons/<uuid:person_id>", methods=["PUT"])
 @auth_required
 def update_legislator(person_id):
     data = PersonSchema().load(request.json)
@@ -30,14 +30,14 @@ def update_legislator(person_id):
     return jsonify({})
 
 
-@app.route("/api/persons/<int:person_id>/staffers", methods=["GET"])
+@app.route("/api/persons/<uuid:person_id>/staffers", methods=["GET"])
 @auth_required
 def person_staffers(person_id):
     staffers = Staffer.query.filter_by(boss_id=person_id).all()
     return StafferSchema(many=True).jsonify(staffers)
 
 # TODO: Look at StafferSchema, it might need changes
-@app.route("/api/persons/<int:person_id>/staffers", methods=["POST"])
+@app.route("/api/persons/<uuid:person_id>/staffers", methods=["POST"])
 @auth_required
 def add_person_staffer(person_id):
     data = StafferSchema().load(request.json)

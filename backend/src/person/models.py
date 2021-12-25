@@ -1,7 +1,7 @@
 from uuid import uuid4
 
 from sqlalchemy import Column, ForeignKey, Integer, Text, Enum
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, remote, foreign
 import enum
 
 from ..models import TIMESTAMP, UUID, db
@@ -121,5 +121,9 @@ class Staffer(db.Model):
         return f"{title_string}{self.name} ({contact_string})"
 
 
+# TODO: Should this actually point to the Staffer Person object to be consistent?
 Person.staffer = relationship(Staffer, foreign_keys=[Staffer.person_id], back_populates="person", uselist=False)
 Person.staffers = relationship("Staffer", foreign_keys=[Staffer.boss_id], back_populates="boss")
+
+# Needs a double join I think
+# Person.staffer_persons = relationship("Person", primaryjoin=remote(Person.id), viewonly=True)

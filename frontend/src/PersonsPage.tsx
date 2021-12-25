@@ -1,30 +1,30 @@
 import React, { useState } from 'react';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Table from 'react-bootstrap/Table';
-import { Legislator } from './types';
+import { Person, CouncilMember } from './types';
 import Accordion from 'react-bootstrap/Accordion';
-import LegislatorDetailsPanel from './LegislatorDetailsPanel';
+import PersonDetailsPanel from './PersonDetailsPanel';
 import { Form } from 'react-bootstrap';
 import LazyAccordionBody from './LazyAccordionBody';
 import useApiFetch from './useApiFetch';
 import styles from './style/LegislatorsPage.module.scss';
 
 interface Props {
-  match: { params: { legislatorId?: number } };
+  match: { params: { personId?: string } };
 }
 
 export default function ConcilMembersPage({
   match: {
-    params: { legislatorId }
+    params: { personId }
   }
 }: Props) {
-  const [legislators, setLegislators] = useState<Legislator[] | null>(null);
+  const [persons, setPersons] = useState<Person[] | null>(null);
   const [filterText, setFilterText] = useState<string>('');
   const apiFetch = useApiFetch();
 
   useMountEffect(() => {
-    apiFetch('/api/legislators').then((response) => {
-      setLegislators(response);
+    apiFetch('/api/persons').then((response) => {
+      setPersons(response);
     });
   });
 
@@ -32,13 +32,13 @@ export default function ConcilMembersPage({
     setFilterText(e.target.value);
   }
 
-  let filteredLegislators = null;
-  if (legislators) {
+  let filteredPersons = null;
+  if (persons) {
     const lowerFilterText = filterText.toLowerCase();
-    filteredLegislators = legislators.filter(
-      (l) =>
-        l.name.toLowerCase().includes(lowerFilterText) ||
-        l.borough?.toLowerCase().includes(lowerFilterText)
+    filteredPersons = persons.filter(
+      (p) =>
+        p.name.toLowerCase().includes(lowerFilterText) ||
+        p.councilMember?.borough?.toLowerCase().includes(lowerFilterText)
     );
   }
 
@@ -46,7 +46,7 @@ export default function ConcilMembersPage({
     <div>
       <div className={styles.title}>Council members</div>
       <div className={styles.content}>
-        {filteredLegislators == null ? (
+        {filteredPersons == null ? (
           'Loading...'
         ) : (
           <>
@@ -58,18 +58,18 @@ export default function ConcilMembersPage({
               size={30}
               onChange={handleFilterTextChanged}
             />
-            <Accordion defaultActiveKey={legislatorId?.toString()}>
-              {filteredLegislators.map((legislator) => (
+            <Accordion defaultActiveKey={personId}>
+              {filteredPersons.map((person) => (
                 <Accordion.Item
-                  key={legislator.id}
-                  eventKey={legislator.id.toString()}
+                  key={person.id}
+                  eventKey={person.id}
                 >
                   <Accordion.Header>
-                    <strong>{legislator.name}</strong>
-                    {legislator.borough && <>&nbsp;({legislator.borough})</>}
+                    <strong>{person.name}</strong>
+                    {person.councilMember?.borough && <>&nbsp;({person.councilMember.borough})</>}
                   </Accordion.Header>
-                  <LazyAccordionBody eventKey={legislator.id.toString()}>
-                    <LegislatorDetailsPanel legislator={legislator} />
+                  <LazyAccordionBody eventKey={person.id}>
+                    <PersonDetailsPanel person={person} />
                   </LazyAccordionBody>
                 </Accordion.Item>
               ))}

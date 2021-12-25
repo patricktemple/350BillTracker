@@ -28,7 +28,7 @@ class StafferSchema(CamelCaseSchema):
 class PersonSchema(CamelCaseSchema):
     # Data synced from the API
     name = fields.String(dump_only=True)
-    id = fields.Integer(dump_only=True)
+    id = fields.UUID(dump_only=True)
 
     email = fields.String(dump_only=True)
     phone = fields.String(dump_only=True)

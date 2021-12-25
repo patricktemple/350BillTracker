@@ -11,7 +11,7 @@ from .schema import CityBillSponsorshipSchema, CouncilMemberSponsorshipSchema
 
 
 @app.route(
-    "/api/council-members/<int:council_member_id>/sponsorships", methods=["GET"]
+    "/api/council-members/<uuid:council_member_id>/sponsorships", methods=["GET"]
 )
 @auth_required
 def council_member_sponsorships(council_member_id):

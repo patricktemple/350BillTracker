@@ -2,7 +2,7 @@ import React, { ReactElement, useState, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
 import Form from 'react-bootstrap/Form';
-import { Bill, BillSponsorship, BillAttachment, PowerHour } from './types';
+import { Bill, CitySponsorship, BillAttachment, PowerHour } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -45,7 +45,7 @@ export default function BillDetails(props: Props): ReactElement {
     bill.twitterSearchTerms.join(', ')
   );
 
-  const [sponsorships, setSponsorships] = useState<BillSponsorship[] | null>(
+  const [sponsorships, setSponsorships] = useState<CitySponsorship[] | null>(
     null
   );
   const [attachments, setAttachments] = useState<BillAttachment[] | null>(null);
@@ -145,10 +145,10 @@ export default function BillDetails(props: Props): ReactElement {
   }
 
   const positiveSponsors = sponsorships?.filter(
-    (s: BillSponsorship) => s.isSponsor
+    (s: CitySponsorship) => s.isSponsor
   );
   const negativeSponsors = sponsorships?.filter(
-    (s: BillSponsorship) => !s.isSponsor
+    (s: CitySponsorship) => !s.isSponsor
   );
 
   const powerHourHelpRef = useRef<HTMLSpanElement>(null);
