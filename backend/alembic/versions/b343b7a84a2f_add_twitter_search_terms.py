@@ -9,13 +9,20 @@ from alembic import op
 import sqlalchemy as sa
 import src
 from sqlalchemy.dialects import postgresql
-from src.bill.models import DEFAULT_TWITTER_SEARCH_TERMS
 
 # revision identifiers, used by Alembic.
 revision = 'b343b7a84a2f'
 down_revision = 'cf09cc255323'
 branch_labels = None
 depends_on = None
+
+DEFAULT_TWITTER_SEARCH_TERMS = [
+    "solar",
+    "climate",
+    "wind power",
+    "renewable",
+    "fossil fuel",
+]
 
 
 def upgrade():

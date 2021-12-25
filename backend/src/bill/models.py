@@ -94,15 +94,13 @@ class PowerHour(db.Model):
     bill = relationship("Bill", back_populates="power_hours")
 
 
-# TODO: This model is more complicated, more correct for maintenance but maybe will take
-# longer to develop on short term. After making the model, look into whether a flat structure
-# all in the same table is much more straightforward.
-
-
 class CityBill(db.Model):
     __tablename__ = "city_bills"
 
     bill_id = Column(UUID, ForeignKey(Bill.id), primary_key=True)
+
+    # ID in the City Council API
+    city_bill_id = Column(Integer, nullable=False)
 
     file = Column(Text, nullable=False)  # e.g. Int 2317-2021
 

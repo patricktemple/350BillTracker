@@ -9,7 +9,7 @@ from ..council_api import lookup_bill, lookup_bills
 from ..council_sync import update_bill_sponsorships
 from ..google_sheets import create_power_hour
 from ..models import db
-from .models import Bill, BillAttachment, PowerHour
+from .models import Bill, BillAttachment, PowerHour, CityBill
 from .schema import (
     BillAttachmentSchema,
     BillSchema,
@@ -19,7 +19,7 @@ from .schema import (
 
 # Views ----------------------------------------------------------------------
 
-
+# TODO: Rename to not be saved-bills?
 @app.route("/api/saved-bills", methods=["GET"])
 @auth_required
 def bills():
@@ -27,11 +27,12 @@ def bills():
     return BillSchema(many=True).jsonify(bills)
 
 
+# Rename to city-bills?
 @app.route("/api/saved-bills", methods=["POST"])
 @auth_required
 def save_bill():
-    bill_id = request.json["id"]
-    if Bill.query.get(bill_id):
+    bill_id = request.json["city_bill_id"]
+    if CityBill.query.get(bill_id):
         # There's a race condition of checking this and then inserting,
         # but in that rare case it will hit the DB unique constraint instead.
         raise exceptions.Conflict()
@@ -39,10 +40,14 @@ def save_bill():
     bill_data = lookup_bill(bill_id)
     logging.info(f"Saving bill {bill_id}, council API returned {bill_data}")
 
-    bill = Bill(**bill_data)
+    bill = Bill(
+        type=Bill.BillType.CITY,
+        name=bill_data['name']
+    )
+    bill.city_bill = CityBill(**bill_data['city_bill'])
     db.session.add(bill)
 
-    update_bill_sponsorships(bill_id)
+    # update_bill_sponsorships(bill_id)
 
     db.session.commit()
 
@@ -52,6 +57,7 @@ def save_bill():
 @app.route("/api/saved-bills/<int:bill_id>", methods=["PUT"])
 @auth_required
 def update_bill(bill_id):
+    # TODO implement
     data = BillSchema().load(request.json)
 
     bill = Bill.query.get(bill_id)
@@ -68,6 +74,7 @@ def update_bill(bill_id):
 @app.route("/api/saved-bills/<int:bill_id>", methods=["DELETE"])
 @auth_required
 def delete_bill(bill_id):
+    # TODO set the cascades correctly
     bill = Bill.query.get(bill_id)
     db.session.delete(bill)
     db.session.commit()
@@ -83,8 +90,8 @@ def search_bills():
     external_bills = lookup_bills(file)
 
     # Check whether or not we're already tracking this bill
-    external_bills_ids = [b["id"] for b in external_bills]
-    tracked_bills = Bill.query.filter(Bill.id.in_(external_bills_ids)).all()
+    external_bills_ids = [b['city_bill']["city_bill_id"] for b in external_bills]
+    tracked_bills = CityBill.query.filter(CityBill.city_bill_id.in_(external_bills_ids)).all()
     tracked_bill_ids = set([t.id for t in tracked_bills])
 
     for bill in external_bills:

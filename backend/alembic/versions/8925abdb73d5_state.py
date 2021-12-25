@@ -1,8 +1,8 @@
-"""Create tables for state
+"""State
 
-Revision ID: 3feba6af67a0
+Revision ID: 8925abdb73d5
 Revises: a33750368a20
-Create Date: 2021-12-25 14:48:59.430444
+Create Date: 2021-12-25 15:45:19.793146
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import src
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '3feba6af67a0'
+revision = '8925abdb73d5'
 down_revision = 'a33750368a20'
 branch_labels = None
 depends_on = None
@@ -57,6 +57,7 @@ def upgrade():
     op.create_index(op.f('ix_bill_attachments_2_bill_id'), 'bill_attachments_2', ['bill_id'], unique=False)
     op.create_table('city_bills',
     sa.Column('bill_id', src.models.UUID(as_uuid=True), nullable=False),
+    sa.Column('city_bill_id', sa.Integer(), nullable=False),
     sa.Column('file', sa.Text(), nullable=False),
     sa.Column('title', sa.Text(), nullable=False),
     sa.Column('intro_date', src.models.TIMESTAMP(timezone=True), nullable=False),
@@ -145,13 +146,15 @@ def upgrade():
     sa.ForeignKeyConstraint(['senator_id'], ['senators.person_id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.drop_index('ix_bill_attachments_bill_id', table_name='bill_attachments')
-    op.drop_table('bill_attachments')
     op.drop_index('ix_power_hours_bill_id', table_name='power_hours')
     op.drop_table('power_hours')
+
+    op.drop_index('ix_bill_attachments_bill_id', table_name='bill_attachments')
+    op.drop_table('bill_attachments')
     op.drop_table('staffers')
     op.drop_table('bill_sponsorships')
     op.drop_table('bills')
+
     op.drop_table('legislators')
     # ### end Alembic commands ###
 
@@ -178,6 +181,29 @@ def downgrade():
     sa.ForeignKeyConstraint(['legislator_id'], ['legislators.id'], name='staffers_legislator_id_fkey'),
     sa.PrimaryKeyConstraint('id', name='staffers_pkey')
     )
+    op.create_table('bill_attachments',
+    sa.Column('id', sa.INTEGER(), autoincrement=True, nullable=False),
+    sa.Column('bill_id', sa.INTEGER(), autoincrement=False, nullable=False),
+    sa.Column('name', sa.TEXT(), autoincrement=False, nullable=True),
+    sa.Column('url', sa.TEXT(), autoincrement=False, nullable=False),
+    sa.ForeignKeyConstraint(['bill_id'], ['bills.id'], name='bill_attachments_bill_id_fkey'),
+    sa.PrimaryKeyConstraint('id', name='bill_attachments_pkey')
+    )
+    op.create_index('ix_bill_attachments_bill_id', 'bill_attachments', ['bill_id'], unique=False)
+    op.create_table('bills',
+    sa.Column('id', sa.INTEGER(), server_default=sa.text("nextval('bills_id_seq'::regclass)"), autoincrement=True, nullable=False),
+    sa.Column('file', sa.TEXT(), autoincrement=False, nullable=False),
+    sa.Column('name', sa.TEXT(), autoincrement=False, nullable=False),
+    sa.Column('title', sa.TEXT(), autoincrement=False, nullable=False),
+    sa.Column('status', sa.TEXT(), autoincrement=False, nullable=True),
+    sa.Column('body', sa.TEXT(), autoincrement=False, nullable=True),
+    sa.Column('intro_date', postgresql.TIMESTAMP(timezone=True), autoincrement=False, nullable=False),
+    sa.Column('notes', sa.TEXT(), server_default=sa.text("''::text"), autoincrement=False, nullable=False),
+    sa.Column('nickname', sa.TEXT(), server_default=sa.text("''::text"), autoincrement=False, nullable=False),
+    sa.Column('twitter_search_terms', postgresql.ARRAY(sa.TEXT()), autoincrement=False, nullable=False),
+    sa.PrimaryKeyConstraint('id', name='bills_pkey'),
+    postgresql_ignore_search_path=False
+    )
     op.create_table('power_hours',
     sa.Column('id', postgresql.UUID(), autoincrement=False, nullable=False),
     sa.Column('bill_id', sa.INTEGER(), autoincrement=False, nullable=False),
@@ -189,15 +215,6 @@ def downgrade():
     sa.PrimaryKeyConstraint('id', name='power_hours_pkey')
     )
     op.create_index('ix_power_hours_bill_id', 'power_hours', ['bill_id'], unique=False)
-    op.create_table('bill_attachments',
-    sa.Column('id', sa.INTEGER(), autoincrement=True, nullable=False),
-    sa.Column('bill_id', sa.INTEGER(), autoincrement=False, nullable=False),
-    sa.Column('name', sa.TEXT(), autoincrement=False, nullable=True),
-    sa.Column('url', sa.TEXT(), autoincrement=False, nullable=False),
-    sa.ForeignKeyConstraint(['bill_id'], ['bills.id'], name='bill_attachments_bill_id_fkey'),
-    sa.PrimaryKeyConstraint('id', name='bill_attachments_pkey')
-    )
-    op.create_index('ix_bill_attachments_bill_id', 'bill_attachments', ['bill_id'], unique=False)
     op.create_table('legislators',
     sa.Column('id', sa.INTEGER(), autoincrement=True, nullable=False),
     sa.Column('name', sa.TEXT(), autoincrement=False, nullable=False),
@@ -212,19 +229,6 @@ def downgrade():
     sa.Column('twitter', sa.TEXT(), autoincrement=False, nullable=True),
     sa.Column('party', sa.TEXT(), autoincrement=False, nullable=True),
     sa.PrimaryKeyConstraint('id', name='legislators_pkey')
-    )
-    op.create_table('bills',
-    sa.Column('id', sa.INTEGER(), autoincrement=True, nullable=False),
-    sa.Column('file', sa.TEXT(), autoincrement=False, nullable=False),
-    sa.Column('name', sa.TEXT(), autoincrement=False, nullable=False),
-    sa.Column('title', sa.TEXT(), autoincrement=False, nullable=False),
-    sa.Column('status', sa.TEXT(), autoincrement=False, nullable=True),
-    sa.Column('body', sa.TEXT(), autoincrement=False, nullable=True),
-    sa.Column('intro_date', postgresql.TIMESTAMP(timezone=True), autoincrement=False, nullable=False),
-    sa.Column('notes', sa.TEXT(), server_default=sa.text("''::text"), autoincrement=False, nullable=False),
-    sa.Column('nickname', sa.TEXT(), server_default=sa.text("''::text"), autoincrement=False, nullable=False),
-    sa.Column('twitter_search_terms', postgresql.ARRAY(sa.TEXT()), autoincrement=False, nullable=False),
-    sa.PrimaryKeyConstraint('id', name='bills_pkey')
     )
     op.drop_table('senate_sponsorships')
     op.drop_table('assembly_sponsorships')
