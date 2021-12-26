@@ -38,7 +38,7 @@ def _convert_matter_to_bill(matter):
     into our own format."""
     return {
         "type": Bill.BillType.CITY,
-        "name": matter["MatterName"],  # TODO figure this out
+        "name": matter["MatterName"],
         "city_bill": {
             "file": matter["MatterFile"],
             "council_body": matter["MatterBodyName"],
@@ -53,7 +53,6 @@ def _convert_matter_to_bill(matter):
 
 
 def lookup_bills(file_name):
-    # TODO: Escape the name
     matters = council_get(
         "matters",
         params=make_filter_param(

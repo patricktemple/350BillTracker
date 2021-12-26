@@ -241,7 +241,6 @@ def create_power_hour(
         CityBill.query.filter_by(bill_id=bill_id)
         .options(
             selectinload(CityBill.sponsorships),
-            # selectinload("sponsorships.legislator.staffers"),
         )
         .one()
     )

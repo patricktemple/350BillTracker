@@ -39,7 +39,8 @@ def add_council_members():
             db.session.add(person)
 
         person.name = member["OfficeRecordFullName"]
-        person.title = "City Council Member"  # TODO
+        # TODO: Figure out what exactly Title should be
+        person.title = "City Council Member"
         council_member.city_council_person_id = city_council_person_id
         council_member.term_start = datetime.fromisoformat(
             member["OfficeRecordStartDate"]
@@ -57,7 +58,6 @@ def fill_council_person_data_from_api():
     """
     council_members = CouncilMember.query.all()
 
-    # TODO make sure the query joined loads the persons
     for council_member in council_members:
         try:
             data = get_person(council_member.city_council_person_id)
@@ -161,7 +161,6 @@ def update_bill_sponsorships(city_bill, set_added_at=False):
         for c in council_members_for_updated_sponsorships
     }
 
-    # THIS is super confusing, rewrite it and simplify
     for sponsorship_data in updated_bill_sponsorships:
         council_member_person_id = sponsorship_data["MatterSponsorNameId"]
 

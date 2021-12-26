@@ -40,7 +40,7 @@ class BillSchema(CamelCaseSchema):
     notes = fields.String(required=True)
     nickname = fields.String(required=True)
     twitter_search_terms = fields.List(fields.String(), required=True)
-    type = EnumField(Bill.BillType)  #  TODO dump_only?
+    type = EnumField(Bill.BillType, dump_only=True)
     city_bill = fields.Nested(CityBillSchema)
     state_bill = fields.Nested(StateBillSchema)
 

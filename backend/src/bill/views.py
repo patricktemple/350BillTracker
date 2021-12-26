@@ -29,7 +29,7 @@ def bills():
     return BillSchema(many=True).jsonify(bills)
 
 
-# Rename to city-bills?
+# TODO: Rename to city-bills?
 @app.route("/api/saved-bills", methods=["POST"])
 @auth_required
 def track_city_bill():
@@ -59,7 +59,6 @@ def track_city_bill():
 @app.route("/api/saved-bills/<uuid:bill_id>", methods=["PUT"])
 @auth_required
 def update_bill(bill_id):
-    # TODO implement
     data = BillSchema().load(request.json)
 
     bill = Bill.query.get(bill_id)
@@ -76,7 +75,6 @@ def update_bill(bill_id):
 @app.route("/api/saved-bills/<uuid:bill_id>", methods=["DELETE"])
 @auth_required
 def delete_bill(bill_id):
-    # TODO set the cascades correctly
     bill = Bill.query.get(bill_id)
     db.session.delete(bill)
     db.session.commit()

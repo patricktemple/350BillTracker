@@ -13,7 +13,6 @@ class CouncilMemberSchema(CamelCaseSchema):
     legislative_phone = fields.String(dump_only=True)
 
 
-# I'm not actually sure we'll need these schemas yet:
 class SenatorSchema(CamelCaseSchema):
     pass
 
@@ -41,16 +40,15 @@ class PersonSchema(CamelCaseSchema):
     # Static data that we add in
     twitter = fields.String(dump_only=True)
 
-    type = EnumField(Person.PersonType)  # dump_only?
+    type = EnumField(Person.PersonType, dump_only=True)
 
     # Extra data we track
     notes = fields.String(missing=None)
 
     title = fields.String(missing=None)
 
-    party = fields.String(dump_only=True)  # TODO this is now an enum
+    party = fields.String(dump_only=True) # todo make this an enum
 
-    # TODO: Work through these:
     council_member = fields.Nested(CouncilMemberSchema)
     senator = fields.Nested(SenatorSchema)
     assembly_member = fields.Nested(AssemblyMemberSchema)

@@ -29,7 +29,6 @@ class Person(db.Model):
     # Track our own info on the person
     notes = Column(Text)
 
-    # Could type be a derived property instead?
     type = Column(Enum(PersonType), nullable=False)
     council_member = relationship(
         "CouncilMember", back_populates="person", uselist=False, lazy="joined"
