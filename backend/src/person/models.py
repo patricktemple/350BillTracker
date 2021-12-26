@@ -6,8 +6,6 @@ from sqlalchemy.orm import foreign, relationship, remote
 
 from ..models import TIMESTAMP, UUID, db
 
-# TODO: Fix all eager loading
-
 
 class Person(db.Model):
     __tablename__ = "persons"
@@ -106,8 +104,6 @@ class AssemblyMember(db.Model):
 # Staffers have a single boss. They're one to many.
 class Staffer(db.Model):
     __tablename__ = "staffers_2"
-
-    # Can I configure all these "subtypes" to automatically fetch their parent data?
 
     # ID of the person themselves:
     person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)

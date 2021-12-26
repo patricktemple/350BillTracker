@@ -24,14 +24,9 @@ class Party(enum.Enum):
     OTHER = 3
 
 
-# TODO: Figure out all indexes
-
-
-# Bills -------------------------------------------------------
-
 
 class Bill(db.Model):
-    # TODO: Once PR is ready, fix this table name:
+    # TODO: Fix these table names:
     __tablename__ = "bills_2"
 
     class BillType(enum.Enum):
@@ -138,8 +133,6 @@ class StateBill(db.Model):
     bill = relationship(Bill, back_populates="state_bill", lazy="joined")
 
 
-# TODO: Figure out how to identify the active version
-# TODO: Maybe just as composite natural key on the bill id and version?
 class SenateBillVersion(db.Model):
     __tablename__ = "senate_bill_versions"
 
@@ -152,7 +145,6 @@ class SenateBillVersion(db.Model):
 
 
 class AssemblyBillVersion(db.Model):
-    # Use a base class for this and senate versions, maybe? and same for sponsorships
     __tablename__ = "assembly_bill_versions"
 
     id = Column(UUID, primary_key=True)

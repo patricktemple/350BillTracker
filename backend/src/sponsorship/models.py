@@ -94,7 +94,7 @@ class AssemblySponsorship(db.Model):
     )
     assembly_version = relationship(
         AssemblyBillVersion,
-        back_populates="sponsorships",  # , order_by="Bill.name"
+        back_populates="sponsorships",
     )
 
     assembly_member_id = Column(
