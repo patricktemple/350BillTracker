@@ -20,7 +20,8 @@ def council_member_person():
     return person
 
 
-def test_get_person_staffers(client, council_member_person):
+@fixture
+def staffer_person(council_member_person):
     staffer_person = Person(
         id=uuid4(),
         name="Staffer name",
@@ -33,7 +34,10 @@ def test_get_person_staffers(client, council_member_person):
     staffer_person.staffer = Staffer(boss_id=council_member_person.id)
     db.session.add(staffer_person)
     db.session.commit()
+    return staffer_person
 
+
+def test_get_person_staffers(client, council_member_person, staffer_person):
     response = client.get(f"/api/persons/{council_member_person.id}/staffers")
     assert_response(
         response,
@@ -57,13 +61,9 @@ def test_get_person_staffers(client, council_member_person):
     )
 
 
-def test_add_legislator_staffer(client):
-    legislator = Legislator(id=1, name="name")
-    db.session.add(legislator)
-    db.session.commit()
-
+def test_add_legislator_staffer(client, council_member_person):
     response = client.post(
-        "/api/legislators/1/staffers",
+        f"/api/persons/{council_member_person.id}/staffers",
         data={
             "name": "staffer",
             "title": "chief of staff",
@@ -75,20 +75,17 @@ def test_add_legislator_staffer(client):
     assert response.status_code == 200
 
     staffer = Staffer.query.one()
-    assert staffer.name == "staffer"
-    assert staffer.title == "chief of staff"
-    assert staffer.twitter == "TheChief"
-    assert staffer.phone == "111-111-1111"
-    assert staffer.email == "test@example.com"
+    assert staffer.person.name == "staffer"
+    assert staffer.person.title == "chief of staff"
+    assert staffer.person.twitter == "TheChief"
+    assert staffer.person.phone == "111-111-1111"
+    assert staffer.person.email == "test@example.com"
+    assert staffer.boss_id == council_member_person.id
 
 
-def test_add_legislator_invalid_twitter(client):
-    legislator = Legislator(id=1, name="name")
-    db.session.add(legislator)
-    db.session.commit()
-
+def test_add_legislator_invalid_twitter(client, council_member_person):
     response = client.post(
-        "/api/legislators/1/staffers",
+        f"/api/persons/{council_member_person.id}/staffers",
         data={
             "name": "staffer",
             "twitter": "&@89)(",
@@ -97,18 +94,8 @@ def test_add_legislator_invalid_twitter(client):
     assert response.status_code == 422
 
 
-def test_delete_bill_attachment(client):
-    staffer_id = uuid4()
-    legislator = Legislator(id=1, name="name")
-    staffer = Staffer(
-        id=staffer_id,
-        name="staffer",
-    )
-    legislator.staffers.append(staffer)
-    db.session.add(legislator)
-    db.session.commit()
-
-    client.delete(f"/api/legislators/-/staffers/{staffer_id}")
+def test_delete_staffer(client, council_member_person, staffer_person):
+    client.delete(f"/api/persons/-/staffers/{staffer_person.id}")
 
     staffers = Staffer.query.all()
     assert len(staffers) == 0

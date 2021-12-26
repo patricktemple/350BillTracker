@@ -73,7 +73,7 @@ def delete_staffer(staffer_id):
     staffer = Staffer.query.get(staffer_id)
     if not staffer:
         raise exceptions.NotFound()
-    db.session.delete(staffer)
+    db.session.delete(staffer.person)
     db.session.commit()
 
     # TODO: Return the object in all Creates, to be consistent

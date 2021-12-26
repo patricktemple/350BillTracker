@@ -137,6 +137,7 @@ Person.staffer = relationship(
     Staffer,
     foreign_keys=[Staffer.person_id],
     back_populates="person",
+    cascade="all, delete",
     uselist=False,
 )
 Person.staffers = relationship(
