@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from uuid import uuid4
 
 import responses
 from freezegun import freeze_time
@@ -182,16 +183,21 @@ def test_sync_bill_updates():
 @freeze_time("2021-1-1")
 def test_update_sponsorships__new_sponsor():
     bill = Bill(
-        id=1,
-        file="Intro 200",
         name="Electric school buses",
+        type=Bill.BillType.CITY
+    )
+    bill.city_bill = CityBill(
+        file="Intro 200",
+        city_bill_id=1,
         title="Bill title",
         status="Committee",
         intro_date="2000-1-1",
     )
     db.session.add(bill)
-    legislator = Legislator(id=1, name="Patrick")
-    db.session.add(legislator)
+
+    person = Person(name="Patrick", type=Person.PersonType.COUNCIL_MEMBER)
+    person.council_member = CouncilMember(city_council_person_id=1)
+    db.session.add(person)
 
     responses.add(
         responses.GET,
@@ -208,31 +214,41 @@ def test_update_sponsorships__new_sponsor():
 
     update_all_sponsorships()
 
-    sponsorship = BillSponsorship.query.one()
-    assert sponsorship.legislator_id == 1
-    assert sponsorship.bill_id == 1
+    sponsorship = CitySponsorship.query.one()
+    assert sponsorship.council_member_id == person.id
+    assert sponsorship.bill_id == bill.id
     assert sponsorship.added_at == datetime(2021, 1, 1, tzinfo=timezone.utc)
 
 
 @responses.activate
 @freeze_time("2021-1-1")
 def test_update_sponsorships__sponsorship_already_exists():
+    bill_id = uuid4()
+    person_id = uuid4()
+
     bill = Bill(
-        id=1,
-        file="Intro 200",
+        id=bill_id,
         name="Electric school buses",
+        type=Bill.BillType.CITY
+    )
+    bill.city_bill = CityBill(
+        city_bill_id=1,
         title="Bill title",
         status="Committee",
         intro_date="2000-1-1",
+        file="Intro 200",
     )
     db.session.add(bill)
-    legislator = Legislator(id=1, name="Patrick")
-    db.session.add(legislator)
 
-    sponsorship = BillSponsorship(
-        bill_id=1,
-        legislator_id=1,
+    person = Person(id=person_id, name="Patrick", type=Person.PersonType.COUNCIL_MEMBER)
+    person.council_member = CouncilMember(city_council_person_id=1)
+    db.session.add(person)
+
+    sponsorship = CitySponsorship(
+        bill_id=bill.id,
+        council_member_id=person.id,
         added_at=datetime(2000, 1, 1, tzinfo=timezone.utc),
+        sponsor_sequence=0
     )
     db.session.add(sponsorship)
 
@@ -243,10 +259,12 @@ def test_update_sponsorships__sponsorship_already_exists():
     )
 
     update_all_sponsorships()
+    
+    # TODO: I left off here. Unclear why this is failing below:
 
-    sponsorship = BillSponsorship.query.one()
-    assert sponsorship.legislator_id == 1
-    assert sponsorship.bill_id == 1
+    sponsorship = CitySponsorship.query.one()
+    assert sponsorship.council_member_id == person.id
+    assert sponsorship.bill_id == bill.id
     assert sponsorship.added_at == datetime(2000, 1, 1, tzinfo=timezone.utc)
 
 
