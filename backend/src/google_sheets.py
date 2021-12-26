@@ -12,7 +12,7 @@ from sqlalchemy.orm import selectinload
 from . import settings, twitter
 from .bill.models import CityBill
 from .models import UUID
-from .person.models import CouncilMember
+from .person.models import CouncilMember, Person
 from .sponsorship.models import CitySponsorship
 
 SCOPES = [
@@ -114,6 +114,16 @@ def _create_row_data(cells):
     return {"values": [_create_cell_data(cell) for cell in cells]}
 
 
+def _get_staffer_display_string(staffer: Person):
+    contact_methods = [staffer.phone, staffer.email, staffer.display_twitter]
+    contact_methods = [c for c in contact_methods if c]
+    contact_string = ", ".join(contact_methods)
+    if not contact_string:
+        contact_string = "No contact info"
+    title_string = f"{staffer.title} - " if staffer.title else ""
+    return f"{title_string}{staffer.name} ({contact_string})"
+
+
 def _create_legislator_row(
     council_member: CouncilMember,
     city_bill: CityBill,
@@ -121,7 +131,7 @@ def _create_legislator_row(
     is_lead_sponsor: bool = False,
 ):
     staffer_strings = [
-        s.display_string for s in council_member.person.staffer_persons
+        _get_staffer_display_string(s) for s in council_member.person.staffer_persons
     ]
     staffer_text = "\n\n".join(staffer_strings)
 

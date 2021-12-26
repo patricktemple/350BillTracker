@@ -172,16 +172,6 @@ class Staffer(db.Model):
     # The Person that this staffer works for.
     boss = relationship("Person", foreign_keys=[boss_id])
 
-    @property
-    def display_string(self):
-        contact_methods = [self.phone, self.email, self.display_twitter]
-        contact_methods = [c for c in contact_methods if c]
-        contact_string = ", ".join(contact_methods)
-        if not contact_string:
-            contact_string = "No contact info"
-        title_string = f"{self.title} - " if self.title else ""
-        return f"{title_string}{self.name} ({contact_string})"
-
 
 # If this person is a Staffer, gets the Staffer object that represents them.
 Person.staffer = relationship(
