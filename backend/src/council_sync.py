@@ -162,8 +162,8 @@ def update_bill_sponsorships(city_bill, set_added_at=False):
     }
 
     # THIS is super confusing, rewrite it and simplify
-    for sponsorship in updated_bill_sponsorships:
-        council_member_person_id = sponsorship["MatterSponsorNameId"]
+    for sponsorship_data in updated_bill_sponsorships:
+        council_member_person_id = sponsorship_data["MatterSponsorNameId"]
 
         if (
             council_member_person_id
@@ -189,7 +189,7 @@ def update_bill_sponsorships(city_bill, set_added_at=False):
                 council_member_id=council_members_for_updated_sponsorships_by_city_id[
                     council_member_person_id
                 ].person_id,
-                sponsor_sequence=sponsorship["MatterSponsorSequence"],
+                sponsor_sequence=sponsorship_data["MatterSponsorSequence"],
             )
             if set_added_at:
                 sponsorship.added_at = now()
