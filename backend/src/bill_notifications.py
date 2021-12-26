@@ -154,9 +154,7 @@ def _send_bill_update_emails(bill_diffs):
 def _calculate_bill_diffs(snapshots_by_bill_id):
     """Looks at the before and after states of all bills, and collapses this info
     info a form that's useful for further processing when building emails."""
-    city_bills = (
-        CityBill.query.all()
-    )
+    city_bills = CityBill.query.all()
 
     bill_diffs = []
     for city_bill in city_bills:
