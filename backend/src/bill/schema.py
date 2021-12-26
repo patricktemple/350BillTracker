@@ -48,7 +48,7 @@ class BillSchema(CamelCaseSchema):
 # Bill attachments ----------------------------------------------------------------------
 class BillAttachmentSchema(CamelCaseSchema):
     id = fields.UUID()
-    bill_id = fields.Integer()
+    bill_id = fields.UUID()
     name = fields.String()
     url = fields.String()
 
