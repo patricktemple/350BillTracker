@@ -8,7 +8,6 @@ from ..models import TIMESTAMP, UUID, db
 
 # TODO: Fix all eager loading
 
-
 class Person(db.Model):
     __tablename__ = "persons"
 
@@ -16,7 +15,7 @@ class Person(db.Model):
         COUNCIL_MEMBER = 1
         ASSEMBLY_MEMBER = 2
         SENATOR = 3
-        STAFFER = 4  # this might be problematic...
+        STAFFER = 4
 
     # This is the internal ID shared by all people
     id = Column(UUID, primary_key=True, default=uuid4)
@@ -102,9 +101,6 @@ class AssemblyMember(db.Model):
         "AssemblySponsorship", back_populates="assembly_member"
     )
 
-    # These are added by our static data
-    # TODO remove this
-    party = Column(Text)
 
 
 # Staffers have a single boss. They're one to many.
@@ -136,7 +132,6 @@ class Staffer(db.Model):
         return f"{title_string}{self.name} ({contact_string})"
 
 
-# TODO: Should this actually point to the Staffer Person object to be consistent?
 Person.staffer = relationship(
     Staffer,
     foreign_keys=[Staffer.person_id],
@@ -148,8 +143,6 @@ Person.staffers = relationship(
 )
 
 # This naming is SO confusing!!! Do better than this. Maybe call Senator/Staffer etc "SenatorInfo" or "SenatorDetails" or something like that?
-
-# Needs a double join I think
 Person.staffer_person = relationship(
     Person,
     secondary="staffers_2",
