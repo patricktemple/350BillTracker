@@ -19,22 +19,6 @@ from src.sponsorship.models import CitySponsorship
 from src.utils import now
 
 
-# TODO share this in conftest
-@fixture
-def bill():
-    bill = Bill(id=uuid4(), name="name", type=Bill.BillType.CITY)
-    bill.city_bill = CityBill(
-        city_bill_id=1,
-        file="file",
-        title="title",
-        intro_date=now(),
-        status="Enacted",
-        active_version="A",
-    )
-    db.session.add(bill)
-    return bill
-
-
 @patch("src.google_sheets.Credentials")
 @patch("src.google_sheets.build")
 def test_generate_google_sheet__no_import(

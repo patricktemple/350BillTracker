@@ -11,20 +11,6 @@ from src.utils import now
 from .utils import get_response_data
 
 
-# TODO consider sharing this fixture w/ test_bill_attachments
-@fixture
-def bill():
-    bill = Bill(id=uuid4(), name="name", type=Bill.BillType.CITY)
-    bill.city_bill = CityBill(
-        city_bill_id=1,
-        file="file",
-        title="title",
-        intro_date=now(),
-        status="Enacted",
-        active_version="A"
-    )
-    db.session.add(bill)
-    return bill
 
 
 def test_get_power_hours(client, bill):

@@ -10,21 +10,6 @@ from src.utils import now
 from .utils import assert_response
 
 
-@fixture
-def bill():
-    bill = Bill(id=uuid4(), name="name", type=Bill.BillType.CITY)
-    bill.city_bill = CityBill(
-        city_bill_id=1,
-        file="file",
-        title="title",
-        intro_date=now(),
-        status="Enacted",
-        active_version="A"
-    )
-    db.session.add(bill)
-    return bill
-
-
 def test_get_bill_attachments(client, bill):
     attachment = BillAttachment(
         id=uuid4(),
