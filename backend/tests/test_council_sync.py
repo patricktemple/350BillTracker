@@ -159,6 +159,7 @@ def test_sync_bill_updates():
         title="Bill title",
         status="Committee",
         intro_date="2000-1-1",
+        active_version="A",
     )
     db.session.add(bill)
 
@@ -173,6 +174,7 @@ def test_sync_bill_updates():
             "MatterBodyName": "New body",
             "MatterIntroDate": "2021-01-01T00:00:00",
             "MatterStatusName": "New status",
+            "MatterVersion": "New version"
         },
     )
 
@@ -188,6 +190,7 @@ def test_sync_bill_updates():
         2021, 1, 1, tzinfo=timezone.utc
     )
     assert result.nickname == "Shouldn't change"
+    assert result.city_bill.active_version == "New version"
 
 
 @responses.activate
@@ -200,6 +203,7 @@ def test_update_sponsorships__new_sponsor():
         title="Bill title",
         status="Committee",
         intro_date="2000-1-1",
+        active_version="A",
     )
     db.session.add(bill)
 
@@ -207,16 +211,22 @@ def test_update_sponsorships__new_sponsor():
     person.council_member = CouncilMember(city_council_person_id=1)
     db.session.add(person)
 
+    wrong_version_person = Person(name="Jim", type=Person.PersonType.COUNCIL_MEMBER)
+    wrong_version_person.council_member = CouncilMember(city_council_person_id=2)
+    db.session.add(wrong_version_person)
+
     responses.add(
         responses.GET,
         url="https://webapi.legistar.com/v1/nyc/matters/1/sponsors?token=fake_token",
         json=[
-            {"MatterSponsorNameId": 1, "MatterSponsorSequence": 0},
+            {"MatterSponsorNameId": 1, "MatterSponsorSequence": 0, "MatterSponsorMatterVersion": "A"},
             {
                 # This one isn't found in the DB
-                "MatterSponsorNameId": 2,
+                "MatterSponsorNameId": 3,
                 "MatterSponsorSequence": 1,
+                "MatterSponsorMatterVersion": "A"
             },
+            {"MatterSponsorNameId": 2, "MatterSponsorSequence": 0, "MatterSponsorMatterVersion": "different"},
         ],
     )
 
@@ -231,7 +241,6 @@ def test_update_sponsorships__new_sponsor():
 @responses.activate
 @freeze_time("2021-1-1")
 def test_update_sponsorships__sponsorship_already_exists():
-
     bill = Bill(
         id=uuid4(), name="Electric school buses", type=Bill.BillType.CITY
     )
@@ -241,6 +250,7 @@ def test_update_sponsorships__sponsorship_already_exists():
         status="Committee",
         intro_date="2000-1-1",
         file="Intro 200",
+        active_version="A",
     )
     db.session.add(bill)
 
@@ -261,12 +271,10 @@ def test_update_sponsorships__sponsorship_already_exists():
     responses.add(
         responses.GET,
         url="https://webapi.legistar.com/v1/nyc/matters/1/sponsors?token=fake_token",
-        json=[{"MatterSponsorNameId": 1, "MatterSponsorSequence": 0}],
+        json=[{"MatterSponsorNameId": 1, "MatterSponsorSequence": 0, "MatterSponsorMatterVersion": "A"}],
     )
 
     update_all_sponsorships()
-
-    # TODO: I left off here. Unclear why this is failing below:
 
     sponsorship = CitySponsorship.query.one()
     assert sponsorship.council_member_id == person.id
@@ -286,6 +294,7 @@ def test_update_sponsorships__remove_sponsorship():
         intro_date="2000-1-1",
         city_bill_id=1,
         file="Intro 200",
+        active_version="A",
     )
     db.session.add(bill)
 

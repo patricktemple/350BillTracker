@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from sqlalchemy import Column, ForeignKey, Integer
+from sqlalchemy import Column, ForeignKey, Integer, UniqueConstraint
 from sqlalchemy.orm import foreign, relationship, remote
 
 from ..bill.models import (
@@ -49,6 +49,9 @@ class CitySponsorship(db.Model):
     # in that case, and only fill this in for sponsorships that were added later on.
     added_at = Column(TIMESTAMP)
 
+    __table_args__ = (UniqueConstraint('bill_id', 'council_member_id', name='_bill_council_member_unique'),
+                     )
+
 
 CitySponsorship.bill = relationship(
     Bill,
@@ -82,6 +85,7 @@ class SenateSponsorship(db.Model):
     senator = relationship(Senator, back_populates="sponsorships")
 
     # TODO: Add sponsor_sequence like we have with city, if needed
+    # TODO: Unique constraint
 
 
 class AssemblySponsorship(db.Model):
@@ -105,3 +109,4 @@ class AssemblySponsorship(db.Model):
     )
 
     # TODO: Add sponsor_sequence like we have with city, if needed
+    # TODO: Unique constraint

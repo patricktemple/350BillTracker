@@ -31,6 +31,7 @@ def add_test_bill(city_bill_id, status) -> Bill:
         title=f"{city_bill_id} title",
         status=status,
         intro_date=now(),
+        active_version="A",
     )
     db.session.add(bill)
     return bill

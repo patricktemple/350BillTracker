@@ -21,6 +21,7 @@ def create_fake_matter(matter_id):
         "MatterBodyName": "fake matter body",
         "MatterIntroDate": "2021-01-06T00:00:00",
         "MatterStatusName": "fake matter status",
+        "MatterVersion": "A",
     }
 
 
@@ -43,6 +44,7 @@ def test_get_saved_bills(client):
         status="Enacted",
         intro_date=now(),
         title="title",
+        active_version="A",
     )
     db.session.add(bill)
     db.session.commit()
@@ -81,6 +83,7 @@ def test_delete_bill(client):
         title="title",
         status="Enacted",
         intro_date=now(),
+        active_version="A",
     )
     db.session.add(bill)
     db.session.commit()
@@ -105,6 +108,7 @@ def test_update_bill(client):
         title="title",
         status="Enacted",
         intro_date=now(),
+        active_version="A",
     )
     db.session.add(bill)
     db.session.commit()
@@ -156,7 +160,7 @@ def test_save_bill(client):
     responses.add(
         responses.GET,
         url="https://webapi.legistar.com/v1/nyc/matters/123/sponsors?token=fake_token",
-        json=[{"MatterSponsorNameId": 99, "MatterSponsorSequence": 0}],
+        json=[{"MatterSponsorNameId": 99, "MatterSponsorSequence": 0, "MatterSponsorMatterVersion": "A"}],
     )
 
     non_sponsor = Person(
@@ -195,6 +199,7 @@ def test_save_bill__already_exists(client):
         title="title",
         intro_date=now(),
         status="Committee",
+        active_version="A",
     )
     db.session.add(bill)
     db.session.commit()
@@ -237,6 +242,7 @@ def test_lookup_bill_already_tracked(client):
         title="title",
         intro_date=now(),
         status="Enacted",
+        active_version="A",
     )
     db.session.add(bill)
     db.session.commit()

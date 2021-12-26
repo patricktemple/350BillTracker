@@ -18,13 +18,6 @@ DEFAULT_TWITTER_SEARCH_TERMS = [
 ]
 
 
-class Party(enum.Enum):
-    DEMOCRATIC = 1
-    REPUBLICAN = 2
-    OTHER = 3
-
-
-
 class Bill(db.Model):
     # TODO: Fix these table names:
     __tablename__ = "bills_2"
@@ -118,6 +111,7 @@ class CityBill(db.Model):
     intro_date = Column(TIMESTAMP, nullable=False)
 
     status = Column(Text, nullable=False)
+    active_version = Column(Text, nullable=False)
 
     sponsorships = relationship(
         "CitySponsorship", back_populates="city_bill", cascade="all, delete"

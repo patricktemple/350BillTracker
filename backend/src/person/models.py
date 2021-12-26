@@ -39,6 +39,7 @@ class Person(db.Model):
     )
 
     # These are added by our static data
+    # TODO: Make this an enum?
     party = Column(Text)
 
     @property

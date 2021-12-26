@@ -29,6 +29,7 @@ def bill():
         title="title",
         intro_date=now(),
         status="Enacted",
+        active_version="A",
     )
     db.session.add(bill)
     return bill

@@ -18,6 +18,7 @@ def test_get_bill_sponsorships(client):
         title="title",
         status="Enacted",
         intro_date=now(),
+        active_version="A",
     )
     db.session.add(bill)
 

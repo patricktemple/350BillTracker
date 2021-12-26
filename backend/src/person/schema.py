@@ -47,7 +47,7 @@ class PersonSchema(CamelCaseSchema):
 
     title = fields.String(missing=None)
 
-    party = fields.String(dump_only=True) # todo make this an enum
+    party = fields.String(dump_only=True)
 
     council_member = fields.Nested(CouncilMemberSchema)
     senator = fields.Nested(SenatorSchema)
