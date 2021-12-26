@@ -5,22 +5,38 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from src import app
-from src.bill.models import Bill, PowerHour
+from src.bill.models import Bill, PowerHour, CityBill
 from src.google_sheets import (
     _extract_data_from_previous_power_hour,
     _extract_data_from_previous_spreadsheet,
     create_power_hour,
 )
 from src.models import db
-from src.person.models import Legislator
-from src.sponsorship.models import BillSponsorship
+from src.person.models import Person, CouncilMember
+from src.sponsorship.models import CitySponsorship
 from src.utils import now
+from pytest import fixture
+from uuid import uuid4
+
+# TODO share this in conftest
+@fixture
+def bill():
+    bill = Bill(id=uuid4(), name="name", type=Bill.BillType.CITY)
+    bill.city_bill = CityBill(
+        city_bill_id=1,
+        file="file",
+        title="title",
+        intro_date=now(),
+        status="Enacted",
+    )
+    db.session.add(bill)
+    return bill
 
 
 @patch("src.google_sheets.Credentials")
 @patch("src.google_sheets.build")
 def test_generate_google_sheet__no_import(
-    mock_build, mock_credentials, snapshot
+    mock_build, mock_credentials, snapshot, bill
 ):
     mock_sheets_service = MagicMock()
     mock_drive_service = MagicMock()
@@ -35,21 +51,14 @@ def test_generate_google_sheet__no_import(
 
     mock_build.side_effect = side_effect
 
-    bill = Bill(
-        id=1234,
-        file="Intro 3",
-        name="Ban oil",
-        title="Ban all oil",
-        intro_date=now(),
-    )
-    db.session.add(bill)
-
-    non_sponsor = Legislator(id=1, name="Non sponsor")
-    sponsor = Legislator(id=2, name="Sponsor")
+    non_sponsor = Person(id=uuid4(), name="Non sponsor", type=Person.PersonType.COUNCIL_MEMBER)
+    non_sponsor.council_member = CouncilMember(city_council_person_id=1)
+    sponsor = Person(id=uuid4(), name="Sponsor", type=Person.PersonType.COUNCIL_MEMBER)
+    sponsor.council_member = CouncilMember(city_council_person_id=2)
     db.session.add(sponsor)
     db.session.add(non_sponsor)
 
-    db.session.add(BillSponsorship(legislator_id=sponsor.id, bill_id=bill.id))
+    db.session.add(CitySponsorship(council_member_id=sponsor.id, bill_id=bill.id, sponsor_sequence=0))
     db.session.commit()
 
     mock_sheets_service.spreadsheets().create().execute.return_value = {
@@ -57,7 +66,7 @@ def test_generate_google_sheet__no_import(
     }
 
     _, messages = create_power_hour(
-        1234, title="My power hour", old_spreadsheet_to_import=None
+        bill.id, title="My power hour", old_spreadsheet_to_import=None
     )
     assert messages == ["Spreadsheet was created"]
 
@@ -74,7 +83,7 @@ def test_generate_google_sheet__no_import(
 @patch("src.google_sheets.Credentials")
 @patch("src.google_sheets.build")
 def test_generate_google_sheet__with_import(
-    mock_build, mock_credentials, snapshot
+    mock_build, mock_credentials, snapshot, bill
 ):
     mock_sheets_service = MagicMock()
     mock_drive_service = MagicMock()
@@ -114,21 +123,14 @@ def test_generate_google_sheet__with_import(
         ]
     }
 
-    bill = Bill(
-        id=1234,
-        file="Intro 3",
-        name="Ban oil",
-        title="Ban all oil",
-        intro_date=now(),
-    )
-    db.session.add(bill)
-
-    non_sponsor = Legislator(id=1, name="Missing Person")
-    sponsor = Legislator(id=2, name="Brad Lander")
+    non_sponsor = Person(id=uuid4(), name="Missing Person", type=Person.PersonType.COUNCIL_MEMBER)
+    non_sponsor.council_member = CouncilMember(city_council_person_id=1)
+    sponsor = Person(id=uuid4(), name="Brad Lander", type=Person.PersonType.COUNCIL_MEMBER)
+    sponsor.council_member = CouncilMember(city_council_person_id=2)
     db.session.add(sponsor)
     db.session.add(non_sponsor)
 
-    db.session.add(BillSponsorship(legislator_id=sponsor.id, bill_id=bill.id))
+    db.session.add(CitySponsorship(council_member_id=sponsor.id, bill_id=bill.id, sponsor_sequence=0))
     db.session.commit()
 
     mock_sheets_service.spreadsheets().create().execute.return_value = {
@@ -136,7 +138,7 @@ def test_generate_google_sheet__with_import(
     }
 
     _, messages = create_power_hour(
-        1234, title="My power hour", old_spreadsheet_to_import="123"
+        bill.id, title="My power hour", old_spreadsheet_to_import="123"
     )
     assert messages == [
         "Copied column 'Extra column' to new sheet",
@@ -151,13 +153,16 @@ def test_generate_google_sheet__with_import(
 
 
 def test_extract_data_from_previous_spreadsheet():
-    corey = Legislator(id=1, name="Corey D. Johnson")
+    corey = Person(name="Corey D. Johnson", type=Person.PersonType.COUNCIL_MEMBER)
+    corey.council_member = CouncilMember(city_council_person_id=1)
     db.session.add(corey)
 
-    retired = Legislator(id=2, name="Retired Person")
+    retired = Person(name="Retired Person", type=Person.PersonType.COUNCIL_MEMBER)
+    retired.council_member = CouncilMember(city_council_person_id=2)
     db.session.add(retired)
 
-    lead = Legislator(id=3, name="Lead Sponsor")
+    lead = Person(name="Lead Sponsor", type=Person.PersonType.COUNCIL_MEMBER)
+    lead.council_member = CouncilMember(city_council_person_id=3)
     db.session.add(lead)
     db.session.commit()
 
@@ -187,7 +192,8 @@ def test_extract_data_from_previous_spreadsheet():
 
 
 def test_extract_data_from_previous_spreadsheet_no_name():
-    corey = Legislator(id=1, name="Corey D. Johnson")
+    corey = Person(name="Corey D. Johnson", type=Person.PersonType.COUNCIL_MEMBER)
+    corey.council_member = CouncilMember(city_council_person_id=1)
     db.session.add(corey)
     db.session.commit()
 
