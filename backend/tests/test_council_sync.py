@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 import responses
 from freezegun import freeze_time
 
-from src.bill.models import Bill
+from src.bill.models import Bill, CityBill
 from src.council_sync import (
     add_council_members,
     fill_council_person_data_from_api,
@@ -106,38 +106,49 @@ def test_fill_council_person_data():
 
 def test_fill_council_person_static_data():
     corey_static = COUNCIL_DATA_BY_LEGISLATOR_ID[7631]
-    legislator_to_update = Legislator(
-        id=7631,
+    person_to_update = Person(
         name="Corey Johnson badly formatted name----",
         email="existing-email@council.nyc.gov",
+        type=Person.PersonType.COUNCIL_MEMBER
     )
-    db.session.add(legislator_to_update)
+    person_to_update.council_member = CouncilMember(
+        city_council_person_id=7631
+    )
+    db.session.add(person_to_update)
 
-    legislator_without_static_data = Legislator(
-        id=2, name="Person without static data"
+    person_without_static_data = Person(
+        name="Person without static data",
+        type=Person.PersonType.COUNCIL_MEMBER
     )
-    db.session.add(legislator_without_static_data)
+    person_without_static_data.council_member = CouncilMember(
+        city_council_person_id=2,
+    )
+    db.session.add(person_without_static_data)
 
     fill_council_person_static_data()
 
-    corey = Legislator.query.get(7631)
-    assert corey.name == corey_static["name"]
-    assert corey.twitter == corey_static["twitter"]
-    assert corey.party == corey_static["party"]
+    corey = CouncilMember.query.filter_by(city_council_person_id=7631).one()
+
+    assert corey.person.name == corey_static["name"]
+    assert corey.person.twitter == corey_static["twitter"]
+    assert corey.person.party == corey_static["party"]
     assert corey.borough == corey_static["borough"]
-    assert corey.email == "existing-email@council.nyc.gov"
+    assert corey.person.email == "existing-email@council.nyc.gov"
 
 
 @responses.activate
 def test_sync_bill_updates():
     bill = Bill(
-        id=1,
-        file="Intro 200",
         name="Electric school buses",
+        nickname="Shouldn't change",
+        type=Bill.BillType.CITY
+    )
+    bill.city_bill = CityBill(
+        city_bill_id=1,
+        file="Intro 200",
         title="Bill title",
         status="Committee",
         intro_date="2000-1-1",
-        nickname="Shouldn't change",
     )
     db.session.add(bill)
 
@@ -159,11 +170,11 @@ def test_sync_bill_updates():
 
     result = Bill.query.one()
     assert result.name == "New name"
-    assert result.title == "New title"
-    assert result.file == "New file"
-    assert result.body == "New body"
-    assert result.status == "New status"
-    assert result.intro_date == datetime(2021, 1, 1, tzinfo=timezone.utc)
+    assert result.city_bill.title == "New title"
+    assert result.city_bill.file == "New file"
+    assert result.city_bill.council_body == "New body"
+    assert result.city_bill.status == "New status"
+    assert result.city_bill.intro_date == datetime(2021, 1, 1, tzinfo=timezone.utc)
     assert result.nickname == "Shouldn't change"
 
 
