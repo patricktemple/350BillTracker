@@ -70,6 +70,11 @@ class Bill(db.Model):
     @property
     def display_name(self):
         return self.nickname if self.nickname else self.name
+    
+    # TODO make less ugly?
+    @property
+    def tracked(self):
+        return True
 
 
 class BillAttachment(db.Model):
@@ -124,10 +129,6 @@ class CityBill(db.Model):
     )
 
     council_body = Column(Text)
-
-    @property
-    def tracked(self):
-        return True
 
 
 class StateBill(db.Model):

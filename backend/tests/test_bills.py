@@ -3,9 +3,9 @@ import json
 import responses
 
 from src import app
-from src.bill.models import DEFAULT_TWITTER_SEARCH_TERMS, Bill
+from src.bill.models import DEFAULT_TWITTER_SEARCH_TERMS, Bill, CityBill
 from src.models import db
-from src.person.models import Legislator
+from src.person.models import Person, CouncilMember
 from src.utils import now
 
 from .utils import assert_response
@@ -30,15 +30,18 @@ def test_get_bills_unauthorized(unauthenticated_client):
 
 def test_get_saved_bills(client):
     bill = Bill(
-        id=1,
         name="name",
-        file="file",
-        title="title",
-        intro_date=now(),
         nickname="ban gas",
-        status="Enacted",
         notes="Good job everyone",
-        body="Committee on environment",
+        type=Bill.BillType.CITY,
+    )
+    bill.city_bill = CityBill(
+        file="file",
+        city_bill_id=1,
+        council_body="Committee on environment",
+        status="Enacted",
+        intro_date=now(),
+        title="title",
     )
     db.session.add(bill)
     db.session.commit()
@@ -49,16 +52,21 @@ def test_get_saved_bills(client):
         200,
         [
             {
-                "body": "Committee on environment",
-                "file": "file",
-                "id": 1,
+                "id": str(bill.id),
+                "type": "CITY",
+                "tracked": True,
+                "cityBill": {
+                    "cityBillId": 1,
+                    "councilBody": "Committee on environment",
+                    "file": "file",
+                    "title": "title",
+                    "status": "Enacted",
+                },
                 "name": "name",
                 "nickname": "ban gas",
                 "notes": "Good job everyone",
-                "status": "Enacted",
-                "title": "title",
-                "tracked": True,
                 "twitterSearchTerms": DEFAULT_TWITTER_SEARCH_TERMS,
+                "stateBill": None
             }
         ],
     )
