@@ -3,8 +3,8 @@ from uuid import uuid4
 import pytest
 
 from src import app, models
-from src.user.models import User
 from src.bill.models import Bill, CityBill, db
+from src.user.models import User
 from src.utils import now
 
 from .utils import ApiClient
@@ -26,6 +26,7 @@ def autouse_fixtures():
 #     with app.test_request_context():
 #         yield
 
+
 @pytest.fixture
 def bill():
     bill = Bill(id=uuid4(), name="name", type=Bill.BillType.CITY)
@@ -35,10 +36,11 @@ def bill():
         title="title",
         intro_date=now(),
         status="Enacted",
-        active_version="A"
+        active_version="A",
     )
     db.session.add(bill)
     return bill
+
 
 @pytest.fixture
 def user_id():

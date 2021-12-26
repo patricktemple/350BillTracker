@@ -11,8 +11,6 @@ from src.utils import now
 from .utils import get_response_data
 
 
-
-
 def test_get_power_hours(client, bill):
     power_hour = PowerHour(
         bill_id=bill.id,

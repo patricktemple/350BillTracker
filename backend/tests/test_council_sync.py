@@ -174,7 +174,7 @@ def test_sync_bill_updates():
             "MatterBodyName": "New body",
             "MatterIntroDate": "2021-01-01T00:00:00",
             "MatterStatusName": "New status",
-            "MatterVersion": "New version"
+            "MatterVersion": "New version",
         },
     )
 
@@ -211,22 +211,34 @@ def test_update_sponsorships__new_sponsor():
     person.council_member = CouncilMember(city_council_person_id=1)
     db.session.add(person)
 
-    wrong_version_person = Person(name="Jim", type=Person.PersonType.COUNCIL_MEMBER)
-    wrong_version_person.council_member = CouncilMember(city_council_person_id=2)
+    wrong_version_person = Person(
+        name="Jim", type=Person.PersonType.COUNCIL_MEMBER
+    )
+    wrong_version_person.council_member = CouncilMember(
+        city_council_person_id=2
+    )
     db.session.add(wrong_version_person)
 
     responses.add(
         responses.GET,
         url="https://webapi.legistar.com/v1/nyc/matters/1/sponsors?token=fake_token",
         json=[
-            {"MatterSponsorNameId": 1, "MatterSponsorSequence": 0, "MatterSponsorMatterVersion": "A"},
+            {
+                "MatterSponsorNameId": 1,
+                "MatterSponsorSequence": 0,
+                "MatterSponsorMatterVersion": "A",
+            },
             {
                 # This one isn't found in the DB
                 "MatterSponsorNameId": 3,
                 "MatterSponsorSequence": 1,
-                "MatterSponsorMatterVersion": "A"
+                "MatterSponsorMatterVersion": "A",
             },
-            {"MatterSponsorNameId": 2, "MatterSponsorSequence": 0, "MatterSponsorMatterVersion": "different"},
+            {
+                "MatterSponsorNameId": 2,
+                "MatterSponsorSequence": 0,
+                "MatterSponsorMatterVersion": "different",
+            },
         ],
     )
 
@@ -271,7 +283,13 @@ def test_update_sponsorships__sponsorship_already_exists():
     responses.add(
         responses.GET,
         url="https://webapi.legistar.com/v1/nyc/matters/1/sponsors?token=fake_token",
-        json=[{"MatterSponsorNameId": 1, "MatterSponsorSequence": 0, "MatterSponsorMatterVersion": "A"}],
+        json=[
+            {
+                "MatterSponsorNameId": 1,
+                "MatterSponsorSequence": 0,
+                "MatterSponsorMatterVersion": "A",
+            }
+        ],
     )
 
     update_all_sponsorships()

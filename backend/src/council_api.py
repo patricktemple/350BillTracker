@@ -48,7 +48,7 @@ def _convert_matter_to_bill(matter):
                 matter["MatterIntroDate"]
             ).replace(tzinfo=timezone.utc),
             "status": matter["MatterStatusName"],
-            "active_version": matter['MatterVersion'],
+            "active_version": matter["MatterVersion"],
         },
     }
 
@@ -79,7 +79,11 @@ def get_bill_sponsors(matter_id, active_version):
 
     # The sponsorships for various amendments will appear in a flat list, and we only care
     # about the active version.
-    return [s for s in sponsors if s['MatterSponsorMatterVersion'] == active_version]
+    return [
+        s
+        for s in sponsors
+        if s["MatterSponsorMatterVersion"] == active_version
+    ]
 
 
 def get_person(person_id):

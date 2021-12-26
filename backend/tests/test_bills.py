@@ -160,7 +160,13 @@ def test_save_bill(client):
     responses.add(
         responses.GET,
         url="https://webapi.legistar.com/v1/nyc/matters/123/sponsors?token=fake_token",
-        json=[{"MatterSponsorNameId": 99, "MatterSponsorSequence": 0, "MatterSponsorMatterVersion": "A"}],
+        json=[
+            {
+                "MatterSponsorNameId": 99,
+                "MatterSponsorSequence": 0,
+                "MatterSponsorMatterVersion": "A",
+            }
+        ],
     )
 
     non_sponsor = Person(

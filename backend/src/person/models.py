@@ -33,7 +33,9 @@ class Person(db.Model):
     council_member = relationship(
         "CouncilMember", back_populates="person", uselist=False, lazy="joined"
     )
-    senator = relationship("Senator", back_populates="person", uselist=False, lazy="joined")
+    senator = relationship(
+        "Senator", back_populates="person", uselist=False, lazy="joined"
+    )
     assembly_member = relationship(
         "AssemblyMember", back_populates="person", uselist=False, lazy="joined"
     )
@@ -74,7 +76,9 @@ class CouncilMember(db.Model):
         "CitySponsorship", back_populates="council_member"
     )
 
-    person = relationship("Person", back_populates="council_member", lazy="joined")
+    person = relationship(
+        "Person", back_populates="council_member", lazy="joined"
+    )
 
     borough = Column(Text)
     website = Column(Text)
@@ -94,7 +98,9 @@ class AssemblyMember(db.Model):
 
     # Foreign key to Person parent table
     person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)
-    person = relationship("Person", back_populates="assembly_member", lazy="joined")
+    person = relationship(
+        "Person", back_populates="assembly_member", lazy="joined"
+    )
 
     sponsorships = relationship(
         "AssemblySponsorship", back_populates="assembly_member"
@@ -111,7 +117,10 @@ class Staffer(db.Model):
     boss_id = Column(UUID, ForeignKey(Person.id), nullable=False, index=True)
 
     person = relationship(
-        "Person", foreign_keys=[person_id], back_populates="staffer", lazy="joined"
+        "Person",
+        foreign_keys=[person_id],
+        back_populates="staffer",
+        lazy="joined",
     )
     boss = relationship(
         "Person", foreign_keys=[boss_id], back_populates="staffers"

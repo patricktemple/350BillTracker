@@ -49,8 +49,11 @@ class CitySponsorship(db.Model):
     # in that case, and only fill this in for sponsorships that were added later on.
     added_at = Column(TIMESTAMP)
 
-    __table_args__ = (UniqueConstraint('bill_id', 'council_member_id', name='_bill_council_member_unique'),
-                     )
+    __table_args__ = (
+        UniqueConstraint(
+            "bill_id", "council_member_id", name="_bill_council_member_unique"
+        ),
+    )
 
 
 CitySponsorship.bill = relationship(

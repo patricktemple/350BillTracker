@@ -32,14 +32,18 @@ class Bill(db.Model):
     # Info on child objects:
     type = Column(Enum(BillType), nullable=False)
     city_bill = relationship(
-        "CityBill", back_populates="bill", uselist=False, cascade="all, delete", lazy="joined"
+        "CityBill",
+        back_populates="bill",
+        uselist=False,
+        cascade="all, delete",
+        lazy="joined",
     )
     state_bill = relationship(
         "StateBill",
         back_populates="bill",
         uselist=False,
         cascade="all, delete",
-        lazy="joined"
+        lazy="joined",
     )
 
     # Data we track
