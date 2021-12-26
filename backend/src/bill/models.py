@@ -19,6 +19,14 @@ DEFAULT_TWITTER_SEARCH_TERMS = [
 
 
 class Bill(db.Model):
+    """
+    Base table for all bills, both city and state. Contains any info that's
+    relevant for both kinds of bills.
+
+    Bills are polymorphic. This table has a "type" which specifies whether it's
+    a city or a state bill, and there will be an associated row in the CityBill
+    and StateBill with more info on it."""
+
     # TODO: Fix these table names:
     __tablename__ = "bills_2"
 
@@ -31,6 +39,8 @@ class Bill(db.Model):
 
     # Info on child objects:
     type = Column(Enum(BillType), nullable=False)
+
+    # If this is is a city bill, points to more specific data on that.
     city_bill = relationship(
         "CityBill",
         back_populates="bill",
@@ -38,6 +48,8 @@ class Bill(db.Model):
         cascade="all, delete",
         lazy="joined",
     )
+
+    # If this is is a state bill, points to more specific data on that.
     state_bill = relationship(
         "StateBill",
         back_populates="bill",
@@ -99,6 +111,11 @@ class PowerHour(db.Model):
 
 
 class CityBill(db.Model):
+    """
+    City-specific details about an NYC bill. There must also be an associated
+    row in the Bill parent table that has more general bill info (like name).
+    """
+
     __tablename__ = "city_bills"
 
     bill_id = Column(UUID, ForeignKey(Bill.id), primary_key=True)
@@ -106,8 +123,10 @@ class CityBill(db.Model):
     # ID in the City Council API
     city_bill_id = Column(Integer, nullable=False, unique=True, index=True)
 
-    file = Column(Text, nullable=False)  # e.g. Int 2317-2021
+    # Code name often used to discuss the bill, like Int 2317-2021
+    file = Column(Text, nullable=False)
 
+    # The parent Bill object that represents this.
     bill = relationship("Bill", back_populates="city_bill", lazy="joined")
 
     title = Column(Text, nullable=False)
@@ -115,16 +134,24 @@ class CityBill(db.Model):
     intro_date = Column(TIMESTAMP, nullable=False)
 
     status = Column(Text, nullable=False)
+
+    # Which amendment version is currently active. We only track one at a time,
+    # and sponsorships are tied to that particular version.
     active_version = Column(Text, nullable=False)
 
     sponsorships = relationship(
         "CitySponsorship", back_populates="city_bill", cascade="all, delete"
     )
 
+    # Committee name
     council_body = Column(Text)
 
 
 class StateBill(db.Model):
+    """
+    State-specific details about a state bill. There must also be an associated
+    row in the Bill parent table that has more general bill info (like name)."""
+
     __tablename__ = "state_bills"
 
     bill_id = Column(UUID, ForeignKey(Bill.id), primary_key=True)

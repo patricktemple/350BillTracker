@@ -9,7 +9,6 @@ from pytest import fixture
 from src import app
 from src.bill.models import Bill, CityBill, PowerHour
 from src.google_sheets import (
-    _extract_data_from_previous_power_hour,
     _extract_data_from_previous_spreadsheet,
     create_power_hour,
 )

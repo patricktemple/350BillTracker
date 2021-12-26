@@ -1,5 +1,3 @@
-import enum
-
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import TypeDecorator
 from sqlalchemy.dialects.postgresql import TIMESTAMP as _TIMESTAMP
