@@ -153,7 +153,7 @@ class AssemblyMember(db.Model):
 
 # Staffers have a single boss. They're one to many.
 class Staffer(db.Model):
-    __tablename__ = "staffers_2"
+    __tablename__ = "staffers"
 
     # ID of the person themselves:
     person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)
@@ -185,7 +185,7 @@ Person.staffer = relationship(
 # Gets all the Persons that work for this person as staffers.
 Person.staffer_persons = relationship(
     Person,
-    secondary="staffers_2",
+    secondary="staffers",
     primaryjoin=Person.id == Staffer.boss_id,
     secondaryjoin=Staffer.person_id == Person.id,
     viewonly=True,
