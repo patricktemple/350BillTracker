@@ -12,8 +12,8 @@ from src.council_sync import (
     sync_bill_updates,
     update_all_sponsorships,
 )
-from src.person.models import Person, CouncilMember
 from src.models import db
+from src.person.models import CouncilMember, Person
 from src.sponsorship.models import CitySponsorship
 from src.static_data import COUNCIL_DATA_BY_LEGISLATOR_ID
 
@@ -24,7 +24,9 @@ def test_add_council_members():
     existing_person = Person(
         name="Corey Johnson", type=Person.PersonType.COUNCIL_MEMBER
     )
-    existing_person.council_member = CouncilMember(term_start="2000-01-01", city_council_person_id=1)
+    existing_person.council_member = CouncilMember(
+        term_start="2000-01-01", city_council_person_id=1
+    )
     db.session.add(existing_person)
 
     responses.add(
@@ -51,7 +53,9 @@ def test_add_council_members():
     assert Person.query.count() == 2
     assert CouncilMember.query.count() == 2
 
-    corey_johnson = CouncilMember.query.filter_by(city_council_person_id=1).one()
+    corey_johnson = CouncilMember.query.filter_by(
+        city_council_person_id=1
+    ).one()
     assert corey_johnson.person.name == "Corey Johnson the 2nd"
     assert corey_johnson.term_start == datetime(
         2021, 1, 1, tzinfo=timezone.utc
@@ -64,14 +68,19 @@ def test_add_council_members():
 
 @responses.activate
 def test_fill_council_person_data():
-    person_to_update = Person(name="Corey Johnson", type=Person.PersonType.COUNCIL_MEMBER)
+    person_to_update = Person(
+        name="Corey Johnson", type=Person.PersonType.COUNCIL_MEMBER
+    )
     person_to_update.council_member = CouncilMember(city_council_person_id=1)
     db.session.add(person_to_update)
 
     person_without_new_data = Person(
-        name="Person who was impeached and removed", type=Person.PersonType.COUNCIL_MEMBER
+        name="Person who was impeached and removed",
+        type=Person.PersonType.COUNCIL_MEMBER,
     )
-    person_without_new_data.council_member = CouncilMember(city_council_person_id=2)
+    person_without_new_data.council_member = CouncilMember(
+        city_council_person_id=2
+    )
     db.session.add(person_without_new_data)
 
     responses.add(
@@ -110,7 +119,7 @@ def test_fill_council_person_static_data():
     person_to_update = Person(
         name="Corey Johnson badly formatted name----",
         email="existing-email@council.nyc.gov",
-        type=Person.PersonType.COUNCIL_MEMBER
+        type=Person.PersonType.COUNCIL_MEMBER,
     )
     person_to_update.council_member = CouncilMember(
         city_council_person_id=7631
@@ -119,7 +128,7 @@ def test_fill_council_person_static_data():
 
     person_without_static_data = Person(
         name="Person without static data",
-        type=Person.PersonType.COUNCIL_MEMBER
+        type=Person.PersonType.COUNCIL_MEMBER,
     )
     person_without_static_data.council_member = CouncilMember(
         city_council_person_id=2,
@@ -142,7 +151,7 @@ def test_sync_bill_updates():
     bill = Bill(
         name="Electric school buses",
         nickname="Shouldn't change",
-        type=Bill.BillType.CITY
+        type=Bill.BillType.CITY,
     )
     bill.city_bill = CityBill(
         city_bill_id=1,
@@ -175,17 +184,16 @@ def test_sync_bill_updates():
     assert result.city_bill.file == "New file"
     assert result.city_bill.council_body == "New body"
     assert result.city_bill.status == "New status"
-    assert result.city_bill.intro_date == datetime(2021, 1, 1, tzinfo=timezone.utc)
+    assert result.city_bill.intro_date == datetime(
+        2021, 1, 1, tzinfo=timezone.utc
+    )
     assert result.nickname == "Shouldn't change"
 
 
 @responses.activate
 @freeze_time("2021-1-1")
 def test_update_sponsorships__new_sponsor():
-    bill = Bill(
-        name="Electric school buses",
-        type=Bill.BillType.CITY
-    )
+    bill = Bill(name="Electric school buses", type=Bill.BillType.CITY)
     bill.city_bill = CityBill(
         file="Intro 200",
         city_bill_id=1,
@@ -223,13 +231,9 @@ def test_update_sponsorships__new_sponsor():
 @responses.activate
 @freeze_time("2021-1-1")
 def test_update_sponsorships__sponsorship_already_exists():
-    bill_id = uuid4()
-    person_id = uuid4()
 
     bill = Bill(
-        id=bill_id,
-        name="Electric school buses",
-        type=Bill.BillType.CITY
+        id=uuid4(), name="Electric school buses", type=Bill.BillType.CITY
     )
     bill.city_bill = CityBill(
         city_bill_id=1,
@@ -240,7 +244,9 @@ def test_update_sponsorships__sponsorship_already_exists():
     )
     db.session.add(bill)
 
-    person = Person(id=person_id, name="Patrick", type=Person.PersonType.COUNCIL_MEMBER)
+    person = Person(
+        id=uuid4(), name="Patrick", type=Person.PersonType.COUNCIL_MEMBER
+    )
     person.council_member = CouncilMember(city_council_person_id=1)
     db.session.add(person)
 
@@ -248,7 +254,7 @@ def test_update_sponsorships__sponsorship_already_exists():
         bill_id=bill.id,
         council_member_id=person.id,
         added_at=datetime(2000, 1, 1, tzinfo=timezone.utc),
-        sponsor_sequence=0
+        sponsor_sequence=0,
     )
     db.session.add(sponsorship)
 
@@ -259,7 +265,7 @@ def test_update_sponsorships__sponsorship_already_exists():
     )
 
     update_all_sponsorships()
-    
+
     # TODO: I left off here. Unclear why this is failing below:
 
     sponsorship = CitySponsorship.query.one()
@@ -272,21 +278,28 @@ def test_update_sponsorships__sponsorship_already_exists():
 @freeze_time("2021-1-1")
 def test_update_sponsorships__remove_sponsorship():
     bill = Bill(
-        id=1,
-        file="Intro 200",
-        name="Electric school buses",
+        id=uuid4(), name="Electric school buses", type=Bill.BillType.CITY
+    )
+    bill.city_bill = CityBill(
         title="Bill title",
         status="Committee",
         intro_date="2000-1-1",
+        city_bill_id=1,
+        file="Intro 200",
     )
     db.session.add(bill)
-    legislator = Legislator(id=1, name="Patrick")
-    db.session.add(legislator)
 
-    sponsorship = BillSponsorship(
-        bill_id=1,
-        legislator_id=1,
+    person = Person(
+        id=uuid4(), name="Patrick", type=Person.PersonType.COUNCIL_MEMBER
+    )
+    person.council_member = CouncilMember(city_council_person_id=1)
+    db.session.add(person)
+
+    sponsorship = CitySponsorship(
+        bill_id=bill.id,
+        council_member_id=person.id,
         added_at=datetime(2000, 1, 1, tzinfo=timezone.utc),
+        sponsor_sequence=0,
     )
     db.session.add(sponsorship)
 
@@ -298,4 +311,4 @@ def test_update_sponsorships__remove_sponsorship():
 
     update_all_sponsorships()
 
-    assert BillSponsorship.query.count() == 0
+    assert CitySponsorship.query.count() == 0
