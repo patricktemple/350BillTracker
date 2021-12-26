@@ -1,28 +1,39 @@
+from uuid import uuid4
+
 from src import app
-from src.bill.models import Bill,CityBill
+from src.bill.models import Bill, CityBill
 from src.models import db
-from src.person.models import Person, CouncilMember
+from src.person.models import CouncilMember, Person
 from src.sponsorship.models import CitySponsorship
 from src.utils import now
 
-from uuid import uuid4
 from .utils import get_response_data
 
 
 def test_get_bill_sponsorships(client):
-    bill = Bill(
-        id=uuid4(), name="name", type=Bill.BillType.CITY
+    bill = Bill(id=uuid4(), name="name", type=Bill.BillType.CITY)
+    bill.city_bill = CityBill(
+        city_bill_id=1,
+        file="file",
+        title="title",
+        status="Enacted",
+        intro_date=now(),
     )
-    bill.city_bill = CityBill(city_bill_id=1, file="file", title="title", status="Enacted", intro_date=now(), )
     db.session.add(bill)
 
-    sponsor = Person(id=uuid4(), name="Sponsor", type=Person.PersonType.COUNCIL_MEMBER)
+    sponsor = Person(
+        id=uuid4(), name="Sponsor", type=Person.PersonType.COUNCIL_MEMBER
+    )
     sponsor.council_member = CouncilMember(city_council_person_id=1)
-    sponsorship = CitySponsorship(bill_id=bill.id, council_member_id=sponsor.id, sponsor_sequence=0)
+    sponsorship = CitySponsorship(
+        bill_id=bill.id, council_member_id=sponsor.id, sponsor_sequence=0
+    )
     db.session.add(sponsor)
     db.session.add(sponsorship)
 
-    non_sponsor = Person(name="Non-sponsor", type=Person.PersonType.COUNCIL_MEMBER)
+    non_sponsor = Person(
+        name="Non-sponsor", type=Person.PersonType.COUNCIL_MEMBER
+    )
     non_sponsor.council_member = CouncilMember(city_council_person_id=2)
     db.session.add(non_sponsor)
     db.session.commit()

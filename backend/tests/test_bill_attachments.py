@@ -1,26 +1,34 @@
+from uuid import uuid4
+
+from pytest import fixture
+
 from src import app
 from src.bill.models import Bill, BillAttachment, CityBill
 from src.models import db
 from src.utils import now
-from uuid import uuid4
 
 from .utils import assert_response
 
-from pytest import fixture
 
 @fixture
 def bill():
-    bill = Bill(
-        id=uuid4(), name="name",  type=Bill.BillType.CITY
+    bill = Bill(id=uuid4(), name="name", type=Bill.BillType.CITY)
+    bill.city_bill = CityBill(
+        city_bill_id=1,
+        file="file",
+        title="title",
+        intro_date=now(),
+        status="Enacted",
     )
-    bill.city_bill = CityBill(city_bill_id=1, file="file", title="title", intro_date=now(), status="Enacted")
     db.session.add(bill)
     return bill
 
 
 def test_get_bill_attachments(client, bill):
     attachment = BillAttachment(
-        id=uuid4(), name="power hour tracker", url="http://sheets.google.com/123"
+        id=uuid4(),
+        name="power hour tracker",
+        url="http://sheets.google.com/123",
     )
     bill.attachments.append(attachment)
     db.session.commit()
@@ -57,7 +65,9 @@ def test_add_bill_attachments(client, bill):
 
 def test_delete_bill_attachment(client, bill):
     attachment = BillAttachment(
-        id=uuid4(), name="power hour tracker", url="http://sheets.google.com/123"
+        id=uuid4(),
+        name="power hour tracker",
+        url="http://sheets.google.com/123",
     )
     bill.attachments.append(attachment)
     db.session.commit()

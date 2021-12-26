@@ -1,22 +1,27 @@
 from unittest.mock import patch
+from uuid import uuid4
+
+from pytest import fixture
 
 from src import app
-from src.bill.models import Bill, PowerHour, CityBill
+from src.bill.models import Bill, CityBill, PowerHour
 from src.models import db
 from src.utils import now
 
 from .utils import get_response_data
 
-from pytest import fixture
-from uuid import uuid4
 
 # TODO consider sharing this fixture w/ test_bill_attachments
 @fixture
 def bill():
-    bill = Bill(
-        id=uuid4(), name="name",  type=Bill.BillType.CITY
+    bill = Bill(id=uuid4(), name="name", type=Bill.BillType.CITY)
+    bill.city_bill = CityBill(
+        city_bill_id=1,
+        file="file",
+        title="title",
+        intro_date=now(),
+        status="Enacted",
     )
-    bill.city_bill = CityBill(city_bill_id=1, file="file", title="title", intro_date=now(), status="Enacted")
     db.session.add(bill)
     return bill
 
@@ -54,7 +59,8 @@ def test_create_power_hour__no_import(mock_create_power_hour, client, bill):
     )
 
     response = client.post(
-        f"/api/saved-bills/{bill.id}/power-hours", data={"title": "My power hour"}
+        f"/api/saved-bills/{bill.id}/power-hours",
+        data={"title": "My power hour"},
     )
 
     assert response.status_code == 200
