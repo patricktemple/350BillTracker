@@ -141,30 +141,30 @@ def update_bill_sponsorships(city_bill, set_added_at=False):
     3) If new sponsors aren't in the existing legislators (e.g. they're not longer in office),
        ignore them.
     """
-    existing_sponsorships = CitySponsorship.query.filter_by(
+    previous_bill_sponsorships = CitySponsorship.query.filter_by(
         bill_id=city_bill.bill_id
     ).all()
-    existing_sponsorships_by_city_council_id = {
+    previous_bill_sponsorships_by_city_id = {
         s.council_member.city_council_person_id: s
-        for s in existing_sponsorships
+        for s in previous_bill_sponsorships
     }
 
-    new_sponsorships = get_bill_sponsors(city_bill.city_bill_id)
+    updated_bill_sponsorships = get_bill_sponsors(city_bill.city_bill_id)
 
-    new_council_members = CouncilMember.query.filter(
+    council_members_for_updated_sponsorships = CouncilMember.query.filter(
         CouncilMember.city_council_person_id.in_(
-            [s["MatterSponsorNameId"] for s in new_sponsorships]
+            [s["MatterSponsorNameId"] for s in updated_bill_sponsorships]
         )
     ).all()
-    new_council_members_by_id = {
-        c.city_council_person_id: c for c in new_council_members
+    council_members_for_updated_sponsorships_by_city_id = {
+        c.city_council_person_id: c for c in council_members_for_updated_sponsorships
     }
 
     # THIS is super confusing, rewrite it and simplify
-    for sponsorship in new_sponsorships:
+    for sponsorship in updated_bill_sponsorships:
         council_member_person_id = sponsorship["MatterSponsorNameId"]
 
-        if council_member_person_id not in new_council_members_by_id:
+        if council_member_person_id not in council_members_for_updated_sponsorships_by_city_id:
             # Can't insert the sponsorship without its foreign key object
             # TODO: Instead, insert a stub for them or something
             logging.warning(
@@ -172,29 +172,27 @@ def update_bill_sponsorships(city_bill, set_added_at=False):
             )
             continue
 
-        internal_sponsorship = CitySponsorship(
-            bill_id=city_bill.bill_id,
-            council_member_id=new_council_members_by_id[
-                council_member_person_id
-            ].person_id,
-            sponsor_sequence=sponsorship["MatterSponsorSequence"],
-        )
-
-        if (
-            council_member_person_id
-            in existing_sponsorships_by_city_council_id
-        ):
+        sponsorship = previous_bill_sponsorships_by_city_id.get(council_member_person_id)
+        if sponsorship:
             # Remove sponsors from this set until we're left with only those
             # sponsorships that were rescinded recently.
-            del existing_sponsorships_by_city_council_id[
+            del previous_bill_sponsorships_by_city_id[
                 council_member_person_id
             ]
-        elif set_added_at:
-            internal_sponsorship.added_at = now()
+        else:
+            sponsorship = CitySponsorship(
+                bill_id=city_bill.bill_id,
+                council_member_id=council_members_for_updated_sponsorships_by_city_id[
+                    council_member_person_id
+                ].person_id,
+                sponsor_sequence=sponsorship["MatterSponsorSequence"],
+            )
+            if set_added_at:
+                sponsorship.added_at = now()
+            
+            db.session.add(sponsorship)
 
-        db.session.merge(internal_sponsorship)
-
-    for lost_sponsor in existing_sponsorships_by_city_council_id.values():
+    for lost_sponsor in previous_bill_sponsorships_by_city_id.values():
         db.session.delete(lost_sponsor)
 
 
