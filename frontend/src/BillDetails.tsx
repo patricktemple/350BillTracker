@@ -2,7 +2,7 @@ import React, { ReactElement, useState, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
 import Form from 'react-bootstrap/Form';
-import { Bill, BillSponsorship, BillAttachment, PowerHour } from './types';
+import { Bill, CitySponsorship, BillAttachment, PowerHour } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -45,7 +45,7 @@ export default function BillDetails(props: Props): ReactElement {
     bill.twitterSearchTerms.join(', ')
   );
 
-  const [sponsorships, setSponsorships] = useState<BillSponsorship[] | null>(
+  const [sponsorships, setSponsorships] = useState<CitySponsorship[] | null>(
     null
   );
   const [attachments, setAttachments] = useState<BillAttachment[] | null>(null);
@@ -79,7 +79,7 @@ export default function BillDetails(props: Props): ReactElement {
   }
 
   useMountEffect(() => {
-    apiFetch(`/api/saved-bills/${bill.id}/sponsorships`).then((response) => {
+    apiFetch(`/api/city-bills/${bill.id}/sponsorships`).then((response) => {
       setSponsorships(response);
     });
   });
@@ -145,10 +145,10 @@ export default function BillDetails(props: Props): ReactElement {
   }
 
   const positiveSponsors = sponsorships?.filter(
-    (s: BillSponsorship) => s.isSponsor
+    (s: CitySponsorship) => s.isSponsor
   );
   const negativeSponsors = sponsorships?.filter(
-    (s: BillSponsorship) => !s.isSponsor
+    (s: CitySponsorship) => !s.isSponsor
   );
 
   const powerHourHelpRef = useRef<HTMLSpanElement>(null);
@@ -165,7 +165,7 @@ export default function BillDetails(props: Props): ReactElement {
         <Col lg={2} style={{ fontWeight: 'bold' }}>
           File:
         </Col>
-        <Col>{bill.file}</Col>
+        <Col>{bill.cityBill!.file}</Col>
       </Row>
       <Row className="mb-2">
         <Col lg={2} style={{ fontWeight: 'bold' }}>
@@ -177,13 +177,13 @@ export default function BillDetails(props: Props): ReactElement {
         <Col lg={2} style={{ fontWeight: 'bold' }}>
           Description:
         </Col>
-        <Col>{bill.title}</Col>
+        <Col>{bill.cityBill!.title}</Col>
       </Row>
       <Row className="mb-2">
         <Col lg={2} style={{ fontWeight: 'bold' }}>
           Status:
         </Col>
-        <Col>{bill.status}</Col>
+        <Col>{bill.cityBill!.status}</Col>
       </Row>
       <Form.Group as={Row} className="mb-2">
         <Form.Label column lg={2} style={{ fontWeight: 'bold' }}>
@@ -379,12 +379,12 @@ export default function BillDetails(props: Props): ReactElement {
                   researching their stance on the bill.
                 </p>
                 <p className="mb-0">
-                  You can keywords for the bill here, comma-separated. Then
-                  all the <TwitterIcon style={{ width: '1rem' }} /> icons above, next to the 
-                  council members,
-                  will link to a search of that council member&apos;s Twitter
-                  history for those terms. (In the Power Hour spreadsheets, the{' '}
-                  <em>Relevant tweets</em> links do these same searches.)
+                  You can keywords for the bill here, comma-separated. Then all
+                  the <TwitterIcon style={{ width: '1rem' }} /> icons above,
+                  next to the council members, will link to a search of that
+                  council member&apos;s Twitter history for those terms. (In the
+                  Power Hour spreadsheets, the <em>Relevant tweets</em> links do
+                  these same searches.)
                 </p>
               </Popover.Body>
             </Popover>

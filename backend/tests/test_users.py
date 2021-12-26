@@ -66,7 +66,7 @@ def test_delete_user_cant_be_deleted(client):
 
 
 def test_get_viewer(client, user_id, user_email):
-    response = client.get(f"/api/viewer")
+    response = client.get("/api/viewer")
     assert_response(
         response,
         200,
@@ -81,7 +81,7 @@ def test_get_viewer(client, user_id, user_email):
 
 
 def test_get_viewer_requires_auth(unauthenticated_client, user_id, user_email):
-    response = unauthenticated_client.get(f"/api/viewer")
+    response = unauthenticated_client.get("/api/viewer")
     assert response.status_code == 401
 
 
@@ -90,7 +90,7 @@ def test_update_viewer(client, user_id):
     assert not user.send_bill_update_notifications
 
     response = client.put(
-        f"/api/viewer", data={"sendBillUpdateNotifications": True}
+        "/api/viewer", data={"sendBillUpdateNotifications": True}
     )
     assert response.status_code == 200
 

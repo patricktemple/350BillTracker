@@ -1,18 +1,18 @@
 from marshmallow import fields
 
 from ..bill.schema import BillSchema
-from ..legislator.schema import LegislatorSchema
+from ..person.schema import PersonSchema
 from ..schema import CamelCaseSchema
 
 
-class SingleMemberSponsorshipsSchema(CamelCaseSchema):
-    legislator_id = fields.Integer(required=True)
+class CouncilMemberSponsorshipSchema(CamelCaseSchema):
+    council_member_id = fields.UUID(required=True)
     bill = fields.Nested(BillSchema)
 
 
 # TODO: Separate out positive and negative sponsors into different types, this gets ugly
-class BillSponsorshipSchema(CamelCaseSchema):
-    bill_id = fields.Integer(required=True)
-    legislator = fields.Nested(LegislatorSchema)
+class CityBillSponsorshipSchema(CamelCaseSchema):
+    bill_id = fields.UUID(required=True)
+    person = fields.Nested(PersonSchema)
     is_sponsor = fields.Boolean()
     sponsor_sequence = fields.Integer()

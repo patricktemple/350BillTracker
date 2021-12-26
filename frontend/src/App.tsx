@@ -1,7 +1,7 @@
 import './style/App.scss';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import BillsPage from './BillsPage';
-import LegislatorsPage from './LegislatorsPage';
+import PersonsPage from './PersonsPage';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -77,10 +77,7 @@ function AppContent() {
             <Redirect to="/saved-bills" />
           </Route>
           <Route path="/saved-bills/:billId?" exact component={BillsPage} />
-          <Route
-            path="/council-members/:legislatorId?"
-            component={LegislatorsPage}
-          />
+          <Route path="/council-members/:personId?" component={PersonsPage} />
           <Route path="/settings" component={SettingsPage} />
         </main>
       </div>

@@ -2,7 +2,7 @@ import React, { useState, ReactElement } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { Legislator, SingleMemberSponsorship, Staffer, Uuid } from './types';
+import { Person, SingleMemberSponsorship, Staffer, Uuid } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Stack from 'react-bootstrap/Stack';
 import { Link } from 'react-router-dom';
@@ -13,7 +13,7 @@ import Button from 'react-bootstrap/Button';
 import AddStafferModal from './AddStafferModal';
 
 interface Props {
-  legislator: Legislator;
+  person: Person;
 }
 
 interface FormData {
@@ -50,8 +50,8 @@ function formatStaffer(staffer: Staffer) {
   );
 }
 
-export default function LegislatorDetailsPanel(props: Props) {
-  const legislator = props.legislator;
+export default function PersonDetailsPanel(props: Props) {
+  const person = props.person;
 
   const [sponsorships, setSponsorships] = useState<
     SingleMemberSponsorship[] | null
@@ -61,19 +61,19 @@ export default function LegislatorDetailsPanel(props: Props) {
     useState<boolean>(false);
 
   const [formData, setFormData, saveStatus] = useAutosavingFormData<FormData>(
-    '/api/legislators/' + legislator.id,
-    { notes: legislator.notes }
+    '/api/persons/' + person.id,
+    { notes: person.notes }
   );
   const apiFetch = useApiFetch();
 
   function loadStaffers() {
-    apiFetch(`/api/legislators/${legislator.id}/staffers`).then((response) => {
+    apiFetch(`/api/persons/${person.id}/staffers`).then((response) => {
       setStaffers(response);
     });
   }
 
   useMountEffect(() => {
-    apiFetch(`/api/legislators/${legislator.id}/sponsorships`).then(
+    apiFetch(`/api/council-members/${person.id}/sponsorships`).then(
       (response) => {
         setSponsorships(response);
       }
@@ -93,7 +93,7 @@ export default function LegislatorDetailsPanel(props: Props) {
     twitter: string
   ) {
     setAddStafferModalVisible(false);
-    apiFetch(`/api/legislators/${legislator.id}/staffers`, {
+    apiFetch(`/api/persons/${person.id}/staffers`, {
       method: 'POST',
       body: {
         name: name || null,
@@ -110,7 +110,7 @@ export default function LegislatorDetailsPanel(props: Props) {
   function handleRemoveStaffer(e: any, id: Uuid) {
     e.preventDefault();
     // TODO: Show a confirmation?
-    apiFetch(`/api/legislators/-/staffers/` + id, {
+    apiFetch(`/api/persons/-/staffers/` + id, {
       method: 'DELETE'
     }).then((response) => {
       loadStaffers();
@@ -123,39 +123,39 @@ export default function LegislatorDetailsPanel(props: Props) {
         <Col lg={2} style={{ fontWeight: 'bold' }}>
           Name:
         </Col>
-        <Col>{legislator.name}</Col>
+        <Col>{person.name}</Col>
       </Row>
       <Row className="mb-2">
         <Col lg={2} style={{ fontWeight: 'bold' }}>
           Email:
         </Col>
-        <Col>{legislator.email}</Col>
+        <Col>{person.email}</Col>
       </Row>
       <Row className="mb-2">
         <Col lg={2} style={{ fontWeight: 'bold' }}>
           District phone:
         </Col>
-        <Col>{legislator.districtPhone}</Col>
+        <Col>{person.phone}</Col>
       </Row>
       <Row className="mb-2">
         <Col lg={2} style={{ fontWeight: 'bold' }}>
           Legislative phone:
         </Col>
-        <Col>{legislator.legislativePhone}</Col>
+        <Col>{person.councilMember!.legislativePhone}</Col>
       </Row>
       <Row className="mb-2">
         <Col lg={2} style={{ fontWeight: 'bold' }}>
           Party:
         </Col>
-        <Col>{legislator.party}</Col>
+        <Col>{person.party}</Col>
       </Row>
       <Row className="mb-2">
         <Col lg={2} style={{ fontWeight: 'bold' }}>
           Website:
         </Col>
         <Col>
-          {legislator.website && (
-            <a href={legislator.website} target="website">
+          {person.councilMember!.website && (
+            <a href={person.councilMember!.website} target="website">
               Visit website
             </a>
           )}
@@ -166,12 +166,9 @@ export default function LegislatorDetailsPanel(props: Props) {
           Twitter:
         </Col>
         <Col>
-          {legislator.twitter && (
-            <a
-              href={`https://twitter.com/${legislator.twitter}`}
-              target="twitter"
-            >
-              @{legislator.twitter}
+          {person.twitter && (
+            <a href={`https://twitter.com/${person.twitter}`} target="twitter">
+              @{person.twitter}
             </a>
           )}
         </Col>
@@ -222,7 +219,8 @@ export default function LegislatorDetailsPanel(props: Props) {
             <Stack direction="vertical">
               {sponsorships.map((s) => (
                 <Link to={'/saved-bills/' + s.bill.id} key={s.bill.id}>
-                  {s.bill.file}: <em>{s.bill.nickname || s.bill.name}</em>
+                  {s.bill.cityBill!.file}:{' '}
+                  <em>{s.bill.nickname || s.bill.name}</em>
                 </Link>
               ))}
             </Stack>

@@ -10,25 +10,25 @@ interface Props {
 
 function BillListRow(props: {
   bill: Bill;
-  handleTrackBill: (id: number) => void;
+  handleTrackBill: (cityBillId: number) => void;
 }) {
   const [trackClicked, setTrackClicked] = useState<boolean>(false);
 
   const { bill } = props;
   function handleTrackBill() {
     setTrackClicked(true);
-    props.handleTrackBill(bill.id);
+    props.handleTrackBill(bill.cityBill!.cityBillId);
   }
 
   // Lazy way to make this UI respond to click, without better global state.
   // Assumes that tracking API call actually will work.
   return (
-    <tr key={bill.id}>
-      <td>{bill.file}</td>
+    <tr key={bill.cityBill!.cityBillId}>
+      <td>{bill.cityBill!.file}</td>
       <td>{bill.name}</td>
-      <td>{bill.title}</td>
-      <td>{bill.status}</td>
-      <td>{bill.body}</td>
+      <td>{bill.cityBill!.title}</td>
+      <td>{bill.cityBill!.status}</td>
+      <td>{bill.cityBill!.councilBody}</td>
       <td>
         {bill.tracked || trackClicked ? (
           <Button disabled size="sm">

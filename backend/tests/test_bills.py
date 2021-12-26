@@ -1,11 +1,11 @@
 import json
+from uuid import uuid4
 
 import responses
 
-from src import app
-from src.bill.models import DEFAULT_TWITTER_SEARCH_TERMS, Bill
-from src.legislator.models import Legislator
+from src.bill.models import DEFAULT_TWITTER_SEARCH_TERMS, Bill, CityBill
 from src.models import db
+from src.person.models import CouncilMember, Person
 from src.utils import now
 
 from .utils import assert_response
@@ -20,6 +20,7 @@ def create_fake_matter(matter_id):
         "MatterBodyName": "fake matter body",
         "MatterIntroDate": "2021-01-06T00:00:00",
         "MatterStatusName": "fake matter status",
+        "MatterVersion": "A",
     }
 
 
@@ -30,15 +31,19 @@ def test_get_bills_unauthorized(unauthenticated_client):
 
 def test_get_saved_bills(client):
     bill = Bill(
-        id=1,
         name="name",
-        file="file",
-        title="title",
-        intro_date=now(),
         nickname="ban gas",
-        status="Enacted",
         notes="Good job everyone",
-        body="Committee on environment",
+        type=Bill.BillType.CITY,
+    )
+    bill.city_bill = CityBill(
+        file="file",
+        city_bill_id=1,
+        council_body="Committee on environment",
+        status="Enacted",
+        intro_date=now(),
+        title="title",
+        active_version="A",
     )
     db.session.add(bill)
     db.session.commit()
@@ -49,24 +54,35 @@ def test_get_saved_bills(client):
         200,
         [
             {
-                "body": "Committee on environment",
-                "file": "file",
-                "id": 1,
+                "id": str(bill.id),
+                "type": "CITY",
+                "tracked": True,
+                "cityBill": {
+                    "cityBillId": 1,
+                    "councilBody": "Committee on environment",
+                    "file": "file",
+                    "title": "title",
+                    "status": "Enacted",
+                },
                 "name": "name",
                 "nickname": "ban gas",
                 "notes": "Good job everyone",
-                "status": "Enacted",
-                "title": "title",
-                "tracked": True,
                 "twitterSearchTerms": DEFAULT_TWITTER_SEARCH_TERMS,
+                "stateBill": None,
             }
         ],
     )
 
 
 def test_delete_bill(client):
-    bill = Bill(
-        id=1, name="name", file="file", title="title", intro_date=now()
+    bill = Bill(name="name", type=Bill.BillType.CITY)
+    bill.city_bill = CityBill(
+        city_bill_id=1,
+        file="file",
+        title="title",
+        status="Enacted",
+        intro_date=now(),
+        active_version="A",
     )
     db.session.add(bill)
     db.session.commit()
@@ -75,7 +91,7 @@ def test_delete_bill(client):
     assert response.status_code == 200
     assert len(json.loads(response.data)) == 1
 
-    response = client.delete("/api/saved-bills/1")
+    response = client.delete(f"/api/saved-bills/{bill.id}")
     assert response.status_code == 200
 
     response = client.get("/api/saved-bills")
@@ -83,14 +99,21 @@ def test_delete_bill(client):
 
 
 def test_update_bill(client):
-    bill = Bill(
-        id=1, name="name", file="file", title="title", intro_date=now()
+    bill_id = uuid4()
+    bill = Bill(id=bill_id, name="name", type=Bill.BillType.CITY)
+    bill.city_bill = CityBill(
+        city_bill_id=1,
+        file="file",
+        title="title",
+        status="Enacted",
+        intro_date=now(),
+        active_version="A",
     )
     db.session.add(bill)
     db.session.commit()
 
     response = client.put(
-        "/api/saved-bills/1",
+        f"/api/saved-bills/{bill.id}",
         data={
             "notes": "good bill",
             "nickname": "skip the stuff",
@@ -105,14 +128,19 @@ def test_update_bill(client):
         200,
         [
             {
-                "body": None,
-                "file": "file",
-                "id": 1,
+                "id": str(bill_id),
+                "type": "CITY",
+                "stateBill": None,
+                "cityBill": {
+                    "cityBillId": 1,
+                    "councilBody": None,
+                    "file": "file",
+                    "status": "Enacted",
+                    "title": "title",
+                },
                 "name": "name",
                 "nickname": "skip the stuff",
                 "notes": "good bill",
-                "status": None,
-                "title": "title",
                 "tracked": True,
                 "twitterSearchTerms": ["oil"],
             }
@@ -131,40 +159,59 @@ def test_save_bill(client):
     responses.add(
         responses.GET,
         url="https://webapi.legistar.com/v1/nyc/matters/123/sponsors?token=fake_token",
-        json=[{"MatterSponsorNameId": 99, "MatterSponsorSequence": 0}],
+        json=[
+            {
+                "MatterSponsorNameId": 99,
+                "MatterSponsorSequence": 0,
+                "MatterSponsorMatterVersion": "A",
+            }
+        ],
     )
 
-    non_sponsor = Legislator(id=88, name="Non sponsor")
+    non_sponsor = Person(
+        name="Non sponsor", type=Person.PersonType.COUNCIL_MEMBER
+    )
+    non_sponsor.council_member = CouncilMember(city_council_person_id=88)
     db.session.add(non_sponsor)
 
-    sponsor = Legislator(id=99, name="Sponsor")
+    sponsor = Person(name="Sponsor", type=Person.PersonType.COUNCIL_MEMBER)
+    sponsor.council_member = CouncilMember(city_council_person_id=99)
     db.session.add(sponsor)
 
     response = client.post(
         "/api/saved-bills",
-        data={"id": "123"},
+        data={"cityBillId": 123},
     )
     assert response.status_code == 200
 
     bill = Bill.query.one()
-    assert bill.id == 123
+    assert bill.type == Bill.BillType.CITY
+    assert bill.city_bill.city_bill_id == 123
 
-    assert len(bill.sponsorships) == 1
-    assert bill.sponsorships[0].legislator.name == "Sponsor"
-    assert not bill.sponsorships[0].added_at
+    assert len(bill.city_bill.sponsorships) == 1
+    assert (
+        bill.city_bill.sponsorships[0].council_member.person.name == "Sponsor"
+    )
+    assert not bill.city_bill.sponsorships[0].added_at
 
 
 @responses.activate
 def test_save_bill__already_exists(client):
-    bill = Bill(
-        id=1, name="name", file="file", title="title", intro_date=now()
+    bill = Bill(name="name", type=Bill.BillType.CITY)
+    bill.city_bill = CityBill(
+        city_bill_id=1,
+        file="file",
+        title="title",
+        intro_date=now(),
+        status="Committee",
+        active_version="A",
     )
     db.session.add(bill)
     db.session.commit()
 
     response = client.post(
         "/api/saved-bills",
-        data={"id": "1"},
+        data={"cityBillId": 1},
     )
     assert response.status_code == 409
 
@@ -180,17 +227,25 @@ def test_lookup_bill_not_tracked(client):
     response = client.get(
         "/api/search-bills?file=1234",
     )
-    # assert more fields?
     assert response.status_code == 200
     response_data = json.loads(response.data)[0]
-    assert response_data["id"] == 1
+    assert response_data["type"] == "CITY"
+    assert response_data["cityBill"]["cityBillId"] == 1
     assert response_data["tracked"] == False
+
+    # TODO: Consider switching these tests over to snapshots to capture more info?
 
 
 @responses.activate
 def test_lookup_bill_already_tracked(client):
-    bill = Bill(
-        id=1, file="file", name="name", title="title", intro_date=now()
+    bill = Bill(name="name", type=Bill.BillType.CITY)
+    bill.city_bill = CityBill(
+        city_bill_id=1,
+        file="file",
+        title="title",
+        intro_date=now(),
+        status="Enacted",
+        active_version="A",
     )
     db.session.add(bill)
     db.session.commit()
@@ -207,5 +262,5 @@ def test_lookup_bill_already_tracked(client):
     # assert more fields?
     assert response.status_code == 200
     response_data = json.loads(response.data)[0]
-    assert response_data["id"] == 1
+    assert response_data["cityBill"]["cityBillId"] == 1
     assert response_data["tracked"] == True

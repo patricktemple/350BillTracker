@@ -1,12 +1,12 @@
 import React from 'react';
-import { BillSponsorship } from './types';
+import { CitySponsorship } from './types';
 import { Link } from 'react-router-dom';
 import Stack from 'react-bootstrap/Stack';
 
 import { ReactComponent as TwitterIcon } from './assets/twitter.svg';
 
 interface Props {
-  sponsorships: BillSponsorship[];
+  sponsorships: CitySponsorship[];
   twitterSearchTerms: string[];
 }
 
@@ -26,17 +26,15 @@ export default function BillSponsorList(props: Props) {
   return (
     <Stack direction="vertical">
       {props.sponsorships.map((s) => (
-        <div key={s.legislator.id}>
-          <Link to={'/council-members/' + s.legislator.id}>
-            {s.legislator.name}
-          </Link>
+        <div key={s.person.id}>
+          <Link to={'/council-members/' + s.person.id}>{s.person.name}</Link>
           {s.sponsorSequence == 0 && ' (lead)'}{' '}
-          {s.legislator.twitter && (
+          {s.person.twitter && (
             <span style={{ marginLeft: '0.5rem' }}>
               <a
                 href={getTwitterSearchUrl(
                   props.twitterSearchTerms,
-                  s.legislator.twitter
+                  s.person.twitter
                 )}
                 target="_blank"
                 rel="noreferrer"

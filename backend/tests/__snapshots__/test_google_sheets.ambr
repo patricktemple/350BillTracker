@@ -346,7 +346,7 @@
                     'wrapStrategy': 'WRAP',
                   },
                   'userEnteredValue': <class 'dict'> {
-                    'stringValue': 'Sponsor',
+                    'stringValue': 'Sponsor (lead)',
                   },
                 },
                 <class 'dict'> {
@@ -818,7 +818,7 @@
                     'wrapStrategy': 'WRAP',
                   },
                   'userEnteredValue': <class 'dict'> {
-                    'stringValue': 'Brad Lander',
+                    'stringValue': 'Brad Lander (lead)',
                   },
                 },
                 <class 'dict'> {

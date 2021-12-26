@@ -6,8 +6,8 @@ from botocore.exceptions import ClientError
 from flask import render_template
 from sqlalchemy.orm import selectinload
 
-from .bill.views import Bill
-from .legislator.models import Legislator
+from .bill.views import CityBill
+from .person.models import Person
 from .ses import send_email
 from .user.models import User
 
@@ -16,7 +16,7 @@ from .user.models import User
 class BillDiff:
     """Utility class to track a bill's state before and after a cron run."""
 
-    bill: Bill = None
+    city_bill: CityBill = None
     old_status: str = None
     added_sponsor_names: List[str] = None
     removed_sponsor_names: List[str] = None
@@ -34,13 +34,15 @@ class BillSnapshot:
 def snapshot_bills():
     """Snapshots the state of all bills. Used to calculate the diff produced by
     a cron job run, so that we can send out email notifications of bill status changes."""
-    bills = Bill.query.options(selectinload(Bill.sponsorships)).all()
+    city_bills = CityBill.query.options(
+        selectinload(CityBill.sponsorships)
+    ).all()
 
     snapshots_by_bill_id = {}
-    for bill in bills:
-        sponsor_ids = [s.legislator_id for s in bill.sponsorships]
-        snapshot = BillSnapshot(bill.status, sponsor_ids)
-        snapshots_by_bill_id[bill.id] = snapshot
+    for city_bill in city_bills:
+        sponsor_ids = [s.council_member_id for s in city_bill.sponsorships]
+        snapshot = BillSnapshot(city_bill.status, sponsor_ids)
+        snapshots_by_bill_id[city_bill.bill_id] = snapshot
 
     return snapshots_by_bill_id
 
@@ -52,7 +54,7 @@ def _get_sponsor_subject_string(sponsors):
     return f"sponsor {sponsors[0]}"
 
 
-def _get_bill_update_subject_line(bill_diffs):
+def _get_bill_update_subject_line(bill_diffs: List[BillDiff]):
     """Get a subject line for the email describing the bill updates. Assumes the diff list
     and the diffs themselves are non-empty."""
     if len(bill_diffs) > 1:
@@ -61,34 +63,34 @@ def _get_bill_update_subject_line(bill_diffs):
     diff = bill_diffs[0]
 
     # TODO: Update to python 3.10 and use structural pattern matching?
-    file = diff.bill.file
+    file = diff.city_bill.file
     if not diff.added_sponsor_names and not diff.removed_sponsor_names:
-        return f"{file}'s status changed to {diff.bill.status}"
+        return f"{file}'s status changed to {diff.city_bill.status}"
 
-    if diff.old_status == diff.bill.status:
+    if diff.old_status == diff.city_bill.status:
         if not diff.added_sponsor_names:
             return f"{file} lost {_get_sponsor_subject_string(diff.removed_sponsor_names)}"
         if not diff.removed_sponsor_names:
             return f"{file} gained {_get_sponsor_subject_string(diff.added_sponsor_names)}"
         return f"{file} gained and lost sponsors"
 
-    return f"{diff.bill.file} was updated"
+    return f"{diff.city_bill.file} was updated"
 
 
-def _convert_bill_diff_to_template_variables(diff):
+def _convert_bill_diff_to_template_variables(diff: BillDiff):
     """Converts the intermediate BillDiff into the variables used to render
     the email template."""
-    status_changed = diff.bill.status != diff.old_status
+    status_changed = diff.city_bill.status != diff.old_status
     if status_changed:
-        status_text = f"Status: {diff.old_status} --> {diff.bill.status}"
+        status_text = f"Status: {diff.old_status} --> {diff.city_bill.status}"
         status_color = "blue"
     else:
-        status_text = f"Status: {diff.bill.status} (unchanged)"
+        status_text = f"Status: {diff.city_bill.status} (unchanged)"
         status_color = "black"
 
     sponsors_changed = diff.added_sponsor_names or diff.removed_sponsor_names
     if sponsors_changed:
-        new_sponsor_count = len(diff.bill.sponsorships)
+        new_sponsor_count = len(diff.city_bill.sponsorships)
         old_sponsor_count = (
             new_sponsor_count
             - len(diff.added_sponsor_names or [])
@@ -109,12 +111,14 @@ def _convert_bill_diff_to_template_variables(diff):
 
         sponsor_text = f"{old_sponsor_count} sponsors --> {new_sponsor_count} sponsors ({', '.join(explanations)})"
     else:
-        sponsor_text = f"{len(diff.bill.sponsorships)} sponsors (unchanged)"
+        sponsor_text = (
+            f"{len(diff.city_bill.sponsorships)} sponsors (unchanged)"
+        )
         sponsor_color = "black"
 
     return {
-        "file": diff.bill.file,
-        "display_name": diff.bill.display_name,
+        "file": diff.city_bill.file,
+        "display_name": diff.city_bill.bill.display_name,
         "status_text": status_text,
         "status_color": status_color,
         "sponsor_text": sponsor_text,
@@ -150,37 +154,37 @@ def _send_bill_update_emails(bill_diffs):
 def _calculate_bill_diffs(snapshots_by_bill_id):
     """Looks at the before and after states of all bills, and collapses this info
     info a form that's useful for further processing when building emails."""
-    bills = Bill.query.options(selectinload("sponsorships.legislator")).all()
+    city_bills = CityBill.query.all()
 
     bill_diffs = []
-    for bill in bills:
-        snapshot = snapshots_by_bill_id[bill.id]
+    for city_bill in city_bills:
+        snapshot = snapshots_by_bill_id[city_bill.bill_id]
 
-        added_sponsors = []
+        added_sponsor_names = []
         prior_sponsor_ids = set(snapshot.sponsor_ids)
-        for sponsorship in bill.sponsorships:
-            if sponsorship.legislator_id not in prior_sponsor_ids:
-                added_sponsors.append(sponsorship.legislator)
+        for sponsorship in city_bill.sponsorships:
+            if sponsorship.council_member_id not in prior_sponsor_ids:
+                added_sponsor_names.append(sponsorship.person.name)
             else:
-                prior_sponsor_ids.remove(sponsorship.legislator_id)
+                prior_sponsor_ids.remove(sponsorship.council_member_id)
 
         if prior_sponsor_ids:
-            removed_sponsors = Legislator.query.filter(
-                Legislator.id.in_(prior_sponsor_ids)
+            removed_sponsors = Person.query.filter(
+                Person.id.in_(prior_sponsor_ids)
             ).all()
         else:
             removed_sponsors = []
 
         if (
             removed_sponsors
-            or added_sponsors
-            or bill.status != snapshot.status
+            or added_sponsor_names
+            or city_bill.status != snapshot.status
         ):
             diff = BillDiff()
-            diff.bill = bill
+            diff.city_bill = city_bill
             diff.old_status = snapshot.status
-            diff.added_sponsor_names = [s.name for s in added_sponsors]
-            diff.removed_sponsor_names = [s.name for s in removed_sponsors]
+            diff.added_sponsor_names = added_sponsor_names
+            diff.removed_sponsor_names = [p.name for p in removed_sponsors]
             bill_diffs.append(diff)
 
     return bill_diffs

@@ -1,9 +1,10 @@
-from datetime import date, datetime, timezone
+from datetime import datetime, timezone
 
 import requests
 
 from src.settings import CITY_COUNCIL_API_TOKEN
 
+from .bill.models import Bill
 from .utils import now
 
 # See http://webapi.legistar.com/Help for an overview of resources.
@@ -36,32 +37,23 @@ def _convert_matter_to_bill(matter):
     """Converts the City Council's representation of a bill, called Matters,
     into our own format."""
     return {
-        "id": matter["MatterId"],
-        "file": matter["MatterFile"],
+        "type": Bill.BillType.CITY,
         "name": matter["MatterName"],
-        "title": matter["MatterTitle"],
-        "body": matter["MatterBodyName"],
-        "intro_date": datetime.fromisoformat(
-            matter["MatterIntroDate"]
-        ).replace(tzinfo=timezone.utc),
-        "status": matter["MatterStatusName"],
+        "city_bill": {
+            "file": matter["MatterFile"],
+            "council_body": matter["MatterBodyName"],
+            "title": matter["MatterTitle"],
+            "city_bill_id": matter["MatterId"],
+            "intro_date": datetime.fromisoformat(
+                matter["MatterIntroDate"]
+            ).replace(tzinfo=timezone.utc),
+            "status": matter["MatterStatusName"],
+            "active_version": matter["MatterVersion"],
+        },
     }
 
 
-# http://webapi.legistar.com/Help/Api/GET-v1-Client-Matters
-def get_recent_bills():
-    matters = council_get(
-        "matters",
-        params=make_filter_param(
-            date_filter("MatterIntroDate", "ge", date(2021, 1, 1)),
-            eq_filter("MatterTypeName", "Introduction"),
-        ),
-    )
-    return [_convert_matter_to_bill(m) for m in matters]
-
-
 def lookup_bills(file_name):
-    # TODO: Escape the name
     matters = council_get(
         "matters",
         params=make_filter_param(
@@ -80,10 +72,18 @@ def lookup_bill(matter_id):
     return _convert_matter_to_bill(matter)
 
 
-def get_bill_sponsors(matter_id):
-    return council_get(
+def get_bill_sponsors(matter_id, active_version):
+    sponsors = council_get(
         f"matters/{matter_id}/sponsors",
     )
+
+    # The sponsorships for various amendments will appear in a flat list, and we only care
+    # about the active version.
+    return [
+        s
+        for s in sponsors
+        if s["MatterSponsorMatterVersion"] == active_version
+    ]
 
 
 def get_person(person_id):

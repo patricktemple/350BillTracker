@@ -1,4 +1,5 @@
 from flask import render_template
+from werkzeug import exceptions
 
 from .app import app
 
@@ -6,6 +7,11 @@ from .app import app
 @app.route("/healthz", methods=["GET"])
 def healthz():
     return "Healthy!"
+
+
+@app.route("/api/<path:path>")
+def api_not_found(path):
+    raise exceptions.NotFound()
 
 
 @app.route("/", defaults={"path": ""})

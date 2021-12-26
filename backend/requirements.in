@@ -17,3 +17,4 @@ pyjwt[crypto]
 boto3
 freezegun
 syrupy
+marshmallow-enum

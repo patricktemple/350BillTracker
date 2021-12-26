@@ -1,9 +1,10 @@
 from datetime import datetime, timezone
+from uuid import uuid4
 
 import responses
 from freezegun import freeze_time
 
-from src.bill.models import Bill
+from src.bill.models import Bill, CityBill
 from src.council_sync import (
     add_council_members,
     fill_council_person_data_from_api,
@@ -11,19 +12,22 @@ from src.council_sync import (
     sync_bill_updates,
     update_all_sponsorships,
 )
-from src.legislator.models import Legislator
 from src.models import db
-from src.sponsorship.models import BillSponsorship
-from src.static_data import STATIC_DATA_BY_LEGISLATOR_ID
+from src.person.models import CouncilMember, Person
+from src.sponsorship.models import CitySponsorship
+from src.static_data import COUNCIL_DATA_BY_LEGISLATOR_ID
 
 
 @responses.activate
 @freeze_time("2021-10-12")
 def test_add_council_members():
-    existing_legislator = Legislator(
-        id=1, name="Corey Johnson", term_start="2000-01-01"
+    existing_person = Person(
+        name="Corey Johnson", type=Person.PersonType.COUNCIL_MEMBER
     )
-    db.session.add(existing_legislator)
+    existing_person.council_member = CouncilMember(
+        term_start="2000-01-01", city_council_person_id=1
+    )
+    db.session.add(existing_person)
 
     responses.add(
         responses.GET,
@@ -46,28 +50,38 @@ def test_add_council_members():
 
     add_council_members()
 
-    assert Legislator.query.count() == 2
+    assert Person.query.count() == 2
+    assert CouncilMember.query.count() == 2
 
-    corey_johnson = Legislator.query.get(1)
-    assert corey_johnson.name == "Corey Johnson the 2nd"
+    corey_johnson = CouncilMember.query.filter_by(
+        city_council_person_id=1
+    ).one()
+    assert corey_johnson.person.name == "Corey Johnson the 2nd"
     assert corey_johnson.term_start == datetime(
         2021, 1, 1, tzinfo=timezone.utc
     )
     assert corey_johnson.term_end == datetime(2022, 1, 1, tzinfo=timezone.utc)
 
-    brad_lander = Legislator.query.get(2)
-    assert brad_lander.name == "Brad Lander"
+    brad_lander = CouncilMember.query.filter_by(city_council_person_id=2).one()
+    assert brad_lander.person.name == "Brad Lander"
 
 
 @responses.activate
 def test_fill_council_person_data():
-    legislator_to_update = Legislator(id=1, name="Corey Johnson")
-    db.session.add(legislator_to_update)
-
-    legislator_without_new_data = Legislator(
-        id=2, name="Person who was impeached and removed"
+    person_to_update = Person(
+        name="Corey Johnson", type=Person.PersonType.COUNCIL_MEMBER
     )
-    db.session.add(legislator_without_new_data)
+    person_to_update.council_member = CouncilMember(city_council_person_id=1)
+    db.session.add(person_to_update)
+
+    person_without_new_data = Person(
+        name="Person who was impeached and removed",
+        type=Person.PersonType.COUNCIL_MEMBER,
+    )
+    person_without_new_data.council_member = CouncilMember(
+        city_council_person_id=2
+    )
+    db.session.add(person_without_new_data)
 
     responses.add(
         responses.GET,
@@ -90,48 +104,62 @@ def test_fill_council_person_data():
 
     fill_council_person_data_from_api()
 
-    assert Legislator.query.count() == 2
-    corey = Legislator.query.get(1)
-    assert corey.email == "corey@council.nyc.gov"
-    assert corey.district_phone == "555-111-1111"
+    assert Person.query.count() == 2
+    assert CouncilMember.query.count() == 2
+
+    corey = CouncilMember.query.filter_by(city_council_person_id=1).one()
+    assert corey.person.email == "corey@council.nyc.gov"
+    assert corey.person.phone == "555-111-1111"
     assert corey.legislative_phone == "888-888-8888"
     assert corey.website == "https://www.example.com/"
 
 
 def test_fill_council_person_static_data():
-    corey_static = STATIC_DATA_BY_LEGISLATOR_ID[7631]
-    legislator_to_update = Legislator(
-        id=7631,
+    corey_static = COUNCIL_DATA_BY_LEGISLATOR_ID[7631]
+    person_to_update = Person(
         name="Corey Johnson badly formatted name----",
         email="existing-email@council.nyc.gov",
+        type=Person.PersonType.COUNCIL_MEMBER,
     )
-    db.session.add(legislator_to_update)
+    person_to_update.council_member = CouncilMember(
+        city_council_person_id=7631
+    )
+    db.session.add(person_to_update)
 
-    legislator_without_static_data = Legislator(
-        id=2, name="Person without static data"
+    person_without_static_data = Person(
+        name="Person without static data",
+        type=Person.PersonType.COUNCIL_MEMBER,
     )
-    db.session.add(legislator_without_static_data)
+    person_without_static_data.council_member = CouncilMember(
+        city_council_person_id=2,
+    )
+    db.session.add(person_without_static_data)
 
     fill_council_person_static_data()
 
-    corey = Legislator.query.get(7631)
-    assert corey.name == corey_static["name"]
-    assert corey.twitter == corey_static["twitter"]
-    assert corey.party == corey_static["party"]
+    corey = CouncilMember.query.filter_by(city_council_person_id=7631).one()
+
+    assert corey.person.name == corey_static["name"]
+    assert corey.person.twitter == corey_static["twitter"]
+    assert corey.person.party == corey_static["party"]
     assert corey.borough == corey_static["borough"]
-    assert corey.email == "existing-email@council.nyc.gov"
+    assert corey.person.email == "existing-email@council.nyc.gov"
 
 
 @responses.activate
 def test_sync_bill_updates():
     bill = Bill(
-        id=1,
-        file="Intro 200",
         name="Electric school buses",
+        nickname="Shouldn't change",
+        type=Bill.BillType.CITY,
+    )
+    bill.city_bill = CityBill(
+        city_bill_id=1,
+        file="Intro 200",
         title="Bill title",
         status="Committee",
         intro_date="2000-1-1",
-        nickname="Shouldn't change",
+        active_version="A",
     )
     db.session.add(bill)
 
@@ -146,6 +174,7 @@ def test_sync_bill_updates():
             "MatterBodyName": "New body",
             "MatterIntroDate": "2021-01-01T00:00:00",
             "MatterStatusName": "New status",
+            "MatterVersion": "New version",
         },
     )
 
@@ -153,47 +182,71 @@ def test_sync_bill_updates():
 
     result = Bill.query.one()
     assert result.name == "New name"
-    assert result.title == "New title"
-    assert result.file == "New file"
-    assert result.body == "New body"
-    assert result.status == "New status"
-    assert result.intro_date == datetime(2021, 1, 1, tzinfo=timezone.utc)
+    assert result.city_bill.title == "New title"
+    assert result.city_bill.file == "New file"
+    assert result.city_bill.council_body == "New body"
+    assert result.city_bill.status == "New status"
+    assert result.city_bill.intro_date == datetime(
+        2021, 1, 1, tzinfo=timezone.utc
+    )
     assert result.nickname == "Shouldn't change"
+    assert result.city_bill.active_version == "New version"
 
 
 @responses.activate
 @freeze_time("2021-1-1")
 def test_update_sponsorships__new_sponsor():
-    bill = Bill(
-        id=1,
+    bill = Bill(name="Electric school buses", type=Bill.BillType.CITY)
+    bill.city_bill = CityBill(
         file="Intro 200",
-        name="Electric school buses",
+        city_bill_id=1,
         title="Bill title",
         status="Committee",
         intro_date="2000-1-1",
+        active_version="A",
     )
     db.session.add(bill)
-    legislator = Legislator(id=1, name="Patrick")
-    db.session.add(legislator)
+
+    person = Person(name="Patrick", type=Person.PersonType.COUNCIL_MEMBER)
+    person.council_member = CouncilMember(city_council_person_id=1)
+    db.session.add(person)
+
+    wrong_version_person = Person(
+        name="Jim", type=Person.PersonType.COUNCIL_MEMBER
+    )
+    wrong_version_person.council_member = CouncilMember(
+        city_council_person_id=2
+    )
+    db.session.add(wrong_version_person)
 
     responses.add(
         responses.GET,
         url="https://webapi.legistar.com/v1/nyc/matters/1/sponsors?token=fake_token",
         json=[
-            {"MatterSponsorNameId": 1, "MatterSponsorSequence": 0},
+            {
+                "MatterSponsorNameId": 1,
+                "MatterSponsorSequence": 0,
+                "MatterSponsorMatterVersion": "A",
+            },
             {
                 # This one isn't found in the DB
-                "MatterSponsorNameId": 2,
+                "MatterSponsorNameId": 3,
                 "MatterSponsorSequence": 1,
+                "MatterSponsorMatterVersion": "A",
+            },
+            {
+                "MatterSponsorNameId": 2,
+                "MatterSponsorSequence": 0,
+                "MatterSponsorMatterVersion": "different",
             },
         ],
     )
 
     update_all_sponsorships()
 
-    sponsorship = BillSponsorship.query.one()
-    assert sponsorship.legislator_id == 1
-    assert sponsorship.bill_id == 1
+    sponsorship = CitySponsorship.query.one()
+    assert sponsorship.council_member_id == person.id
+    assert sponsorship.bill_id == bill.id
     assert sponsorship.added_at == datetime(2021, 1, 1, tzinfo=timezone.utc)
 
 
@@ -201,35 +254,49 @@ def test_update_sponsorships__new_sponsor():
 @freeze_time("2021-1-1")
 def test_update_sponsorships__sponsorship_already_exists():
     bill = Bill(
-        id=1,
-        file="Intro 200",
-        name="Electric school buses",
+        id=uuid4(), name="Electric school buses", type=Bill.BillType.CITY
+    )
+    bill.city_bill = CityBill(
+        city_bill_id=1,
         title="Bill title",
         status="Committee",
         intro_date="2000-1-1",
+        file="Intro 200",
+        active_version="A",
     )
     db.session.add(bill)
-    legislator = Legislator(id=1, name="Patrick")
-    db.session.add(legislator)
 
-    sponsorship = BillSponsorship(
-        bill_id=1,
-        legislator_id=1,
+    person = Person(
+        id=uuid4(), name="Patrick", type=Person.PersonType.COUNCIL_MEMBER
+    )
+    person.council_member = CouncilMember(city_council_person_id=1)
+    db.session.add(person)
+
+    sponsorship = CitySponsorship(
+        bill_id=bill.id,
+        council_member_id=person.id,
         added_at=datetime(2000, 1, 1, tzinfo=timezone.utc),
+        sponsor_sequence=0,
     )
     db.session.add(sponsorship)
 
     responses.add(
         responses.GET,
         url="https://webapi.legistar.com/v1/nyc/matters/1/sponsors?token=fake_token",
-        json=[{"MatterSponsorNameId": 1, "MatterSponsorSequence": 0}],
+        json=[
+            {
+                "MatterSponsorNameId": 1,
+                "MatterSponsorSequence": 0,
+                "MatterSponsorMatterVersion": "A",
+            }
+        ],
     )
 
     update_all_sponsorships()
 
-    sponsorship = BillSponsorship.query.one()
-    assert sponsorship.legislator_id == 1
-    assert sponsorship.bill_id == 1
+    sponsorship = CitySponsorship.query.one()
+    assert sponsorship.council_member_id == person.id
+    assert sponsorship.bill_id == bill.id
     assert sponsorship.added_at == datetime(2000, 1, 1, tzinfo=timezone.utc)
 
 
@@ -237,21 +304,29 @@ def test_update_sponsorships__sponsorship_already_exists():
 @freeze_time("2021-1-1")
 def test_update_sponsorships__remove_sponsorship():
     bill = Bill(
-        id=1,
-        file="Intro 200",
-        name="Electric school buses",
+        id=uuid4(), name="Electric school buses", type=Bill.BillType.CITY
+    )
+    bill.city_bill = CityBill(
         title="Bill title",
         status="Committee",
         intro_date="2000-1-1",
+        city_bill_id=1,
+        file="Intro 200",
+        active_version="A",
     )
     db.session.add(bill)
-    legislator = Legislator(id=1, name="Patrick")
-    db.session.add(legislator)
 
-    sponsorship = BillSponsorship(
-        bill_id=1,
-        legislator_id=1,
+    person = Person(
+        id=uuid4(), name="Patrick", type=Person.PersonType.COUNCIL_MEMBER
+    )
+    person.council_member = CouncilMember(city_council_person_id=1)
+    db.session.add(person)
+
+    sponsorship = CitySponsorship(
+        bill_id=bill.id,
+        council_member_id=person.id,
         added_at=datetime(2000, 1, 1, tzinfo=timezone.utc),
+        sponsor_sequence=0,
     )
     db.session.add(sponsorship)
 
@@ -263,4 +338,4 @@ def test_update_sponsorships__remove_sponsorship():
 
     update_all_sponsorships()
 
-    assert BillSponsorship.query.count() == 0
+    assert CitySponsorship.query.count() == 0

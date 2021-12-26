@@ -9,6 +9,8 @@ db = SQLAlchemy(app)
 
 
 class UUID(TypeDecorator):
+    cache_ok = True
+
     impl = _UUID(as_uuid=True)
 
 

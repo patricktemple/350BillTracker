@@ -1,4 +1,5 @@
 import logging
+from uuid import uuid4
 
 from flask import jsonify, request
 from werkzeug import exceptions
@@ -9,17 +10,18 @@ from ..council_api import lookup_bill, lookup_bills
 from ..council_sync import update_bill_sponsorships
 from ..google_sheets import create_power_hour
 from ..models import db
-from .models import Bill, BillAttachment, PowerHour
+from .models import Bill, BillAttachment, CityBill, PowerHour
 from .schema import (
     BillAttachmentSchema,
     BillSchema,
     CreatePowerHourSchema,
     PowerHourSchema,
+    TrackCityBillSchema,
 )
 
 # Views ----------------------------------------------------------------------
 
-
+# TODO: Rename to not be saved-bills?
 @app.route("/api/saved-bills", methods=["GET"])
 @auth_required
 def bills():
@@ -27,29 +29,34 @@ def bills():
     return BillSchema(many=True).jsonify(bills)
 
 
+# TODO: Rename to city-bills?
 @app.route("/api/saved-bills", methods=["POST"])
 @auth_required
-def save_bill():
-    bill_id = request.json["id"]
-    if Bill.query.get(bill_id):
+def track_city_bill():
+    data = TrackCityBillSchema().load(request.json)
+    city_bill_id = data["city_bill_id"]
+    if CityBill.query.filter_by(city_bill_id=city_bill_id).one_or_none():
         # There's a race condition of checking this and then inserting,
         # but in that rare case it will hit the DB unique constraint instead.
         raise exceptions.Conflict()
 
-    bill_data = lookup_bill(bill_id)
-    logging.info(f"Saving bill {bill_id}, council API returned {bill_data}")
+    bill_data = lookup_bill(city_bill_id)
+    logging.info(
+        f"Saving bill {city_bill_id}, council API returned {bill_data}"
+    )
 
-    bill = Bill(**bill_data)
+    bill = Bill(id=uuid4(), type=Bill.BillType.CITY, name=bill_data["name"])
+    bill.city_bill = CityBill(**bill_data["city_bill"])
     db.session.add(bill)
 
-    update_bill_sponsorships(bill_id)
+    update_bill_sponsorships(bill.city_bill)
 
     db.session.commit()
 
     return jsonify({})
 
 
-@app.route("/api/saved-bills/<int:bill_id>", methods=["PUT"])
+@app.route("/api/saved-bills/<uuid:bill_id>", methods=["PUT"])
 @auth_required
 def update_bill(bill_id):
     data = BillSchema().load(request.json)
@@ -65,7 +72,7 @@ def update_bill(bill_id):
     return jsonify({})
 
 
-@app.route("/api/saved-bills/<int:bill_id>", methods=["DELETE"])
+@app.route("/api/saved-bills/<uuid:bill_id>", methods=["DELETE"])
 @auth_required
 def delete_bill(bill_id):
     bill = Bill.query.get(bill_id)
@@ -83,17 +90,21 @@ def search_bills():
     external_bills = lookup_bills(file)
 
     # Check whether or not we're already tracking this bill
-    external_bills_ids = [b["id"] for b in external_bills]
-    tracked_bills = Bill.query.filter(Bill.id.in_(external_bills_ids)).all()
-    tracked_bill_ids = set([t.id for t in tracked_bills])
+    external_bills_ids = [
+        b["city_bill"]["city_bill_id"] for b in external_bills
+    ]
+    tracked_bills = CityBill.query.filter(
+        CityBill.city_bill_id.in_(external_bills_ids)
+    ).all()
+    tracked_bill_ids = set([t.city_bill_id for t in tracked_bills])
 
     for bill in external_bills:
-        bill["tracked"] = bill["id"] in tracked_bill_ids
+        bill["tracked"] = bill["city_bill"]["city_bill_id"] in tracked_bill_ids
 
     return BillSchema(many=True).jsonify(external_bills)
 
 
-@app.route("/api/saved-bills/<int:bill_id>/power-hours", methods=["GET"])
+@app.route("/api/saved-bills/<uuid:bill_id>/power-hours", methods=["GET"])
 @auth_required
 def bill_power_hours(bill_id):
     power_hours = (
@@ -104,9 +115,8 @@ def bill_power_hours(bill_id):
     return PowerHourSchema(many=True).jsonify(power_hours)
 
 
-# TODO: Migrate existing power hours
 @app.route(
-    "/api/saved-bills/<int:bill_id>/power-hours",
+    "/api/saved-bills/<uuid:bill_id>/power-hours",
     methods=["POST"],
 )
 @auth_required
@@ -137,14 +147,14 @@ def create_spreadsheet(bill_id):
     )
 
 
-@app.route("/api/saved-bills/<int:bill_id>/attachments", methods=["GET"])
+@app.route("/api/saved-bills/<uuid:bill_id>/attachments", methods=["GET"])
 @auth_required
 def bill_attachments(bill_id):
     attachments = BillAttachment.query.filter_by(bill_id=bill_id).all()
     return BillAttachmentSchema(many=True).jsonify(attachments)
 
 
-@app.route("/api/saved-bills/<int:bill_id>/attachments", methods=["POST"])
+@app.route("/api/saved-bills/<uuid:bill_id>/attachments", methods=["POST"])
 @auth_required
 def add_bill_attachment(bill_id):
     data = BillAttachmentSchema().load(request.json)
@@ -161,7 +171,7 @@ def add_bill_attachment(bill_id):
 
 
 @app.route(
-    "/api/saved-bills/-/attachments/<int:attachment_id>", methods=["DELETE"]
+    "/api/saved-bills/-/attachments/<uuid:attachment_id>", methods=["DELETE"]
 )
 @auth_required
 def delete_bill_attachment(attachment_id):
