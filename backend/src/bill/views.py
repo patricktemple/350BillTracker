@@ -115,7 +115,6 @@ def bill_power_hours(bill_id):
     return PowerHourSchema(many=True).jsonify(power_hours)
 
 
-# TODO: Migrate existing power hours
 @app.route(
     "/api/saved-bills/<uuid:bill_id>/power-hours",
     methods=["POST"],

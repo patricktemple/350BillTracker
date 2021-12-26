@@ -156,7 +156,7 @@ def _calculate_bill_diffs(snapshots_by_bill_id):
     info a form that's useful for further processing when building emails."""
     city_bills = (
         CityBill.query.all()
-    )  # options(selectinload("sponsorships.person")).all()
+    )
 
     bill_diffs = []
     for city_bill in city_bills:

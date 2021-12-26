@@ -227,10 +227,8 @@ def test_lookup_bill_not_tracked(client):
     response = client.get(
         "/api/search-bills?file=1234",
     )
-    # assert more fields?
     assert response.status_code == 200
     response_data = json.loads(response.data)[0]
-    print(response_data)
     assert response_data["type"] == "CITY"
     assert response_data["cityBill"]["cityBillId"] == 1
     assert response_data["tracked"] == False
