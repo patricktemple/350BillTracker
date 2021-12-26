@@ -34,11 +34,11 @@ class Person(db.Model):
     # Could type be a derived property instead?
     type = Column(Enum(PersonType), nullable=False)
     council_member = relationship(
-        "CouncilMember", back_populates="person", uselist=False
+        "CouncilMember", back_populates="person", uselist=False, lazy="joined"
     )
-    senator = relationship("Senator", back_populates="person", uselist=False)
+    senator = relationship("Senator", back_populates="person", uselist=False, lazy="joined")
     assembly_member = relationship(
-        "AssemblyMember", back_populates="person", uselist=False
+        "AssemblyMember", back_populates="person", uselist=False, lazy="joined"
     )
 
     # These are added by our static data
@@ -59,13 +59,12 @@ class CouncilMember(db.Model):
     __tablename__ = "council_members"
 
     # Foreign key to Person parent table
-    # Possibly we want to add "lazy=joined" below and on all similar relationships
     person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)
 
     # ID of the City Council API object, which is also called Person
     city_council_person_id = Column(
         Integer, nullable=False, index=True, unique=True
-    )  # index maybe?
+    )
 
     term_start = Column(TIMESTAMP)
     term_end = Column(TIMESTAMP)
@@ -77,7 +76,7 @@ class CouncilMember(db.Model):
         "CitySponsorship", back_populates="council_member"
     )
 
-    person = relationship("Person", back_populates="council_member")
+    person = relationship("Person", back_populates="council_member", lazy="joined")
 
     borough = Column(Text)
     website = Column(Text)
@@ -88,7 +87,7 @@ class Senator(db.Model):
 
     # Foreign key to Person parent table
     person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)
-    person = relationship("Person", back_populates="senator")
+    person = relationship("Person", back_populates="senator", lazy="joined")
     sponsorships = relationship("SenateSponsorship", back_populates="senator")
 
 
@@ -97,7 +96,7 @@ class AssemblyMember(db.Model):
 
     # Foreign key to Person parent table
     person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)
-    person = relationship("Person", back_populates="assembly_member")
+    person = relationship("Person", back_populates="assembly_member", lazy="joined")
 
     sponsorships = relationship(
         "AssemblySponsorship", back_populates="assembly_member"
@@ -116,7 +115,7 @@ class Staffer(db.Model):
     boss_id = Column(UUID, ForeignKey(Person.id), nullable=False, index=True)
 
     person = relationship(
-        "Person", foreign_keys=[person_id], back_populates="staffer"
+        "Person", foreign_keys=[person_id], back_populates="staffer", lazy="joined"
     )
     boss = relationship(
         "Person", foreign_keys=[boss_id], back_populates="staffers"

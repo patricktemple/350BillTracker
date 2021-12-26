@@ -44,13 +44,14 @@ class Bill(db.Model):
     # Info on child objects:
     type = Column(Enum(BillType), nullable=False)
     city_bill = relationship(
-        "CityBill", back_populates="bill", uselist=False, cascade="all, delete"
+        "CityBill", back_populates="bill", uselist=False, cascade="all, delete", lazy="joined"
     )
     state_bill = relationship(
         "StateBill",
         back_populates="bill",
         uselist=False,
         cascade="all, delete",
+        lazy="joined"
     )
 
     # Data we track
@@ -71,7 +72,6 @@ class Bill(db.Model):
     def display_name(self):
         return self.nickname if self.nickname else self.name
 
-    # TODO make less ugly?
     @property
     def tracked(self):
         return True
@@ -116,13 +116,13 @@ class CityBill(db.Model):
 
     file = Column(Text, nullable=False)  # e.g. Int 2317-2021
 
-    bill = relationship("Bill", back_populates="city_bill")
+    bill = relationship("Bill", back_populates="city_bill", lazy="joined")
 
     title = Column(Text, nullable=False)
 
     intro_date = Column(TIMESTAMP, nullable=False)
 
-    status = Column(Text, nullable=False)  # ??? here or in subclass?
+    status = Column(Text, nullable=False)
 
     sponsorships = relationship(
         "CitySponsorship", back_populates="city_bill", cascade="all, delete"
@@ -135,7 +135,7 @@ class StateBill(db.Model):
     __tablename__ = "state_bills"
 
     bill_id = Column(UUID, ForeignKey(Bill.id), primary_key=True)
-    bill = relationship(Bill, back_populates="state_bill")
+    bill = relationship(Bill, back_populates="state_bill", lazy="joined")
 
 
 # TODO: Figure out how to identify the active version
