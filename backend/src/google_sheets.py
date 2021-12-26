@@ -131,7 +131,8 @@ def _create_legislator_row(
     is_lead_sponsor: bool = False,
 ):
     staffer_strings = [
-        _get_staffer_display_string(s) for s in council_member.person.staffer_persons
+        _get_staffer_display_string(s)
+        for s in council_member.person.staffer_persons
     ]
     staffer_text = "\n\n".join(staffer_strings)
 

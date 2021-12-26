@@ -141,6 +141,7 @@ def update_bill_sponsorships(city_bill, set_added_at=False):
     3) If new sponsors aren't in the existing legislators (e.g. they're not longer in office),
        ignore them.
     """
+    logging.info(f"Updating sponsorships for {city_bill.file}")
     previous_bill_sponsorships = CitySponsorship.query.filter_by(
         bill_id=city_bill.bill_id
     ).all()
@@ -163,9 +164,6 @@ def update_bill_sponsorships(city_bill, set_added_at=False):
         for c in council_members_for_updated_sponsorships
     }
 
-    logging.info(
-        f"Entering loop with data: {sorted([u['MatterSponsorNameId'] for u in updated_bill_sponsorships])}"
-    )
     for sponsorship_data in updated_bill_sponsorships:
         council_member_person_id = sponsorship_data["MatterSponsorNameId"]
 
