@@ -1,38 +1,42 @@
 from src import app
-from src.bill.models import Bill
+from src.bill.models import Bill,CityBill
 from src.models import db
-from src.person.models import Legislator
-from src.sponsorship.models import BillSponsorship
+from src.person.models import Person, CouncilMember
+from src.sponsorship.models import CitySponsorship
 from src.utils import now
 
+from uuid import uuid4
 from .utils import get_response_data
 
 
 def test_get_bill_sponsorships(client):
     bill = Bill(
-        id=1, name="name", file="file", title="title", intro_date=now()
+        id=uuid4(), name="name", type=Bill.BillType.CITY
     )
+    bill.city_bill = CityBill(city_bill_id=1, file="file", title="title", status="Enacted", intro_date=now(), )
     db.session.add(bill)
 
-    sponsor = Legislator(id=1, name="Sponsor")
-    sponsorship = BillSponsorship(bill_id=1, legislator_id=1)
+    sponsor = Person(id=uuid4(), name="Sponsor", type=Person.PersonType.COUNCIL_MEMBER)
+    sponsor.council_member = CouncilMember(city_council_person_id=1)
+    sponsorship = CitySponsorship(bill_id=bill.id, council_member_id=sponsor.id, sponsor_sequence=0)
     db.session.add(sponsor)
     db.session.add(sponsorship)
 
-    non_sponsor = Legislator(id=2, name="Non-sponsor")
+    non_sponsor = Person(name="Non-sponsor", type=Person.PersonType.COUNCIL_MEMBER)
+    non_sponsor.council_member = CouncilMember(city_council_person_id=2)
     db.session.add(non_sponsor)
     db.session.commit()
 
-    response = client.get("/api/saved-bills/1/sponsorships")
+    response = client.get(f"/api/city-bills/{bill.id}/sponsorships")
 
     assert response.status_code == 200
     response_data = get_response_data(response)
 
     assert len(response_data) == 2
-    assert response_data[0]["billId"] == 1
-    assert response_data[0]["legislator"]["name"] == "Sponsor"
+    assert response_data[0]["billId"] == str(bill.id)
+    assert response_data[0]["person"]["name"] == "Sponsor"
     assert response_data[0]["isSponsor"] == True
 
-    assert response_data[1]["billId"] == 1
-    assert response_data[1]["legislator"]["name"] == "Non-sponsor"
+    assert response_data[1]["billId"] == str(bill.id)
+    assert response_data[1]["person"]["name"] == "Non-sponsor"
     assert response_data[1]["isSponsor"] == False
