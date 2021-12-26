@@ -26,8 +26,7 @@ class Bill(db.Model):
     a city or a state bill, and there will be an associated row in the CityBill
     and StateBill with more info on it."""
 
-    # TODO: Fix these table names:
-    __tablename__ = "bills_2"
+    __tablename__ = "bills"
 
     class BillType(enum.Enum):
         CITY = 1
@@ -81,11 +80,11 @@ class Bill(db.Model):
 
 
 class BillAttachment(db.Model):
-    __tablename__ = "bill_attachments_2"
+    __tablename__ = "bill_attachments"
 
     id = Column(UUID, primary_key=True, default=uuid4)
     bill_id = Column(
-        UUID, ForeignKey("bills_2.id"), nullable=False, index=True
+        UUID, ForeignKey("bills.id"), nullable=False, index=True
     )
     bill = relationship("Bill", back_populates="attachments")
 
@@ -94,11 +93,11 @@ class BillAttachment(db.Model):
 
 
 class PowerHour(db.Model):
-    __tablename__ = "power_hours_2"
+    __tablename__ = "power_hours"
 
     id = Column(UUID, primary_key=True, default=uuid4)
     bill_id = Column(
-        UUID, ForeignKey("bills_2.id"), nullable=False, index=True
+        UUID, ForeignKey("bills.id"), nullable=False, index=True
     )
 
     title = Column(Text)
