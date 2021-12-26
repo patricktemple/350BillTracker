@@ -23,10 +23,10 @@ class AssemblyMemberSchema(CamelCaseSchema):
 
 class CreateStafferSchema(CamelCaseSchema):
     name = fields.String()
-    phone = fields.String(missing=None)
-    email = fields.String(missing=None)
-    twitter = fields.String(missing=None)
-    title = fields.String(missing=None)
+    phone = fields.String(load_default=None)
+    email = fields.String(load_default=None)
+    twitter = fields.String(load_default=None)
+    title = fields.String(load_default=None)
 
 
 class PersonSchema(CamelCaseSchema):
@@ -43,9 +43,9 @@ class PersonSchema(CamelCaseSchema):
     type = EnumField(Person.PersonType, dump_only=True)
 
     # Extra data we track
-    notes = fields.String(missing=None)
+    notes = fields.String(load_default=None)
 
-    title = fields.String(missing=None)
+    title = fields.String(load_default=None)
 
     party = fields.String(dump_only=True)
 

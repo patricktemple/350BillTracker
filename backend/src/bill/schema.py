@@ -55,7 +55,7 @@ class BillAttachmentSchema(CamelCaseSchema):
 
 class PowerHourSchema(CamelCaseSchema):
     id = fields.UUID(dump_only=True)
-    power_hour_id_to_import = fields.UUID(load_only=True, missing=None)
+    power_hour_id_to_import = fields.UUID(load_only=True, load_default=None)
 
     bill_id = fields.Integer(dump_only=True)
     title = fields.String()
