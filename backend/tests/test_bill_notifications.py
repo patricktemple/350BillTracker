@@ -4,7 +4,7 @@ from uuid import uuid4
 import responses
 
 from src.app import app
-from src.bill.models import Bill
+from src.bill.models import Bill, CityBill
 from src.bill_notifications import (
     BillDiff,
     BillSnapshot,
@@ -14,11 +14,12 @@ from src.bill_notifications import (
     send_bill_update_notifications,
 )
 from src.models import db
-from src.person.models import Legislator
-from src.sponsorship.models import BillSponsorship
+from src.person.models import Person, CouncilMember
+from src.sponsorship.models import CitySponsorship
 from src.user.models import User
 from src.utils import now
 
+# LEFT OFF HERE: Fix these tests!
 
 # TODO: Switch to Factory
 def add_test_bill(bill_id, status):
