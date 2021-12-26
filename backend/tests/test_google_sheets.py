@@ -1,13 +1,6 @@
-import json
-from re import L
 from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
-import pytest
-from pytest import fixture
-
-from src import app
-from src.bill.models import Bill, CityBill, PowerHour
 from src.google_sheets import (
     _extract_data_from_previous_spreadsheet,
     create_power_hour,
@@ -15,7 +8,6 @@ from src.google_sheets import (
 from src.models import db
 from src.person.models import CouncilMember, Person
 from src.sponsorship.models import CitySponsorship
-from src.utils import now
 
 
 @patch("src.google_sheets.Credentials")

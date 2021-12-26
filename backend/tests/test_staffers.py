@@ -2,7 +2,6 @@ from uuid import uuid4
 
 from pytest import fixture
 
-from src import app
 from src.models import db
 from src.person.models import CouncilMember, Person, Staffer
 

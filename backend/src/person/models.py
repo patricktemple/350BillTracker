@@ -2,7 +2,7 @@ import enum
 from uuid import uuid4
 
 from sqlalchemy import Column, Enum, ForeignKey, Integer, Text
-from sqlalchemy.orm import foreign, relationship, remote
+from sqlalchemy.orm import relationship
 
 from ..models import TIMESTAMP, UUID, db
 

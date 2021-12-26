@@ -1,6 +1,5 @@
 from uuid import uuid4
 
-from src import app
 from src.bill.models import Bill, CityBill
 from src.models import db
 from src.person.models import CouncilMember, Person

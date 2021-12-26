@@ -3,7 +3,6 @@ from uuid import uuid4
 
 import responses
 
-from src import app
 from src.bill.models import DEFAULT_TWITTER_SEARCH_TERMS, Bill, CityBill
 from src.models import db
 from src.person.models import CouncilMember, Person

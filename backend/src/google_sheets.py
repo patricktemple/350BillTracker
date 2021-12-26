@@ -10,9 +10,9 @@ from googleapiclient.discovery import build
 from sqlalchemy.orm import selectinload
 
 from . import settings, twitter
-from .bill.models import Bill, CityBill
+from .bill.models import CityBill
 from .models import UUID
-from .person.models import CouncilMember, Person
+from .person.models import CouncilMember
 from .sponsorship.models import CitySponsorship
 
 SCOPES = [

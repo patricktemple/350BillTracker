@@ -7,7 +7,7 @@ from flask import render_template
 from sqlalchemy.orm import selectinload
 
 from .bill.views import CityBill
-from .person.models import CouncilMember, Person
+from .person.models import Person
 from .ses import send_email
 from .user.models import User
 

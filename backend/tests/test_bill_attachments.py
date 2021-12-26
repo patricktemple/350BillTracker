@@ -1,11 +1,7 @@
 from uuid import uuid4
 
-from pytest import fixture
-
-from src import app
-from src.bill.models import Bill, BillAttachment, CityBill
+from src.bill.models import BillAttachment
 from src.models import db
-from src.utils import now
 
 from .utils import assert_response
 

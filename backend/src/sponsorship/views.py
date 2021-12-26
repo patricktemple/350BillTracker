@@ -3,8 +3,7 @@ from werkzeug import exceptions
 
 from ..app import app
 from ..auth import auth_required
-from ..bill.models import Bill, CityBill
-from ..models import db
+from ..bill.models import CityBill
 from ..person.models import Person
 from .models import CitySponsorship
 from .schema import CityBillSponsorshipSchema, CouncilMemberSponsorshipSchema

@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 from requests import HTTPError
 
-from .bill.models import Bill, CityBill
+from .bill.models import Bill
 from .council_api import (
     get_bill_sponsors,
     get_current_council_members,

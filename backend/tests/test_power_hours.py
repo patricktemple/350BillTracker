@@ -1,12 +1,7 @@
 from unittest.mock import patch
-from uuid import uuid4
 
-from pytest import fixture
-
-from src import app
-from src.bill.models import Bill, CityBill, PowerHour
+from src.bill.models import PowerHour
 from src.models import db
-from src.utils import now
 
 from .utils import get_response_data
 
