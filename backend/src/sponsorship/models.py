@@ -1,5 +1,6 @@
 from sqlalchemy import Column, ForeignKey, Integer
 from sqlalchemy.orm import foreign, relationship, remote
+from uuid import uuid4
 
 from ..bill.models import (
     AssemblyBillVersion,
@@ -14,7 +15,7 @@ from ..person.models import AssemblyMember, CouncilMember, Person, Senator
 class CitySponsorship(db.Model):
     __tablename__ = "city_sponsorships"
 
-    id = Column(UUID, primary_key=True)
+    id = Column(UUID, primary_key=True, default=uuid4)
 
     bill_id = Column(
         UUID,

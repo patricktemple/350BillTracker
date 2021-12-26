@@ -159,24 +159,27 @@ def test_save_bill(client):
         json=[{"MatterSponsorNameId": 99, "MatterSponsorSequence": 0}],
     )
 
-    non_sponsor = Legislator(id=88, name="Non sponsor")
+    non_sponsor = Person(name="Non sponsor", type=Person.PersonType.COUNCIL_MEMBER)
+    non_sponsor.council_member = CouncilMember(city_council_person_id=88)
     db.session.add(non_sponsor)
 
-    sponsor = Legislator(id=99, name="Sponsor")
+    sponsor = Person(name="Sponsor", type=Person.PersonType.COUNCIL_MEMBER)
+    sponsor.council_member = CouncilMember(city_council_person_id=99)
     db.session.add(sponsor)
 
     response = client.post(
         "/api/saved-bills",
-        data={"id": "123"},
+        data={"cityBillId": 123},
     )
     assert response.status_code == 200
 
     bill = Bill.query.one()
-    assert bill.id == 123
+    assert bill.type == Bill.BillType.CITY
+    assert bill.city_bill.city_bill_id == 123
 
-    assert len(bill.sponsorships) == 1
-    assert bill.sponsorships[0].legislator.name == "Sponsor"
-    assert not bill.sponsorships[0].added_at
+    assert len(bill.city_bill.sponsorships) == 1
+    assert bill.city_bill.sponsorships[0].council_member.person.name == "Sponsor"
+    assert not bill.city_bill.sponsorships[0].added_at
 
 
 @responses.activate
