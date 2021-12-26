@@ -1,6 +1,7 @@
+from uuid import uuid4
+
 from sqlalchemy import Column, ForeignKey, Integer
 from sqlalchemy.orm import foreign, relationship, remote
-from uuid import uuid4
 
 from ..bill.models import (
     AssemblyBillVersion,

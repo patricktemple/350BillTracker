@@ -159,7 +159,9 @@ def test_save_bill(client):
         json=[{"MatterSponsorNameId": 99, "MatterSponsorSequence": 0}],
     )
 
-    non_sponsor = Person(name="Non sponsor", type=Person.PersonType.COUNCIL_MEMBER)
+    non_sponsor = Person(
+        name="Non sponsor", type=Person.PersonType.COUNCIL_MEMBER
+    )
     non_sponsor.council_member = CouncilMember(city_council_person_id=88)
     db.session.add(non_sponsor)
 
@@ -178,21 +180,28 @@ def test_save_bill(client):
     assert bill.city_bill.city_bill_id == 123
 
     assert len(bill.city_bill.sponsorships) == 1
-    assert bill.city_bill.sponsorships[0].council_member.person.name == "Sponsor"
+    assert (
+        bill.city_bill.sponsorships[0].council_member.person.name == "Sponsor"
+    )
     assert not bill.city_bill.sponsorships[0].added_at
 
 
 @responses.activate
 def test_save_bill__already_exists(client):
-    bill = Bill(
-        id=1, name="name", file="file", title="title", intro_date=now()
+    bill = Bill(name="name", type=Bill.BillType.CITY)
+    bill.city_bill = CityBill(
+        city_bill_id=1,
+        file="file",
+        title="title",
+        intro_date=now(),
+        status="Committee",
     )
     db.session.add(bill)
     db.session.commit()
 
     response = client.post(
         "/api/saved-bills",
-        data={"id": "1"},
+        data={"cityBillId": 1},
     )
     assert response.status_code == 409
 
@@ -211,14 +220,23 @@ def test_lookup_bill_not_tracked(client):
     # assert more fields?
     assert response.status_code == 200
     response_data = json.loads(response.data)[0]
-    assert response_data["id"] == 1
+    print(response_data)
+    assert response_data["type"] == "CITY"
+    assert response_data["cityBill"]["cityBillId"] == 1
     assert response_data["tracked"] == False
+
+    # TODO: Consider switching these tests over to snapshots to capture more info?
 
 
 @responses.activate
 def test_lookup_bill_already_tracked(client):
-    bill = Bill(
-        id=1, file="file", name="name", title="title", intro_date=now()
+    bill = Bill(name="name", type=Bill.BillType.CITY)
+    bill.city_bill = CityBill(
+        city_bill_id=1,
+        file="file",
+        title="title",
+        intro_date=now(),
+        status="Enacted",
     )
     db.session.add(bill)
     db.session.commit()
@@ -235,5 +253,5 @@ def test_lookup_bill_already_tracked(client):
     # assert more fields?
     assert response.status_code == 200
     response_data = json.loads(response.data)[0]
-    assert response_data["id"] == 1
+    assert response_data["cityBill"]["cityBillId"] == 1
     assert response_data["tracked"] == True
