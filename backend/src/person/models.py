@@ -8,6 +8,7 @@ from ..models import TIMESTAMP, UUID, db
 
 # TODO: Fix all eager loading
 
+
 class Person(db.Model):
     __tablename__ = "persons"
 
@@ -100,7 +101,6 @@ class AssemblyMember(db.Model):
     sponsorships = relationship(
         "AssemblySponsorship", back_populates="assembly_member"
     )
-
 
 
 # Staffers have a single boss. They're one to many.

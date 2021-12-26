@@ -1,11 +1,12 @@
 import json
+from uuid import uuid4
 
 import responses
 
 from src import app
 from src.bill.models import DEFAULT_TWITTER_SEARCH_TERMS, Bill, CityBill
 from src.models import db
-from src.person.models import Person, CouncilMember
+from src.person.models import CouncilMember, Person
 from src.utils import now
 
 from .utils import assert_response
@@ -66,15 +67,20 @@ def test_get_saved_bills(client):
                 "nickname": "ban gas",
                 "notes": "Good job everyone",
                 "twitterSearchTerms": DEFAULT_TWITTER_SEARCH_TERMS,
-                "stateBill": None
+                "stateBill": None,
             }
         ],
     )
 
 
 def test_delete_bill(client):
-    bill = Bill(
-        id=1, name="name", file="file", title="title", intro_date=now()
+    bill = Bill(name="name", type=Bill.BillType.CITY)
+    bill.city_bill = CityBill(
+        city_bill_id=1,
+        file="file",
+        title="title",
+        status="Enacted",
+        intro_date=now(),
     )
     db.session.add(bill)
     db.session.commit()
@@ -83,7 +89,7 @@ def test_delete_bill(client):
     assert response.status_code == 200
     assert len(json.loads(response.data)) == 1
 
-    response = client.delete("/api/saved-bills/1")
+    response = client.delete(f"/api/saved-bills/{bill.id}")
     assert response.status_code == 200
 
     response = client.get("/api/saved-bills")
@@ -91,14 +97,20 @@ def test_delete_bill(client):
 
 
 def test_update_bill(client):
-    bill = Bill(
-        id=1, name="name", file="file", title="title", intro_date=now()
+    bill_id = uuid4()
+    bill = Bill(id=bill_id, name="name", type=Bill.BillType.CITY)
+    bill.city_bill = CityBill(
+        city_bill_id=1,
+        file="file",
+        title="title",
+        status="Enacted",
+        intro_date=now(),
     )
     db.session.add(bill)
     db.session.commit()
 
     response = client.put(
-        "/api/saved-bills/1",
+        f"/api/saved-bills/{bill.id}",
         data={
             "notes": "good bill",
             "nickname": "skip the stuff",
@@ -113,14 +125,19 @@ def test_update_bill(client):
         200,
         [
             {
-                "body": None,
-                "file": "file",
-                "id": 1,
+                "id": str(bill_id),
+                "type": "CITY",
+                "stateBill": None,
+                "cityBill": {
+                    "cityBillId": 1,
+                    "councilBody": None,
+                    "file": "file",
+                    "status": "Enacted",
+                    "title": "title",
+                },
                 "name": "name",
                 "nickname": "skip the stuff",
                 "notes": "good bill",
-                "status": None,
-                "title": "title",
                 "tracked": True,
                 "twitterSearchTerms": ["oil"],
             }

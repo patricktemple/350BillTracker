@@ -74,7 +74,9 @@ class SenateSponsorship(db.Model):
         back_populates="sponsorships",
     )
 
-    senator_id = Column(UUID, ForeignKey(Senator.person_id), nullable=False, index=True)
+    senator_id = Column(
+        UUID, ForeignKey(Senator.person_id), nullable=False, index=True
+    )
     senator = relationship(Senator, back_populates="sponsorships")
 
     # TODO: Add sponsor_sequence like we have with city, if needed
