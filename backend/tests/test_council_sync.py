@@ -11,19 +11,20 @@ from src.council_sync import (
     sync_bill_updates,
     update_all_sponsorships,
 )
+from src.person.models import Person, CouncilMember
 from src.models import db
-from src.person.models import Legislator
-from src.sponsorship.models import BillSponsorship
-from src.static_data import STATIC_DATA_BY_LEGISLATOR_ID
+from src.sponsorship.models import CitySponsorship
+from src.static_data import COUNCIL_DATA_BY_LEGISLATOR_ID
 
 
 @responses.activate
 @freeze_time("2021-10-12")
 def test_add_council_members():
-    existing_legislator = Legislator(
-        id=1, name="Corey Johnson", term_start="2000-01-01"
+    existing_person = Person(
+        name="Corey Johnson", type=Person.PersonType.COUNCIL_MEMBER
     )
-    db.session.add(existing_legislator)
+    existing_person.council_member = CouncilMember(term_start="2000-01-01", city_council_person_id=1)
+    db.session.add(existing_person)
 
     responses.add(
         responses.GET,
@@ -46,28 +47,31 @@ def test_add_council_members():
 
     add_council_members()
 
-    assert Legislator.query.count() == 2
+    assert Person.query.count() == 2
+    assert CouncilMember.query.count() == 2
 
-    corey_johnson = Legislator.query.get(1)
-    assert corey_johnson.name == "Corey Johnson the 2nd"
+    corey_johnson = CouncilMember.query.filter_by(city_council_person_id=1).one()
+    assert corey_johnson.person.name == "Corey Johnson the 2nd"
     assert corey_johnson.term_start == datetime(
         2021, 1, 1, tzinfo=timezone.utc
     )
     assert corey_johnson.term_end == datetime(2022, 1, 1, tzinfo=timezone.utc)
 
-    brad_lander = Legislator.query.get(2)
-    assert brad_lander.name == "Brad Lander"
+    brad_lander = CouncilMember.query.filter_by(city_council_person_id=2).one()
+    assert brad_lander.person.name == "Brad Lander"
 
 
 @responses.activate
 def test_fill_council_person_data():
-    legislator_to_update = Legislator(id=1, name="Corey Johnson")
-    db.session.add(legislator_to_update)
+    person_to_update = Person(name="Corey Johnson", type=Person.PersonType.COUNCIL_MEMBER)
+    person_to_update.council_member = CouncilMember(city_council_person_id=1)
+    db.session.add(person_to_update)
 
-    legislator_without_new_data = Legislator(
-        id=2, name="Person who was impeached and removed"
+    person_without_new_data = Person(
+        name="Person who was impeached and removed", type=Person.PersonType.COUNCIL_MEMBER
     )
-    db.session.add(legislator_without_new_data)
+    person_without_new_data.council_member = CouncilMember(city_council_person_id=2)
+    db.session.add(person_without_new_data)
 
     responses.add(
         responses.GET,
@@ -90,16 +94,18 @@ def test_fill_council_person_data():
 
     fill_council_person_data_from_api()
 
-    assert Legislator.query.count() == 2
-    corey = Legislator.query.get(1)
-    assert corey.email == "corey@council.nyc.gov"
-    assert corey.district_phone == "555-111-1111"
+    assert Person.query.count() == 2
+    assert CouncilMember.query.count() == 2
+
+    corey = CouncilMember.query.filter_by(city_council_person_id=1).one()
+    assert corey.person.email == "corey@council.nyc.gov"
+    assert corey.person.phone == "555-111-1111"
     assert corey.legislative_phone == "888-888-8888"
     assert corey.website == "https://www.example.com/"
 
 
 def test_fill_council_person_static_data():
-    corey_static = STATIC_DATA_BY_LEGISLATOR_ID[7631]
+    corey_static = COUNCIL_DATA_BY_LEGISLATOR_ID[7631]
     legislator_to_update = Legislator(
         id=7631,
         name="Corey Johnson badly formatted name----",
