@@ -1,22 +1,23 @@
 import json
 from re import L
 from unittest.mock import MagicMock, patch
+from uuid import uuid4
 
 import pytest
+from pytest import fixture
 
 from src import app
-from src.bill.models import Bill, PowerHour, CityBill
+from src.bill.models import Bill, CityBill, PowerHour
 from src.google_sheets import (
     _extract_data_from_previous_power_hour,
     _extract_data_from_previous_spreadsheet,
     create_power_hour,
 )
 from src.models import db
-from src.person.models import Person, CouncilMember
+from src.person.models import CouncilMember, Person
 from src.sponsorship.models import CitySponsorship
 from src.utils import now
-from pytest import fixture
-from uuid import uuid4
+
 
 # TODO share this in conftest
 @fixture
@@ -51,14 +52,22 @@ def test_generate_google_sheet__no_import(
 
     mock_build.side_effect = side_effect
 
-    non_sponsor = Person(id=uuid4(), name="Non sponsor", type=Person.PersonType.COUNCIL_MEMBER)
+    non_sponsor = Person(
+        id=uuid4(), name="Non sponsor", type=Person.PersonType.COUNCIL_MEMBER
+    )
     non_sponsor.council_member = CouncilMember(city_council_person_id=1)
-    sponsor = Person(id=uuid4(), name="Sponsor", type=Person.PersonType.COUNCIL_MEMBER)
+    sponsor = Person(
+        id=uuid4(), name="Sponsor", type=Person.PersonType.COUNCIL_MEMBER
+    )
     sponsor.council_member = CouncilMember(city_council_person_id=2)
     db.session.add(sponsor)
     db.session.add(non_sponsor)
 
-    db.session.add(CitySponsorship(council_member_id=sponsor.id, bill_id=bill.id, sponsor_sequence=0))
+    db.session.add(
+        CitySponsorship(
+            council_member_id=sponsor.id, bill_id=bill.id, sponsor_sequence=0
+        )
+    )
     db.session.commit()
 
     mock_sheets_service.spreadsheets().create().execute.return_value = {
@@ -123,14 +132,24 @@ def test_generate_google_sheet__with_import(
         ]
     }
 
-    non_sponsor = Person(id=uuid4(), name="Missing Person", type=Person.PersonType.COUNCIL_MEMBER)
+    non_sponsor = Person(
+        id=uuid4(),
+        name="Missing Person",
+        type=Person.PersonType.COUNCIL_MEMBER,
+    )
     non_sponsor.council_member = CouncilMember(city_council_person_id=1)
-    sponsor = Person(id=uuid4(), name="Brad Lander", type=Person.PersonType.COUNCIL_MEMBER)
+    sponsor = Person(
+        id=uuid4(), name="Brad Lander", type=Person.PersonType.COUNCIL_MEMBER
+    )
     sponsor.council_member = CouncilMember(city_council_person_id=2)
     db.session.add(sponsor)
     db.session.add(non_sponsor)
 
-    db.session.add(CitySponsorship(council_member_id=sponsor.id, bill_id=bill.id, sponsor_sequence=0))
+    db.session.add(
+        CitySponsorship(
+            council_member_id=sponsor.id, bill_id=bill.id, sponsor_sequence=0
+        )
+    )
     db.session.commit()
 
     mock_sheets_service.spreadsheets().create().execute.return_value = {
@@ -153,11 +172,15 @@ def test_generate_google_sheet__with_import(
 
 
 def test_extract_data_from_previous_spreadsheet():
-    corey = Person(name="Corey D. Johnson", type=Person.PersonType.COUNCIL_MEMBER)
+    corey = Person(
+        name="Corey D. Johnson", type=Person.PersonType.COUNCIL_MEMBER
+    )
     corey.council_member = CouncilMember(city_council_person_id=1)
     db.session.add(corey)
 
-    retired = Person(name="Retired Person", type=Person.PersonType.COUNCIL_MEMBER)
+    retired = Person(
+        name="Retired Person", type=Person.PersonType.COUNCIL_MEMBER
+    )
     retired.council_member = CouncilMember(city_council_person_id=2)
     db.session.add(retired)
 
@@ -192,7 +215,9 @@ def test_extract_data_from_previous_spreadsheet():
 
 
 def test_extract_data_from_previous_spreadsheet_no_name():
-    corey = Person(name="Corey D. Johnson", type=Person.PersonType.COUNCIL_MEMBER)
+    corey = Person(
+        name="Corey D. Johnson", type=Person.PersonType.COUNCIL_MEMBER
+    )
     corey.council_member = CouncilMember(city_council_person_id=1)
     db.session.add(corey)
     db.session.commit()

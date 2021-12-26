@@ -14,17 +14,16 @@ from src.bill_notifications import (
     send_bill_update_notifications,
 )
 from src.models import db
-from src.person.models import Person, CouncilMember
+from src.person.models import CouncilMember, Person
 from src.sponsorship.models import CitySponsorship
 from src.user.models import User
 from src.utils import now
 
+
 # TODO: Switch to Factory
 def add_test_bill(city_bill_id, status) -> Bill:
     bill = Bill(
-        id=uuid4(),
-        name=f"{city_bill_id} name",
-        type=Bill.BillType.CITY
+        id=uuid4(), name=f"{city_bill_id} name", type=Bill.BillType.CITY
     )
     bill.city_bill = CityBill(
         city_bill_id=city_bill_id,
@@ -32,7 +31,6 @@ def add_test_bill(city_bill_id, status) -> Bill:
         title=f"{city_bill_id} title",
         status=status,
         intro_date=now(),
-
     )
     db.session.add(bill)
     return bill
@@ -42,7 +40,7 @@ def add_test_council_member(city_council_person_id) -> Person:
     person = Person(
         id=uuid4(),
         name=f"{city_council_person_id} name",
-        type=Person.PersonType.COUNCIL_MEMBER
+        type=Person.PersonType.COUNCIL_MEMBER,
     )
     person.council_member = CouncilMember(
         city_council_person_id=city_council_person_id
@@ -53,14 +51,20 @@ def add_test_council_member(city_council_person_id) -> Person:
 
 def add_test_sponsorship(*, bill, person):
     sequence = 0
+
     def impl():
         nonlocal sequence
-        sponsorship = CitySponsorship(bill_id=bill.id, council_member_id=person.id, sponsor_sequence=sequence)
+        sponsorship = CitySponsorship(
+            bill_id=bill.id,
+            council_member_id=person.id,
+            sponsor_sequence=sequence,
+        )
         db.session.add(sponsorship)
         sequence += 1
         return sponsorship
 
     return impl()
+
 
 def test_calculate_bill_diffs():
     bill_1 = add_test_bill(1, "Enacted")
@@ -76,7 +80,9 @@ def test_calculate_bill_diffs():
 
     snapshots = {
         # This should change status, lose sponsor 2 and gain sponsor 3
-        bill_1.id: BillSnapshot("Committee", [council_member_1.id, council_member_2.id]),
+        bill_1.id: BillSnapshot(
+            "Committee", [council_member_1.id, council_member_2.id]
+        ),
         # This should be unchanged
         bill_2.id: BillSnapshot("Enacted", [council_member_3.id]),
     }
@@ -160,7 +166,9 @@ def test_email_subject__1_sponsor_added():
 def test_email_contents__sponsor_removed():
     bill = add_test_bill(1, "Enacted")
     diff = BillDiff(
-        old_status="Enacted", city_bill=bill.city_bill, removed_sponsor_names=["Brad Lander"]
+        old_status="Enacted",
+        city_bill=bill.city_bill,
+        removed_sponsor_names=["Brad Lander"],
     )
 
     subject = _get_bill_update_subject_line([diff])
