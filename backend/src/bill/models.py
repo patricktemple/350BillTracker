@@ -174,8 +174,22 @@ class StateBill(db.Model):
     # only keep the "active" version around at all in a table. this is simplest!! and it keeps other things cleaner... let's do this unless we don't need to do otherwise
 
 
+class StateChamberMixin:
+    # This is a bit confusing. The Senate and the Assembly each run separate websites,
+    # and each website can lookup both senate and assembly bills. So they're redundant
+    # websites with very different UI. Therefore senate and assembly bills each have a
+    # both assembly and senate websites.
+    @property
+    def senate_website_url(self):
+        return f"https://www.nysenate.gov/legislation/bills/{self.state_bill.session_year}/{self.base_print_no}"
+    
+    @property
+    def assembly_website_url(self):
+        # use urlpasr to construct it?
+        return f"https://nyassembly.gov/leg/?term={self.state_bill.session_year}&bn={self.base_print_no}"
+
 # TODO: Rename to SenateActiveBillVersion
-class SenateBill(db.Model):
+class SenateBill(db.Model, StateChamberMixin):
     __tablename__ = "senate_bills"
 
     id = Column(UUID, primary_key=True, default=uuid4) # unclear that this ID column is necessary if we have just one version at a time
@@ -190,7 +204,9 @@ class SenateBill(db.Model):
     )
 
 
-class AssemblyBill(db.Model):
+
+
+class AssemblyBill(db.Model, StateChamberMixin):
     __tablename__ = "assembly_bills"
 
     id = Column(UUID, primary_key=True, default=uuid4)
