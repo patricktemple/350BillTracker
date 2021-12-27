@@ -155,24 +155,51 @@ class StateBill(db.Model):
     bill_id = Column(UUID, ForeignKey(Bill.id), primary_key=True)
     bill = relationship(Bill, back_populates="state_bill", lazy="joined")
 
+    # The start of the 2-year legislative session this belongs to.
+    session_year = Column(Integer, nullable=False)
 
-class SenateBillVersion(db.Model):
-    __tablename__ = "senate_bill_versions"
+    # Is this a FK to SenateBillVersion?
+    # active_senate_version = Column(Text, nullable=False, default="")
+    # active_assembly_version = Column(Text, nullable=False, default="")
 
-    id = Column(UUID, primary_key=True)
-    bill_id = Column(UUID, ForeignKey(StateBill.bill_id), index=True)
-    version_name = Column(Text, nullable=False)
+    # make a relationship to active version
+
+    senate_bill = relationship("SenateBill", back_populates="state_bill", uselist=False)
+    assembly_bill = relationship("AssemblyBill", back_populates="state_bill", uselist=False)
+
+    # Foreign key options to the version
+    # 2021/S04251/A --> not great, it's a triple foreign key and the other two are not the real ID
+    # bill_id/A --> this works, as long as SenateBillVersion is a separate table from AssemblyBillVersion
+    # just have a foreign key to the active version: this could work, though you need a transaction to keep the two in sync. you end up with double foreign keys pointing vice-versa.
+    # only keep the "active" version around at all in a table. this is simplest!! and it keeps other things cleaner... let's do this unless we don't need to do otherwise
+
+
+# TODO: Rename to SenateActiveBillVersion
+class SenateBill(db.Model):
+    __tablename__ = "senate_bills"
+
+    id = Column(UUID, primary_key=True, default=uuid4) # unclear that this ID column is necessary if we have just one version at a time
+    bill_id = Column(UUID, ForeignKey(StateBill.bill_id), index=True) # todo make this unique (same below)
+    active_version_name = Column(Text, nullable=False)
+    status = Column(Text, nullable=False)
+    base_print_no = Column(Text, nullable=False)
+
+    state_bill = relationship(StateBill, back_populates="senate_bill")
     sponsorships = relationship(
         "SenateSponsorship", back_populates="senate_version"
     )
 
 
-class AssemblyBillVersion(db.Model):
-    __tablename__ = "assembly_bill_versions"
+class AssemblyBill(db.Model):
+    __tablename__ = "assembly_bills"
 
-    id = Column(UUID, primary_key=True)
+    id = Column(UUID, primary_key=True, default=uuid4)
     bill_id = Column(UUID, ForeignKey(StateBill.bill_id), index=True)
-    version_name = Column(Text, nullable=False)
+    active_version_name = Column(Text, nullable=False)
+    status = Column(Text, nullable=False)
+    base_print_no = Column(Text, nullable=False)
+
+    state_bill = relationship(StateBill, back_populates="assembly_bill")
     sponsorships = relationship(
         "AssemblySponsorship", back_populates="assembly_version"
     )

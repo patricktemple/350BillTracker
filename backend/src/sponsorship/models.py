@@ -4,10 +4,10 @@ from sqlalchemy import Column, ForeignKey, Integer, UniqueConstraint
 from sqlalchemy.orm import foreign, relationship, remote
 
 from ..bill.models import (
-    AssemblyBillVersion,
+    AssemblyBill,
     Bill,
     CityBill,
-    SenateBillVersion,
+    SenateBill,
 )
 from ..models import TIMESTAMP, UUID, db
 from ..person.models import AssemblyMember, CouncilMember, Person, Senator
@@ -72,13 +72,13 @@ CitySponsorship.person = relationship(
 class SenateSponsorship(db.Model):
     __tablename__ = "senate_sponsorships"
 
-    id = Column(UUID, primary_key=True)
+    id = Column(UUID, primary_key=True, default=uuid4)
 
     senate_version_id = Column(
-        UUID, ForeignKey(SenateBillVersion.id), nullable=False, index=True
+        UUID, ForeignKey(SenateBill.id), nullable=False, index=True
     )
     senate_version = relationship(
-        SenateBillVersion,
+        SenateBill,
         back_populates="sponsorships",
     )
 
@@ -94,13 +94,13 @@ class SenateSponsorship(db.Model):
 class AssemblySponsorship(db.Model):
     __tablename__ = "assembly_sponsorships"
 
-    id = Column(UUID, primary_key=True)
+    id = Column(UUID, primary_key=True, default=uuid4)
 
     assembly_version_id = Column(
-        UUID, ForeignKey(AssemblyBillVersion.id), nullable=False, index=True
+        UUID, ForeignKey(AssemblyBill.id), nullable=False, index=True
     )
     assembly_version = relationship(
-        AssemblyBillVersion,
+        AssemblyBill,
         back_populates="sponsorships",
     )
 

@@ -129,6 +129,9 @@ class Senator(db.Model):
 
     sponsorships = relationship("SenateSponsorship", back_populates="senator")
 
+    state_person_id = Column(Integer, nullable=False)
+    state_member_id = Column(Integer, nullable=False)
+
 
 class AssemblyMember(db.Model):
     """
@@ -145,6 +148,13 @@ class AssemblyMember(db.Model):
     person = relationship(
         "Person", back_populates="assembly_member", lazy="joined"
     )
+
+    # TODO: Consider unifying this table and senate table?
+    # TODO: Need to track people's terms better
+    state_person_id = Column(Integer, nullable=False)
+
+    # Unclear we also need the person ID. This is the one that we used to retrieve people based on sponsorships.
+    state_member_id = Column(Integer, nullable=False)
 
     sponsorships = relationship(
         "AssemblySponsorship", back_populates="assembly_member"
