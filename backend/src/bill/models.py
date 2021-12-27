@@ -3,6 +3,7 @@ from uuid import uuid4
 
 from sqlalchemy import Column, Enum, ForeignKey, Integer, Text
 from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 
 from ..models import TIMESTAMP, UUID, db
@@ -158,6 +159,9 @@ class StateBill(db.Model):
     # The start of the 2-year legislative session this belongs to.
     session_year = Column(Integer, nullable=False)
 
+    # Is this right? Or should it be on state chamber mixin?
+    summary = Column(Text, nullable=False)
+
     # Is this a FK to SenateBillVersion?
     # active_senate_version = Column(Text, nullable=False, default="")
     # active_assembly_version = Column(Text, nullable=False, default="")
@@ -175,6 +179,16 @@ class StateBill(db.Model):
 
 
 class StateChamberMixin:
+    id = Column(UUID, primary_key=True, default=uuid4) # unclear that this ID column is necessary if we have just one version at a time
+ 
+    active_version_name = Column(Text, nullable=False)
+    status = Column(Text, nullable=False)
+    base_print_no = Column(Text, nullable=False)
+
+    @declared_attr
+    def bill_id(self):
+       return Column(UUID, ForeignKey(StateBill.bill_id), index=True) # todo make this unique (same below)
+
     # This is a bit confusing. The Senate and the Assembly each run separate websites,
     # and each website can lookup both senate and assembly bills. So they're redundant
     # websites with very different UI. Therefore senate and assembly bills each have a
@@ -188,15 +202,9 @@ class StateChamberMixin:
         # use urlpasr to construct it?
         return f"https://nyassembly.gov/leg/?term={self.state_bill.session_year}&bn={self.base_print_no}"
 
-# TODO: Rename to SenateActiveBillVersion
+# todo comment about versions and stuff
 class SenateBill(db.Model, StateChamberMixin):
     __tablename__ = "senate_bills"
-
-    id = Column(UUID, primary_key=True, default=uuid4) # unclear that this ID column is necessary if we have just one version at a time
-    bill_id = Column(UUID, ForeignKey(StateBill.bill_id), index=True) # todo make this unique (same below)
-    active_version_name = Column(Text, nullable=False)
-    status = Column(Text, nullable=False)
-    base_print_no = Column(Text, nullable=False)
 
     state_bill = relationship(StateBill, back_populates="senate_bill")
     sponsorships = relationship(
@@ -204,16 +212,8 @@ class SenateBill(db.Model, StateChamberMixin):
     )
 
 
-
-
 class AssemblyBill(db.Model, StateChamberMixin):
     __tablename__ = "assembly_bills"
-
-    id = Column(UUID, primary_key=True, default=uuid4)
-    bill_id = Column(UUID, ForeignKey(StateBill.bill_id), index=True)
-    active_version_name = Column(Text, nullable=False)
-    status = Column(Text, nullable=False)
-    base_print_no = Column(Text, nullable=False)
 
     state_bill = relationship(StateBill, back_populates="assembly_bill")
     sponsorships = relationship(

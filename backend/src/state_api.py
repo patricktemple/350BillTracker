@@ -68,7 +68,8 @@ def import_bill(session_year, senate_print_no):
     # Right now this will just keep inserting duplicates
     bill = Bill(type=Bill.BillType.STATE, name=response['title'])
     bill.state_bill = StateBill(
-        session_year=session_year)
+        session_year=session_year,
+        summary=response['summary'])
     bill.state_bill.senate_bill = SenateBill(
         status=response['status']['statusDesc'],
         base_print_no=response['basePrintNo'],
@@ -103,6 +104,7 @@ def import_bill(session_year, senate_print_no):
 
     db.session.add(bill)
     db.session.commit()
+    return response
     
 def lookup_people(session_year):
     members = senate_get(f"members/{session_year}?limit=1000&full=true")
