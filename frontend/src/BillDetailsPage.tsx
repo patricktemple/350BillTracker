@@ -183,74 +183,65 @@ export default function BillDetailsPage(props: Props): ReactElement {
 
   return (
     <div>
-    <div className={styles.title}>{bill.name}</div>
-    <Form onSubmit={(e) => e.preventDefault()} className={styles.page}>
-      <>
-      <div className={styles.label}>
-          File
-        </div>
-        <div className={styles.content}>
-        {bill.cityBill!.file}</div>
-      <div className={styles.label}>
-          Official name:</div>
+      <div className={styles.title}>{bill.name}</div>
+      <Form onSubmit={(e) => e.preventDefault()} className={styles.page}>
+        <>
+          <div className={styles.label}>File</div>
+          <div className={styles.content}>{bill.cityBill!.file}</div>
+          <div className={styles.label}>Official name:</div>
 
-        <div className={styles.content}>
-        {bill.name}</div>
+          <div className={styles.content}>{bill.name}</div>
 
-        <div className={styles.label}>
-          Description</div>
-        <div className={styles.content}>
-        {bill.cityBill!.title}</div>
-        <div className={styles.label}>
-          Status
-        </div>
-        <div className={styles.content}>{bill.cityBill!.status}</div>
-      <div className={styles.label}>
-          Our nickname</div>
-        <div className={styles.content}>
-          <Form.Control
-            type="text"
-            size="sm"
-            placeholder='e.g. "Skip the stuff"'
-            value={formData.nickname}
-            onChange={handleNicknameChanged}
-          />
-        </div>
-        <div className={styles.label}>
-          <div>Sponsors{' '}
-            {positiveSponsors != null && <>({positiveSponsors.length})</>}:
-          </div>
-          <div style={{ fontSize: '0.8rem', fontStyle: 'italic' }}>
-            Note: Due to a Twitter bug, the Twitter search sometimes displays 0
-            results even when there should be should be matching tweets.
-            Refreshing the Twitter page often fixes this.
-          </div>
-        </div>
-        <div className={styles.sponsorList}>
-          {positiveSponsors == null ? (
-            'Loading...'
-          ) : (
-            <BillSponsorList
-              sponsorships={positiveSponsors}
-              twitterSearchTerms={formData.twitterSearchTerms}
+          <div className={styles.label}>Description</div>
+          <div className={styles.content}>{bill.cityBill!.title}</div>
+          <div className={styles.label}>Status</div>
+          <div className={styles.content}>{bill.cityBill!.status}</div>
+          <div className={styles.label}>Our nickname</div>
+          <div className={styles.content}>
+            <Form.Control
+              type="text"
+              size="sm"
+              placeholder='e.g. "Skip the stuff"'
+              value={formData.nickname}
+              onChange={handleNicknameChanged}
             />
-          )}
-        </div>
-        <div className={styles.nonSponsorLabel}>
-          Non-sponsors{' '}
-          {negativeSponsors != null && <>({negativeSponsors.length})</>}:
-        </div>
-        <div className={styles.nonSponsorList}>
-          {negativeSponsors == null ? (
-            'Loading...'
-          ) : (
-            <BillSponsorList
-              sponsorships={negativeSponsors}
-              twitterSearchTerms={formData.twitterSearchTerms}
-            />
-          )}
-        </div>
-      <div className={styles.label}>
+          </div>
+          <div className={styles.label}>
+            <div>
+              Sponsors{' '}
+              {positiveSponsors != null && <>({positiveSponsors.length})</>}:
+            </div>
+            <div style={{ fontSize: '0.8rem', fontStyle: 'italic' }}>
+              Note: Due to a Twitter bug, the Twitter search sometimes displays
+              0 results even when there should be should be matching tweets.
+              Refreshing the Twitter page often fixes this.
+            </div>
+          </div>
+          <div className={styles.sponsorList}>
+            {positiveSponsors == null ? (
+              'Loading...'
+            ) : (
+              <BillSponsorList
+                sponsorships={positiveSponsors}
+                twitterSearchTerms={formData.twitterSearchTerms}
+              />
+            )}
+          </div>
+          <div className={styles.nonSponsorLabel}>
+            Non-sponsors{' '}
+            {negativeSponsors != null && <>({negativeSponsors.length})</>}:
+          </div>
+          <div className={styles.nonSponsorList}>
+            {negativeSponsors == null ? (
+              'Loading...'
+            ) : (
+              <BillSponsorList
+                sponsorships={negativeSponsors}
+                twitterSearchTerms={formData.twitterSearchTerms}
+              />
+            )}
+          </div>
+          <div className={styles.label}>
             <div style={{ fontWeight: 'bold' }}>
               Attachments {attachments != null && <>({attachments.length})</>}:
             </div>
@@ -267,173 +258,176 @@ export default function BillDetailsPage(props: Props): ReactElement {
               handleAddAttachment={handleAddAttachment}
               onHide={() => setAddAttachmentModalOpen(false)}
             />
-        </div>
-        <div className={styles.content}>
-          {attachments == null ? (
-            'Loading...'
-          ) : (
-              <>{attachments.map((a) => (
-                <div key={a.id}>
-                  <a href={a.url} target="attachment">
-                    {a.name}
-                  </a>
-                  &nbsp;
-                  <a href="#" onClick={(e) => handleDeleteAttachment(e, a.id)}>
-                    [Remove]
-                  </a>
-                </div>
-              ))}</>
-          )}
-      </div>
-      <div className={styles.label}>
-          <div>
-            <div style={{ fontWeight: 'bold' }}>
-              Power hours{' '}
-              <span
-                onClick={() => setPowerHourHelpVisible(!powerHourHelpVisible)}
-                ref={powerHourHelpRef}
-                style={{ cursor: 'pointer' }}
+          </div>
+          <div className={styles.content}>
+            {attachments == null ? (
+              'Loading...'
+            ) : (
+              <>
+                {attachments.map((a) => (
+                  <div key={a.id}>
+                    <a href={a.url} target="attachment">
+                      {a.name}
+                    </a>
+                    &nbsp;
+                    <a
+                      href="#"
+                      onClick={(e) => handleDeleteAttachment(e, a.id)}
+                    >
+                      [Remove]
+                    </a>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+          <div className={styles.label}>
+            <div>
+              <div style={{ fontWeight: 'bold' }}>
+                Power hours{' '}
+                <span
+                  onClick={() => setPowerHourHelpVisible(!powerHourHelpVisible)}
+                  ref={powerHourHelpRef}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <MdHelpOutline />
+                </span>
+              </div>
+              <Overlay
+                target={powerHourHelpRef.current}
+                placement="right"
+                show={powerHourHelpVisible}
               >
-                <MdHelpOutline />
-              </span>
+                <Popover style={{ width: '500px', maxWidth: '500px' }}>
+                  <Popover.Header as="h3">Power hours</Popover.Header>
+                  <Popover.Body>
+                    <p>
+                      You can generate a Google Sheet for a Power Hour on this
+                      bill with the latest sponsorships and contact info.
+                    </p>
+                    <p className="mb-0">
+                      These sheets are designed for Power Hours involving calls
+                      to a bunch of legislators pushing them to sponsor the
+                      bill. For other kinds of Power Hour, such as calls to the
+                      governor or calls not related to a specific bill, this may
+                      not be useful.
+                    </p>
+                  </Popover.Body>
+                </Popover>
+              </Overlay>
+              {powerHours != null && (
+                <>
+                  <Button
+                    size="sm"
+                    variant="outline-secondary"
+                    onClick={() => setCreatePowerHourModalOpen(true)}
+                    className="mb-2 d-block"
+                  >
+                    Create power hour
+                  </Button>
+                  <CreatePowerHourModal
+                    bill={bill}
+                    oldPowerHours={powerHours}
+                    show={createPowerHourModalOpen}
+                    handlePowerHourCreated={handlePowerHourCreated}
+                    onHide={() => setCreatePowerHourModalOpen(false)}
+                  />
+                </>
+              )}
             </div>
+          </div>
+          <div className={styles.content}>
+            {powerHours == null ? (
+              'Loading...'
+            ) : (
+              <>
+                {powerHours.map((p, i) => (
+                  <div key={p.id}>
+                    <a href={p.spreadsheetUrl} target="_blank" rel="noreferrer">
+                      {p.title}
+                    </a>
+                    {i == powerHours.length - 1 && ' (latest)'}
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+          <div className={styles.label}>
+            Twitter search terms{' '}
+            <span
+              onClick={() =>
+                setTwitterSearchHelpVisible(!twitterSearchHelpVisible)
+              }
+              ref={twitterSearchHelpRef}
+              style={{ cursor: 'pointer' }}
+            >
+              <MdHelpOutline />
+            </span>
             <Overlay
-              target={powerHourHelpRef.current}
+              target={twitterSearchHelpRef.current}
               placement="right"
-              show={powerHourHelpVisible}
+              show={twitterSearchHelpVisible}
             >
               <Popover style={{ width: '500px', maxWidth: '500px' }}>
-                <Popover.Header as="h3">Power hours</Popover.Header>
+                <Popover.Header as="h3">Twitter search keywords</Popover.Header>
                 <Popover.Body>
                   <p>
-                    You can generate a Google Sheet for a Power Hour on this
-                    bill with the latest sponsorships and contact info.
+                    It&apos;s often helpful to search council members&apos;
+                    Twitter accounts for keywords related to a bill, while
+                    researching their stance on the bill.
                   </p>
                   <p className="mb-0">
-                    These sheets are designed for Power Hours involving calls to
-                    a bunch of legislators pushing them to sponsor the bill. For
-                    other kinds of Power Hour, such as calls to the governor or
-                    calls not related to a specific bill, this may not be
-                    useful.
+                    You can keywords for the bill here, comma-separated. Then
+                    all the <TwitterIcon style={{ width: '1rem' }} /> icons
+                    above, next to the council members, will link to a search of
+                    that council member&apos;s Twitter history for those terms.
+                    (In the Power Hour spreadsheets, the{' '}
+                    <em>Relevant tweets</em> links do these same searches.)
                   </p>
                 </Popover.Body>
               </Popover>
             </Overlay>
-            {powerHours != null && (
-              <>
-                <Button
-                  size="sm"
-                  variant="outline-secondary"
-                  onClick={() => setCreatePowerHourModalOpen(true)}
-                  className="mb-2 d-block"
-                >
-                  Create power hour
-                </Button>
-                <CreatePowerHourModal
-                  bill={bill}
-                  oldPowerHours={powerHours}
-                  show={createPowerHourModalOpen}
-                  handlePowerHourCreated={handlePowerHourCreated}
-                  onHide={() => setCreatePowerHourModalOpen(false)}
-                />
-              </>
-            )}
           </div>
-        </div>
-        <div className={styles.content}>
-          {powerHours == null ? (
-            'Loading...'
-          ) : (
-            <>
-              {powerHours.map((p, i) => (
-                <div key={p.id}>
-                  <a href={p.spreadsheetUrl} target="_blank" rel="noreferrer">
-                    {p.title}
-                  </a>
-                  {i == powerHours.length - 1 && ' (latest)'}
-                </div>
-              ))}
-            </>
-          )}
-        </div>
-        <div className={styles.label}>
-          Twitter search terms{' '}
-          <span
-            onClick={() =>
-              setTwitterSearchHelpVisible(!twitterSearchHelpVisible)
-            }
-            ref={twitterSearchHelpRef}
-            style={{ cursor: 'pointer' }}
-          >
-            <MdHelpOutline />
-          </span>
-          <Overlay
-            target={twitterSearchHelpRef.current}
-            placement="right"
-            show={twitterSearchHelpVisible}
-          >
-            <Popover style={{ width: '500px', maxWidth: '500px' }}>
-              <Popover.Header as="h3">Twitter search keywords</Popover.Header>
-              <Popover.Body>
-                <p>
-                  It&apos;s often helpful to search council members&apos;
-                  Twitter accounts for keywords related to a bill, while
-                  researching their stance on the bill.
-                </p>
-                <p className="mb-0">
-                  You can keywords for the bill here, comma-separated. Then all
-                  the <TwitterIcon style={{ width: '1rem' }} /> icons above,
-                  next to the council members, will link to a search of that
-                  council member&apos;s Twitter history for those terms. (In the
-                  Power Hour spreadsheets, the <em>Relevant tweets</em> links do
-                  these same searches.)
-                </p>
-              </Popover.Body>
-            </Popover>
-          </Overlay>
-        </div>
-        <div className={styles.content}>
-          <Form.Control
-            type="text"
-            size="sm"
-            placeholder="Enter comma-separated terms, e.g. solar, climate, fossil fuels"
-            value={twitterSearchTermsRaw}
-            onChange={handleTwitterSearchTermsChanged}
-          />
-        </div>
-        <div className={styles.label}>
-          Our notes
-        </div>
-        <div className={styles.content}>
-          <Form.Control
-            as="textarea"
-            rows={3}
-            size="sm"
-            value={formData.notes}
-            placeholder="Add our notes about this bill"
-            onChange={handleNotesChanged}
-          />
-        </div>
-      <div className={styles.label}>
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            onClick={handleRemoveBill}
-            className="mt-2 mb-2"
-          >
-            Remove bill from tracker
-          </Button>
-          <ConfirmDeleteBillModel
-            show={showDeleteBillConfirmation}
-            handleConfirm={handleConfirmRemoveBill}
-            handleCloseWithoutConfirm={() =>
-              setShowDeleteBillConfirmation(false)
-            }
-          />
-      <div style={{ fontStyle: 'italic' }}>{saveStatus}</div>
-        </div>
-      </>
-    </Form>
+          <div className={styles.content}>
+            <Form.Control
+              type="text"
+              size="sm"
+              placeholder="Enter comma-separated terms, e.g. solar, climate, fossil fuels"
+              value={twitterSearchTermsRaw}
+              onChange={handleTwitterSearchTermsChanged}
+            />
+          </div>
+          <div className={styles.label}>Our notes</div>
+          <div className={styles.content}>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              size="sm"
+              value={formData.notes}
+              placeholder="Add our notes about this bill"
+              onChange={handleNotesChanged}
+            />
+          </div>
+          <div className={styles.label}>
+            <Button
+              variant="outline-secondary"
+              size="sm"
+              onClick={handleRemoveBill}
+              className="mt-2 mb-2"
+            >
+              Remove bill from tracker
+            </Button>
+            <ConfirmDeleteBillModel
+              show={showDeleteBillConfirmation}
+              handleConfirm={handleConfirmRemoveBill}
+              handleCloseWithoutConfirm={() =>
+                setShowDeleteBillConfirmation(false)
+              }
+            />
+            <div style={{ fontStyle: 'italic' }}>{saveStatus}</div>
+          </div>
+        </>
+      </Form>
     </div>
   );
 }

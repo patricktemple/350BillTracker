@@ -17,7 +17,10 @@ interface StateChamberDetailsProps {
   chamberName: string;
 }
 
-function StateChamberDetails({ chamberBill, chamberName }: StateChamberDetailsProps) {
+function StateChamberDetails({
+  chamberBill,
+  chamberName
+}: StateChamberDetailsProps) {
   if (!chamberBill) {
     return <div className="mt-3">{chamberName} bill not yet introduced</div>;
   }
@@ -44,9 +47,7 @@ export default function StateBillListItem({ bill }: Props) {
   const stateBill = bill.stateBill!;
   return (
     <div className={styles.itemContainer}>
-      <StateIcon
-        className={styles.billTypeIcon}
-      />
+      <StateIcon className={styles.billTypeIcon} />
       <div
         className={styles.billDetails}
         onClick={() => history.push(`/bills/${bill.id}`)}

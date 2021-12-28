@@ -19,10 +19,11 @@ export default function CityBillListItem({ bill }: Props) {
   // TODO: Don't wrap this in <>, use a self-contained proper layout
   const cityBill = bill.cityBill!;
   return (
-    <div className={styles.itemContainer} 
-    onClick={() => history.push(`/bills/${bill.id}`)}>
-      <CityIcon className={styles.billTypeIcon}
-      />
+    <div
+      className={styles.itemContainer}
+      onClick={() => history.push(`/bills/${bill.id}`)}
+    >
+      <CityIcon className={styles.billTypeIcon} />
       <div className={styles.billDetails}>
         <div style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
           {bill.nickname || bill.name}

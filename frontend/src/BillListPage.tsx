@@ -60,13 +60,15 @@ export default function BillListPage(): ReactElement {
               </Button>
             </div>
             <div className={styles.billList}>
-              {bills.map((bill) => <>{
-                bill.stateBill ? (
-                  <StateBillListItem bill={bill} />
-                ) : (
-                  <CityBillListItem bill={bill} />
-                )
-              }</>)}
+              {bills.map((bill) => (
+                <>
+                  {bill.stateBill ? (
+                    <StateBillListItem bill={bill} />
+                  ) : (
+                    <CityBillListItem bill={bill} />
+                  )}
+                </>
+              ))}
             </div>
             <SearchBillsModal
               show={addBillVisible}
