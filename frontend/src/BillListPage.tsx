@@ -22,30 +22,7 @@ export default function BillListPage(): ReactElement {
 
   function loadBillList() {
     apiFetch('/api/saved-bills').then((response) => {
-      setBills([
-        ...response,
-        {
-          id: '1234',
-          name: 'Climate and Community Investment Act',
-          tracked: true,
-          notes: '',
-          nickname: '',
-          type: 'STATE',
-          twitterSearchTerms: [],
-          cityBill: null,
-          stateBill: {
-            senateBill: {
-              basePrintNo: 'S0462',
-              status: 'In Senate Committee',
-              activeVersionName: 'A',
-              sponsorCount: 25
-            },
-            assemblyBill: null,
-            sessionYear: 2021,
-            summary: 'Enacts the blah blah'
-          }
-        }
-      ]);
+      setBills(response);
     });
   }
 

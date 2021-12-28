@@ -43,9 +43,8 @@ export default function StateBillListItem({ bill }: Props) {
 
   const stateBill = bill.stateBill!;
   return (
-    <div className={styles.listContainer}>
+    <div className={styles.itemContainer}>
       <StateIcon
-        style={{ width: '60px', height: '60px', marginRight: '10px' }}
         className={styles.billTypeIcon}
       />
       <div
@@ -55,11 +54,11 @@ export default function StateBillListItem({ bill }: Props) {
         <div style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
           {bill.nickname || bill.name}
         </div>
-        <ChamberDetails
+        <StateChamberDetails
           chamberName="Senate"
           chamberBill={stateBill.senateBill}
         />
-        <ChamberDetails
+        <StateChamberDetails
           chamberName="Assembly"
           chamberBill={stateBill.assemblyBill}
         />

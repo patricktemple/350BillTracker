@@ -145,6 +145,11 @@ class CityBill(db.Model):
     # Committee name
     council_body = Column(Text)
 
+    @property
+    def sponsor_count(self):
+        # TODO implement
+        return 0
+
 
 class StateBill(db.Model):
     """
@@ -184,6 +189,11 @@ class StateChamberMixin:
     active_version_name = Column(Text, nullable=False)
     status = Column(Text, nullable=False)
     base_print_no = Column(Text, nullable=False)
+
+    @property
+    def sponsor_count(self):
+        # TODO: Implement
+        return 0
 
     @declared_attr
     def bill_id(self):

@@ -1,13 +1,18 @@
 @import './_variables.scss';
 
 .itemContainer {
-    // display: grid;
-    // grid-template-rows: 1fr;
-    // grid-template-columns: 100px 1fr;
-    // gap: 10px;
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 90px 1fr;
 
-    // border: 1px solid $palette-medium-blue;
-    // cursor: pointer;
+    border-top: 1px solid $palette-light-blue;
+    border-right: 1px solid $palette-light-blue;
+    border-left: 1px solid $palette-light-blue;
+    cursor: pointer;
+}
+
+.itemContainer:last-of-type {
+    border-bottom: 1px solid $palette-light-blue;
 }
 
 
@@ -15,17 +20,22 @@
     background-color: $palette-light-blue;
 }
 
-.itemContainer > * {
-    border: 1px solid black;
-}
+// .itemContainer > * {
+//     border: 1px solid black;
+// }
 
 .billTypeIcon {
-    // grid-column-start: 1;
-    // grid-row-start: 1;
+    grid-column-start: 1;
+    grid-row-start: 1;
+    width: 70px;
+    height: 70px;
+    justify-self: center;
+    margin-top: 10px;
+    fill: $palette-dark-blue;
 }
 
 .billDetails {
-    // grid-column-start: 2;
-    // grid-row-start: 2;
+    grid-column-start: 2;
+    grid-row-start: 1;
 }
   

@@ -11,23 +11,31 @@ class CityBillSchema(CamelCaseSchema):
     status = fields.String(dump_only=True)
     council_body = fields.String(dump_only=True)
     city_bill_id = fields.Integer(dump_only=True)
+    sponsor_count = fields.Integer(dump_only=True)
 
 
 class TrackCityBillSchema(CamelCaseSchema):
     city_bill_id = fields.Integer()
 
 
-class SenateBillVersionSchema(CamelCaseSchema):
+class SenateBillSchema(CamelCaseSchema):
     version_name = fields.String(dump_only=True)
+    sponsor_count = fields.Integer(dump_only=True)
+    status = fields.String(dump_only=True)
+    base_print_no = fields.String(dump_only=True)
 
 
-class AssemblyBillVersionSchema(CamelCaseSchema):
+# Todo unitfy
+class AssemblyBillSchema(CamelCaseSchema):
     version_name = fields.String(dump_only=True)
+    status = fields.String(dump_only=True)
+    base_print_no = fields.String(dump_only=True)
+    sponsor_count = fields.Integer(dump_only=True)
 
 
 class StateBillSchema(CamelCaseSchema):
-    active_senate_version = fields.Nested(SenateBillVersionSchema)
-    active_assembly_version = fields.Nested(AssemblyBillVersionSchema)
+    senate_bill = fields.Nested(SenateBillSchema)
+    assembly_bill = fields.Nested(AssemblyBillSchema)
 
 
 class BillSchema(CamelCaseSchema):
