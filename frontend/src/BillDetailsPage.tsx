@@ -20,7 +20,10 @@ import { ReactComponent as TwitterIcon } from './assets/twitter.svg';
 
 interface Props {
   bill: Bill;
-  handleRemoveBill: () => void;
+}
+
+interface Props {
+  match: { params: { billId: number } };
 }
 
 interface FormData {
@@ -29,21 +32,22 @@ interface FormData {
   twitterSearchTerms: string[];
 }
 
-export default function BillDetails(props: Props): ReactElement {
-  const { bill } = props;
+export default function BillDetailsPage(props: Props): ReactElement {
+  const billId = props.match.params.billId;
+
+  const [bill, setBill] = useState<Bill | null>(null);
 
   const [formData, setFormData, saveStatus] = useAutosavingFormData<FormData>(
-    '/api/saved-bills/' + bill.id,
+    '/api/saved-bills/' + billId,
     {
-      notes: bill.notes,
-      nickname: bill.nickname,
-      twitterSearchTerms: bill.twitterSearchTerms
+      notes: '',
+      nickname: '',
+      twitterSearchTerms: []
     }
   );
 
-  const [twitterSearchTermsRaw, setTwitterSearchTermsRaw] = useState<string>(
-    bill.twitterSearchTerms.join(', ')
-  );
+  const [twitterSearchTermsRaw, setTwitterSearchTermsRaw] =
+    useState<string>('');
 
   const [sponsorships, setSponsorships] = useState<CitySponsorship[] | null>(
     null
@@ -61,25 +65,31 @@ export default function BillDetails(props: Props): ReactElement {
   const [createPowerHourModalOpen, setCreatePowerHourModalOpen] =
     useState<boolean>(false);
 
-  const [createPhoneBankInProgress, setCreatePhoneBankInProgress] =
-    useState<boolean>(false);
-
   const apiFetch = useApiFetch();
 
   function loadAttachments() {
-    apiFetch(`/api/saved-bills/${bill.id}/attachments`).then((response) => {
+    apiFetch(`/api/saved-bills/${billId}/attachments`).then((response) => {
       setAttachments(response);
     });
   }
 
   function loadPowerHours() {
-    apiFetch(`/api/saved-bills/${bill.id}/power-hours`).then((response) => {
+    apiFetch(`/api/saved-bills/${billId}/power-hours`).then((response) => {
       setPowerHours(response);
     });
   }
 
   useMountEffect(() => {
-    apiFetch(`/api/city-bills/${bill.id}/sponsorships`).then((response) => {
+    apiFetch(`/api/saved-bills/${billId}`).then((response) => {
+      setBill(response);
+      setFormData({
+        notes: response.notes,
+        nickname: response.nickname,
+        twitterSearchTerms: response.twitterSeachTerms
+      });
+      setTwitterSearchTermsRaw(response.twitterSearchTerms.join(','));
+    });
+    apiFetch(`/api/city-bills/${billId}/sponsorships`).then((response) => {
       setSponsorships(response);
     });
   });
@@ -113,7 +123,7 @@ export default function BillDetails(props: Props): ReactElement {
 
   function handleAddAttachment(description: string, url: string) {
     setAddAttachmentModalOpen(false);
-    apiFetch(`/api/saved-bills/${bill.id}/attachments`, {
+    apiFetch(`/api/saved-bills/${billId}/attachments`, {
       method: 'POST',
       body: { url, name: description }
     }).then((response) => {
@@ -137,7 +147,12 @@ export default function BillDetails(props: Props): ReactElement {
 
   function handleConfirmRemoveBill() {
     setShowDeleteBillConfirmation(false);
-    props.handleRemoveBill();
+    apiFetch(`/api/saved-bills/` + billId, {
+      method: 'DELETE'
+    }).then((response) => {
+      window.alert('bill is gone');
+      // TODO
+    });
   }
 
   function handlePowerHourCreated() {
@@ -158,6 +173,10 @@ export default function BillDetails(props: Props): ReactElement {
   const twitterSearchHelpRef = useRef<HTMLSpanElement>(null);
   const [twitterSearchHelpVisible, setTwitterSearchHelpVisible] =
     useState<boolean>(false);
+
+  if (!bill) {
+    return <div>Loading</div>; // TODO improve
+  }
 
   return (
     <Form onSubmit={(e) => e.preventDefault()}>
@@ -316,14 +335,11 @@ export default function BillDetails(props: Props): ReactElement {
               <>
                 <Button
                   size="sm"
-                  disabled={createPhoneBankInProgress}
                   variant="outline-secondary"
                   onClick={() => setCreatePowerHourModalOpen(true)}
                   className="mb-2 d-block"
                 >
-                  {createPhoneBankInProgress
-                    ? 'Generating sheet...'
-                    : 'Create power hour'}
+                  Create power hour
                 </Button>
                 <CreatePowerHourModal
                   bill={bill}

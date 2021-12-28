@@ -29,6 +29,16 @@ def bills():
     return BillSchema(many=True).jsonify(bills)
 
 
+# TODO test
+# TODO: have this autoload the sponsorships, attachments etc? and get rid of those endpoints perhaps
+# TODO: Rename to not be saved-bills?
+@app.route("/api/saved-bills/<uuid:bill_id>", methods=["GET"])
+@auth_required
+def get_bill(bill_id):
+    bill = Bill.query.get(bill_id)
+    return BillSchema().jsonify(bill)
+
+
 # TODO: Rename to city-bills?
 @app.route("/api/saved-bills", methods=["POST"])
 @auth_required

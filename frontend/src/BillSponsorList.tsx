@@ -11,15 +11,18 @@ interface Props {
 }
 
 function getTwitterSearchUrl(searchTerms: string[], twitterHandle: string) {
+  return '';
+  // TODO: fix this
+
   // Need to keep this in sync with the backend implementation
-  const queryTerms = searchTerms
-    .map((term: string) => `"${term}"`)
-    .join(' OR ');
-  const fullQuery = `(from:${twitterHandle}) ${queryTerms}`;
-  return (
-    'https://twitter.com/search?' +
-    new URLSearchParams({ q: fullQuery }).toString()
-  );
+  // const queryTerms = searchTerms
+  //   .map((term: string) => `"${term}"`)
+  //   .join(' OR ');
+  // const fullQuery = `(from:${twitterHandle}) ${queryTerms}`;
+  // return (
+  //   'https://twitter.com/search?' +
+  //   new URLSearchParams({ q: fullQuery }).toString()
+  // );
 }
 
 export default function BillSponsorList(props: Props) {
