@@ -1,11 +1,8 @@
 import React, { ReactElement, useState, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
-import Stack from 'react-bootstrap/Stack';
 import Form from 'react-bootstrap/Form';
 import { Bill, CitySponsorship, BillAttachment, PowerHour } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import AddAttachmentModal from './AddAttachmentModal';
 import useAutosavingFormData from './utils/useAutosavingFormData';
 import ConfirmDeleteBillModel from './ConfirmDeleteBillModal';
@@ -15,6 +12,7 @@ import BillSponsorList from './BillSponsorList';
 import Popover from 'react-bootstrap/Popover';
 import Overlay from 'react-bootstrap/Overlay';
 import { MdHelpOutline } from 'react-icons/md';
+import styles from './style/BillDetailsPage.module.scss';
 
 import { ReactComponent as TwitterIcon } from './assets/twitter.svg';
 
@@ -32,6 +30,11 @@ interface FormData {
   twitterSearchTerms: string[];
 }
 
+/* 
+1. Rewrite this to use CSS grid instead of bootstrap grid
+2. Factor out all the common parts, and put the city-specific parts into a city component
+
+*/
 export default function BillDetailsPage(props: Props): ReactElement {
   const billId = props.match.params.billId;
 
@@ -179,36 +182,32 @@ export default function BillDetailsPage(props: Props): ReactElement {
   }
 
   return (
-    <Form onSubmit={(e) => e.preventDefault()}>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          File:
-        </Col>
-        <Col>{bill.cityBill!.file}</Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Official name:
-        </Col>
-        <Col>{bill.name}</Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Description:
-        </Col>
-        <Col>{bill.cityBill!.title}</Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Status:
-        </Col>
-        <Col>{bill.cityBill!.status}</Col>
-      </Row>
-      <Form.Group as={Row} className="mb-2">
-        <Form.Label column lg={2} style={{ fontWeight: 'bold' }}>
-          Our nickname:
-        </Form.Label>
-        <Col>
+    <div>
+    <div className={styles.title}>{bill.name}</div>
+    <Form onSubmit={(e) => e.preventDefault()} className={styles.page}>
+      <>
+      <div className={styles.label}>
+          File
+        </div>
+        <div className={styles.content}>
+        {bill.cityBill!.file}</div>
+      <div className={styles.label}>
+          Official name:</div>
+
+        <div className={styles.content}>
+        {bill.name}</div>
+
+        <div className={styles.label}>
+          Description</div>
+        <div className={styles.content}>
+        {bill.cityBill!.title}</div>
+        <div className={styles.label}>
+          Status
+        </div>
+        <div className={styles.content}>{bill.cityBill!.status}</div>
+      <div className={styles.label}>
+          Our nickname</div>
+        <div className={styles.content}>
           <Form.Control
             type="text"
             size="sm"
@@ -216,12 +215,9 @@ export default function BillDetailsPage(props: Props): ReactElement {
             value={formData.nickname}
             onChange={handleNicknameChanged}
           />
-        </Col>
-      </Form.Group>
-      <Row className="mb-2">
-        <Col lg={2}>
-          <div style={{ fontWeight: 'bold' }}>
-            Sponsors{' '}
+        </div>
+        <div className={styles.label}>
+          <div>Sponsors{' '}
             {positiveSponsors != null && <>({positiveSponsors.length})</>}:
           </div>
           <div style={{ fontSize: '0.8rem', fontStyle: 'italic' }}>
@@ -229,8 +225,8 @@ export default function BillDetailsPage(props: Props): ReactElement {
             results even when there should be should be matching tweets.
             Refreshing the Twitter page often fixes this.
           </div>
-        </Col>
-        <Col>
+        </div>
+        <div className={styles.sponsorList}>
           {positiveSponsors == null ? (
             'Loading...'
           ) : (
@@ -239,12 +235,12 @@ export default function BillDetailsPage(props: Props): ReactElement {
               twitterSearchTerms={formData.twitterSearchTerms}
             />
           )}
-        </Col>
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
+        </div>
+        <div className={styles.nonSponsorLabel}>
           Non-sponsors{' '}
           {negativeSponsors != null && <>({negativeSponsors.length})</>}:
-        </Col>
-        <Col>
+        </div>
+        <div className={styles.nonSponsorList}>
           {negativeSponsors == null ? (
             'Loading...'
           ) : (
@@ -253,11 +249,8 @@ export default function BillDetailsPage(props: Props): ReactElement {
               twitterSearchTerms={formData.twitterSearchTerms}
             />
           )}
-        </Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2}>
-          <div>
+        </div>
+      <div className={styles.label}>
             <div style={{ fontWeight: 'bold' }}>
               Attachments {attachments != null && <>({attachments.length})</>}:
             </div>
@@ -274,14 +267,12 @@ export default function BillDetailsPage(props: Props): ReactElement {
               handleAddAttachment={handleAddAttachment}
               onHide={() => setAddAttachmentModalOpen(false)}
             />
-          </div>
-        </Col>
-        <Col>
+        </div>
+        <div className={styles.content}>
           {attachments == null ? (
             'Loading...'
           ) : (
-            <Stack direction="vertical">
-              {attachments.map((a) => (
+              <>{attachments.map((a) => (
                 <div key={a.id}>
                   <a href={a.url} target="attachment">
                     {a.name}
@@ -291,13 +282,10 @@ export default function BillDetailsPage(props: Props): ReactElement {
                     [Remove]
                   </a>
                 </div>
-              ))}
-            </Stack>
+              ))}</>
           )}
-        </Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2}>
+      </div>
+      <div className={styles.label}>
           <div>
             <div style={{ fontWeight: 'bold' }}>
               Power hours{' '}
@@ -351,12 +339,12 @@ export default function BillDetailsPage(props: Props): ReactElement {
               </>
             )}
           </div>
-        </Col>
-        <Col>
+        </div>
+        <div className={styles.content}>
           {powerHours == null ? (
             'Loading...'
           ) : (
-            <Stack direction="vertical">
+            <>
               {powerHours.map((p, i) => (
                 <div key={p.id}>
                   <a href={p.spreadsheetUrl} target="_blank" rel="noreferrer">
@@ -365,12 +353,10 @@ export default function BillDetailsPage(props: Props): ReactElement {
                   {i == powerHours.length - 1 && ' (latest)'}
                 </div>
               ))}
-            </Stack>
+            </>
           )}
-        </Col>
-      </Row>
-      <Form.Group as={Row} className="mb-2">
-        <Form.Label column lg={2} style={{ fontWeight: 'bold' }}>
+        </div>
+        <div className={styles.label}>
           Twitter search terms{' '}
           <span
             onClick={() =>
@@ -405,8 +391,8 @@ export default function BillDetailsPage(props: Props): ReactElement {
               </Popover.Body>
             </Popover>
           </Overlay>
-        </Form.Label>
-        <Col>
+        </div>
+        <div className={styles.content}>
           <Form.Control
             type="text"
             size="sm"
@@ -414,13 +400,11 @@ export default function BillDetailsPage(props: Props): ReactElement {
             value={twitterSearchTermsRaw}
             onChange={handleTwitterSearchTermsChanged}
           />
-        </Col>
-      </Form.Group>
-      <Form.Group as={Row} className="mb-2">
-        <Form.Label column lg={2} style={{ fontWeight: 'bold' }}>
-          Our notes:
-        </Form.Label>
-        <Col>
+        </div>
+        <div className={styles.label}>
+          Our notes
+        </div>
+        <div className={styles.content}>
           <Form.Control
             as="textarea"
             rows={3}
@@ -429,10 +413,8 @@ export default function BillDetailsPage(props: Props): ReactElement {
             placeholder="Add our notes about this bill"
             onChange={handleNotesChanged}
           />
-        </Col>
-      </Form.Group>
-      <Row className="mt-3 mb-2">
-        <Col>
+        </div>
+      <div className={styles.label}>
           <Button
             variant="outline-secondary"
             size="sm"
@@ -448,9 +430,10 @@ export default function BillDetailsPage(props: Props): ReactElement {
               setShowDeleteBillConfirmation(false)
             }
           />
-        </Col>
-      </Row>
       <div style={{ fontStyle: 'italic' }}>{saveStatus}</div>
+        </div>
+      </>
     </Form>
+    </div>
   );
 }

@@ -147,7 +147,7 @@ class CityBill(db.Model):
 
     @property
     def sponsor_count(self):
-        # TODO implement
+        # TODO
         return 0
 
 
