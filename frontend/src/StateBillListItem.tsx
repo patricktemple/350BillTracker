@@ -12,12 +12,12 @@ import { useHistory } from 'react-router-dom';
 import styles from './style/BillListItem.module.scss';
 // TODO: Buy these icons!!!
 
-interface ChamberDetailsProps {
+interface StateChamberDetailsProps {
   chamberBill: StateChamberBill | null;
   chamberName: string;
 }
 
-function ChamberDetails({ chamberBill, chamberName }: ChamberDetailsProps) {
+function StateChamberDetails({ chamberBill, chamberName }: StateChamberDetailsProps) {
   if (!chamberBill) {
     return <div className="mt-3">{chamberName} bill not yet introduced</div>;
   }
