@@ -37,39 +37,38 @@ def senate_get(path: str, **params):
 
 # TO get a bill:
 
-# def get_all_amendment_same_as(print_no):
-#     response = senate_get(f"bills/{CCIA_TERM}/{print_no}", view="no_fulltext")
-#     amendments = list(response['amendments']['items'].values())
-#     same_as = []
-#     for a in amendments:
-#         if 'sameAs' in a:
-#             items = a['sameAs']['items']
-#             if items:
-#                 # NOTE: This does not
-#                 same_as.extend([i['basePrintNo'] for i in items])
-#             else:
-#                 same_as.append('none')
+def print_status(print_no):
+    senate_response = senate_get(f"bills/{CCIA_TERM}/{print_no}", view="no_fulltext")
+    amendments = list(senate_response['amendments']['items'].values())
+    same_as = []
+    for a in amendments:
+        if 'sameAs' in a:
+            items = a['sameAs']['items']
+            if items:
+                # NOTE: This does not
+                base_print_no = items[0]['basePrintNo']
+                assembly_response = senate_get(f"bills/2021/{base_print_no}", view="no_fulltext")
+                print(f"{print_no}\t{senate_response['status']['statusDesc']}\t{senate_response['billType']['resolution']}\t{base_print_no}\t{assembly_response['status']['statusDesc']}\t{assembly_response['billType']['resolution']}")
+                return
     
-#     # if same_as:
-#     #     first = same_as[0]
-#     #     for i in range(1, len(same_as)):
-#     #         if same_as[i] != first:
-#     #             print(f"Not equal! {print_no}")
-#     #             break
-#     print(same_as)
+    # if same_as:
+    #     first = same_as[0]
+    #     for i in range(1, len(same_as)):
+    #         if same_as[i] != first:
+    #             print(f"Not equal! {print_no}")
+    #             break
 
-# def do():
-#     for i in range(4000, 4270):
-#         get_all_amendment_same_as(f"S{i}")
+def do():
+    for i in range(4000, 4270):
+        print_status(f"S{i}")
     
 def import_bill(session_year, senate_print_no):
     response = senate_get(f"bills/{session_year}/{senate_print_no}", view="no_fulltext")
 
     # Right now this will just keep inserting duplicates
-    bill = Bill(type=Bill.BillType.STATE, name=response['title'])
+    bill = Bill(type=Bill.BillType.STATE, name=response['title'], description=response['summary'])
     bill.state_bill = StateBill(
-        session_year=session_year,
-        summary=response['summary'])
+        session_year=session_year)
     bill.state_bill.senate_bill = SenateBill(
         status=response['status']['statusDesc'],
         base_print_no=response['basePrintNo'],

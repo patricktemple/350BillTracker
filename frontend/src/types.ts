@@ -5,7 +5,6 @@ export type Uuid = string;
 export type BillType = 'CITY' | 'STATE';
 
 export interface CityBill {
-  title: string;
   status: string;
   file: string;
   cityBillId: number;
@@ -31,6 +30,7 @@ export interface Bill {
   // Non-editable fields
   id: string;
   name: string;
+  description: string;
   tracked: boolean;
 
   // Editable fields

@@ -121,6 +121,7 @@ def _update_bill(bill):
     )
 
     bill.name = bill_data["name"]
+    bill.description = bill_data['description']
     for key in bill_data["city_bill"].keys():
         setattr(bill.city_bill, key, bill_data["city_bill"][key])
 

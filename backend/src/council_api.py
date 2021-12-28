@@ -39,10 +39,10 @@ def _convert_matter_to_bill(matter):
     return {
         "type": Bill.BillType.CITY,
         "name": matter["MatterName"],
+        "description": matter["MatterTitle"],
         "city_bill": {
             "file": matter["MatterFile"],
             "council_body": matter["MatterBodyName"],
-            "title": matter["MatterTitle"],
             "city_bill_id": matter["MatterId"],
             "intro_date": datetime.fromisoformat(
                 matter["MatterIntroDate"]

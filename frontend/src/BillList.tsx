@@ -27,7 +27,7 @@ function BillListRow(props: {
     <tr key={bill.cityBill!.cityBillId}>
       <td>{bill.cityBill!.file}</td>
       <td>{bill.name}</td>
-      <td>{bill.cityBill!.title}</td>
+      <td>{bill.description}</td>
       <td>{bill.cityBill!.status}</td>
       <td>{bill.cityBill!.councilBody}</td>
       <td>

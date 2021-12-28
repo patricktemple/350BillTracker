@@ -7,7 +7,6 @@ from .models import Bill
 
 class CityBillSchema(CamelCaseSchema):
     file = fields.String(dump_only=True)
-    title = fields.String(dump_only=True)
     status = fields.String(dump_only=True)
     council_body = fields.String(dump_only=True)
     city_bill_id = fields.Integer(dump_only=True)
@@ -34,6 +33,11 @@ class BillSchema(CamelCaseSchema):
     # Data pulled from the API
     id = fields.UUID(dump_only=True)
     name = fields.String(dump_only=True)
+    description = fields.String(dump_only=True)
+
+    # Derived data from either city or state bill
+    status = fields.String(dump_only=True)
+    code_name = fields.String(dump_only=True)
 
     # Data that we track
     tracked = fields.Boolean(dump_only=True)

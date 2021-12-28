@@ -193,7 +193,7 @@ export default function BillDetailsPage(props: Props): ReactElement {
           <div className={styles.content}>{bill.name}</div>
 
           <div className={styles.label}>Description</div>
-          <div className={styles.content}>{bill.cityBill!.title}</div>
+          <div className={styles.content}>{bill.description}</div>
           <div className={styles.label}>Status</div>
           <div className={styles.content}>{bill.cityBill!.status}</div>
           <div className={styles.label}>Our nickname</div>

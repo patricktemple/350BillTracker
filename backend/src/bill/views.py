@@ -55,7 +55,7 @@ def track_city_bill():
         f"Saving bill {city_bill_id}, council API returned {bill_data}"
     )
 
-    bill = Bill(id=uuid4(), type=Bill.BillType.CITY, name=bill_data["name"])
+    bill = Bill(id=uuid4(), type=Bill.BillType.CITY, name=bill_data["name"], description=bill_data['description'])
     bill.city_bill = CityBill(**bill_data["city_bill"])
     db.session.add(bill)
 

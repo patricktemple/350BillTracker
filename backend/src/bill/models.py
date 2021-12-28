@@ -18,6 +18,12 @@ DEFAULT_TWITTER_SEARCH_TERMS = [
 ]
 
 
+
+# Let's standardize some fields across city and state:
+# Bill.name is shorter, maps to city council's MatterName and State's "title"
+# Bill.description is longer, maps to city council's "title" and state's "summary"
+# Code_name is a derived property. Comes from CityBill.file, or a combo of state bill's two code names
+# Should we do the same with status?
 class Bill(db.Model):
     """
     Base table for all bills, both city and state. Contains any info that's
@@ -34,7 +40,12 @@ class Bill(db.Model):
         STATE = 2
 
     id = Column(UUID, primary_key=True, default=uuid4)
+
+    # For city this is the "MatterName", for state it is the "title"
     name = Column(Text, nullable=False)
+
+    # For city this is the "title", for state this is the "summary"
+    description = Column(Text, nullable=False)
 
     # Info on child objects:
     type = Column(Enum(BillType), nullable=False)
@@ -78,6 +89,28 @@ class Bill(db.Model):
     @property
     def tracked(self):
         return True
+    
+    @property
+    def status(self):
+        if self.type == Bill.BillType.CITY:
+            return self.city_bill.status
+
+        senate_status = self.state_bill.senate_bill.status if self.state_bill.senate_bill else "(No Senate bill)"
+        assembly_status = self.state_bill.assembly_bill.status if self.state_bill.assembly_bill else "(No Assembly bill)"
+    
+        # This seems wrong... figure out how substitutions work
+        return f"{senate_status} / {assembly_status}"
+    
+    @property
+    def code_name(self):
+        if self.type == Bill.BillType.CITY:
+            return self.city_bill.file
+
+        senate_print_no = self.state_bill.senate_bill.base_print_no if self.state_bill.senate_bill else "(No Senate bill)"
+        assembly_print_no = self.state_bill.assembly_bill.base_print_no if self.state_bill.assembly_bill else "(No Assembly bill)"
+    
+        # This seems wrong... figure out how substitutions work
+        return f"{senate_print_no} / {assembly_print_no}"
 
 
 class BillAttachment(db.Model):
@@ -128,8 +161,6 @@ class CityBill(db.Model):
     # The parent Bill object that represents this.
     bill = relationship("Bill", back_populates="city_bill", lazy="joined")
 
-    title = Column(Text, nullable=False)
-
     intro_date = Column(TIMESTAMP, nullable=False)
 
     status = Column(Text, nullable=False)
@@ -151,6 +182,7 @@ class CityBill(db.Model):
         return 0
 
 
+# TODO: Understand bill substitution, I have something wrong here... seems like after passing one chamber, it gets substituted for the other one? unclear...
 class StateBill(db.Model):
     """
     State-specific details about a state bill. There must also be an associated
@@ -165,8 +197,6 @@ class StateBill(db.Model):
     session_year = Column(Integer, nullable=False)
 
     # Is this right? Or should it be on state chamber mixin?
-    summary = Column(Text, nullable=False)
-
     # Is this a FK to SenateBillVersion?
     # active_senate_version = Column(Text, nullable=False, default="")
     # active_assembly_version = Column(Text, nullable=False, default="")
