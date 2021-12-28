@@ -1,6 +1,6 @@
 import './style/App.scss';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
-import BillsPage from './BillsPage';
+import BillListPage from './BillListPage';
 import PersonsPage from './PersonsPage';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -76,7 +76,7 @@ function AppContent() {
           <Route path="/" exact>
             <Redirect to="/saved-bills" />
           </Route>
-          <Route path="/saved-bills/:billId?" exact component={BillsPage} />
+          <Route path="/saved-bills/:billId?" exact component={BillListPage} />
           <Route path="/council-members/:personId?" component={PersonsPage} />
           <Route path="/settings" component={SettingsPage} />
         </main>

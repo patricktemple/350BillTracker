@@ -10,6 +10,21 @@ export interface CityBill {
   file: string;
   cityBillId: number;
   councilBody: string; // this is the committee name
+  sponsorCount: number; // TODO: implement on backend
+}
+
+export interface StateChamberBill {
+  basePrintNo: string;
+  activeVersionName: string; // rename to active_version
+  status: string;
+  sponsorCount: number; // TODO: implement on backend
+}
+
+export interface StateBill {
+  sessionYear: number;
+  summary: string;
+  senateBill: StateChamberBill | null;
+  assemblyBill: StateChamberBill | null;
 }
 
 export interface Bill {
@@ -25,6 +40,7 @@ export interface Bill {
 
   type: BillType;
   cityBill: CityBill | null;
+  stateBill: StateBill | null;
 }
 
 export type PersonType = 'COUNCIL_MEMBER' | 'SENATOR' | 'ASSEMBLY_MEMBER';
