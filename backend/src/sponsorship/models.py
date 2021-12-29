@@ -1,13 +1,14 @@
 from uuid import uuid4
 
-from sqlalchemy import Column, ForeignKey, Integer, UniqueConstraint
-from sqlalchemy.orm import foreign, relationship, remote
+from sqlalchemy import Column, ForeignKey, Integer, UniqueConstraint, select, func
+from sqlalchemy.orm import foreign, relationship, remote, column_property
 
 from ..bill.models import (
     AssemblyBill,
     Bill,
     CityBill,
     SenateBill,
+    StateChamberMixin,
 )
 from ..models import TIMESTAMP, UUID, db
 from ..person.models import AssemblyMember, CouncilMember, Person, Senator
@@ -113,3 +114,9 @@ class AssemblySponsorship(db.Model):
 
     # TODO: Add sponsor_sequence like we have with city, if needed
     # TODO: Unique constraint
+
+
+# is this inefficient? it loads it fully for every single  element
+CityBill.sponsor_count = column_property(select(func.count(CitySponsorship.id)).where(CitySponsorship.bill_id==CityBill.bill_id).scalar_subquery())
+SenateBill.sponsor_count = column_property(select(func.count(SenateSponsorship.id)).where(SenateSponsorship.senate_version_id==SenateBill.id).scalar_subquery())
+AssemblyBill.sponsor_count = column_property(select(func.count(AssemblySponsorship.id)).where(AssemblySponsorship.assembly_version_id==AssemblyBill.id).scalar_subquery())

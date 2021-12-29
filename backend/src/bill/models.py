@@ -4,7 +4,8 @@ from uuid import uuid4
 from sqlalchemy import Column, Enum, ForeignKey, Integer, Text
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import column_property, relationship
+from sqlalchemy import func, select
 
 from ..models import TIMESTAMP, UUID, db
 from ..utils import now
@@ -175,11 +176,6 @@ class CityBill(db.Model):
 
     # Committee name
     council_body = Column(Text)
-
-    @property
-    def sponsor_count(self):
-        # TODO
-        return 0
 
 
 # TODO: Understand bill substitution, I have something wrong here... seems like after passing one chamber, it gets substituted for the other one? unclear...
