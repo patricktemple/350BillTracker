@@ -32,6 +32,8 @@ export interface Bill {
   name: string;
   description: string;
   tracked: boolean;
+  codeName: string;
+  status: string;
 
   // Editable fields
   notes: string;

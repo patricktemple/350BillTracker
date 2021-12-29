@@ -15,6 +15,8 @@ import { MdHelpOutline } from 'react-icons/md';
 import styles from './style/BillDetailsPage.module.scss';
 
 import { ReactComponent as TwitterIcon } from './assets/twitter.svg';
+import CityBillSponsorList from './CityBillSponsorList';
+import StateBillDetails from './StateBillDetails';
 
 interface Props {
   bill: Bill;
@@ -45,16 +47,13 @@ export default function BillDetailsPage(props: Props): ReactElement {
     {
       notes: '',
       nickname: '',
-      twitterSearchTerms: []
+      twitterSearchTerms: [],
     }
   );
 
   const [twitterSearchTermsRaw, setTwitterSearchTermsRaw] =
     useState<string>('');
 
-  const [sponsorships, setSponsorships] = useState<CitySponsorship[] | null>(
-    null
-  );
   const [attachments, setAttachments] = useState<BillAttachment[] | null>(null);
 
   const [powerHours, setPowerHours] = useState<PowerHour[] | null>(null);
@@ -88,12 +87,9 @@ export default function BillDetailsPage(props: Props): ReactElement {
       setFormData({
         notes: response.notes,
         nickname: response.nickname,
-        twitterSearchTerms: response.twitterSeachTerms
+        twitterSearchTerms: response.twitterSearchTerms
       });
       setTwitterSearchTermsRaw(response.twitterSearchTerms.join(','));
-    });
-    apiFetch(`/api/city-bills/${billId}/sponsorships`).then((response) => {
-      setSponsorships(response);
     });
   });
 
@@ -162,12 +158,6 @@ export default function BillDetailsPage(props: Props): ReactElement {
     loadPowerHours();
   }
 
-  const positiveSponsors = sponsorships?.filter(
-    (s: CitySponsorship) => s.isSponsor
-  );
-  const negativeSponsors = sponsorships?.filter(
-    (s: CitySponsorship) => !s.isSponsor
-  );
 
   const powerHourHelpRef = useRef<HTMLSpanElement>(null);
   const [powerHourHelpVisible, setPowerHourHelpVisible] =
@@ -183,19 +173,19 @@ export default function BillDetailsPage(props: Props): ReactElement {
 
   return (
     <div>
-      <div className={styles.title}>{bill.name}</div>
+      <div className={styles.title}>{formData.nickname || bill.name}</div>
       <Form onSubmit={(e) => e.preventDefault()} className={styles.page}>
         <>
-          <div className={styles.label}>File</div>
-          <div className={styles.content}>{bill.cityBill!.file}</div>
-          <div className={styles.label}>Official name:</div>
+          <div className={styles.label}>Code name</div>
+          <div className={styles.content}>{bill.codeName}</div>
+          <div className={styles.label}>Official title</div>
 
           <div className={styles.content}>{bill.name}</div>
 
-          <div className={styles.label}>Description</div>
+          <div className={styles.label}>Official description</div>
           <div className={styles.content}>{bill.description}</div>
           <div className={styles.label}>Status</div>
-          <div className={styles.content}>{bill.cityBill!.status}</div>
+          <div className={styles.content}>{bill.status}</div>
           <div className={styles.label}>Our nickname</div>
           <div className={styles.content}>
             <Form.Control
@@ -205,41 +195,6 @@ export default function BillDetailsPage(props: Props): ReactElement {
               value={formData.nickname}
               onChange={handleNicknameChanged}
             />
-          </div>
-          <div className={styles.label}>
-            <div>
-              Sponsors{' '}
-              {positiveSponsors != null && <>({positiveSponsors.length})</>}:
-            </div>
-            <div style={{ fontSize: '0.8rem', fontStyle: 'italic' }}>
-              Note: Due to a Twitter bug, the Twitter search sometimes displays
-              0 results even when there should be should be matching tweets.
-              Refreshing the Twitter page often fixes this.
-            </div>
-          </div>
-          <div className={styles.sponsorList}>
-            {positiveSponsors == null ? (
-              'Loading...'
-            ) : (
-              <BillSponsorList
-                sponsorships={positiveSponsors}
-                twitterSearchTerms={formData.twitterSearchTerms}
-              />
-            )}
-          </div>
-          <div className={styles.nonSponsorLabel}>
-            Non-sponsors{' '}
-            {negativeSponsors != null && <>({negativeSponsors.length})</>}:
-          </div>
-          <div className={styles.nonSponsorList}>
-            {negativeSponsors == null ? (
-              'Loading...'
-            ) : (
-              <BillSponsorList
-                sponsorships={negativeSponsors}
-                twitterSearchTerms={formData.twitterSearchTerms}
-              />
-            )}
           </div>
           <div className={styles.label}>
             <div style={{ fontWeight: 'bold' }}>
@@ -408,6 +363,9 @@ export default function BillDetailsPage(props: Props): ReactElement {
               onChange={handleNotesChanged}
             />
           </div>
+          {bill.type === 'CITY' ? (
+            <CityBillSponsorList bill={bill} twitterSearchTerms={formData.twitterSearchTerms}/>
+          ) : <div className={styles.fullWidth}><StateBillDetails bill={bill} /></div>}
           <div className={styles.label}>
             <Button
               variant="outline-secondary"
