@@ -139,6 +139,9 @@ def import_bill(session_year, senate_print_no):
             active_version_name=senate_data['activeVersion']
         )
         _add_senate_sponsorships(bill, senate_data)
+    
+    # need to make sure this works if one chamber is null
+    # and verify that this is the correct "same as" logic
 
     db.session.add(bill)
     db.session.commit()
