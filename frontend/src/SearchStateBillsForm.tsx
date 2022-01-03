@@ -115,7 +115,7 @@ export default function SearchBillsModal(props: Props): ReactElement {
         <Table striped bordered>
           <thead>
             <tr>
-              <th>Code name</th>
+              <th>Bill number</th>
               <th>Session year</th>
               <th>Chamber</th>
               <th>Title</th>

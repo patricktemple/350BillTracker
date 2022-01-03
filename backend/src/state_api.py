@@ -61,22 +61,11 @@ def do():
     for i in range(4000, 4270):
         print_status(f"S{i}")
     
-def import_bill(session_year, senate_print_no):
-    response = senate_get(f"bills/{session_year}/{senate_print_no}", view="no_fulltext")
-
-    # Right now this will just keep inserting duplicates
-    bill = Bill(type=Bill.BillType.STATE, name=response['title'], description=response['summary'])
-    bill.state_bill = StateBill(
-        session_year=session_year)
-    bill.state_bill.senate_bill = SenateBill(
-        status=response['status']['statusDesc'],
-        base_print_no=response['basePrintNo'],
-        active_version_name=response['activeVersion'])     # TODO rename to active_version
-
-    active_amendment = response["amendments"]["items"][
-         bill.state_bill.senate_bill.active_version_name
+# todo put types on the args
+def _add_senate_sponsorships(bill, chamber_data):
+    active_amendment = chamber_data["amendments"]["items"][
+         chamber_data['activeVersion']
     ]
-
     for sponsor in active_amendment['coSponsors']['items']:
         # TODO also include lead sponsor, it's its own field on main bill
         member_id = sponsor['memberId']
@@ -84,21 +73,72 @@ def import_bill(session_year, senate_print_no):
         if senator:
             sponsorship = SenateSponsorship(senator_id=senator.person_id)
             bill.state_bill.senate_bill.sponsorships.append(sponsorship)
-            logging.info(f"Added sponsorship for {senator.person.name} to bill {senate_print_no}")
+            logging.info(f"Added sponsorship for {senator.person.name} to bill {bill.state_bill.senate_bill.base_print_no}")
         else:
-            logging.warning(f"Did not find {sponsor['fullName']}, member_id: {member_id} for sponsorship on bill {senate_print_no}")
+            logging.warning(f"Did not find {sponsor['fullName']}, member_id: {member_id} for sponsorship on bill {bill.state_bill.senate_bill.base_print_no}")
+
+
+# dedupe
+def _add_assembly_sponsorships(bill, chamber_data):
+    active_amendment = chamber_data["amendments"]["items"][
+         chamber_data['activeVersion']
+    ]
+    for sponsor in active_amendment['coSponsors']['items']:
+        # TODO also include lead sponsor, it's its own field on main bill
+        member_id = sponsor['memberId']
+        assembly_member = AssemblyMember.query.filter_by(state_member_id=member_id).one_or_none()
+        if assembly_member:
+            sponsorship = AssemblySponsorship(assembly_member_id=assembly_member.person_id)
+            bill.state_bill.assembly_bill.sponsorships.append(sponsorship)
+            logging.info(f"Added sponsorship for {assembly_member.person.name} to bill {bill.state_bill.assembly_bill.base_print_no}")
+        else:
+            logging.warning(f"Did not find {sponsor['fullName']}, member_id: {member_id} for sponsorship on bill {bill.state_bill.assembly_bill.base_print_no}")
+    
+
+def import_bill(session_year, senate_print_no):
+    initial_chamber_response = senate_get(f"bills/{session_year}/{senate_print_no}", view="no_fulltext")
+
+    # todo filter out resolutions
+
+    # Right now this will just keep inserting duplicates
+    bill = Bill(type=Bill.BillType.STATE, name=initial_chamber_response['title'], description=initial_chamber_response['summary'])
+    bill.state_bill = StateBill(
+        session_year=session_year)
+
+    active_amendment = initial_chamber_response["amendments"]["items"][
+         initial_chamber_response['activeVersion']
+    ]
 
     same_as_versions = active_amendment['sameAs']['items']
     if same_as_versions:
         assembly_print_no = same_as_versions[0]['basePrintNo']
-        assembly_response = senate_get(f"bills/{session_year}/{assembly_print_no}", view="no_fulltext")
-        bill.state_bill.assembly_bill = AssemblyBill(
-            status=assembly_response['status']['statusDesc'],
-            base_print_no=assembly_response['basePrintNo'],
-            active_version_name=assembly_response['activeVersion']
-        )
+        alternate_chamber_response = senate_get(f"bills/{session_year}/{assembly_print_no}", view="no_fulltext")
+    else:
+        alternate_chamber_response = None
     
-    # TODO: assembly sponsorships
+    if initial_chamber_response['billType']['chamber'] == 'SENATE':
+        assert alternate_chamber_response['billType']['chamber'] == 'ASSEMBLY' # todo
+        senate_data = initial_chamber_response
+        assembly_data = alternate_chamber_response
+    else:
+        assert alternate_chamber_response['billType']['chamber'] == 'SENATE' # todo
+        senate_data = alternate_chamber_response
+        assembly_data = initial_chamber_response
+
+    if assembly_data:
+        bill.state_bill.assembly_bill = AssemblyBill(
+            status=assembly_data['status']['statusDesc'],
+            base_print_no=assembly_data['basePrintNo'],
+            active_version_name=assembly_data['activeVersion']
+        )
+        _add_assembly_sponsorships(bill, assembly_data)
+    if senate_data:
+        bill.state_bill.senate_bill = SenateBill(
+            status=senate_data['status']['statusDesc'],
+            base_print_no=senate_data['basePrintNo'],
+            active_version_name=senate_data['activeVersion']
+        )
+        _add_senate_sponsorships(bill, senate_data)
 
     db.session.add(bill)
     db.session.commit()

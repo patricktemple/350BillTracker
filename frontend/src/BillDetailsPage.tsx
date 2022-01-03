@@ -177,7 +177,7 @@ export default function BillDetailsPage(props: Props): ReactElement {
       <div className={styles.title}>{formData.nickname || bill.name}</div>
       <Form onSubmit={(e) => e.preventDefault()} className={styles.page}>
         <>
-          <div className={styles.label}>Code name</div>
+          <div className={styles.label}>Bill number</div>
           <div className={styles.content}>{bill.codeName}</div>
           <div className={styles.label}>Official title</div>
 
