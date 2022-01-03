@@ -17,15 +17,7 @@ export default function PersonsPage({
     params: { personId }
   }
 }: Props) {
-  const [persons, setPersons] = useState<Person[] | null>(null);
   const [filterText, setFilterText] = useState<string>('');
-  const apiFetch = useApiFetch();
-
-  useMountEffect(() => {
-    apiFetch('/api/persons').then((response) => {
-      setPersons(response);
-    });
-  });
 
   function handleFilterTextChanged(e: any) {
     setFilterText(e.target.value);
@@ -43,20 +35,15 @@ export default function PersonsPage({
           size={30}
           onChange={handleFilterTextChanged}
         />
-        {persons == null ? (
-          'Loading...'
-        ) : (
-          <Tabs className="mb-4">
+        <Tabs className="mb-4" unmountOnExit={true}>
             <Tab eventKey="all" title="All">
               <PersonsList
-                persons={persons}
                 filterText={filterText}
                 selectedPersonId={personId}
               />
             </Tab>
             <Tab eventKey="council" title="Council members">
               <PersonsList
-                persons={persons}
                 filterText={filterText}
                 selectedPersonId={personId}
                 personTypeFilter={'COUNCIL_MEMBER'}
@@ -64,7 +51,6 @@ export default function PersonsPage({
             </Tab>
             <Tab eventKey="senate" title="Senators">
               <PersonsList
-                persons={persons}
                 filterText={filterText}
                 selectedPersonId={personId}
                 personTypeFilter={'SENATOR'}
@@ -72,7 +58,6 @@ export default function PersonsPage({
             </Tab>
             <Tab eventKey="assembly" title="Assembly members">
               <PersonsList
-                persons={persons}
                 filterText={filterText}
                 selectedPersonId={personId}
                 personTypeFilter={'ASSEMBLY_MEMBER'}
@@ -80,14 +65,12 @@ export default function PersonsPage({
             </Tab>
             <Tab eventKey="staffers" title="Staffers">
               <PersonsList
-                persons={persons}
                 filterText={filterText}
                 selectedPersonId={personId}
                 personTypeFilter={'STAFFER'}
               />
             </Tab>
           </Tabs>
-        )}
       </div>
     </div>
   );

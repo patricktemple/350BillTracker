@@ -12,22 +12,32 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 
 interface Props {
-  persons: Person[];
   filterText: string;
   selectedPersonId?: string;
   personTypeFilter?: PersonType;
 }
 
 export default function PersonsList({
-  persons,
   filterText,
   selectedPersonId,
   personTypeFilter
 }: Props) {
-  let filteredPersons = null;
+
+  const apiFetch = useApiFetch();
+  const [persons, setPersons] = useState<Person[] | null>(null);
+
+  useMountEffect(() => {
+    apiFetch('/api/persons').then((response) => {
+      setPersons(response);
+    });
+  });
+
+  if (persons == null) {
+      return <div>Loading...</div>;
+  }
 
   const lowerFilterText = filterText.toLowerCase();
-  filteredPersons = persons.filter(
+  const filteredPersons = persons?.filter(
     (p) =>
       (p.name.toLowerCase().includes(lowerFilterText) ||
         p.councilMember?.borough?.toLowerCase().includes(lowerFilterText)) &&
