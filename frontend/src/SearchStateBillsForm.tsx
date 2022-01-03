@@ -15,15 +15,15 @@ interface Props {
 
 function BillRow(props: {
   bill: StateBillSearchResult;
-  //   handleTrackBill: (cityBillId: number) => void;
+    // handleTrackBill: (basePrintNo: number) => void;
 }) {
-  //   const [trackClicked, setTrackClicked] = useState<boolean>(false);
+    const [trackClicked, setTrackClicked] = useState<boolean>(false);
 
   const { bill } = props;
-  //   function handleTrackBill() {
-  //     setTrackClicked(true);
-  //     props.handleTrackBill(bill.cityBill!.cityBillId);
-  //   }
+    function handleTrackBill() {
+      setTrackClicked(true);
+    //   props.handleTrackBill(bill.cityBill!.cityBillId);
+    }
 
   // Lazy way to make this UI respond to click, without better global state.
   // Assumes that tracking API call actually will work.
@@ -35,7 +35,7 @@ function BillRow(props: {
       <td>{bill.name}</td>
       <td>{bill.description}</td>
       <td>{bill.status}</td>
-      {/* <td>
+      <td>
           {bill.tracked || trackClicked ? (
             <Button disabled size="sm">
               Tracked
@@ -45,7 +45,7 @@ function BillRow(props: {
               Track
             </Button>
           )}
-        </td> */}
+        </td>
     </tr>
   );
 }

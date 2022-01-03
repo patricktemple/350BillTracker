@@ -46,6 +46,7 @@ export interface StateBillSearchResult {
   sessionYear: string; // number?
   chamber: StateChamber;
   activeVersion: string;
+  tracked: boolean;
 }
 
 export interface Bill {

@@ -11,7 +11,7 @@ from ..council_api import lookup_bill, lookup_bills
 from ..council_sync import update_bill_sponsorships
 from ..google_sheets import create_power_hour
 from ..models import db
-from .models import Bill, BillAttachment, CityBill, PowerHour
+from .models import AssemblyBill, Bill, BillAttachment, CityBill, PowerHour, SenateBill
 from .schema import (BillAttachmentSchema, BillSchema, CreatePowerHourSchema,
                      PowerHourSchema, StateBillSearchResultSchema,
                      TrackCityBillSchema)
@@ -117,11 +117,23 @@ def search_bills():
 def search_state_bills():
     code_name = request.args.get("codeName")
     session_year = request.args.get("sessionYear")
-    result = state_api.search_bills(code_name, session_year)
+    bill_results = state_api.search_bills(code_name, session_year)
+
+    # Is this a lazy load of state bill?
+    bill_print_nos = [b['base_print_no'] for b in bill_results]
+    tracked_assembly_bills = AssemblyBill.query.filter(AssemblyBill.base_print_no.in_(bill_print_nos)).all()
+    tracked_assembly_bill_set = set([(b.state_bill.session_year, b.base_print_no) for b in tracked_assembly_bills]) # or generator expression?
+    tracked_senate_bills = SenateBill.query.filter(SenateBill.base_print_no.in_(bill_print_nos)).all()
+    tracked_senate_bill_set = set([(b.state_bill.session_year, b.base_print_no) for b in tracked_senate_bills]) # or generator expression?
+
+    for bill in bill_results:
+        bill_identifier = (bill['session_year'], bill['base_print_no'])
+        if bill_identifier in tracked_assembly_bill_set or bill_identifier in tracked_senate_bill_set:
+            bill['tracked'] = True
 
     # TODO check which ones are already tracked
 
-    return StateBillSearchResultSchema(many=True).jsonify(result)
+    return StateBillSearchResultSchema(many=True).jsonify(bill_results)
 
 
 @app.route("/api/saved-bills/<uuid:bill_id>/power-hours", methods=["GET"])
