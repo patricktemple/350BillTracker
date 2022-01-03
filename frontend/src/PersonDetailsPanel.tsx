@@ -121,108 +121,93 @@ export default function PersonDetailsPanel(props: Props) {
   // should rewrite this w/o bootstrap grid
   return (
     <Form onSubmit={(e) => e.preventDefault()} className={styles.root}>
-      <div className={styles.label}>
-          Name
-        </div>
-        <div className={styles.content}>{person.name}
+      <div className={styles.label}>Name</div>
+      <div className={styles.content}>{person.name}</div>
+      <div className={styles.label}>Email</div>
+      <div className={styles.content}>{person.email}</div>
+      <div className={styles.label}>District phone</div>
+      <div className={styles.content}>{person.phone}</div>
+      <div className={styles.label}>Legislative phone</div>
+      <div className={styles.content}>
+        {person.councilMember!.legislativePhone}
+      </div>
+      <div className={styles.label}>Party</div>
+      <div className={styles.content}>{person.party}</div>
+      <div className={styles.label}>Website</div>
+      <div className={styles.content}>
+        {person.councilMember!.website && (
+          <a href={person.councilMember!.website} target="website">
+            Visit website
+          </a>
+        )}
+      </div>
+      <div className={styles.label}>Twitter</div>
+      <div className={styles.content}>
+        {person.twitter && (
+          <a href={`https://twitter.com/${person.twitter}`} target="twitter">
+            @{person.twitter}
+          </a>
+        )}
       </div>
       <div className={styles.label}>
-          Email
-        </div>
-        <div className={styles.content}>{person.email}</div>
-      <div className={styles.label}>
-          District phone
-        </div>
-        <div className={styles.content}>{person.phone}</div>
-        <div className={styles.label}>
-          Legislative phone
-        </div>
-        <div className={styles.content}>{person.councilMember!.legislativePhone}</div>
-        <div className={styles.label}>
-          Party
-        </div>
-        <div className={styles.content}>{person.party}</div>
-        <div className={styles.label}>
-          Website
-        </div>
-        <div className={styles.content}>
-          {person.councilMember!.website && (
-            <a href={person.councilMember!.website} target="website">
-              Visit website
-            </a>
-          )}
-        </div>
-        <div className={styles.label}>
-          Twitter
-        </div>
-        <div className={styles.content}>
-          {person.twitter && (
-            <a href={`https://twitter.com/${person.twitter}`} target="twitter">
-              @{person.twitter}
-            </a>
-          )}
-        </div>
-        <div className={styles.label}>
-          Staffers:
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            onClick={() => setAddStafferModalVisible(true)}
-            className="mt-2 mb-2 d-block"
-          >
-            Add staffer
-          </Button>
-        </div>
-        <div className={styles.content}>
-          {staffers &&
-            staffers.map((staffer) => (
-              <div key={staffer.id}>
-                {formatStaffer(staffer)} [
-                <a href="#" onClick={(e) => handleRemoveStaffer(e, staffer.id)}>
-                  Delete
-                </a>
-                ]
-              </div>
-            ))}
-        </div>
-        <AddStafferModal
-          show={addStafferModalVisible}
-          handleAddStaffer={handleAddStaffer}
-          onHide={() => setAddStafferModalVisible(false)}
-        />
-      <div className={styles.label}>
-            <div style={{ fontWeight: 'bold' }}>Sponsored bills</div>
-            <div style={{ fontStyle: 'italic' }}>
-              Only includes bills we are tracking
+        Staffers:
+        <Button
+          variant="outline-secondary"
+          size="sm"
+          onClick={() => setAddStafferModalVisible(true)}
+          className="mt-2 mb-2 d-block"
+        >
+          Add staffer
+        </Button>
+      </div>
+      <div className={styles.content}>
+        {staffers &&
+          staffers.map((staffer) => (
+            <div key={staffer.id}>
+              {formatStaffer(staffer)} [
+              <a href="#" onClick={(e) => handleRemoveStaffer(e, staffer.id)}>
+                Delete
+              </a>
+              ]
             </div>
-        </div>
-        <div className={styles.content}>
-          {sponsorships == null ? (
-            'Loading...'
-          ) : (
-            <Stack direction="vertical">
-              {sponsorships.map((s) => (
-                <Link to={'/saved-bills/' + s.bill.id} key={s.bill.id}>
-                  {s.bill.cityBill!.file}:{' '}
-                  <em>{s.bill.nickname || s.bill.name}</em>
-                </Link>
-              ))}
-            </Stack>
-          )}
-        </div>
+          ))}
+      </div>
+      <AddStafferModal
+        show={addStafferModalVisible}
+        handleAddStaffer={handleAddStaffer}
+        onHide={() => setAddStafferModalVisible(false)}
+      />
       <div className={styles.label}>
-          Our notes:
-          </div>
-          <div className={styles.content}>
-          <Form.Control
-            as="textarea"
-            rows={3}
-            size="sm"
-            value={formData.notes}
-            placeholder="Add our notes about this person"
-            onChange={handleNotesChanged}
-          />
+        <div style={{ fontWeight: 'bold' }}>Sponsored bills</div>
+        <div style={{ fontStyle: 'italic' }}>
+          Only includes bills we are tracking
         </div>
+      </div>
+      <div className={styles.content}>
+        {sponsorships == null ? (
+          'Loading...'
+        ) : (
+          <Stack direction="vertical">
+            {sponsorships.map((s) => (
+              <Link to={'/saved-bills/' + s.bill.id} key={s.bill.id}>
+                {s.bill.cityBill!.file}:{' '}
+                <em>{s.bill.nickname || s.bill.name}</em>
+              </Link>
+            ))}
+          </Stack>
+        )}
+      </div>
+      <div className={styles.label}>Our notes:</div>
+      <div className={styles.content}>
+        <Form.Control
+          as="textarea"
+          rows={3}
+          size="sm"
+          value={formData.notes}
+          placeholder="Add our notes about this person"
+          onChange={handleNotesChanged}
+        />
+      </div>
       <div className={styles.label}>{saveStatus}</div>
     </Form>
   );

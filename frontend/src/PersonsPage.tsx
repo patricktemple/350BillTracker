@@ -48,19 +48,19 @@ export default function PersonsPage({
         ) : (
           <Tabs className="mb-4">
             <Tab eventKey="all" title="All">
-                <PersonsList
-                  persons={persons}
-                  filterText={filterText}
-                  selectedPersonId={personId}
-                />
+              <PersonsList
+                persons={persons}
+                filterText={filterText}
+                selectedPersonId={personId}
+              />
             </Tab>
             <Tab eventKey="council" title="Council members">
-                <PersonsList
-                  persons={persons}
-                  filterText={filterText}
-                  selectedPersonId={personId}
-                  personTypeFilter={'COUNCIL_MEMBER'}
-                />
+              <PersonsList
+                persons={persons}
+                filterText={filterText}
+                selectedPersonId={personId}
+                personTypeFilter={'COUNCIL_MEMBER'}
+              />
             </Tab>
             <Tab eventKey="senate" title="Senators">
               <PersonsList
