@@ -1,30 +1,16 @@
-import React, { ReactElement, useState, useRef } from 'react';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
+import React, { useState } from 'react';
 import {
   Bill,
-  CitySponsorship,
-  BillAttachment,
-  PowerHour,
   StateBillSponsorships,
   Person
 } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
-import AddAttachmentModal from './AddAttachmentModal';
-import useAutosavingFormData from './utils/useAutosavingFormData';
-import ConfirmDeleteBillModel from './ConfirmDeleteBillModal';
-import CreatePowerHourModal from './CreatePowerHourModal';
 import useApiFetch from './useApiFetch';
 import BillSponsorList from './BillSponsorList';
-import Popover from 'react-bootstrap/Popover';
-import Overlay from 'react-bootstrap/Overlay';
-import { MdHelpOutline } from 'react-icons/md';
 import { StateChamberBill } from './types';
-import LazyAccordionBody from './LazyAccordionBody';
 import Accordion from 'react-bootstrap/Accordion';
 
 import styles from './style/StateBillDetails.module.scss';
-import { ReactComponent as TwitterIcon } from './assets/twitter.svg';
 
 interface ChamberProps {
   chamber: string;
