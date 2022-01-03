@@ -11,7 +11,7 @@ from src.sponsorship.models import CitySponsorship
 @patch("src.google_sheets.Credentials")
 @patch("src.google_sheets.build")
 def test_generate_google_sheet__no_import(
-    mock_build, mock_credentials, snapshot, bill
+    mock_build, mock_credentials, snapshot, city_bill
 ):
     mock_sheets_service = MagicMock()
     mock_drive_service = MagicMock()
@@ -39,7 +39,7 @@ def test_generate_google_sheet__no_import(
 
     db.session.add(
         CitySponsorship(
-            council_member_id=sponsor.id, bill_id=bill.id, sponsor_sequence=0
+            council_member_id=sponsor.id, bill_id=city_bill.id, sponsor_sequence=0
         )
     )
     db.session.commit()
@@ -49,7 +49,7 @@ def test_generate_google_sheet__no_import(
     }
 
     _, messages = create_power_hour(
-        bill.id, title="My power hour", old_spreadsheet_to_import=None
+        city_bill.id, title="My power hour", old_spreadsheet_to_import=None
     )
     assert messages == ["Spreadsheet was created"]
 
@@ -66,7 +66,7 @@ def test_generate_google_sheet__no_import(
 @patch("src.google_sheets.Credentials")
 @patch("src.google_sheets.build")
 def test_generate_google_sheet__with_import(
-    mock_build, mock_credentials, snapshot, bill
+    mock_build, mock_credentials, snapshot, city_bill
 ):
     mock_sheets_service = MagicMock()
     mock_drive_service = MagicMock()
@@ -121,7 +121,7 @@ def test_generate_google_sheet__with_import(
 
     db.session.add(
         CitySponsorship(
-            council_member_id=sponsor.id, bill_id=bill.id, sponsor_sequence=0
+            council_member_id=sponsor.id, bill_id=city_bill.id, sponsor_sequence=0
         )
     )
     db.session.commit()
@@ -131,7 +131,7 @@ def test_generate_google_sheet__with_import(
     }
 
     _, messages = create_power_hour(
-        bill.id, title="My power hour", old_spreadsheet_to_import="123"
+        city_bill.id, title="My power hour", old_spreadsheet_to_import="123"
     )
     assert messages == [
         "Copied column 'Extra column' to new sheet",

@@ -9,13 +9,13 @@ from src.utils import now
 from .utils import get_response_data
 
 
-def test_get_bill_sponsorships(client, bill):
+def test_get_bill_sponsorships(client, city_bill):
     sponsor = Person(
         id=uuid4(), name="Sponsor", type=Person.PersonType.COUNCIL_MEMBER
     )
     sponsor.council_member = CouncilMember(city_council_person_id=1)
     sponsorship = CitySponsorship(
-        bill_id=bill.id, council_member_id=sponsor.id, sponsor_sequence=0
+        bill_id=city_bill.id, council_member_id=sponsor.id, sponsor_sequence=0
     )
     db.session.add(sponsor)
     db.session.add(sponsorship)
@@ -27,16 +27,16 @@ def test_get_bill_sponsorships(client, bill):
     db.session.add(non_sponsor)
     db.session.commit()
 
-    response = client.get(f"/api/city-bills/{bill.id}/sponsorships")
+    response = client.get(f"/api/city-bills/{city_bill.id}/sponsorships")
 
     assert response.status_code == 200
     response_data = get_response_data(response)
 
     assert len(response_data) == 2
-    assert response_data[0]["billId"] == str(bill.id)
+    assert response_data[0]["billId"] == str(city_bill.id)
     assert response_data[0]["person"]["name"] == "Sponsor"
     assert response_data[0]["isSponsor"] == True
 
-    assert response_data[1]["billId"] == str(bill.id)
+    assert response_data[1]["billId"] == str(city_bill.id)
     assert response_data[1]["person"]["name"] == "Non-sponsor"
     assert response_data[1]["isSponsor"] == False

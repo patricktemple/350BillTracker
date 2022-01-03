@@ -6,9 +6,9 @@ from src.models import db
 from .utils import get_response_data
 
 
-def test_get_power_hours(client, bill):
+def test_get_power_hours(client, city_bill):
     power_hour = PowerHour(
-        bill_id=bill.id,
+        bill_id=city_bill.id,
         spreadsheet_id="123",
         spreadsheet_url="https://sheets.google.com/123",
         title="My power hour",
@@ -18,7 +18,7 @@ def test_get_power_hours(client, bill):
 
     db.session.commit()
 
-    response = client.get(f"/api/bills/{bill.id}/power-hours")
+    response = client.get(f"/api/bills/{city_bill.id}/power-hours")
 
     assert response.status_code == 200
     response_data = get_response_data(response)
@@ -32,14 +32,14 @@ def test_get_power_hours(client, bill):
 
 
 @patch("src.bill.views.create_power_hour")
-def test_create_power_hour__no_import(mock_create_power_hour, client, bill):
+def test_create_power_hour__no_import(mock_create_power_hour, client, city_bill):
     mock_create_power_hour.return_value = (
         {"spreadsheetId": 1, "spreadsheetUrl": "http://example.com"},
         ["Power hour created"],
     )
 
     response = client.post(
-        f"/api/bills/{bill.id}/power-hours",
+        f"/api/bills/{city_bill.id}/power-hours",
         data={"title": "My power hour"},
     )
 
@@ -54,9 +54,9 @@ def test_create_power_hour__no_import(mock_create_power_hour, client, bill):
 
 
 @patch("src.bill.views.create_power_hour")
-def test_create_power_hour__with_import(mock_create_power_hour, client, bill):
+def test_create_power_hour__with_import(mock_create_power_hour, client, city_bill):
     power_hour = PowerHour(
-        bill_id=bill.id,
+        bill_id=city_bill.id,
         spreadsheet_id="123",
         spreadsheet_url="https://sheets.google.com/123",
         title="Old power hour",
@@ -71,7 +71,7 @@ def test_create_power_hour__with_import(mock_create_power_hour, client, bill):
         ["Power hour created"],
     )
     response = client.post(
-        f"/api/bills/{bill.id}/power-hours",
+        f"/api/bills/{city_bill.id}/power-hours",
         data={
             "title": "My power hour",
             "powerHourIdToImport": str(power_hour.id),
@@ -79,4 +79,4 @@ def test_create_power_hour__with_import(mock_create_power_hour, client, bill):
     )
 
     assert response.status_code == 200
-    mock_create_power_hour.assert_called_with(bill.id, "My power hour", "123")
+    mock_create_power_hour.assert_called_with(city_bill.id, "My power hour", "123")

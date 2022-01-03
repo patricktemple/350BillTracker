@@ -28,7 +28,7 @@ def autouse_fixtures():
 
 
 @pytest.fixture
-def bill():
+def city_bill():
     bill = Bill(id=uuid4(), name="name", description="description", nickname="nickname", type=Bill.BillType.CITY)
     bill.city_bill = CityBill(
         city_bill_id=1,
