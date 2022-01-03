@@ -20,12 +20,11 @@ from src.utils import now
 # TODO: Switch to Factory
 def add_test_bill(city_bill_id, status) -> Bill:
     bill = Bill(
-        id=uuid4(), name=f"{city_bill_id} name", type=Bill.BillType.CITY
+        id=uuid4(), name=f"{city_bill_id} name", description="description", type=Bill.BillType.CITY
     )
     bill.city_bill = CityBill(
         city_bill_id=city_bill_id,
         file=f"{city_bill_id} file",
-        title=f"{city_bill_id} title",
         status=status,
         intro_date=now(),
         active_version="A",

@@ -9,18 +9,7 @@ from src.utils import now
 from .utils import get_response_data
 
 
-def test_get_bill_sponsorships(client):
-    bill = Bill(id=uuid4(), name="name", type=Bill.BillType.CITY)
-    bill.city_bill = CityBill(
-        city_bill_id=1,
-        file="file",
-        title="title",
-        status="Enacted",
-        intro_date=now(),
-        active_version="A",
-    )
-    db.session.add(bill)
-
+def test_get_bill_sponsorships(client, bill):
     sponsor = Person(
         id=uuid4(), name="Sponsor", type=Person.PersonType.COUNCIL_MEMBER
     )
