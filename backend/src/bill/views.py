@@ -19,7 +19,6 @@ from .schema import (BillAttachmentSchema, BillSchema, CreatePowerHourSchema,
 
 # Views ----------------------------------------------------------------------
 
-# TODO: Rename to not be saved-bills?
 @app.route("/api/bills", methods=["GET"])
 @auth_required
 def bills():
@@ -27,9 +26,6 @@ def bills():
     return BillSchema(many=True).jsonify(bills)
 
 
-# TODO test
-# TODO: have this autoload the sponsorships, attachments etc? and get rid of those endpoints perhaps
-# TODO: Rename to not be saved-bills?
 @app.route("/api/bills/<uuid:bill_id>", methods=["GET"])
 @auth_required
 def get_bill(bill_id):
@@ -37,8 +33,7 @@ def get_bill(bill_id):
     return BillSchema().jsonify(bill)
 
 
-# TODO: Rename to city-bills?
-@app.route("/api/saved-bills", methods=["POST"])
+@app.route("/api/city-bills/track", methods=["POST"])
 @auth_required
 def track_city_bill():
     data = TrackCityBillSchema().load(request.json)
@@ -90,7 +85,7 @@ def delete_bill(bill_id):
     return jsonify({})
 
 
-@app.route("/api/search-bills", methods=["GET"])
+@app.route("/api/city-bills/search", methods=["GET"])
 @auth_required
 def search_bills():
     file = request.args.get("file")
@@ -136,7 +131,7 @@ def search_state_bills():
 
 
 # TODO: Rename to state-bills? figure out urls
-@app.route("/api/state-bills", methods=["POST"])
+@app.route("/api/state-bills/track", methods=["POST"])
 @auth_required
 def track_state_bill():
     data = TrackStateBillSchema().load(request.json)

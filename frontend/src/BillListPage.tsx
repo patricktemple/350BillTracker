@@ -21,7 +21,7 @@ export default function BillListPage(): ReactElement {
   const apiFetch = useApiFetch();
 
   function loadBillList() {
-    apiFetch('/api/saved-bills').then((response) => {
+    apiFetch('/api/bills').then((response) => {
       setBills(response);
     });
   }

@@ -22,7 +22,7 @@ export default function SearchCityBillsForm(props: Props): ReactElement {
     const params = new URLSearchParams({
       file: searchBoxRef.current!.value
     });
-    apiFetch('/api/search-bills?' + params).then((response) => {
+    apiFetch('/api/city-bills/search?' + params).then((response) => {
       setSearchResults(response);
     });
     e.preventDefault();
@@ -35,7 +35,7 @@ export default function SearchCityBillsForm(props: Props): ReactElement {
   //   }
 
   function handleTrackBill(cityBillId: number) {
-    apiFetch('/api/saved-bills', {
+    apiFetch('/api/city-bills/track', {
       method: 'POST',
       body: { cityBillId }
     }).then((response) => {

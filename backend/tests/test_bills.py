@@ -25,7 +25,7 @@ def create_fake_matter(matter_id):
 
 
 def test_get_bills_unauthorized(unauthenticated_client):
-    response = unauthenticated_client.get("/api/saved-bills")
+    response = unauthenticated_client.get("/api/bills")
     assert response.status_code == 401
 
 
@@ -48,7 +48,7 @@ def test_get_saved_bills(client):
     db.session.add(bill)
     db.session.commit()
 
-    response = client.get("/api/saved-bills")
+    response = client.get("/api/bills")
     assert_response(
         response,
         200,
@@ -87,14 +87,14 @@ def test_delete_bill(client):
     db.session.add(bill)
     db.session.commit()
 
-    response = client.get("/api/saved-bills")
+    response = client.get("/api/bills")
     assert response.status_code == 200
     assert len(json.loads(response.data)) == 1
 
     response = client.delete(f"/api/bills/{bill.id}")
     assert response.status_code == 200
 
-    response = client.get("/api/saved-bills")
+    response = client.get("/api/bills")
     assert_response(response, 200, [])
 
 
@@ -122,7 +122,7 @@ def test_update_bill(client):
     )
     assert response.status_code == 200
 
-    response = client.get("/api/saved-bills")
+    response = client.get("/api/bills")
     assert_response(
         response,
         200,
@@ -179,7 +179,7 @@ def test_save_bill(client):
     db.session.add(sponsor)
 
     response = client.post(
-        "/api/saved-bills",
+        "/api/city-bills/track",
         data={"cityBillId": 123},
     )
     assert response.status_code == 200
@@ -210,7 +210,7 @@ def test_save_bill__already_exists(client):
     db.session.commit()
 
     response = client.post(
-        "/api/saved-bills",
+        "/api/city-bills/track",
         data={"cityBillId": 1},
     )
     assert response.status_code == 409

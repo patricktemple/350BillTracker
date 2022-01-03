@@ -75,7 +75,7 @@ export default function SearchBillsModal(props: Props): ReactElement {
 
   function handleTrackBill(bill: StateBillSearchResult) {
     // TODO figure out endpooint
-    apiFetch('/api/state-bills', {
+    apiFetch('/api/state-bills/track', {
       method: 'POST',
       body: { sessionYear: bill.sessionYear, basePrintNo: bill.basePrintNo }
     }).then((response) => {
