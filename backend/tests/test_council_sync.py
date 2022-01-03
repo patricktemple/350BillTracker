@@ -144,27 +144,12 @@ def test_fill_council_person_static_data():
 
 
 @responses.activate
-def test_sync_bill_updates():
-    bill = Bill(
-        name="Electric school buses",
-        nickname="Shouldn't change",
-        type=Bill.BillType.CITY,
-    )
-    bill.city_bill = CityBill(
-        city_bill_id=1,
-        file="Intro 200",
-        title="Bill title",
-        status="Committee",
-        intro_date="2000-1-1",
-        active_version="A",
-    )
-    db.session.add(bill)
-
+def test_sync_bill_updates(bill):
     responses.add(
         responses.GET,
         url="https://webapi.legistar.com/v1/nyc/matters/1?token=fake_token",
         json={
-            "MatterId": "1",
+            "MatterId": bill.city_bill.city_bill_id,
             "MatterFile": "New file",
             "MatterName": "New name",
             "MatterTitle": "New title",
@@ -179,31 +164,20 @@ def test_sync_bill_updates():
 
     result = Bill.query.one()
     assert result.name == "New name"
-    assert result.city_bill.title == "New title"
+    assert result.description == "New title"
     assert result.city_bill.file == "New file"
     assert result.city_bill.council_body == "New body"
     assert result.city_bill.status == "New status"
     assert result.city_bill.intro_date == datetime(
         2021, 1, 1, tzinfo=timezone.utc
     )
-    assert result.nickname == "Shouldn't change"
+    assert result.nickname == bill.nickname
     assert result.city_bill.active_version == "New version"
 
 
 @responses.activate
 @freeze_time("2021-1-1")
-def test_update_sponsorships__new_sponsor():
-    bill = Bill(name="Electric school buses", type=Bill.BillType.CITY)
-    bill.city_bill = CityBill(
-        file="Intro 200",
-        city_bill_id=1,
-        title="Bill title",
-        status="Committee",
-        intro_date="2000-1-1",
-        active_version="A",
-    )
-    db.session.add(bill)
-
+def test_update_sponsorships__new_sponsor(bill):
     person = Person(name="Patrick", type=Person.PersonType.COUNCIL_MEMBER)
     person.council_member = CouncilMember(city_council_person_id=1)
     db.session.add(person)
@@ -218,7 +192,7 @@ def test_update_sponsorships__new_sponsor():
 
     responses.add(
         responses.GET,
-        url="https://webapi.legistar.com/v1/nyc/matters/1/sponsors?token=fake_token",
+        url=f"https://webapi.legistar.com/v1/nyc/matters/{bill.city_bill.city_bill_id}/sponsors?token=fake_token",
         json=[
             {
                 "MatterSponsorNameId": 1,
@@ -249,20 +223,7 @@ def test_update_sponsorships__new_sponsor():
 
 @responses.activate
 @freeze_time("2021-1-1")
-def test_update_sponsorships__sponsorship_already_exists():
-    bill = Bill(
-        id=uuid4(), name="Electric school buses", type=Bill.BillType.CITY
-    )
-    bill.city_bill = CityBill(
-        city_bill_id=1,
-        title="Bill title",
-        status="Committee",
-        intro_date="2000-1-1",
-        file="Intro 200",
-        active_version="A",
-    )
-    db.session.add(bill)
-
+def test_update_sponsorships__sponsorship_already_exists(bill):
     person = Person(
         id=uuid4(), name="Patrick", type=Person.PersonType.COUNCIL_MEMBER
     )
@@ -279,7 +240,7 @@ def test_update_sponsorships__sponsorship_already_exists():
 
     responses.add(
         responses.GET,
-        url="https://webapi.legistar.com/v1/nyc/matters/1/sponsors?token=fake_token",
+        url=f"https://webapi.legistar.com/v1/nyc/matters/{bill.city_bill.city_bill_id}/sponsors?token=fake_token",
         json=[
             {
                 "MatterSponsorNameId": 1,
@@ -299,20 +260,7 @@ def test_update_sponsorships__sponsorship_already_exists():
 
 @responses.activate
 @freeze_time("2021-1-1")
-def test_update_sponsorships__remove_sponsorship():
-    bill = Bill(
-        id=uuid4(), name="Electric school buses", type=Bill.BillType.CITY
-    )
-    bill.city_bill = CityBill(
-        title="Bill title",
-        status="Committee",
-        intro_date="2000-1-1",
-        city_bill_id=1,
-        file="Intro 200",
-        active_version="A",
-    )
-    db.session.add(bill)
-
+def test_update_sponsorships__remove_sponsorship(bill):
     person = Person(
         id=uuid4(), name="Patrick", type=Person.PersonType.COUNCIL_MEMBER
     )
@@ -329,7 +277,7 @@ def test_update_sponsorships__remove_sponsorship():
 
     responses.add(
         responses.GET,
-        url="https://webapi.legistar.com/v1/nyc/matters/1/sponsors?token=fake_token",
+        url=f"https://webapi.legistar.com/v1/nyc/matters/{bill.city_bill.city_bill_id}/sponsors?token=fake_token",
         json=[],
     )
 
