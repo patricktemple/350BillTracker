@@ -231,78 +231,89 @@ export default function BillDetailsPage(props: Props): ReactElement {
               </>
             )}
           </div>
-          {bill.type === 'CITY' && (<><div className={styles.label}>
-            <div>
-              <div style={{ fontWeight: 'bold' }}>
-                Power hours{' '}
-                <span
-                  onClick={() => setPowerHourHelpVisible(!powerHourHelpVisible)}
-                  ref={powerHourHelpRef}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <MdHelpOutline />
-                </span>
-              </div>
-              <Overlay
-                target={powerHourHelpRef.current}
-                placement="right"
-                show={powerHourHelpVisible}
-              >
-                <Popover style={{ width: '500px', maxWidth: '500px' }}>
-                  <Popover.Header as="h3">Power hours</Popover.Header>
-                  <Popover.Body>
-                    <p>
-                      You can generate a Google Sheet for a Power Hour on this
-                      bill with the latest sponsorships and contact info.
-                    </p>
-                    <p className="mb-0">
-                      These sheets are designed for Power Hours involving calls
-                      to a bunch of legislators pushing them to sponsor the
-                      bill. For other kinds of Power Hour, such as calls to the
-                      governor or calls not related to a specific bill, this may
-                      not be useful.
-                    </p>
-                  </Popover.Body>
-                </Popover>
-              </Overlay>
-              {powerHours != null && (
-                <>
-                  <Button
-                    size="sm"
-                    variant="outline-secondary"
-                    onClick={() => setCreatePowerHourModalOpen(true)}
-                    className="mb-2 d-block"
-                  >
-                    Create power hour
-                  </Button>
-                  <CreatePowerHourModal
-                    bill={bill}
-                    oldPowerHours={powerHours}
-                    show={createPowerHourModalOpen}
-                    handlePowerHourCreated={handlePowerHourCreated}
-                    onHide={() => setCreatePowerHourModalOpen(false)}
-                  />
-                </>
-              )}
-            </div>
-          </div>
-          <div className={styles.content}>
-            {powerHours == null ? (
-              'Loading...'
-            ) : (
-              <>
-                {powerHours.map((p, i) => (
-                  <div key={p.id}>
-                    <a href={p.spreadsheetUrl} target="_blank" rel="noreferrer">
-                      {p.title}
-                    </a>
-                    {i == powerHours.length - 1 && ' (latest)'}
+          {bill.type === 'CITY' && (
+            <>
+              <div className={styles.label}>
+                <div>
+                  <div style={{ fontWeight: 'bold' }}>
+                    Power hours{' '}
+                    <span
+                      onClick={() =>
+                        setPowerHourHelpVisible(!powerHourHelpVisible)
+                      }
+                      ref={powerHourHelpRef}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <MdHelpOutline />
+                    </span>
                   </div>
-                ))}
-              </>
-            )}
-          </div></>
-          )}<div className={styles.label}>
+                  <Overlay
+                    target={powerHourHelpRef.current}
+                    placement="right"
+                    show={powerHourHelpVisible}
+                  >
+                    <Popover style={{ width: '500px', maxWidth: '500px' }}>
+                      <Popover.Header as="h3">Power hours</Popover.Header>
+                      <Popover.Body>
+                        <p>
+                          You can generate a Google Sheet for a Power Hour on
+                          this bill with the latest sponsorships and contact
+                          info.
+                        </p>
+                        <p className="mb-0">
+                          These sheets are designed for Power Hours involving
+                          calls to a bunch of legislators pushing them to
+                          sponsor the bill. For other kinds of Power Hour, such
+                          as calls to the governor or calls not related to a
+                          specific bill, this may not be useful.
+                        </p>
+                      </Popover.Body>
+                    </Popover>
+                  </Overlay>
+                  {powerHours != null && (
+                    <>
+                      <Button
+                        size="sm"
+                        variant="outline-secondary"
+                        onClick={() => setCreatePowerHourModalOpen(true)}
+                        className="mb-2 d-block"
+                      >
+                        Create power hour
+                      </Button>
+                      <CreatePowerHourModal
+                        bill={bill}
+                        oldPowerHours={powerHours}
+                        show={createPowerHourModalOpen}
+                        handlePowerHourCreated={handlePowerHourCreated}
+                        onHide={() => setCreatePowerHourModalOpen(false)}
+                      />
+                    </>
+                  )}
+                </div>
+              </div>
+              <div className={styles.content}>
+                {powerHours == null ? (
+                  'Loading...'
+                ) : (
+                  <>
+                    {powerHours.map((p, i) => (
+                      <div key={p.id}>
+                        <a
+                          href={p.spreadsheetUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {p.title}
+                        </a>
+                        {i == powerHours.length - 1 && ' (latest)'}
+                      </div>
+                    ))}
+                  </>
+                )}
+              </div>
+            </>
+          )}
+          <div className={styles.label}>
             Twitter search terms{' '}
             <span
               onClick={() =>

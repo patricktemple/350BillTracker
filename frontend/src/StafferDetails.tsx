@@ -1,5 +1,5 @@
 import React from 'react';
-import { Person  } from './types';
+import { Person } from './types';
 import styles from './style/PersonDetailsPanel.module.scss';
 
 interface Props {
@@ -10,7 +10,7 @@ export default function StafferDetails(props: Props) {
   const person = props.person;
 
   return (
-      <>
+    <>
       <div className={styles.label}>Name</div>
       <div className={styles.content}>{person.name}</div>
       <div className={styles.label}>Title</div>
@@ -29,6 +29,6 @@ export default function StafferDetails(props: Props) {
           </a>
         )}
       </div>
-      </>
+    </>
   );
 }

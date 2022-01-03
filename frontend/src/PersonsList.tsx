@@ -22,7 +22,6 @@ export default function PersonsList({
   selectedPersonId,
   personTypeFilter
 }: Props) {
-
   const apiFetch = useApiFetch();
   const [persons, setPersons] = useState<Person[] | null>(null);
 
@@ -33,7 +32,7 @@ export default function PersonsList({
   });
 
   if (persons == null) {
-      return <div>Loading...</div>;
+    return <div>Loading...</div>;
   }
 
   const lowerFilterText = filterText.toLowerCase();

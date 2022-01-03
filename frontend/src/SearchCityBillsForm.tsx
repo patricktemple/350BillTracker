@@ -50,10 +50,10 @@ export default function SearchCityBillsForm(props: Props): ReactElement {
         Search
       </Button>
       {searchResults != null && (
-          <CityBillSearchResults
-            bills={searchResults}
-            handleTrackBill={handleTrackBill}
-          />
+        <CityBillSearchResults
+          bills={searchResults}
+          handleTrackBill={handleTrackBill}
+        />
       )}
     </Form>
   );

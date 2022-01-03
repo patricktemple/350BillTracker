@@ -4,7 +4,7 @@ from uuid import uuid4
 import responses
 
 from src.app import app
-from src.bill.models import Bill, CityBill, StateBill, SenateBill, AssemblyBill
+from src.bill.models import AssemblyBill, Bill, CityBill, SenateBill, StateBill
 from src.bill_notifications import (BillDiff, BillSnapshot,
                                     _calculate_bill_diffs,
                                     _convert_bill_diff_to_template_variables,

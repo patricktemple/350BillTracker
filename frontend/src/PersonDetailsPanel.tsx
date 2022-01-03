@@ -115,36 +115,49 @@ export default function PersonDetailsPanel(props: Props) {
 
   return (
     <Form onSubmit={(e) => e.preventDefault()} className={styles.root}>
-      {person.type === 'COUNCIL_MEMBER' && <CouncilMemberDetails person={person} />}
-      {(person.type === 'SENATOR' || person.type === 'ASSEMBLY_MEMBER') && <StateRepDetails person={person} />}
-      {person.type === 'STAFFER' ? <StafferDetails person={person} /> : (
-      <><div className={styles.label}>
-        Staffers:
-        <Button
-          variant="outline-secondary"
-          size="sm"
-          onClick={() => setAddStafferModalVisible(true)}
-          className="mt-2 mb-2 d-block"
-        >
-          Add staffer
-        </Button>
-      </div>
-      <div className={styles.content}>
-        {staffers &&
-          staffers.map((staffer) => (
-            <div key={staffer.id}>
-              {formatStaffer(staffer)} [
-              <a href="#" onClick={(e) => handleRemoveStaffer(e, staffer.id)}>
-                Delete
-              </a>
-              ]
-            </div>
-          ))}
-      </div>      <AddStafferModal
-        show={addStafferModalVisible}
-        handleAddStaffer={handleAddStaffer}
-        onHide={() => setAddStafferModalVisible(false)}
-      /></>)}
+      {person.type === 'COUNCIL_MEMBER' && (
+        <CouncilMemberDetails person={person} />
+      )}
+      {(person.type === 'SENATOR' || person.type === 'ASSEMBLY_MEMBER') && (
+        <StateRepDetails person={person} />
+      )}
+      {person.type === 'STAFFER' ? (
+        <StafferDetails person={person} />
+      ) : (
+        <>
+          <div className={styles.label}>
+            Staffers:
+            <Button
+              variant="outline-secondary"
+              size="sm"
+              onClick={() => setAddStafferModalVisible(true)}
+              className="mt-2 mb-2 d-block"
+            >
+              Add staffer
+            </Button>
+          </div>
+          <div className={styles.content}>
+            {staffers &&
+              staffers.map((staffer) => (
+                <div key={staffer.id}>
+                  {formatStaffer(staffer)} [
+                  <a
+                    href="#"
+                    onClick={(e) => handleRemoveStaffer(e, staffer.id)}
+                  >
+                    Delete
+                  </a>
+                  ]
+                </div>
+              ))}
+          </div>{' '}
+          <AddStafferModal
+            show={addStafferModalVisible}
+            handleAddStaffer={handleAddStaffer}
+            onHide={() => setAddStafferModalVisible(false)}
+          />
+        </>
+      )}
       <div className={styles.label}>Our notes:</div>
       <div className={styles.content}>
         <Form.Control

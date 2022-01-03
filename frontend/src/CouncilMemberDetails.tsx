@@ -24,8 +24,8 @@ export default function CouncilMemberDetails(props: Props) {
   const apiFetch = useApiFetch();
 
   const [sponsorships, setSponsorships] = useState<
-  SingleMemberSponsorship[] | null
->(null);
+    SingleMemberSponsorship[] | null
+  >(null);
 
   useMountEffect(() => {
     apiFetch(`/api/council-members/${person.id}/sponsorships`).then(
@@ -35,9 +35,8 @@ export default function CouncilMemberDetails(props: Props) {
     );
   });
 
-
   return (
-      <>
+    <>
       <div className={styles.label}>Name</div>
       <div className={styles.content}>{person.name}</div>
       <div className={styles.label}>Title</div>
@@ -79,7 +78,11 @@ export default function CouncilMemberDetails(props: Props) {
         ) : (
           <div>
             {sponsorships.map((s) => (
-              <Link className="d-block" to={'/bills/' + s.bill.id} key={s.bill.id}>
+              <Link
+                className="d-block"
+                to={'/bills/' + s.bill.id}
+                key={s.bill.id}
+              >
                 {s.bill.cityBill!.file}:{' '}
                 <em>{s.bill.nickname || s.bill.name}</em>
               </Link>
@@ -87,6 +90,6 @@ export default function CouncilMemberDetails(props: Props) {
           </div>
         )}
       </div>
-      </>
+    </>
   );
 }

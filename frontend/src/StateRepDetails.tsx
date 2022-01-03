@@ -1,5 +1,4 @@
-
-import { Person  } from './types';
+import { Person } from './types';
 import React from 'react';
 import styles from './style/PersonDetailsPanel.module.scss';
 
@@ -12,7 +11,7 @@ export default function StateRepDetails(props: Props) {
 
   // TODO: Display their sponsorships here, too (can do in later PR from State impl)
   return (
-      <>
+    <>
       <div className={styles.label}>Name</div>
       <div className={styles.content}>{person.name}</div>
       <div className={styles.label}>Title</div>
@@ -31,6 +30,6 @@ export default function StateRepDetails(props: Props) {
           </a>
         )}
       </div>
-      </>
+    </>
   );
 }
