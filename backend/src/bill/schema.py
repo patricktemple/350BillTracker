@@ -18,7 +18,7 @@ class TrackCityBillSchema(CamelCaseSchema):
 
 
 class StateChamberBillSchema(CamelCaseSchema):
-    version_name = fields.String(dump_only=True)
+    active_version = fields.String(dump_only=True)
     sponsor_count = fields.Integer(dump_only=True)
     status = fields.String(dump_only=True)
     base_print_no = fields.String(dump_only=True)

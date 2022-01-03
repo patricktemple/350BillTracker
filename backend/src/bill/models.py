@@ -23,12 +23,6 @@ class StateChamber(enum.Enum):
     ASSEMBLY = 2
 
 
-
-# Let's standardize some fields across city and state:
-# Bill.name is shorter, maps to city council's MatterName and State's "title"
-# Bill.description is longer, maps to city council's "title" and state's "summary"
-# Code_name is a derived property. Comes from CityBill.file, or a combo of state bill's two code names
-# Should we do the same with status?
 class Bill(db.Model):
     """
     Base table for all bills, both city and state. Contains any info that's
@@ -103,7 +97,7 @@ class Bill(db.Model):
         senate_status = self.state_bill.senate_bill.status if self.state_bill.senate_bill else "(No Senate bill)"
         assembly_status = self.state_bill.assembly_bill.status if self.state_bill.assembly_bill else "(No Assembly bill)"
     
-        # This seems wrong... figure out how substitutions work
+        # TODO: This might be a bit misleading when a bill is signed. Figure out how bill substitutions work.
         return f"{senate_status} / {assembly_status}"
     
     @property
@@ -114,7 +108,6 @@ class Bill(db.Model):
         senate_print_no = self.state_bill.senate_bill.base_print_no if self.state_bill.senate_bill else "(No Senate bill)"
         assembly_print_no = self.state_bill.assembly_bill.base_print_no if self.state_bill.assembly_bill else "(No Assembly bill)"
     
-        # This seems wrong... figure out how substitutions work
         return f"{senate_print_no} / {assembly_print_no} from {self.state_bill.session_year} session"
 
 
@@ -182,7 +175,7 @@ class CityBill(db.Model):
     council_body = Column(Text)
 
 
-# TODO: Understand bill substitution, I have something wrong here... seems like after passing one chamber, it gets substituted for the other one? unclear...
+# TODO: Understand bill substitution and change if needed
 class StateBill(db.Model):
     """
     State-specific details about a state bill. There must also be an associated
@@ -201,9 +194,7 @@ class StateBill(db.Model):
  
 
 class StateChamberMixin:
-    id = Column(UUID, primary_key=True, default=uuid4) # unclear that this ID column is necessary if we have just one version at a time
- 
-    active_version_name = Column(Text, nullable=False)
+    active_version = Column(Text, nullable=False)
     status = Column(Text, nullable=False)
     base_print_no = Column(Text, nullable=False)
 
@@ -214,11 +205,11 @@ class StateChamberMixin:
 
     @declared_attr
     def bill_id(self):
-       return Column(UUID, ForeignKey(StateBill.bill_id), index=True, nullable=False) # todo make this unique (same below)
+       return Column(UUID, ForeignKey(StateBill.bill_id), primary_key=True)
 
-    # This is a bit confusing. The Senate and the Assembly each run separate websites,
-    # and each website can lookup both senate and assembly bills. So they're redundant
-    # websites with very different UI. Therefore senate and assembly bills each have a
+    # The Senate and the Assembly each run separate websites, and each website can
+    # lookup both senate and assembly bills. So they're redundant websites with
+    # very different UI. Therefore senate and assembly bills each have a
     # both assembly and senate websites.
     @property
     def senate_website(self):
@@ -229,13 +220,13 @@ class StateChamberMixin:
         # use urlpasr to construct it?
         return f"https://nyassembly.gov/leg/?term={self.state_bill.session_year}&bn={self.base_print_no}"
 
-# todo comment about versions and stuff
+
 class SenateBill(db.Model, StateChamberMixin):
     __tablename__ = "senate_bills"
 
     state_bill = relationship(StateBill, back_populates="senate_bill")
     sponsorships = relationship(
-        "SenateSponsorship", back_populates="senate_version",         cascade="all, delete"
+        "SenateSponsorship", back_populates="senate_bill",         cascade="all, delete"
     )
 
 
@@ -244,5 +235,5 @@ class AssemblyBill(db.Model, StateChamberMixin):
 
     state_bill = relationship(StateBill, back_populates="assembly_bill")
     sponsorships = relationship(
-        "AssemblySponsorship", back_populates="assembly_version",         cascade="all, delete"
+        "AssemblySponsorship", back_populates="assembly_bil",         cascade="all, delete"
     )

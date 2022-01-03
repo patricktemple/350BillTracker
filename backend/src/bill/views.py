@@ -123,16 +123,14 @@ def search_state_bills():
     # Is this a lazy load of state bill?
     bill_print_nos = [b['base_print_no'] for b in bill_results]
     tracked_assembly_bills = AssemblyBill.query.filter(AssemblyBill.base_print_no.in_(bill_print_nos)).all()
-    tracked_assembly_bill_set = set([(b.state_bill.session_year, b.base_print_no) for b in tracked_assembly_bills]) # or generator expression?
+    tracked_assembly_bill_set = set([(b.state_bill.session_year, b.base_print_no) for b in tracked_assembly_bills])
     tracked_senate_bills = SenateBill.query.filter(SenateBill.base_print_no.in_(bill_print_nos)).all()
-    tracked_senate_bill_set = set([(b.state_bill.session_year, b.base_print_no) for b in tracked_senate_bills]) # or generator expression?
+    tracked_senate_bill_set = set([(b.state_bill.session_year, b.base_print_no) for b in tracked_senate_bills])
 
     for bill in bill_results:
         bill_identifier = (bill['session_year'], bill['base_print_no'])
         if bill_identifier in tracked_assembly_bill_set or bill_identifier in tracked_senate_bill_set:
             bill['tracked'] = True
-
-    # TODO check which ones are already tracked
 
     return StateBillSearchResultSchema(many=True).jsonify(bill_results)
 

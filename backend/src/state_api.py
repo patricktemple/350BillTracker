@@ -142,14 +142,14 @@ def import_bill(session_year, senate_print_no):
         bill.state_bill.assembly_bill = AssemblyBill(
             status=assembly_data['status']['statusDesc'],
             base_print_no=assembly_data['basePrintNo'],
-            active_version_name=assembly_data['activeVersion']
+            active_version=assembly_data['activeVersion']
         )
         _add_assembly_sponsorships(bill, assembly_data)
     if senate_data:
         bill.state_bill.senate_bill = SenateBill(
             status=senate_data['status']['statusDesc'],
             base_print_no=senate_data['basePrintNo'],
-            active_version_name=senate_data['activeVersion']
+            active_version=senate_data['activeVersion']
         )
         _add_senate_sponsorships(bill, senate_data)
     

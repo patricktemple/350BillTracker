@@ -71,11 +71,10 @@ class SenateSponsorship(db.Model):
 
     id = Column(UUID, primary_key=True, default=uuid4)
 
-    # DO we need this version ID? Or can it be the bill id?
-    senate_version_id = Column(
-        UUID, ForeignKey(SenateBill.id), nullable=False, index=True
+    senate_bill_id = Column(
+        UUID, ForeignKey(SenateBill.bill_id), nullable=False, index=True
     )
-    senate_version = relationship(
+    senate_bill = relationship(
         SenateBill,
         back_populates="sponsorships",
     )
@@ -86,7 +85,6 @@ class SenateSponsorship(db.Model):
     senator = relationship(Senator, back_populates="sponsorships")
 
     # TODO: Add sponsor_sequence like we have with city, if needed
-    # TODO: Unique constraint
 
 
 class AssemblySponsorship(db.Model):
@@ -94,10 +92,10 @@ class AssemblySponsorship(db.Model):
 
     id = Column(UUID, primary_key=True, default=uuid4)
 
-    assembly_version_id = Column(
-        UUID, ForeignKey(AssemblyBill.id), nullable=False, index=True
+    assembly_bill_id = Column(
+        UUID, ForeignKey(AssemblyBill.bill_id), nullable=False, index=True
     )
-    assembly_version = relationship(
+    assembly_bill = relationship(
         AssemblyBill,
         back_populates="sponsorships",
     )
@@ -110,10 +108,9 @@ class AssemblySponsorship(db.Model):
     )
 
     # TODO: Add sponsor_sequence like we have with city, if needed
-    # TODO: Unique constraint
 
 
 # is this inefficient? it loads it fully for every single  element
 CityBill.sponsor_count = column_property(select(func.count(CitySponsorship.id)).where(CitySponsorship.bill_id==CityBill.bill_id).correlate_except(CitySponsorship).scalar_subquery())
-SenateBill.sponsor_count = column_property(select(func.count(SenateSponsorship.id)).where(SenateSponsorship.senate_version_id==SenateBill.id).correlate_except(SenateSponsorship).scalar_subquery())
-AssemblyBill.sponsor_count = column_property(select(func.count(AssemblySponsorship.id)).where(AssemblySponsorship.assembly_version_id==AssemblyBill.id).correlate_except(AssemblySponsorship).scalar_subquery())
+SenateBill.sponsor_count = column_property(select(func.count(SenateSponsorship.id)).where(SenateSponsorship.senate_bill_id==SenateBill.bill_id).correlate_except(SenateSponsorship).scalar_subquery())
+AssemblyBill.sponsor_count = column_property(select(func.count(AssemblySponsorship.id)).where(AssemblySponsorship.assembly_bill_id==AssemblyBill.bill_id).correlate_except(AssemblySponsorship).scalar_subquery())
