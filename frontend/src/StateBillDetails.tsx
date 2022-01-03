@@ -75,7 +75,7 @@ function ChamberDetails({
             </a>
           </div>
           <div className={styles.sponsorList}>
-            <span style={{fontWeight: 'bold' }}>Sponsors</span>
+            <span style={{fontWeight: 'bold' }}>Sponsors{sponsors != null && <> ({sponsors.length})</>}</span>
             {sponsors != null ? (
               <BillSponsorList
                 persons={sponsors}
@@ -86,7 +86,7 @@ function ChamberDetails({
             )}
           </div>
           <div className={styles.nonSponsorList}>
-            <span style={{fontWeight: 'bold' }}>Non-sponsors</span>
+            <span style={{fontWeight: 'bold' }}>Non-sponsors{nonSponsors != null && <> ({nonSponsors.length})</>}</span>
             {nonSponsors != null ? (
               <BillSponsorList
                 persons={nonSponsors}
