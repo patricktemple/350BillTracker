@@ -36,11 +36,11 @@ export default function SearchCityBillsForm(props: Props): ReactElement {
 
   function handleTrackBill(cityBillId: number) {
     apiFetch('/api/saved-bills', {
-        method: 'POST',
-        body: { cityBillId }
-      }).then(response => {
-          props.handleBillTracked();
-      })
+      method: 'POST',
+      body: { cityBillId }
+    }).then((response) => {
+      props.handleBillTracked();
+    });
   }
 
   return (

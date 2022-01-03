@@ -11,7 +11,8 @@ from ..council_api import lookup_bill, lookup_bills
 from ..council_sync import update_bill_sponsorships
 from ..google_sheets import create_power_hour
 from ..models import db
-from .models import AssemblyBill, Bill, BillAttachment, CityBill, PowerHour, SenateBill, StateBill
+from .models import (AssemblyBill, Bill, BillAttachment, CityBill, PowerHour,
+                     SenateBill, StateBill)
 from .schema import (BillAttachmentSchema, BillSchema, CreatePowerHourSchema,
                      PowerHourSchema, StateBillSearchResultSchema,
                      TrackCityBillSchema, TrackStateBillSchema)

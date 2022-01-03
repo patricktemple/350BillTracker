@@ -9,16 +9,16 @@ import Table from 'react-bootstrap/Table';
 
 function BillRow(props: {
   bill: StateBillSearchResult;
-    handleTrackBill: (bill: StateBillSearchResult) => void;
+  handleTrackBill: (bill: StateBillSearchResult) => void;
 }) {
-    const [trackClicked, setTrackClicked] = useState<boolean>(false);
+  const [trackClicked, setTrackClicked] = useState<boolean>(false);
 
   const { bill } = props;
 
   function handleTrackBill() {
-      setTrackClicked(true);
-      props.handleTrackBill(bill);
-    }
+    setTrackClicked(true);
+    props.handleTrackBill(bill);
+  }
 
   // Lazy way to make this UI respond to click, without better global state.
   // Assumes that tracking API call actually will work.
@@ -31,26 +31,26 @@ function BillRow(props: {
       <td>{bill.description}</td>
       <td>{bill.status}</td>
       <td>
-          {bill.tracked || trackClicked ? (
-            <Button disabled size="sm">
-              Tracked
-            </Button>
-          ) : (
-            <Button size="sm" onClick={handleTrackBill}>
-              Track
-            </Button>
-          )}
-        </td>
+        {bill.tracked || trackClicked ? (
+          <Button disabled size="sm">
+            Tracked
+          </Button>
+        ) : (
+          <Button size="sm" onClick={handleTrackBill}>
+            Track
+          </Button>
+        )}
+      </td>
     </tr>
   );
 }
 
 interface Props {
-    todo?: string;
-    //   show: boolean;
-    // tood figure out session ear string or number
-      handleBillTracked: () => void;
-  }
+  todo?: string;
+  //   show: boolean;
+  // tood figure out session ear string or number
+  handleBillTracked: () => void;
+}
 
 export default function SearchBillsModal(props: Props): ReactElement {
   const codeNameRef = useRef<HTMLInputElement>(null);
@@ -76,11 +76,11 @@ export default function SearchBillsModal(props: Props): ReactElement {
   function handleTrackBill(bill: StateBillSearchResult) {
     // TODO figure out endpooint
     apiFetch('/api/state-bills', {
-        method: 'POST',
-        body: { sessionYear: bill.sessionYear, basePrintNo: bill.basePrintNo }
-      }).then(response => {
-          props.handleBillTracked();
-      })
+      method: 'POST',
+      body: { sessionYear: bill.sessionYear, basePrintNo: bill.basePrintNo }
+    }).then((response) => {
+      props.handleBillTracked();
+    });
   }
 
   //   function handleHide() {

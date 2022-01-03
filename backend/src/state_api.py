@@ -78,7 +78,7 @@ def _add_senate_sponsorships(bill, chamber_data):
             logging.warning(f"Did not find {sponsor['fullName']}, member_id: {member_id} for sponsorship on bill {bill.state_bill.senate_bill.base_print_no}")
 
 
-# dedupe
+# dedupe with above?
 def _add_assembly_sponsorships(bill, chamber_data):
     active_amendment = chamber_data["amendments"]["items"][
          chamber_data['activeVersion']
