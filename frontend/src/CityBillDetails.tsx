@@ -37,12 +37,12 @@ export default function CityBillSponsorList({
     });
   });
 
-  const positiveSponsors = sponsorships?.filter(
-    (s: CitySponsorship) => s.isSponsor
-  );
-  const negativeSponsors = sponsorships?.filter(
-    (s: CitySponsorship) => !s.isSponsor
-  );
+  const positiveSponsors = sponsorships
+    ?.filter((s: CitySponsorship) => s.isSponsor)
+    .map((s) => s.person);
+  const negativeSponsors = sponsorships
+    ?.filter((s: CitySponsorship) => !s.isSponsor)
+    .map((s) => s.person);
 
   return (
     <>
@@ -62,7 +62,7 @@ export default function CityBillSponsorList({
           'Loading...'
         ) : (
           <BillSponsorList
-            sponsorships={positiveSponsors}
+            persons={positiveSponsors}
             twitterSearchTerms={twitterSearchTerms}
           />
         )}
@@ -76,7 +76,7 @@ export default function CityBillSponsorList({
           'Loading...'
         ) : (
           <BillSponsorList
-            sponsorships={negativeSponsors}
+            persons={negativeSponsors}
             twitterSearchTerms={twitterSearchTerms}
           />
         )}

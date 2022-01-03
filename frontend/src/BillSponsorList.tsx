@@ -1,12 +1,12 @@
 import React from 'react';
-import { CitySponsorship } from './types';
+import { Person } from './types';
 import { Link } from 'react-router-dom';
 import Stack from 'react-bootstrap/Stack';
 
 import { ReactComponent as TwitterIcon } from './assets/twitter.svg';
 
 interface Props {
-  sponsorships: CitySponsorship[];
+  persons: Person[];
   twitterSearchTerms: string[];
 }
 
@@ -26,18 +26,19 @@ function getTwitterSearchUrl(searchTerms: string[], twitterHandle: string) {
 }
 
 export default function BillSponsorList(props: Props) {
+  // TODO: Fix handling of lead sponsor
   return (
     <Stack direction="vertical">
-      {props.sponsorships.map((s) => (
-        <div key={s.person.id}>
-          <Link to={'/people/' + s.person.id}>{s.person.name}</Link>
-          {s.sponsorSequence == 0 && ' (lead)'}{' '}
-          {s.person.twitter && (
+      {props.persons.map((person) => (
+        <div key={person.id}>
+          <Link to={'/people/' + person.id}>{person.name}</Link>
+          {/* {s.sponsorSequence == 0 && ' (lead)'}{' '} */}
+          {person.twitter && (
             <span style={{ marginLeft: '0.5rem' }}>
               <a
                 href={getTwitterSearchUrl(
                   props.twitterSearchTerms,
-                  s.person.twitter
+                  person.twitter
                 )}
                 target="_blank"
                 rel="noreferrer"

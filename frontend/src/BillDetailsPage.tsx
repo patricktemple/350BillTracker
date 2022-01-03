@@ -15,7 +15,7 @@ import { MdHelpOutline } from 'react-icons/md';
 import styles from './style/BillDetailsPage.module.scss';
 
 import { ReactComponent as TwitterIcon } from './assets/twitter.svg';
-import CityBillSponsorList from './CityBillSponsorList';
+import CityBillSponsorList from './CityBillDetails';
 import StateBillDetails from './StateBillDetails';
 import { useHistory } from 'react-router-dom';
 
@@ -371,7 +371,10 @@ export default function BillDetailsPage(props: Props): ReactElement {
             />
           ) : (
             <div className={styles.fullWidth}>
-              <StateBillDetails bill={bill} />
+              <StateBillDetails
+                bill={bill}
+                twitterSearchTerms={formData.twitterSearchTerms}
+              />
             </div>
           )}
           <div className={styles.label}>

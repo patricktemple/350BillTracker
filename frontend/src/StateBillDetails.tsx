@@ -6,7 +6,8 @@ import {
   CitySponsorship,
   BillAttachment,
   PowerHour,
-  StateBillSponsorships
+  StateBillSponsorships,
+  Person
 } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import AddAttachmentModal from './AddAttachmentModal';
@@ -18,19 +19,28 @@ import BillSponsorList from './BillSponsorList';
 import Popover from 'react-bootstrap/Popover';
 import Overlay from 'react-bootstrap/Overlay';
 import { MdHelpOutline } from 'react-icons/md';
-import styles from './style/BillDetailsPage.module.scss';
 import { StateChamberBill } from './types';
 import LazyAccordionBody from './LazyAccordionBody';
 import Accordion from 'react-bootstrap/Accordion';
 
+import styles from './style/StateBillDetails.module.scss';
 import { ReactComponent as TwitterIcon } from './assets/twitter.svg';
 
 interface ChamberProps {
   chamber: string;
   chamberDetails: StateChamberBill | null;
+  sponsors?: Person[];
+  nonSponsors?: Person[];
+  twitterSearchTerms: string[];
 }
 
-function ChamberDetails({ chamber, chamberDetails }: ChamberProps) {
+function ChamberDetails({
+  chamber,
+  chamberDetails,
+  sponsors,
+  nonSponsors,
+  twitterSearchTerms
+}: ChamberProps) {
   // todo handle null chamber details
   // todo explain senate vs assembly website?
   return (
@@ -45,22 +55,48 @@ function ChamberDetails({ chamber, chamberDetails }: ChamberProps) {
         </div>
       </Accordion.Header>
       <Accordion.Body>
-        <a
-          className="d-block"
-          href={chamberDetails?.senateWebsite}
-          rel="noreferrer"
-          target="_blank"
-        >
-          Senate website
-        </a>
-        <a
-          className="d-block"
-          href={chamberDetails?.assemblyWebsite}
-          rel="noreferrer"
-          target="_blank"
-        >
-          Assembly website
-        </a>
+        <div className={styles.chamberDetails}>
+          <div className={styles.info}>
+            <a
+              className="d-block"
+              href={chamberDetails?.senateWebsite}
+              rel="noreferrer"
+              target="_blank"
+            >
+              View on Senate website
+            </a>
+            <a
+              className="d-block"
+              href={chamberDetails?.assemblyWebsite}
+              rel="noreferrer"
+              target="_blank"
+            >
+              View on Assembly website
+            </a>
+          </div>
+          <div className={styles.sponsorList}>
+            <span style={{fontWeight: 'bold' }}>Sponsors</span>
+            {sponsors != null ? (
+              <BillSponsorList
+                persons={sponsors}
+                twitterSearchTerms={twitterSearchTerms}
+              />
+            ) : (
+              'Loading...'
+            )}
+          </div>
+          <div className={styles.nonSponsorList}>
+            <span style={{fontWeight: 'bold' }}>Non-sponsors</span>
+            {nonSponsors != null ? (
+              <BillSponsorList
+                persons={nonSponsors}
+                twitterSearchTerms={twitterSearchTerms}
+              />
+            ) : (
+              'Loading...'
+            )}
+          </div>
+        </div>
       </Accordion.Body>
     </Accordion.Item>
   );
@@ -68,8 +104,9 @@ function ChamberDetails({ chamber, chamberDetails }: ChamberProps) {
 
 interface Props {
   bill: Bill;
+  twitterSearchTerms: string[];
 }
-export default function StateBillDetails({ bill }: Props) {
+export default function StateBillDetails({ bill, twitterSearchTerms }: Props) {
   const apiFetch = useApiFetch();
 
   const [sponsorships, setSponsorships] =
@@ -77,7 +114,6 @@ export default function StateBillDetails({ bill }: Props) {
 
   useMountEffect(() => {
     apiFetch(`/api/state-bills/${bill.id}/sponsorships`).then((response) => {
-      console.log(response);
       setSponsorships(response);
     });
   });
@@ -87,10 +123,16 @@ export default function StateBillDetails({ bill }: Props) {
       <ChamberDetails
         chamber="Senate"
         chamberDetails={bill.stateBill!.senateBill}
+        sponsors={sponsorships?.senateSponsors}
+        nonSponsors={sponsorships?.senateNonSponsors}
+        twitterSearchTerms={twitterSearchTerms}
       />
       <ChamberDetails
         chamber="Assembly"
         chamberDetails={bill.stateBill!.assemblyBill}
+        sponsors={sponsorships?.assemblySponsors}
+        nonSponsors={sponsorships?.assemblyNonSponsors}
+        twitterSearchTerms={twitterSearchTerms}
       />
     </Accordion>
   );
