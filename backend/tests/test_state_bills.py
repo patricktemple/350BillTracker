@@ -3,10 +3,12 @@ from uuid import uuid4
 
 import responses
 
-from src.bill.models import DEFAULT_TWITTER_SEARCH_TERMS, Bill, CityBill
+from src.bill.models import DEFAULT_TWITTER_SEARCH_TERMS, Bill, StateBill, SenateBill, AssemblyBill
 from src.models import db
 from src.person.models import AssemblyMember, Person, Senator
 from src.utils import now
+
+import pytest
 
 from .utils import assert_response
 
@@ -174,10 +176,11 @@ def test_track_bill(client):
 
 
 @responses.activate
-def test_search_bill_not_tracked(client):
+@pytest.mark.parametrize("tracked", [False, True])
+def test_search_bill(client, tracked):
     responses.add(
         responses.GET,
-        url="https://legislation.nysenate.gov/api/3/bills/search?term=%28basePrintNo%3ANone+OR+printNo%3ANone%29+AND+billType.resolution%3Afalse+AND+session%3A2021&key=fake_key",
+        url="https://legislation.nysenate.gov/api/3/bills/search?term=%28basePrintNo%3AS123+OR+printNo%3AS123%29+AND+billType.resolution%3Afalse+AND+session%3A2021&key=fake_key",
         json={"result": {
             "items": [{
                 "result": {
@@ -197,8 +200,17 @@ def test_search_bill_not_tracked(client):
         }},
     )
 
+    if tracked:
+        bill = Bill(id=uuid4(), name="state bill", description="description", nickname="nickname", type=Bill.BillType.STATE)
+        bill.state_bill = StateBill(
+            session_year=2021,
+        )
+        bill.state_bill.senate_bill = SenateBill(base_print_no="S123", active_version="", status="Committee")
+        db.session.add(bill)
+        db.session.commit()
+
     response = client.get(
-        "/api/state-bills/search?sessionYear=2021&basePrintNo=S123",
+        "/api/state-bills/search?sessionYear=2021&codeName=S123",
     )
     assert response.status_code == 200
     response_data = json.loads(response.data)[0]
@@ -210,7 +222,7 @@ def test_search_bill_not_tracked(client):
         "activeVersion": "A",
         "basePrintNo": "S123",
         "sessionYear": 2021,
-        "tracked": False,
+        "tracked": tracked,
     }
 
 
