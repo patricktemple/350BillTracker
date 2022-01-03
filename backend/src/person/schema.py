@@ -11,6 +11,7 @@ class CouncilMemberSchema(CamelCaseSchema):
     borough = fields.String(dump_only=True)
     website = fields.String(dump_only=True)
     legislative_phone = fields.String(dump_only=True)
+    is_active = fields.Boolean(dump_only=True)
 
 
 class SenatorSchema(CamelCaseSchema):

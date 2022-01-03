@@ -4,7 +4,7 @@ from werkzeug import exceptions
 from ..app import app
 from ..auth import auth_required
 from ..bill.models import CityBill
-from ..person.models import Person
+from ..person.models import Person, CouncilMember
 from .models import CitySponsorship
 from .schema import CityBillSponsorshipSchema, CouncilMemberSponsorshipSchema
 
@@ -35,17 +35,19 @@ def city_bill_sponsorships(bill_id):
         .order_by(CitySponsorship.sponsor_sequence)
         .all()
     )
+    
+
     for sponsorship in sponsorships:
         # This is not a field on the SQLA object, but we set it so that it gets
         # serialized into the response.
         sponsorship.is_sponsor = True
 
     non_sponsors = (
-        Person.query.filter(
-            Person.id.not_in([s.council_member_id for s in sponsorships])
-            & (Person.type == Person.PersonType.COUNCIL_MEMBER)
+        CouncilMember.query.filter(
+            CouncilMember.person_id.not_in([s.council_member_id for s in sponsorships])
+            & CouncilMember.is_active
         )
-        .order_by(Person.name)
+        # .order_by(Person.name)
         .all()
     )
     non_sponsorships = [

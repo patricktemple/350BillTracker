@@ -2,7 +2,8 @@ import enum
 from uuid import uuid4
 
 from sqlalchemy import Column, Enum, ForeignKey, Integer, Text
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import column_property, relationship
+from sqlalchemy.sql import func
 
 from ..models import TIMESTAMP, UUID, db
 
@@ -111,6 +112,8 @@ class CouncilMember(db.Model):
 
     borough = Column(Text)
     website = Column(Text)
+
+    is_active = column_property((func.now() >= term_start) & (func.now() < term_end))
 
 
 class Senator(db.Model):
