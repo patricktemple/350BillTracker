@@ -18,32 +18,37 @@ interface Props {
   personTypeFilter?: PersonType;
 }
 
-export default function PersonsList({ persons, filterText, selectedPersonId, personTypeFilter }: Props) {
+export default function PersonsList({
+  persons,
+  filterText,
+  selectedPersonId,
+  personTypeFilter
+}: Props) {
   let filteredPersons = null;
 
-    const lowerFilterText = filterText.toLowerCase();
-    filteredPersons = persons.filter(
-        (p) =>
-        (p.name.toLowerCase().includes(lowerFilterText) ||
-        p.councilMember?.borough?.toLowerCase().includes(lowerFilterText))
-        && (!personTypeFilter || p.type === personTypeFilter)
-    );
+  const lowerFilterText = filterText.toLowerCase();
+  filteredPersons = persons.filter(
+    (p) =>
+      (p.name.toLowerCase().includes(lowerFilterText) ||
+        p.councilMember?.borough?.toLowerCase().includes(lowerFilterText)) &&
+      (!personTypeFilter || p.type === personTypeFilter)
+  );
 
   return (
-            <Accordion defaultActiveKey={selectedPersonId}>
-              {filteredPersons.map((person) => (
-                <Accordion.Item key={person.id} eventKey={person.id}>
-                  <Accordion.Header>
-                    <strong>{person.name}</strong>
-                    {person.councilMember?.borough && (
-                      <>&nbsp;({person.councilMember.borough})</>
-                    )}
-                  </Accordion.Header>
-                  <LazyAccordionBody eventKey={person.id}>
-                    <PersonDetailsPanel person={person} />
-                  </LazyAccordionBody>
-                </Accordion.Item>
-              ))}
-            </Accordion>
+    <Accordion defaultActiveKey={selectedPersonId}>
+      {filteredPersons.map((person) => (
+        <Accordion.Item key={person.id} eventKey={person.id}>
+          <Accordion.Header>
+            <strong>{person.name}</strong>
+            {person.councilMember?.borough && (
+              <>&nbsp;({person.councilMember.borough})</>
+            )}
+          </Accordion.Header>
+          <LazyAccordionBody eventKey={person.id}>
+            <PersonDetailsPanel person={person} />
+          </LazyAccordionBody>
+        </Accordion.Item>
+      ))}
+    </Accordion>
   );
 }

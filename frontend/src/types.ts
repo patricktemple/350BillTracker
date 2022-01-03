@@ -67,7 +67,11 @@ export interface Bill {
   stateBill: StateBill | null;
 }
 
-export type PersonType = 'COUNCIL_MEMBER' | 'SENATOR' | 'ASSEMBLY_MEMBER' | 'STAFFER';
+export type PersonType =
+  | 'COUNCIL_MEMBER'
+  | 'SENATOR'
+  | 'ASSEMBLY_MEMBER'
+  | 'STAFFER';
 
 export interface CouncilMember {
   legislativePhone: string;

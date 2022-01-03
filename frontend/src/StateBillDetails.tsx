@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Bill,
-  StateBillSponsorships,
-  Person
-} from './types';
+import { Bill, StateBillSponsorships, Person } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import useApiFetch from './useApiFetch';
 import BillSponsorList from './BillSponsorList';
@@ -61,7 +57,9 @@ function ChamberDetails({
             </a>
           </div>
           <div className={styles.sponsorList}>
-            <span style={{fontWeight: 'bold' }}>Sponsors{sponsors != null && <> ({sponsors.length})</>}</span>
+            <span style={{ fontWeight: 'bold' }}>
+              Sponsors{sponsors != null && <> ({sponsors.length})</>}
+            </span>
             {sponsors != null ? (
               <BillSponsorList
                 persons={sponsors}
@@ -72,7 +70,9 @@ function ChamberDetails({
             )}
           </div>
           <div className={styles.nonSponsorList}>
-            <span style={{fontWeight: 'bold' }}>Non-sponsors{nonSponsors != null && <> ({nonSponsors.length})</>}</span>
+            <span style={{ fontWeight: 'bold' }}>
+              Non-sponsors{nonSponsors != null && <> ({nonSponsors.length})</>}
+            </span>
             {nonSponsors != null ? (
               <BillSponsorList
                 persons={nonSponsors}

@@ -39,34 +39,62 @@ export default function PersonsPage({
     <div>
       <div className={styles.title}>People</div>
       <div className={styles.content}>
-      <input
-              type="text"
-              placeholder="Type name to search"
-              value={filterText}
-              className="mb-2"
-              size={30}
-              onChange={handleFilterTextChanged}
-            />
+        <input
+          type="text"
+          placeholder="Type name to search"
+          value={filterText}
+          className="mb-2"
+          size={30}
+          onChange={handleFilterTextChanged}
+        />
         {persons == null ? (
           'Loading...'
         ) : (
           <Tabs className="mb-4">
-          <Tab eventKey="all" title="All">
-          <><PersonsList persons={persons} filterText={filterText} selectedPersonId={personId}/></>
-          </Tab>
-          <Tab eventKey="council" title="Council members">
-          <><PersonsList persons={persons} filterText={filterText} selectedPersonId={personId} personTypeFilter={'COUNCIL_MEMBER'}/></>
-          </Tab>
-          <Tab eventKey="senate" title="Senators">
-          <PersonsList persons={persons} filterText={filterText} selectedPersonId={personId} personTypeFilter={'SENATOR'}/>
-          </Tab>
-          <Tab eventKey="assembly" title="Assembly members">
-          <PersonsList persons={persons} filterText={filterText} selectedPersonId={personId} personTypeFilter={'ASSEMBLY_MEMBER'}/>
-          </Tab>
-          <Tab eventKey="staffers" title="Staffers">
-          <PersonsList persons={persons} filterText={filterText} selectedPersonId={personId} personTypeFilter={'STAFFER'}/>
-          </Tab>
-        </Tabs>
+            <Tab eventKey="all" title="All">
+              <>
+                <PersonsList
+                  persons={persons}
+                  filterText={filterText}
+                  selectedPersonId={personId}
+                />
+              </>
+            </Tab>
+            <Tab eventKey="council" title="Council members">
+              <>
+                <PersonsList
+                  persons={persons}
+                  filterText={filterText}
+                  selectedPersonId={personId}
+                  personTypeFilter={'COUNCIL_MEMBER'}
+                />
+              </>
+            </Tab>
+            <Tab eventKey="senate" title="Senators">
+              <PersonsList
+                persons={persons}
+                filterText={filterText}
+                selectedPersonId={personId}
+                personTypeFilter={'SENATOR'}
+              />
+            </Tab>
+            <Tab eventKey="assembly" title="Assembly members">
+              <PersonsList
+                persons={persons}
+                filterText={filterText}
+                selectedPersonId={personId}
+                personTypeFilter={'ASSEMBLY_MEMBER'}
+              />
+            </Tab>
+            <Tab eventKey="staffers" title="Staffers">
+              <PersonsList
+                persons={persons}
+                filterText={filterText}
+                selectedPersonId={personId}
+                personTypeFilter={'STAFFER'}
+              />
+            </Tab>
+          </Tabs>
         )}
       </div>
     </div>
