@@ -4,7 +4,7 @@ from uuid import uuid4
 import responses
 
 from src.app import app
-from src.bill.models import Bill, CityBill
+from src.bill.models import Bill, CityBill, StateBill, SenateBill, AssemblyBill
 from src.bill_notifications import (BillDiff, BillSnapshot,
                                     _calculate_bill_diffs,
                                     _convert_bill_diff_to_template_variables,
@@ -62,6 +62,8 @@ def add_test_sponsorship(*, bill, person):
 
     return impl()
 
+
+# TODO: Test that this ignores state bills for now
 
 def test_calculate_bill_diffs():
     bill_1 = add_test_bill(1, "Enacted")
@@ -208,6 +210,30 @@ def test_email_contents__sponsor_added_and_removed():
         "sponsor_text": "1 sponsors --> 1 sponsors (gained Jamaal Bowman, lost Brad Lander)",
         "sponsor_color": "blue",
     }
+
+
+@responses.activate
+@patch("src.ses.client")
+def test_state_bill_ignored(mock_ses_client):
+    bill = Bill(
+        id=uuid4(), name=f"state bill", description="description", type=Bill.BillType.STATE
+    )
+    bill.state_bill = StateBill(
+        session_year=2021,
+    )
+    bill.state_bill.senate_bill = SenateBill(base_print_no="S1234", active_version="A", 
+        status="Signed by governor")
+    bill.state_bill.assembly_bill = AssemblyBill(base_print_no="A1234", active_version="", 
+        status="Signed by governor")
+    db.session.add(bill)
+    db.session.commit()
+
+    snapshots = {}
+
+    with app.app_context():
+        send_bill_update_notifications(snapshots)
+
+    mock_ses_client.send_email.assert_not_called()
 
 
 @responses.activate

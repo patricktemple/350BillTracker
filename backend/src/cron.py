@@ -31,20 +31,20 @@ def cron_command():
                 # state_api.fill_state_representative_static_data()
                 # TODO: Update state sponsorships, bill status
 
-                # bill_snapshots = bill_notifications.snapshot_bills()
+                bill_snapshots = bill_notifications.snapshot_bills()
 
-                # logging.info("Syncing all bill updates")
-                # council_sync.sync_bill_updates()
+                logging.info("Syncing all bill updates")
+                council_sync.sync_bill_updates()
 
-                # logging.info("Syncing all bill sponsorships")
-                # council_sync.update_all_sponsorships()
+                logging.info("Syncing all bill sponsorships")
+                council_sync.update_all_sponsorships()
 
-                # logging.info(
-                #     "Checking if bills have changed, and sending notifications if so"
-                # )
-                # bill_notifications.send_bill_update_notifications(
-                #     bill_snapshots
-                # )
+                logging.info(
+                    "Checking if bills have changed, and sending notifications if so"
+                )
+                bill_notifications.send_bill_update_notifications(
+                    bill_snapshots
+                )
 
                 logging.info("Cron run complete")
             except Exception as e:
