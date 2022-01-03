@@ -74,11 +74,6 @@ export default function PersonDetailsPanel(props: Props) {
   }
 
   useMountEffect(() => {
-    // apiFetch(`/api/council-members/${person.id}/sponsorships`).then(
-    //   (response) => {
-    //     setSponsorships(response);
-    //   }
-    // );
     loadStaffers();
   });
 

@@ -63,8 +63,6 @@ def add_test_sponsorship(*, bill, person):
     return impl()
 
 
-# TODO: Test that this ignores state bills for now
-
 def test_calculate_bill_diffs():
     bill_1 = add_test_bill(1, "Enacted")
     bill_2 = add_test_bill(2, "Enacted")

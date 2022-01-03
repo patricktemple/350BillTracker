@@ -8,7 +8,6 @@ interface Props {
   handleTrackBill: (id: number) => void;
 }
 
-// TODO: Rename this component
 function BillListRow(props: {
   bill: Bill;
   handleTrackBill: (cityBillId: number) => void;

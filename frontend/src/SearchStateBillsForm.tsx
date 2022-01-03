@@ -47,8 +47,6 @@ function BillRow(props: {
 
 interface Props {
   todo?: string;
-  //   show: boolean;
-  // tood figure out session ear string or number
   handleBillTracked: () => void;
 }
 

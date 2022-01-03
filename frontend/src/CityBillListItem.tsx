@@ -15,7 +15,6 @@ interface Props {
 
 export default function CityBillListItem({ bill }: Props) {
   const history = useHistory();
-  // TODO: Don't wrap this in <>, use a self-contained proper layout
   const cityBill = bill.cityBill!;
   return (
     <div

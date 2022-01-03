@@ -29,9 +29,6 @@ export default function BillListPage(): ReactElement {
     loadBillList();
   });
 
-  // TODO: Unify the way I do different kinds of styles
-  // and get rid of the bootstrap grid thing? simplify it with CSS grid
-
   return (
     <div>
       <div className={styles.title}>Bills</div>

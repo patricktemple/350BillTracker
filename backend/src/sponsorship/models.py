@@ -110,7 +110,7 @@ class AssemblySponsorship(db.Model):
     # TODO: Add sponsor_sequence like we have with city, if needed
 
 
-# is this inefficient? it loads it fully for every single  element
+# This may be inefficient because it loads this on every bill even if these fields aren't needed
 CityBill.sponsor_count = column_property(select(func.count(CitySponsorship.id)).where(CitySponsorship.bill_id==CityBill.bill_id).correlate_except(CitySponsorship).scalar_subquery())
 SenateBill.sponsor_count = column_property(select(func.count(SenateSponsorship.id)).where(SenateSponsorship.senate_bill_id==SenateBill.bill_id).correlate_except(SenateSponsorship).scalar_subquery())
 AssemblyBill.sponsor_count = column_property(select(func.count(AssemblySponsorship.id)).where(AssemblySponsorship.assembly_bill_id==AssemblyBill.bill_id).correlate_except(AssemblySponsorship).scalar_subquery())

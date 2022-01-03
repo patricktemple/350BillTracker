@@ -21,8 +21,6 @@ CCIA_TERM = "2021"
 
 CURRENT_SESSION_YEAR = "2021"
 
-
-
 def senate_get(path: str, **params):
     response = requests.get(
         f"https://legislation.nysenate.gov/api/3/{path}",
@@ -31,37 +29,6 @@ def senate_get(path: str, **params):
     response.raise_for_status()
     return response.json()["result"]
 
-
-
-# senate_bill = load_bill(CCIA_SENATE_ID)
-# assembly_bill = load_bill(CCIA_ASSEMBLY_ID)
-
-# TO get a bill:
-
-def print_status(print_no):
-    senate_response = senate_get(f"bills/{CCIA_TERM}/{print_no}", view="no_fulltext")
-    amendments = list(senate_response['amendments']['items'].values())
-    same_as = []
-    for a in amendments:
-        if 'sameAs' in a:
-            items = a['sameAs']['items']
-            if items:
-                # NOTE: This does not
-                base_print_no = items[0]['basePrintNo']
-                assembly_response = senate_get(f"bills/2021/{base_print_no}", view="no_fulltext")
-                print(f"{print_no}\t{senate_response['status']['statusDesc']}\t{senate_response['billType']['resolution']}\t{base_print_no}\t{assembly_response['status']['statusDesc']}\t{assembly_response['billType']['resolution']}")
-                return
-    
-    # if same_as:
-    #     first = same_as[0]
-    #     for i in range(1, len(same_as)):
-    #         if same_as[i] != first:
-    #             print(f"Not equal! {print_no}")
-    #             break
-
-def do():
-    for i in range(4000, 4270):
-        print_status(f"S{i}")
     
 # todo put types on the args
 def _add_senate_sponsorships(bill, chamber_data):
