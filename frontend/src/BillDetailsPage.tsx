@@ -47,7 +47,7 @@ export default function BillDetailsPage(props: Props): ReactElement {
     {
       notes: '',
       nickname: '',
-      twitterSearchTerms: [],
+      twitterSearchTerms: []
     }
   );
 
@@ -157,7 +157,6 @@ export default function BillDetailsPage(props: Props): ReactElement {
   function handlePowerHourCreated() {
     loadPowerHours();
   }
-
 
   const powerHourHelpRef = useRef<HTMLSpanElement>(null);
   const [powerHourHelpVisible, setPowerHourHelpVisible] =
@@ -364,8 +363,15 @@ export default function BillDetailsPage(props: Props): ReactElement {
             />
           </div>
           {bill.type === 'CITY' ? (
-            <CityBillSponsorList bill={bill} twitterSearchTerms={formData.twitterSearchTerms}/>
-          ) : <div className={styles.fullWidth}><StateBillDetails bill={bill} /></div>}
+            <CityBillSponsorList
+              bill={bill}
+              twitterSearchTerms={formData.twitterSearchTerms}
+            />
+          ) : (
+            <div className={styles.fullWidth}>
+              <StateBillDetails bill={bill} />
+            </div>
+          )}
           <div className={styles.label}>
             <Button
               variant="outline-secondary"

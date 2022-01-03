@@ -20,38 +20,42 @@ import Accordion from 'react-bootstrap/Accordion';
 import { ReactComponent as TwitterIcon } from './assets/twitter.svg';
 
 interface ChamberProps {
-    chamber: string;
-    chamberDetails: StateChamberBill | null;
+  chamber: string;
+  chamberDetails: StateChamberBill | null;
 }
 
 function ChamberDetails({ chamber, chamberDetails }: ChamberProps) {
-    // todo handle null chamber details
-    return (
-      <Accordion.Item key={chamber} eventKey={chamber}>
-        <Accordion.Header>
-            <div>
-          <div style={{fontWeight: 'bold'}}>{chamber} bill {chamberDetails?.basePrintNo}</div>
-          <div>{chamberDetails?.status}
+  // todo handle null chamber details
+  return (
+    <Accordion.Item key={chamber} eventKey={chamber}>
+      <Accordion.Header>
+        <div>
+          <div style={{ fontWeight: 'bold' }}>
+            {chamber} bill {chamberDetails?.basePrintNo}
           </div>
-          <div>
-              {chamberDetails?.sponsorCount} sponsors
-          </div></div>
-        </Accordion.Header>
-        <Accordion.Body>
-            Body
-        </Accordion.Body>
+          <div>{chamberDetails?.status}</div>
+          <div>{chamberDetails?.sponsorCount} sponsors</div>
+        </div>
+      </Accordion.Header>
+      <Accordion.Body>Body</Accordion.Body>
     </Accordion.Item>
-    )
+  );
 }
 
 interface Props {
-    bill: Bill;
+  bill: Bill;
 }
 export default function StateBillDetails({ bill }: Props) {
-    return (
-        <Accordion>
-          <ChamberDetails chamber="Senate" chamberDetails={bill.stateBill!.senateBill} />
-          <ChamberDetails chamber="Assembly" chamberDetails={bill.stateBill!.assemblyBill} />
-        </Accordion>
-    );
+  return (
+    <Accordion>
+      <ChamberDetails
+        chamber="Senate"
+        chamberDetails={bill.stateBill!.senateBill}
+      />
+      <ChamberDetails
+        chamber="Assembly"
+        chamberDetails={bill.stateBill!.assemblyBill}
+      />
+    </Accordion>
+  );
 }

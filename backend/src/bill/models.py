@@ -1,11 +1,10 @@
 import enum
 from uuid import uuid4
 
-from sqlalchemy import Column, Enum, ForeignKey, Integer, Text
+from sqlalchemy import Column, Enum, ForeignKey, Integer, Text, func, select
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import column_property, relationship
-from sqlalchemy import func, select
 
 from ..models import TIMESTAMP, UUID, db
 from ..utils import now
@@ -17,6 +16,11 @@ DEFAULT_TWITTER_SEARCH_TERMS = [
     "renewable",
     "fossil fuel",
 ]
+
+
+class StateChamber(enum.Enum):
+    SENATE = 1
+    ASSEMBLY = 2
 
 
 

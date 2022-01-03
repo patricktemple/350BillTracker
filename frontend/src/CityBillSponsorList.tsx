@@ -17,23 +17,25 @@ import styles from './style/BillDetailsPage.module.scss';
 import { ReactComponent as TwitterIcon } from './assets/twitter.svg';
 
 interface Props {
-    bill: Bill;
-    twitterSearchTerms: string[];
+  bill: Bill;
+  twitterSearchTerms: string[];
 }
 
-export default function CityBillSponsorList({ bill, twitterSearchTerms }: Props) {
-    const apiFetch = useApiFetch();
+export default function CityBillSponsorList({
+  bill,
+  twitterSearchTerms
+}: Props) {
+  const apiFetch = useApiFetch();
 
-    const [sponsorships, setSponsorships] = useState<CitySponsorship[] | null>(
-        null
-      );
+  const [sponsorships, setSponsorships] = useState<CitySponsorship[] | null>(
+    null
+  );
 
-    useMountEffect(() => {
-        apiFetch(`/api/city-bills/${bill.id}/sponsorships`).then((response) => {
-          setSponsorships(response);
-        });
-      });
-
+  useMountEffect(() => {
+    apiFetch(`/api/city-bills/${bill.id}/sponsorships`).then((response) => {
+      setSponsorships(response);
+    });
+  });
 
   const positiveSponsors = sponsorships?.filter(
     (s: CitySponsorship) => s.isSponsor
@@ -42,39 +44,43 @@ export default function CityBillSponsorList({ bill, twitterSearchTerms }: Props)
     (s: CitySponsorship) => !s.isSponsor
   );
 
-    return (<><div className={styles.label}>
-    <div>
-      Sponsors{' '}
-      {positiveSponsors != null && <>({positiveSponsors.length})</>}:
-    </div>
-    <div style={{ fontSize: '0.8rem', fontStyle: 'italic' }}>
-      Note: Due to a Twitter bug, the Twitter search sometimes displays
-      0 results even when there should be should be matching tweets.
-      Refreshing the Twitter page often fixes this.
-    </div>
-  </div>
-  <div className={styles.sponsorList}>
-    {positiveSponsors == null ? (
-      'Loading...'
-    ) : (
-      <BillSponsorList
-        sponsorships={positiveSponsors}
-        twitterSearchTerms={twitterSearchTerms}
-      />
-    )}
-  </div>
-  <div className={styles.nonSponsorLabel}>
-    Non-sponsors{' '}
-    {negativeSponsors != null && <>({negativeSponsors.length})</>}:
-  </div>
-  <div className={styles.nonSponsorList}>
-    {negativeSponsors == null ? (
-      'Loading...'
-    ) : (
-      <BillSponsorList
-        sponsorships={negativeSponsors}
-        twitterSearchTerms={twitterSearchTerms}
-      />
-    )}
-  </div></>);
+  return (
+    <>
+      <div className={styles.label}>
+        <div>
+          Sponsors{' '}
+          {positiveSponsors != null && <>({positiveSponsors.length})</>}:
+        </div>
+        <div style={{ fontSize: '0.8rem', fontStyle: 'italic' }}>
+          Note: Due to a Twitter bug, the Twitter search sometimes displays 0
+          results even when there should be should be matching tweets.
+          Refreshing the Twitter page often fixes this.
+        </div>
+      </div>
+      <div className={styles.sponsorList}>
+        {positiveSponsors == null ? (
+          'Loading...'
+        ) : (
+          <BillSponsorList
+            sponsorships={positiveSponsors}
+            twitterSearchTerms={twitterSearchTerms}
+          />
+        )}
+      </div>
+      <div className={styles.nonSponsorLabel}>
+        Non-sponsors{' '}
+        {negativeSponsors != null && <>({negativeSponsors.length})</>}:
+      </div>
+      <div className={styles.nonSponsorList}>
+        {negativeSponsors == null ? (
+          'Loading...'
+        ) : (
+          <BillSponsorList
+            sponsorships={negativeSponsors}
+            twitterSearchTerms={twitterSearchTerms}
+          />
+        )}
+      </div>
+    </>
+  );
 }

@@ -5,14 +5,11 @@ import responses
 
 from src.app import app
 from src.bill.models import Bill, CityBill
-from src.bill_notifications import (
-    BillDiff,
-    BillSnapshot,
-    _calculate_bill_diffs,
-    _convert_bill_diff_to_template_variables,
-    _get_bill_update_subject_line,
-    send_bill_update_notifications,
-)
+from src.bill_notifications import (BillDiff, BillSnapshot,
+                                    _calculate_bill_diffs,
+                                    _convert_bill_diff_to_template_variables,
+                                    _get_bill_update_subject_line,
+                                    send_bill_update_notifications)
 from src.models import db
 from src.person.models import CouncilMember, Person
 from src.sponsorship.models import CitySponsorship

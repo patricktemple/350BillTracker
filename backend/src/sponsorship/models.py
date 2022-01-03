@@ -1,15 +1,11 @@
 from uuid import uuid4
 
-from sqlalchemy import Column, ForeignKey, Integer, UniqueConstraint, select, func
-from sqlalchemy.orm import foreign, relationship, remote, column_property
+from sqlalchemy import (Column, ForeignKey, Integer, UniqueConstraint, func,
+                        select)
+from sqlalchemy.orm import column_property, foreign, relationship, remote
 
-from ..bill.models import (
-    AssemblyBill,
-    Bill,
-    CityBill,
-    SenateBill,
-    StateChamberMixin,
-)
+from ..bill.models import (AssemblyBill, Bill, CityBill, SenateBill,
+                           StateChamberMixin)
 from ..models import TIMESTAMP, UUID, db
 from ..person.models import AssemblyMember, CouncilMember, Person, Senator
 

@@ -2,7 +2,7 @@ from marshmallow import fields
 from marshmallow_enum import EnumField
 
 from ..schema import CamelCaseSchema
-from .models import Bill
+from .models import Bill, StateChamber
 
 
 class CityBillSchema(CamelCaseSchema):
@@ -47,6 +47,23 @@ class BillSchema(CamelCaseSchema):
     type = EnumField(Bill.BillType, dump_only=True)
     city_bill = fields.Nested(CityBillSchema)
     state_bill = fields.Nested(StateBillSchema)
+
+
+# class StateBillSearchParamsSchema(CamelCaseSchema):
+#     code_name = fields.String(required=True)
+#     session_year = fields.String(load_default=None)
+
+
+class StateBillSearchResultSchema(CamelCaseSchema):
+    name = fields.String(dump_only=True)
+    description = fields.String(dump_only=True)
+    status = fields.String(dump_only=True)
+    base_print_no = fields.String(dump_only=True)
+    session_year = fields.String(dump_only=True)
+    chamber = EnumField(StateChamber, dump_only=True)
+    active_version = fields.String(dump_only=True)
+    tracked = fields.Boolean(dump_only=True)
+    other_chamber_bill_print_no = fields.String(dump_only=True)
 
 
 # Bill attachments ----------------------------------------------------------------------

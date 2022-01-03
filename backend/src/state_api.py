@@ -1,16 +1,14 @@
+import logging
 from dataclasses import dataclass
 
 import requests
 
-from .settings import SENATE_API_TOKEN
-
-from .bill.models import SenateBill, SenateBill, StateBill, Bill, AssemblyBill
-from .sponsorship.models import SenateSponsorship, AssemblySponsorship
-from .person.models import AssemblyMember, Person, Senator
+from .bill.models import (AssemblyBill, Bill, SenateBill, StateBill,
+                          StateChamber)
 from .models import db
-import logging
-
-
+from .person.models import AssemblyMember, Person, Senator
+from .settings import SENATE_API_TOKEN
+from .sponsorship.models import AssemblySponsorship, SenateSponsorship
 
 # API docs: https://legislation.nysenate.gov/static/docs/html/
 # See also https://www.nysenate.gov/how-bill-becomes-law
@@ -20,6 +18,7 @@ import logging
 CCIA_ASSEMBLY_ID = "A06967"
 CCIA_SENATE_ID = "S04264"
 CCIA_TERM = "2021"
+
 
 
 def senate_get(path: str, **params):
@@ -145,33 +144,21 @@ def lookup_people(session_year):
 #     }
 
 
-def _convert_state_bill_response_to_bill(state_bill):
+def _convert_search_results(state_bill):
     input = state_bill['result']
-    bill_data = {
+    result = {
         "type": Bill.BillType.STATE,
         "name": input['title'],
         "description": input['summary'],
-        "state_bill": {
-            "session_year": input['session']
-        }
-    }
-
-    # TODO: Fill in the other chamber too... or just make this return a single-chamber bill that doesn't conform to StateBill
-    chamber_bill = {
+        "session_year": input['session'],
         'base_print_no': input['basePrintNo'],
-        'active_version_name': input['activeVersion'], # todo rename to active_version
-        'status': input['status']['statusDesc']
+        'active_version': input['activeVersion'],
+        'status': input['status']['statusDesc'],
+        "chamber": StateChamber.SENATE if input['billType']['chamber'] == 'SENATE' else StateChamber.ASSEMBLY,
     }
-    if input['billType']['chamber'] == 'SENATE':
-        bill_data['state_bill']['senate_bill'] = chamber_bill
-    elif input['billType']['chamber'] == 'ASSEMBLY':
-        bill_data['state_bill']['assembly_bill'] = chamber_bill
-    else:
-        # ???
-        pass
-
-    return bill_data
-    
+    # active_amendment = input['amendments'][input['activeVersion']]
+    # if active_amendment['']
+    return result
 
 
 def search_bills(code_name, session_year=None):
@@ -183,4 +170,4 @@ def search_bills(code_name, session_year=None):
         terms.append(f"session:{session_year}")
     
     response = senate_get(f"bills/search", term=" AND ".join(terms))
-    return [_convert_state_bill_response_to_bill(item) for item in response['items']]
+    return [_convert_search_results(item) for item in response['items']]

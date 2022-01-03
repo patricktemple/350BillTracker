@@ -4,6 +4,7 @@ from uuid import uuid4
 from flask import jsonify, request
 from werkzeug import exceptions
 
+from .. import state_api
 from ..app import app
 from ..auth import auth_required
 from ..council_api import lookup_bill, lookup_bills
@@ -11,13 +12,9 @@ from ..council_sync import update_bill_sponsorships
 from ..google_sheets import create_power_hour
 from ..models import db
 from .models import Bill, BillAttachment, CityBill, PowerHour
-from .schema import (
-    BillAttachmentSchema,
-    BillSchema,
-    CreatePowerHourSchema,
-    PowerHourSchema,
-    TrackCityBillSchema,
-)
+from .schema import (BillAttachmentSchema, BillSchema, CreatePowerHourSchema,
+                     PowerHourSchema, StateBillSearchResultSchema,
+                     TrackCityBillSchema)
 
 # Views ----------------------------------------------------------------------
 
@@ -112,6 +109,19 @@ def search_bills():
         bill["tracked"] = bill["city_bill"]["city_bill_id"] in tracked_bill_ids
 
     return BillSchema(many=True).jsonify(external_bills)
+
+
+# TODO figure out all these paths
+@app.route("/api/state-bills/search", methods=["GET"])
+@auth_required
+def search_state_bills():
+    code_name = request.args.get("codeName")
+    session_year = request.args.get("sessionYear")
+    result = state_api.search_bills(code_name, session_year)
+
+    # TODO check which ones are already tracked
+
+    return StateBillSearchResultSchema(many=True).jsonify(result)
 
 
 @app.route("/api/saved-bills/<uuid:bill_id>/power-hours", methods=["GET"])
