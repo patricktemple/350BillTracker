@@ -198,11 +198,6 @@ class StateChamberMixin:
     status = Column(Text, nullable=False)
     base_print_no = Column(Text, nullable=False)
 
-    @property
-    def sponsor_count(self):
-        # TODO: Implement
-        return 0
-
     @declared_attr
     def bill_id(self):
        return Column(UUID, ForeignKey(StateBill.bill_id), primary_key=True)
@@ -217,7 +212,7 @@ class StateChamberMixin:
     
     @property
     def assembly_website(self):
-        # use urlpasr to construct it?
+        # use urlparse to construct it?
         return f"https://nyassembly.gov/leg/?term={self.state_bill.session_year}&bn={self.base_print_no}"
 
 

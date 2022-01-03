@@ -61,7 +61,7 @@ function PowerHourModalBody(props: BodyProps): ReactElement {
     const selectValue = selectRef.current!.value;
 
     setCreatePowerHourInProgress(true);
-    apiFetch(`/api/saved-bills/${props.bill.id}/power-hours`, {
+    apiFetch(`/api/bills/${props.bill.id}/power-hours`, {
       method: 'POST',
       body: {
         title,

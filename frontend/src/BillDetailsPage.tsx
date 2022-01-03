@@ -40,7 +40,7 @@ export default function BillDetailsPage(props: Props): ReactElement {
   const history = useHistory();
 
   const [formData, setFormData, saveStatus] = useAutosavingFormData<FormData>(
-    '/api/saved-bills/' + billId,
+    '/api/bills/' + billId,
     {
       notes: '',
       nickname: '',
@@ -67,19 +67,19 @@ export default function BillDetailsPage(props: Props): ReactElement {
   const apiFetch = useApiFetch();
 
   function loadAttachments() {
-    apiFetch(`/api/saved-bills/${billId}/attachments`).then((response) => {
+    apiFetch(`/api/bills/${billId}/attachments`).then((response) => {
       setAttachments(response);
     });
   }
 
   function loadPowerHours() {
-    apiFetch(`/api/saved-bills/${billId}/power-hours`).then((response) => {
+    apiFetch(`/api/bills/${billId}/power-hours`).then((response) => {
       setPowerHours(response);
     });
   }
 
   useMountEffect(() => {
-    apiFetch(`/api/saved-bills/${billId}`).then((response) => {
+    apiFetch(`/api/bills/${billId}`).then((response) => {
       setBill(response);
       setFormData({
         notes: response.notes,
@@ -119,7 +119,7 @@ export default function BillDetailsPage(props: Props): ReactElement {
 
   function handleAddAttachment(description: string, url: string) {
     setAddAttachmentModalOpen(false);
-    apiFetch(`/api/saved-bills/${billId}/attachments`, {
+    apiFetch(`/api/bills/${billId}/attachments`, {
       method: 'POST',
       body: { url, name: description }
     }).then((response) => {
@@ -129,7 +129,7 @@ export default function BillDetailsPage(props: Props): ReactElement {
 
   function handleDeleteAttachment(event: any, id: number) {
     event.preventDefault();
-    apiFetch(`/api/saved-bills/-/attachments/` + id, {
+    apiFetch(`/api/bills/-/attachments/` + id, {
       method: 'DELETE'
     }).then((response) => {
       loadAttachments();
@@ -143,7 +143,7 @@ export default function BillDetailsPage(props: Props): ReactElement {
 
   function handleConfirmRemoveBill() {
     setShowDeleteBillConfirmation(false);
-    apiFetch(`/api/saved-bills/` + billId, {
+    apiFetch(`/api/bills/` + billId, {
       method: 'DELETE'
     }).then((response) => {
       history.replace('/bills');

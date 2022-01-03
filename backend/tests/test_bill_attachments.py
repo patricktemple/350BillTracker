@@ -15,7 +15,7 @@ def test_get_bill_attachments(client, bill):
     bill.attachments.append(attachment)
     db.session.commit()
 
-    response = client.get(f"/api/saved-bills/{bill.id}/attachments")
+    response = client.get(f"/api/bills/{bill.id}/attachments")
     assert_response(
         response,
         200,
@@ -32,7 +32,7 @@ def test_get_bill_attachments(client, bill):
 
 def test_add_bill_attachments(client, bill):
     response = client.post(
-        f"/api/saved-bills/{bill.id}/attachments",
+        f"/api/bills/{bill.id}/attachments",
         data={
             "name": "power hour tracker",
             "url": "http://sheets.google.com/123",
@@ -54,7 +54,7 @@ def test_delete_bill_attachment(client, bill):
     bill.attachments.append(attachment)
     db.session.commit()
 
-    client.delete(f"/api/saved-bills/-/attachments/{attachment.id}")
+    client.delete(f"/api/bills/-/attachments/{attachment.id}")
 
     attachments = BillAttachment.query.all()
     assert len(attachments) == 0

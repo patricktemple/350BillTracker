@@ -79,7 +79,7 @@ export default function CouncilMemberDetails(props: Props) {
         ) : (
           <div>
             {sponsorships.map((s) => (
-              <Link className="d-block" to={'/saved-bills/' + s.bill.id} key={s.bill.id}>
+              <Link className="d-block" to={'/bills/' + s.bill.id} key={s.bill.id}>
                 {s.bill.cityBill!.file}:{' '}
                 <em>{s.bill.nickname || s.bill.name}</em>
               </Link>

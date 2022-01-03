@@ -91,7 +91,7 @@ def test_delete_bill(client):
     assert response.status_code == 200
     assert len(json.loads(response.data)) == 1
 
-    response = client.delete(f"/api/saved-bills/{bill.id}")
+    response = client.delete(f"/api/bills/{bill.id}")
     assert response.status_code == 200
 
     response = client.get("/api/saved-bills")
@@ -113,7 +113,7 @@ def test_update_bill(client):
     db.session.commit()
 
     response = client.put(
-        f"/api/saved-bills/{bill.id}",
+        f"/api/bills/{bill.id}",
         data={
             "notes": "good bill",
             "nickname": "skip the stuff",

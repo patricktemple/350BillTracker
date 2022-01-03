@@ -18,7 +18,7 @@ def test_get_power_hours(client, bill):
 
     db.session.commit()
 
-    response = client.get(f"/api/saved-bills/{bill.id}/power-hours")
+    response = client.get(f"/api/bills/{bill.id}/power-hours")
 
     assert response.status_code == 200
     response_data = get_response_data(response)
@@ -39,7 +39,7 @@ def test_create_power_hour__no_import(mock_create_power_hour, client, bill):
     )
 
     response = client.post(
-        f"/api/saved-bills/{bill.id}/power-hours",
+        f"/api/bills/{bill.id}/power-hours",
         data={"title": "My power hour"},
     )
 
@@ -71,7 +71,7 @@ def test_create_power_hour__with_import(mock_create_power_hour, client, bill):
         ["Power hour created"],
     )
     response = client.post(
-        f"/api/saved-bills/{bill.id}/power-hours",
+        f"/api/bills/{bill.id}/power-hours",
         data={
             "title": "My power hour",
             "powerHourIdToImport": str(power_hour.id),

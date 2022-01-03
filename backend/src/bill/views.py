@@ -20,7 +20,7 @@ from .schema import (BillAttachmentSchema, BillSchema, CreatePowerHourSchema,
 # Views ----------------------------------------------------------------------
 
 # TODO: Rename to not be saved-bills?
-@app.route("/api/saved-bills", methods=["GET"])
+@app.route("/api/bills", methods=["GET"])
 @auth_required
 def bills():
     bills = Bill.query.order_by(Bill.name).all()
@@ -30,7 +30,7 @@ def bills():
 # TODO test
 # TODO: have this autoload the sponsorships, attachments etc? and get rid of those endpoints perhaps
 # TODO: Rename to not be saved-bills?
-@app.route("/api/saved-bills/<uuid:bill_id>", methods=["GET"])
+@app.route("/api/bills/<uuid:bill_id>", methods=["GET"])
 @auth_required
 def get_bill(bill_id):
     bill = Bill.query.get(bill_id)
@@ -64,7 +64,7 @@ def track_city_bill():
     return jsonify({})
 
 
-@app.route("/api/saved-bills/<uuid:bill_id>", methods=["PUT"])
+@app.route("/api/bills/<uuid:bill_id>", methods=["PUT"])
 @auth_required
 def update_bill(bill_id):
     data = BillSchema().load(request.json)
@@ -80,7 +80,7 @@ def update_bill(bill_id):
     return jsonify({})
 
 
-@app.route("/api/saved-bills/<uuid:bill_id>", methods=["DELETE"])
+@app.route("/api/bills/<uuid:bill_id>", methods=["DELETE"])
 @auth_required
 def delete_bill(bill_id):
     bill = Bill.query.get(bill_id)
@@ -156,7 +156,7 @@ def track_state_bill():
     return jsonify({})
 
 
-@app.route("/api/saved-bills/<uuid:bill_id>/power-hours", methods=["GET"])
+@app.route("/api/bills/<uuid:bill_id>/power-hours", methods=["GET"])
 @auth_required
 def bill_power_hours(bill_id):
     power_hours = (
@@ -168,7 +168,7 @@ def bill_power_hours(bill_id):
 
 
 @app.route(
-    "/api/saved-bills/<uuid:bill_id>/power-hours",
+    "/api/bills/<uuid:bill_id>/power-hours",
     methods=["POST"],
 )
 @auth_required
@@ -199,14 +199,14 @@ def create_spreadsheet(bill_id):
     )
 
 
-@app.route("/api/saved-bills/<uuid:bill_id>/attachments", methods=["GET"])
+@app.route("/api/bills/<uuid:bill_id>/attachments", methods=["GET"])
 @auth_required
 def bill_attachments(bill_id):
     attachments = BillAttachment.query.filter_by(bill_id=bill_id).all()
     return BillAttachmentSchema(many=True).jsonify(attachments)
 
 
-@app.route("/api/saved-bills/<uuid:bill_id>/attachments", methods=["POST"])
+@app.route("/api/bills/<uuid:bill_id>/attachments", methods=["POST"])
 @auth_required
 def add_bill_attachment(bill_id):
     data = BillAttachmentSchema().load(request.json)
@@ -223,7 +223,7 @@ def add_bill_attachment(bill_id):
 
 
 @app.route(
-    "/api/saved-bills/-/attachments/<uuid:attachment_id>", methods=["DELETE"]
+    "/api/bills/-/attachments/<uuid:attachment_id>", methods=["DELETE"]
 )
 @auth_required
 def delete_bill_attachment(attachment_id):
