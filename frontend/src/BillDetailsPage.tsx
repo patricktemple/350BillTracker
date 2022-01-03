@@ -377,7 +377,7 @@ export default function BillDetailsPage(props: Props): ReactElement {
               />
             </div>
           )}
-          <div className={styles.label}>
+          <div className={styles.fullWidth}>
             <Button
               variant="outline-secondary"
               size="sm"
