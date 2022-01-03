@@ -138,6 +138,8 @@ def update_bill_sponsorships(city_bill, set_added_at=False):
     3) If new sponsors aren't in the existing legislators (e.g. they're not longer in office),
        ignore them.
     """
+
+    # TODO: Simplify this. We don't need to track added_at, therefore we can just wipe the sponsorships each time and start fresh
     logging.info(f"Updating sponsorships for {city_bill.file}")
     previous_bill_sponsorships = CitySponsorship.query.filter_by(
         bill_id=city_bill.bill_id

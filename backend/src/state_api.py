@@ -95,7 +95,18 @@ def _add_assembly_sponsorships(bill, chamber_data):
             logging.info(f"Added sponsorship for {assembly_member.person.name} to bill {bill.state_bill.assembly_bill.base_print_no}")
         else:
             logging.warning(f"Did not find {sponsor['fullName']}, member_id: {member_id} for sponsorship on bill {bill.state_bill.assembly_bill.base_print_no}")
-    
+
+
+def _update_bill_sponsorships(bill):
+    pass
+
+
+def update_all_sponsorships():
+    bills = StateBill.query.all()
+    for bill in bills:
+        _update_bill_sponsorships(bill)
+        # error handling
+
 
 def import_bill(session_year, senate_print_no):
     initial_chamber_response = senate_get(f"bills/{session_year}/{senate_print_no}", view="no_fulltext")
@@ -156,24 +167,38 @@ def add_state_representatives(session_year=CURRENT_SESSION_YEAR):
     members = senate_get(f"members/{session_year}?limit=1000&full=true")
     for member in members['items']:
         member_id = member['memberId']
-        person = Person(name=member['person']['fullName'], title=member['person']['prefix'], email=member['person']['email'])
         if member['chamber'] == 'ASSEMBLY':
-            existing_assembly_member = AssemblyMember.query.filter_by(state_member_id=member_id)
-            if existing_assembly_member:
-                # TODO
-                pass
-            person.type = Person.PersonType.ASSEMBLY_MEMBER
-            person.assembly_member = AssemblyMember(state_member_id=member['memberId'])
+            person_type = Person.PersonType.ASSEMBLY_MEMBER
+            existing_member = AssemblyMember.query.filter_by(state_member_id=member_id).one_or_none()
         elif member['chamber'] == 'SENATE':
-            person.type = Person.PersonType.SENATOR
-            person.senator = Senator(state_member_id=member_id)
+            person_type = Person.PersonType.SENATOR
+            existing_member = Senator.query.filter_by(state_member_id=member_id).one_or_none()
         else:
             # ???
             pass
+    
+        if existing_member:
+            logging.info(f"Person {existing_member.person.name} already in DB, updating")
+            person = existing_member.person
+        else:
+            logging.info(f"Adding person {member['person']['fullName']}")
+            person = Person(type=person_type)
+            if person_type == Person.PersonType.ASSEMBLY_MEMBER:
+                person.assembly_member = AssemblyMember(state_member_id=member_id)
+            else:
+                person.senator = Senator(state_member_id=member_id)
+            db.session.add(person)
 
-        db.session.add(person)
+        person.name = member['person']['fullName']
+        person.title = member['person']['prefix']
+        person.email = member['person']['email']
     
     db.session.commit()
+
+
+def fill_state_representative_static_data():
+    # TODO: Implement
+    pass
 
 
 def _convert_search_results(state_bill):
