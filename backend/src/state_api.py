@@ -19,6 +19,8 @@ CCIA_ASSEMBLY_ID = "A06967"
 CCIA_SENATE_ID = "S04264"
 CCIA_TERM = "2021"
 
+CURRENT_SESSION_YEAR = "2021"
+
 
 
 def senate_get(path: str, **params):
@@ -147,17 +149,24 @@ def import_bill(session_year, senate_print_no):
     db.session.commit()
     return bill
     
-def lookup_people(session_year):
+def add_state_representatives(session_year=CURRENT_SESSION_YEAR):
+    """TODO comment
+    
+    """
     members = senate_get(f"members/{session_year}?limit=1000&full=true")
     for member in members['items']:
+        member_id = member['memberId']
         person = Person(name=member['person']['fullName'], title=member['person']['prefix'], email=member['person']['email'])
         if member['chamber'] == 'ASSEMBLY':
+            existing_assembly_member = AssemblyMember.query.filter_by(state_member_id=member_id)
+            if existing_assembly_member:
+                # TODO
+                pass
             person.type = Person.PersonType.ASSEMBLY_MEMBER
-            person.assembly_member = AssemblyMember(state_person_id=member['person']['personId'], state_member_id=member['memberId'])
-            # We may need to track their Member ID too? Depends on what the bill sponsorship uses to identify people
+            person.assembly_member = AssemblyMember(state_member_id=member['memberId'])
         elif member['chamber'] == 'SENATE':
             person.type = Person.PersonType.SENATOR
-            person.senator = Senator(state_person_id=member['person']['personId'], state_member_id=member['memberId'])
+            person.senator = Senator(state_member_id=member_id)
         else:
             # ???
             pass
