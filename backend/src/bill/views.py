@@ -123,8 +123,7 @@ def search_state_bills():
 
     for bill in bill_results:
         bill_identifier = (bill['session_year'], bill['base_print_no'])
-        if bill_identifier in tracked_assembly_bill_set or bill_identifier in tracked_senate_bill_set:
-            bill['tracked'] = True
+        bill['tracked'] = bill_identifier in tracked_assembly_bill_set or bill_identifier in tracked_senate_bill_set
 
     return StateBillSearchResultSchema(many=True).jsonify(bill_results)
 

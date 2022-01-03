@@ -145,6 +145,11 @@ def test_track_bill(client):
     )
 
 
+# TODO: Add test for importing a bill that already exists
+# And for one that doesn't have a "same as"
+# And for one that only recently got a "same as"
+
+
 # @responses.activate
 # def test_save_bill__already_exists(client):
 #     bill = Bill(name="name", description="description", type=Bill.BillType.CITY)
@@ -164,25 +169,48 @@ def test_track_bill(client):
 #     )
 #     assert response.status_code == 409
 
+# Test that it filters resolutions too?
 
-# @responses.activate
-# def test_lookup_bill_not_tracked(client):
-#     responses.add(
-#         responses.GET,
-#         url="https://webapi.legistar.com/v1/nyc/matters?token=fake_token&%24filter=MatterTypeName+eq+%27Introduction%27+and+substringof%28%271234%27%2C+MatterFile%29+eq+true",
-#         json=[create_fake_matter(1)],
-#     )
 
-#     response = client.get(
-#         "/api/city-bills/search?file=1234",
-#     )
-#     assert response.status_code == 200
-#     response_data = json.loads(response.data)[0]
-#     assert response_data["type"] == "CITY"
-#     assert response_data["cityBill"]["cityBillId"] == 1
-#     assert response_data["tracked"] == False
+@responses.activate
+def test_search_bill_not_tracked(client):
+    responses.add(
+        responses.GET,
+        url="https://legislation.nysenate.gov/api/3/bills/search?term=%28basePrintNo%3ANone+OR+printNo%3ANone%29+AND+billType.resolution%3Afalse+AND+session%3A2021&key=fake_key",
+        json={"result": {
+            "items": [{
+                "result": {
+                    "title": "Bill title",
+                    "summary": "Long bill summary",
+                    "session": 2021,
+                    "basePrintNo": "S123",
+                    "activeVersion": "A",
+                    "status": {
+                        "statusDesc": "Committee"
+                    },
+                    "billType": {
+                        "chamber": "SENATE"
+                    }
+                }
+            }]
+        }},
+    )
 
-#     # TODO: Consider switching these tests over to snapshots to capture more info?
+    response = client.get(
+        "/api/state-bills/search?sessionYear=2021&basePrintNo=S123",
+    )
+    assert response.status_code == 200
+    response_data = json.loads(response.data)[0]
+    assert response_data == {
+        "name": "Bill title",
+        "description": "Long bill summary",
+        "status": "Committee",
+        "chamber": "SENATE",
+        "activeVersion": "A",
+        "basePrintNo": "S123",
+        "sessionYear": 2021,
+        "tracked": False,
+    }
 
 
 # @responses.activate
