@@ -12,6 +12,9 @@ import useApiFetch from './useApiFetch';
 import Button from 'react-bootstrap/Button';
 import AddStafferModal from './AddStafferModal';
 import styles from './style/PersonDetailsPanel.module.scss';
+import CouncilMemberDetails from './CouncilMemberDetails';
+import StateRepDetails from './StateRepDetails';
+import StafferDetails from './StafferDetails';
 
 interface Props {
   person: Person;
@@ -54,9 +57,6 @@ function formatStaffer(staffer: Staffer) {
 export default function PersonDetailsPanel(props: Props) {
   const person = props.person;
 
-  const [sponsorships, setSponsorships] = useState<
-    SingleMemberSponsorship[] | null
-  >(null);
   const [staffers, setStaffers] = useState<Staffer[] | null>(null);
   const [addStafferModalVisible, setAddStafferModalVisible] =
     useState<boolean>(false);
@@ -118,38 +118,12 @@ export default function PersonDetailsPanel(props: Props) {
     });
   }
 
-  // should rewrite this w/o bootstrap grid
   return (
     <Form onSubmit={(e) => e.preventDefault()} className={styles.root}>
-      <div className={styles.label}>Name</div>
-      <div className={styles.content}>{person.name}</div>
-      <div className={styles.label}>Email</div>
-      <div className={styles.content}>{person.email}</div>
-      <div className={styles.label}>District phone</div>
-      <div className={styles.content}>{person.phone}</div>
-      <div className={styles.label}>Legislative phone</div>
-      <div className={styles.content}>
-        {person.councilMember!.legislativePhone}
-      </div>
-      <div className={styles.label}>Party</div>
-      <div className={styles.content}>{person.party}</div>
-      <div className={styles.label}>Website</div>
-      <div className={styles.content}>
-        {person.councilMember!.website && (
-          <a href={person.councilMember!.website} target="website">
-            Visit website
-          </a>
-        )}
-      </div>
-      <div className={styles.label}>Twitter</div>
-      <div className={styles.content}>
-        {person.twitter && (
-          <a href={`https://twitter.com/${person.twitter}`} target="twitter">
-            @{person.twitter}
-          </a>
-        )}
-      </div>
-      <div className={styles.label}>
+      {person.type === 'COUNCIL_MEMBER' && <CouncilMemberDetails person={person} />}
+      {(person.type === 'SENATOR' || person.type === 'ASSEMBLY_MEMBER') && <StateRepDetails person={person} />}
+      {person.type === 'STAFFER' ? <StafferDetails person={person} /> : (
+      <><div className={styles.label}>
         Staffers:
         <Button
           variant="outline-secondary"
@@ -171,32 +145,11 @@ export default function PersonDetailsPanel(props: Props) {
               ]
             </div>
           ))}
-      </div>
-      <AddStafferModal
+      </div>      <AddStafferModal
         show={addStafferModalVisible}
         handleAddStaffer={handleAddStaffer}
         onHide={() => setAddStafferModalVisible(false)}
-      />
-      <div className={styles.label}>
-        <div style={{ fontWeight: 'bold' }}>Sponsored bills</div>
-        <div style={{ fontStyle: 'italic' }}>
-          Only includes bills we are tracking
-        </div>
-      </div>
-      <div className={styles.content}>
-        {sponsorships == null ? (
-          'Loading...'
-        ) : (
-          <Stack direction="vertical">
-            {sponsorships.map((s) => (
-              <Link to={'/saved-bills/' + s.bill.id} key={s.bill.id}>
-                {s.bill.cityBill!.file}:{' '}
-                <em>{s.bill.nickname || s.bill.name}</em>
-              </Link>
-            ))}
-          </Stack>
-        )}
-      </div>
+      /></>)}
       <div className={styles.label}>Our notes:</div>
       <div className={styles.content}>
         <Form.Control

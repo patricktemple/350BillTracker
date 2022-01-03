@@ -114,6 +114,6 @@ class AssemblySponsorship(db.Model):
 
 
 # is this inefficient? it loads it fully for every single  element
-CityBill.sponsor_count = column_property(select(func.count(CitySponsorship.id)).where(CitySponsorship.bill_id==CityBill.bill_id).scalar_subquery())
-SenateBill.sponsor_count = column_property(select(func.count(SenateSponsorship.id)).where(SenateSponsorship.senate_version_id==SenateBill.id).scalar_subquery())
-AssemblyBill.sponsor_count = column_property(select(func.count(AssemblySponsorship.id)).where(AssemblySponsorship.assembly_version_id==AssemblyBill.id).scalar_subquery())
+CityBill.sponsor_count = column_property(select(func.count(CitySponsorship.id)).where(CitySponsorship.bill_id==CityBill.bill_id).correlate_except(CitySponsorship).scalar_subquery())
+SenateBill.sponsor_count = column_property(select(func.count(SenateSponsorship.id)).where(SenateSponsorship.senate_version_id==SenateBill.id).correlate_except(SenateSponsorship).scalar_subquery())
+AssemblyBill.sponsor_count = column_property(select(func.count(AssemblySponsorship.id)).where(AssemblySponsorship.assembly_version_id==AssemblyBill.id).correlate_except(AssemblySponsorship).scalar_subquery())
