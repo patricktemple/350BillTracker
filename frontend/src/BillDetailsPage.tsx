@@ -17,6 +17,7 @@ import styles from './style/BillDetailsPage.module.scss';
 import { ReactComponent as TwitterIcon } from './assets/twitter.svg';
 import CityBillSponsorList from './CityBillSponsorList';
 import StateBillDetails from './StateBillDetails';
+import { useHistory } from 'react-router-dom';
 
 interface Props {
   bill: Bill;
@@ -41,6 +42,8 @@ export default function BillDetailsPage(props: Props): ReactElement {
   const billId = props.match.params.billId;
 
   const [bill, setBill] = useState<Bill | null>(null);
+
+  const history = useHistory();
 
   const [formData, setFormData, saveStatus] = useAutosavingFormData<FormData>(
     '/api/saved-bills/' + billId,
@@ -149,8 +152,7 @@ export default function BillDetailsPage(props: Props): ReactElement {
     apiFetch(`/api/saved-bills/` + billId, {
       method: 'DELETE'
     }).then((response) => {
-      window.alert('bill is gone');
-      // TODO
+      history.replace('/bills');
     });
   }
 

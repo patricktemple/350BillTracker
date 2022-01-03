@@ -102,7 +102,7 @@ def import_bill(session_year, senate_print_no):
 
     db.session.add(bill)
     db.session.commit()
-    return response
+    return bill
     
 def lookup_people(session_year):
     members = senate_get(f"members/{session_year}?limit=1000&full=true")
@@ -122,26 +122,6 @@ def lookup_people(session_year):
         db.session.add(person)
     
     db.session.commit()
-
-
-# def _convert_matter_to_bill(matter):
-#     """Converts the City Council's representation of a bill, called Matters,
-#     into our own format."""
-#     return {
-#         "type": Bill.BillType.CITY,
-#         "name": matter["MatterName"],
-#         "description": matter["MatterTitle"],
-#         "city_bill": {
-#             "file": matter["MatterFile"],
-#             "council_body": matter["MatterBodyName"],
-#             "city_bill_id": matter["MatterId"],
-#             "intro_date": datetime.fromisoformat(
-#                 matter["MatterIntroDate"]
-#             ).replace(tzinfo=timezone.utc),
-#             "status": matter["MatterStatusName"],
-#             "active_version": matter["MatterVersion"],
-#         },
-#     }
 
 
 def _convert_search_results(state_bill):

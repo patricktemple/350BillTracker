@@ -10,7 +10,7 @@ import SearchStateBillsForm from './SearchStateBillsForm';
 interface Props {
   show: boolean;
   handleHide: () => void;
-  handleTrackBill: (cityBillId: number) => void;
+  handleBillTracked: () => void;
 }
 
 export default function SearchBillsModal(props: Props): ReactElement {
@@ -60,9 +60,9 @@ export default function SearchBillsModal(props: Props): ReactElement {
           id={`inline-radio-2`}
         />
         {billType === 'CITY' ? (
-          <SearchCityBillsForm handleTrackBill={props.handleTrackBill} />
+          <SearchCityBillsForm handleBillTracked={props.handleBillTracked} />
         ) : (
-          <SearchStateBillsForm />
+          <SearchStateBillsForm handleBillTracked={props.handleBillTracked} />
         )}
       </Modal.Body>
     </Modal>

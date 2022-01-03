@@ -29,6 +29,11 @@ class StateBillSchema(CamelCaseSchema):
     assembly_bill = fields.Nested(StateChamberBillSchema)
 
 
+class TrackStateBillSchema(CamelCaseSchema):
+    session_year = fields.Integer()
+    base_print_no = fields.String()
+
+
 class BillSchema(CamelCaseSchema):
     # Data pulled from the API
     id = fields.UUID(dump_only=True)
@@ -59,7 +64,7 @@ class StateBillSearchResultSchema(CamelCaseSchema):
     description = fields.String(dump_only=True)
     status = fields.String(dump_only=True)
     base_print_no = fields.String(dump_only=True)
-    session_year = fields.String(dump_only=True)
+    session_year = fields.Integer(dump_only=True)
     chamber = EnumField(StateChamber, dump_only=True)
     active_version = fields.String(dump_only=True)
     tracked = fields.Boolean(dump_only=True)

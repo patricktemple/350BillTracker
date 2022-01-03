@@ -11,10 +11,10 @@ from ..council_api import lookup_bill, lookup_bills
 from ..council_sync import update_bill_sponsorships
 from ..google_sheets import create_power_hour
 from ..models import db
-from .models import AssemblyBill, Bill, BillAttachment, CityBill, PowerHour, SenateBill
+from .models import AssemblyBill, Bill, BillAttachment, CityBill, PowerHour, SenateBill, StateBill
 from .schema import (BillAttachmentSchema, BillSchema, CreatePowerHourSchema,
                      PowerHourSchema, StateBillSearchResultSchema,
-                     TrackCityBillSchema)
+                     TrackCityBillSchema, TrackStateBillSchema)
 
 # Views ----------------------------------------------------------------------
 
@@ -134,6 +134,27 @@ def search_state_bills():
     # TODO check which ones are already tracked
 
     return StateBillSearchResultSchema(many=True).jsonify(bill_results)
+
+
+# TODO: Rename to state-bills? figure out urls
+@app.route("/api/state-bills", methods=["POST"])
+@auth_required
+def track_state_bill():
+    data = TrackStateBillSchema().load(request.json)
+    base_print_no = data["base_print_no"]
+    session_year = data['session_year']
+    # if SenateBill.query.filter_by(base_print_no=base_print_no, session_year=session_year).one_or_none() \
+    #     or AssemblyBill.query.filter_by(base_print_no=base_print_no, session_year=session_year).one_or_none():
+    #     # There's a race condition of checking this and then inserting,
+    #     # but in that rare case it will hit the DB unique constraint instead.
+    #     raise exceptions.Conflict()
+    
+    # right nwo this only works for senate
+    state_api.import_bill(session_year, base_print_no)
+
+    # this also does sponsorships!
+
+    return jsonify({})
 
 
 @app.route("/api/saved-bills/<uuid:bill_id>/power-hours", methods=["GET"])

@@ -7,22 +7,17 @@ import useApiFetch from './useApiFetch';
 import SearchCityBillsForm from './SearchCityBillsForm';
 import Table from 'react-bootstrap/Table';
 
-interface Props {
-  todo?: string;
-  //   show: boolean;
-  //   handleTrackBill: (cityBillId: number) => void;
-}
-
 function BillRow(props: {
   bill: StateBillSearchResult;
-    // handleTrackBill: (basePrintNo: number) => void;
+    handleTrackBill: (bill: StateBillSearchResult) => void;
 }) {
     const [trackClicked, setTrackClicked] = useState<boolean>(false);
 
   const { bill } = props;
-    function handleTrackBill() {
+
+  function handleTrackBill() {
       setTrackClicked(true);
-    //   props.handleTrackBill(bill.cityBill!.cityBillId);
+      props.handleTrackBill(bill);
     }
 
   // Lazy way to make this UI respond to click, without better global state.
@@ -50,6 +45,13 @@ function BillRow(props: {
   );
 }
 
+interface Props {
+    todo?: string;
+    //   show: boolean;
+    // tood figure out session ear string or number
+      handleBillTracked: () => void;
+  }
+
 export default function SearchBillsModal(props: Props): ReactElement {
   const codeNameRef = useRef<HTMLInputElement>(null);
   const sessionYearRef = useRef<HTMLInputElement>(null);
@@ -69,6 +71,16 @@ export default function SearchBillsModal(props: Props): ReactElement {
       setSearchResults(response);
     });
     e.preventDefault();
+  }
+
+  function handleTrackBill(bill: StateBillSearchResult) {
+    // TODO figure out endpooint
+    apiFetch('/api/state-bills', {
+        method: 'POST',
+        body: { sessionYear: bill.sessionYear, basePrintNo: bill.basePrintNo }
+      }).then(response => {
+          props.handleBillTracked();
+      })
   }
 
   //   function handleHide() {
@@ -117,7 +129,7 @@ export default function SearchBillsModal(props: Props): ReactElement {
               <BillRow
                 key={bill.id}
                 bill={bill}
-                // handleTrackBill={props.handleTrackBill}
+                handleTrackBill={handleTrackBill}
               />
             ))}
           </tbody>

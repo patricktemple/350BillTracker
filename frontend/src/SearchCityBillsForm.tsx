@@ -1,5 +1,5 @@
 import React, { useState, useRef, ReactElement } from 'react';
-import BillList from './CityBillSearchResults';
+import CityBillSearchResults from './CityBillSearchResults';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Bill, BillType } from './types';
@@ -8,7 +8,7 @@ import useApiFetch from './useApiFetch';
 
 interface Props {
   //   handleHide: () => void;
-  handleTrackBill: (cityBillId: number) => void;
+  handleBillTracked: () => void;
 }
 
 export default function SearchCityBillsForm(props: Props): ReactElement {
@@ -34,6 +34,15 @@ export default function SearchCityBillsForm(props: Props): ReactElement {
   //     props.handleHide();
   //   }
 
+  function handleTrackBill(cityBillId: number) {
+    apiFetch('/api/saved-bills', {
+        method: 'POST',
+        body: { cityBillId }
+      }).then(response => {
+          props.handleBillTracked();
+      })
+  }
+
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Group className="mb-3 mt-3">
@@ -50,9 +59,9 @@ export default function SearchCityBillsForm(props: Props): ReactElement {
       {searchResults != null && (
         <>
           <div>Results (includes old historical results):</div>
-          <BillList
+          <CityBillSearchResults
             bills={searchResults}
-            handleTrackBill={props.handleTrackBill}
+            handleTrackBill={handleTrackBill}
           />
         </>
       )}

@@ -30,15 +30,6 @@ export default function BillListPage(): ReactElement {
     loadBillList();
   });
 
-  function handleTrackBill(cityBillId: number) {
-    apiFetch('/api/saved-bills', {
-      method: 'POST',
-      body: { cityBillId }
-    }).then((response) => {
-      loadBillList();
-    });
-  }
-
   // TODO: Unify the way I do different kinds of styles
   // and get rid of the bootstrap grid thing? simplify it with CSS grid
 
@@ -73,7 +64,7 @@ export default function BillListPage(): ReactElement {
             <SearchBillsModal
               show={addBillVisible}
               handleHide={() => setAddBillVisible(false)}
-              handleTrackBill={handleTrackBill}
+              handleBillTracked={loadBillList}
             />
           </>
         )}

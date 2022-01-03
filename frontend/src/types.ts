@@ -43,7 +43,7 @@ export interface StateBillSearchResult {
   description: string;
   status: string;
   basePrintNo: string;
-  sessionYear: string; // number?
+  sessionYear: number; // number?
   chamber: StateChamber;
   activeVersion: string;
   tracked: boolean;

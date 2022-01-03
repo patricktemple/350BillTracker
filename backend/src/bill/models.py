@@ -115,7 +115,7 @@ class Bill(db.Model):
         assembly_print_no = self.state_bill.assembly_bill.base_print_no if self.state_bill.assembly_bill else "(No Assembly bill)"
     
         # This seems wrong... figure out how substitutions work
-        return f"{senate_print_no} / {assembly_print_no}"
+        return f"{senate_print_no} / {assembly_print_no} from {self.state_bill.session_year} session"
 
 
 class BillAttachment(db.Model):
@@ -196,9 +196,9 @@ class StateBill(db.Model):
     # The start of the 2-year legislative session this belongs to.
     session_year = Column(Integer, nullable=False)
 
-    senate_bill = relationship("SenateBill", back_populates="state_bill", uselist=False)
-    assembly_bill = relationship("AssemblyBill", back_populates="state_bill", uselist=False)
-
+    senate_bill = relationship("SenateBill", back_populates="state_bill", uselist=False,         cascade="all, delete")
+    assembly_bill = relationship("AssemblyBill", back_populates="state_bill", uselist=False,         cascade="all, delete")
+ 
 
 class StateChamberMixin:
     id = Column(UUID, primary_key=True, default=uuid4) # unclear that this ID column is necessary if we have just one version at a time
@@ -214,7 +214,7 @@ class StateChamberMixin:
 
     @declared_attr
     def bill_id(self):
-       return Column(UUID, ForeignKey(StateBill.bill_id), index=True) # todo make this unique (same below)
+       return Column(UUID, ForeignKey(StateBill.bill_id), index=True, nullable=False) # todo make this unique (same below)
 
     # This is a bit confusing. The Senate and the Assembly each run separate websites,
     # and each website can lookup both senate and assembly bills. So they're redundant
@@ -235,7 +235,7 @@ class SenateBill(db.Model, StateChamberMixin):
 
     state_bill = relationship(StateBill, back_populates="senate_bill")
     sponsorships = relationship(
-        "SenateSponsorship", back_populates="senate_version"
+        "SenateSponsorship", back_populates="senate_version",         cascade="all, delete"
     )
 
 
@@ -244,5 +244,5 @@ class AssemblyBill(db.Model, StateChamberMixin):
 
     state_bill = relationship(StateBill, back_populates="assembly_bill")
     sponsorships = relationship(
-        "AssemblySponsorship", back_populates="assembly_version"
+        "AssemblySponsorship", back_populates="assembly_version",         cascade="all, delete"
     )
