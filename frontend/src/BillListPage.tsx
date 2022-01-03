@@ -10,7 +10,6 @@ import useApiFetch from './useApiFetch';
 import { ReactComponent as StateIcon } from './assets/state.svg';
 import CityBillListItem from './CityBillListItem';
 import { useHistory } from 'react-router-dom';
-// TODO: Buy these icons!!!
 
 import styles from './style/BillListPage.module.scss';
 import StateBillListItem from './StateBillListItem';

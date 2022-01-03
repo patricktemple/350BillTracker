@@ -10,7 +10,6 @@ import { ReactComponent as StateIcon } from './assets/state.svg';
 import { useHistory } from 'react-router-dom';
 
 import styles from './style/BillListItem.module.scss';
-// TODO: Buy these icons!!!
 
 interface StateChamberDetailsProps {
   chamberBill: StateChamberBill | null;

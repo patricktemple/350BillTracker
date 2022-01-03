@@ -8,7 +8,6 @@ import useApiFetch from './useApiFetch';
 import { ReactComponent as CityIcon } from './assets/city.svg';
 import styles from './style/BillListItem.module.scss';
 import { useHistory } from 'react-router-dom';
-// TODO: Buy these icons!!!
 
 interface Props {
   bill: Bill;
