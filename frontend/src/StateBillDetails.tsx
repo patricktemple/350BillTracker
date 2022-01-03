@@ -1,7 +1,13 @@
 import React, { ReactElement, useState, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { Bill, CitySponsorship, BillAttachment, PowerHour } from './types';
+import {
+  Bill,
+  CitySponsorship,
+  BillAttachment,
+  PowerHour,
+  StateBillSponsorships
+} from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import AddAttachmentModal from './AddAttachmentModal';
 import useAutosavingFormData from './utils/useAutosavingFormData';
@@ -26,6 +32,7 @@ interface ChamberProps {
 
 function ChamberDetails({ chamber, chamberDetails }: ChamberProps) {
   // todo handle null chamber details
+  // todo explain senate vs assembly website?
   return (
     <Accordion.Item key={chamber} eventKey={chamber}>
       <Accordion.Header>
@@ -37,7 +44,24 @@ function ChamberDetails({ chamber, chamberDetails }: ChamberProps) {
           <div>{chamberDetails?.sponsorCount} sponsors</div>
         </div>
       </Accordion.Header>
-      <Accordion.Body>Body</Accordion.Body>
+      <Accordion.Body>
+        <a
+          className="d-block"
+          href={chamberDetails?.senateWebsite}
+          rel="noreferrer"
+          target="_blank"
+        >
+          Senate website
+        </a>
+        <a
+          className="d-block"
+          href={chamberDetails?.assemblyWebsite}
+          rel="noreferrer"
+          target="_blank"
+        >
+          Assembly website
+        </a>
+      </Accordion.Body>
     </Accordion.Item>
   );
 }
@@ -46,6 +70,18 @@ interface Props {
   bill: Bill;
 }
 export default function StateBillDetails({ bill }: Props) {
+  const apiFetch = useApiFetch();
+
+  const [sponsorships, setSponsorships] =
+    useState<StateBillSponsorships | null>(null);
+
+  useMountEffect(() => {
+    apiFetch(`/api/state-bills/${bill.id}/sponsorships`).then((response) => {
+      console.log(response);
+      setSponsorships(response);
+    });
+  });
+
   return (
     <Accordion>
       <ChamberDetails

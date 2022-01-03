@@ -221,11 +221,11 @@ class StateChamberMixin:
     # websites with very different UI. Therefore senate and assembly bills each have a
     # both assembly and senate websites.
     @property
-    def senate_website_url(self):
+    def senate_website(self):
         return f"https://www.nysenate.gov/legislation/bills/{self.state_bill.session_year}/{self.base_print_no}"
     
     @property
-    def assembly_website_url(self):
+    def assembly_website(self):
         # use urlpasr to construct it?
         return f"https://nyassembly.gov/leg/?term={self.state_bill.session_year}&bn={self.base_print_no}"
 

@@ -16,3 +16,12 @@ class CityBillSponsorshipSchema(CamelCaseSchema):
     person = fields.Nested(PersonSchema)
     is_sponsor = fields.Boolean()
     sponsor_sequence = fields.Integer()
+
+
+class StateBillSponsorshipsSchema(CamelCaseSchema):
+    bill_id = fields.UUID(required=True)
+    senate_sponsors = fields.List(fields.Nested(PersonSchema))
+    senate_non_sponsors = fields.List(fields.Nested(PersonSchema))
+
+    assembly_sponsors = fields.List(fields.Nested(PersonSchema))
+    assembly_non_sponsors = fields.List(fields.Nested(PersonSchema))

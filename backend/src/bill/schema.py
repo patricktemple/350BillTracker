@@ -22,6 +22,8 @@ class StateChamberBillSchema(CamelCaseSchema):
     sponsor_count = fields.Integer(dump_only=True)
     status = fields.String(dump_only=True)
     base_print_no = fields.String(dump_only=True)
+    senate_website = fields.String(dump_only=True)
+    assembly_website = fields.String(dump_only=True)
 
 
 class StateBillSchema(CamelCaseSchema):

@@ -71,6 +71,7 @@ class SenateSponsorship(db.Model):
 
     id = Column(UUID, primary_key=True, default=uuid4)
 
+    # DO we need this version ID? Or can it be the bill id?
     senate_version_id = Column(
         UUID, ForeignKey(SenateBill.id), nullable=False, index=True
     )

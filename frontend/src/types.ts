@@ -18,6 +18,8 @@ export interface StateChamberBill {
   activeVersionName: string; // rename to active_version
   status: string;
   sponsorCount: number; // TODO: implement on backend
+  senateWebsite: string;
+  assemblyWebsite: string;
 }
 
 export interface StateBill {
@@ -27,23 +29,20 @@ export interface StateBill {
   assemblyBill: StateChamberBill | null;
 }
 
-// class StateBillSearchResultSchema(CamelCaseSchema):
-//     name = fields.String(dump_only=True)
-//     description = fields.String(dump_only=True)
-//     status = fields.String(dump_only=True)
-//     base_print_no = fields.String(dump_only=True)
-//     session_year = fields.String(dump_only=True)
-//     chamber = EnumField(StateChamber, dump_only=True)
-//     active_version = fields.String(dump_only=True)
-//     tracked = fields.Boolean(dump_only=True)
-//     other_chamber_bill_print_no = fields.String(dump_only=True)
+export interface StateBillSponsorships {
+  billId: string;
+  senateSponsors: Person[];
+  senateNonSponsors: Person[];
+  assemblySponsors: Person[];
+  assemblyNonSponsors: Person[];
+}
 
 export interface StateBillSearchResult {
   name: string;
   description: string;
   status: string;
   basePrintNo: string;
-  sessionYear: number; // number?
+  sessionYear: number;
   chamber: StateChamber;
   activeVersion: string;
   tracked: boolean;
@@ -104,7 +103,7 @@ export interface CitySponsorship {
   billId: string;
   person: Person;
   isSponsor: boolean;
-  sponsorSequence: number;
+  sponsorSequence: number | null;
 }
 
 export interface BillAttachment {

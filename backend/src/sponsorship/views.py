@@ -3,10 +3,12 @@ from werkzeug import exceptions
 
 from ..app import app
 from ..auth import auth_required
-from ..bill.models import CityBill
-from ..person.models import Person
-from .models import CitySponsorship
-from .schema import CityBillSponsorshipSchema, CouncilMemberSponsorshipSchema
+from ..bill.models import CityBill, StateBill
+from ..person.models import AssemblyMember, Person, Senator
+from .models import AssemblySponsorship, CitySponsorship, SenateSponsorship
+from .schema import (CityBillSponsorshipSchema, CouncilMemberSponsorshipSchema,
+                     StateBillSponsorshipsSchema)
+
 
 # TODO: Figure out routes for people
 @app.route(
@@ -59,3 +61,33 @@ def city_bill_sponsorships(bill_id):
     return CityBillSponsorshipSchema(many=True).jsonify(
         sponsorships + non_sponsorships
     )
+
+
+@app.route("/api/state-bills/<uuid:bill_id>/sponsorships", methods=["GET"])
+@auth_required
+def state_bill_sponsorships(bill_id):
+    state_bill = StateBill.query.get(bill_id)
+    if not state_bill:
+        raise exceptions.NotFound()
+    
+    senate_sponsorships = (
+        SenateSponsorship.query.filter_by(senate_version_id=state_bill.senate_bill.id)
+        .options(joinedload(SenateSponsorship.senator))
+        .all()
+    )
+    senate_non_sponsors = Senator.query.filter(Senator.person_id.not_in([s.senator_id for s in senate_sponsorships])).all()
+
+    assembly_sponsorships = (
+        AssemblySponsorship.query.filter_by(assembly_version_id=state_bill.assembly_bill.id)
+        .options(joinedload(AssemblySponsorship.assembly_member))
+        .all()
+    )
+    assembly_non_sponsors = AssemblyMember.query.filter(AssemblyMember.person_id.not_in([s.assembly_member_id for s in assembly_sponsorships])).all()
+
+    return StateBillSponsorshipsSchema().jsonify({
+        "bill_id": bill_id,
+        "senate_sponsors": (s.senator.person for s in senate_sponsorships),
+        "senate_non_sponsors": (s.person for s in senate_non_sponsors),
+        "assembly_sponsors": (s.assembly_member.person for s in assembly_sponsorships),
+        "assembly_non_sponsors": (a.person for a in assembly_non_sponsors),
+    })
