@@ -107,7 +107,6 @@ def search_bills():
     return BillSchema(many=True).jsonify(external_bills)
 
 
-# TODO figure out all these paths
 @app.route("/api/state-bills/search", methods=["GET"])
 @auth_required
 def search_state_bills():
@@ -130,7 +129,6 @@ def search_state_bills():
     return StateBillSearchResultSchema(many=True).jsonify(bill_results)
 
 
-# TODO: Rename to state-bills? figure out urls
 @app.route("/api/state-bills/track", methods=["POST"])
 @auth_required
 def track_state_bill():

@@ -29,7 +29,7 @@ function ChamberDetails({
     <Accordion.Item key={chamber} eventKey={chamber}>
       <Accordion.Header>
         <div>
-          <div style={{ fontWeight: 'bold' }}>
+          <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>
             {chamber} bill {chamberDetails?.basePrintNo}
           </div>
           <div>{chamberDetails?.status}</div>

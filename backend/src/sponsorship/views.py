@@ -10,7 +10,6 @@ from .schema import (CityBillSponsorshipSchema, CouncilMemberSponsorshipSchema,
                      StateBillSponsorshipsSchema)
 
 
-# TODO: Figure out routes for people
 @app.route(
     "/api/council-members/<uuid:council_member_id>/sponsorships",
     methods=["GET"],

@@ -7,7 +7,6 @@ import Modal from 'react-bootstrap/Modal';
 import useApiFetch from './useApiFetch';
 
 interface Props {
-  //   handleHide: () => void;
   handleBillTracked: () => void;
 }
 
@@ -27,12 +26,6 @@ export default function SearchCityBillsForm(props: Props): ReactElement {
     });
     e.preventDefault();
   }
-
-  //   // TODO
-  //   function handleHide() {
-  //     setSearchResults(null);
-  //     props.handleHide();
-  //   }
 
   function handleTrackBill(cityBillId: number) {
     apiFetch('/api/city-bills/track', {
@@ -57,13 +50,10 @@ export default function SearchCityBillsForm(props: Props): ReactElement {
         Search
       </Button>
       {searchResults != null && (
-        <>
-          <div>Results (includes old historical results):</div>
           <CityBillSearchResults
             bills={searchResults}
             handleTrackBill={handleTrackBill}
           />
-        </>
       )}
     </Form>
   );

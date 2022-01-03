@@ -189,8 +189,8 @@ class StateBill(db.Model):
     # The start of the 2-year legislative session this belongs to.
     session_year = Column(Integer, nullable=False)
 
-    senate_bill = relationship("SenateBill", back_populates="state_bill", uselist=False,         cascade="all, delete")
-    assembly_bill = relationship("AssemblyBill", back_populates="state_bill", uselist=False,         cascade="all, delete")
+    senate_bill = relationship("SenateBill", back_populates="state_bill", uselist=False, cascade="all, delete")
+    assembly_bill = relationship("AssemblyBill", back_populates="state_bill", uselist=False, cascade="all, delete")
  
 
 class StateChamberMixin:
@@ -221,7 +221,7 @@ class SenateBill(db.Model, StateChamberMixin):
 
     state_bill = relationship(StateBill, back_populates="senate_bill")
     sponsorships = relationship(
-        "SenateSponsorship", back_populates="senate_bill",         cascade="all, delete"
+        "SenateSponsorship", back_populates="senate_bill", cascade="all, delete"
     )
 
 
@@ -230,5 +230,5 @@ class AssemblyBill(db.Model, StateChamberMixin):
 
     state_bill = relationship(StateBill, back_populates="assembly_bill")
     sponsorships = relationship(
-        "AssemblySponsorship", back_populates="assembly_bill",         cascade="all, delete"
+        "AssemblySponsorship", back_populates="assembly_bill", cascade="all, delete"
     )

@@ -50,7 +50,7 @@ export default function BillList(props: Props) {
     <Table striped bordered>
       <thead>
         <tr>
-          <th>File</th>
+          <th>Bill number</th>
           <th>Name</th>
           <th>Title</th>
           <th>Status</th>
