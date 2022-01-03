@@ -3,7 +3,8 @@ from uuid import uuid4
 import pytest
 
 from src import app, models
-from src.bill.models import Bill, CityBill, db
+from src.bill.models import (AssemblyBill, Bill, CityBill, SenateBill,
+                             StateBill, db)
 from src.user.models import User
 from src.utils import now
 
@@ -38,6 +39,20 @@ def city_bill():
         active_version="A",
     )
     db.session.add(bill)
+    db.session.commit()
+    return bill
+
+
+@pytest.fixture
+def state_bill():
+    bill = Bill(id=uuid4(), name="state bill", description="description", nickname="nickname", type=Bill.BillType.STATE)
+    bill.state_bill = StateBill(
+        session_year=2021,
+    )
+    bill.state_bill.senate_bill = SenateBill(base_print_no="S1234", active_version="", status="Committee")
+    bill.state_bill.assembly_bill = AssemblyBill(base_print_no="A1234", active_version="A", status="Voted")
+    db.session.add(bill)
+    db.session.commit()
     return bill
 
 
