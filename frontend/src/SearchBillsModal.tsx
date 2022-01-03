@@ -2,7 +2,7 @@ import React, { useState, useRef, ReactElement } from 'react';
 import BillList from './BillList';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { Bill } from './types';
+import { Bill, BillType } from './types';
 import Modal from 'react-bootstrap/Modal';
 import useApiFetch from './useApiFetch';
 
@@ -18,6 +18,8 @@ export default function SearchBillsModal(props: Props): ReactElement {
   const [searchResults, setSearchResults] = useState<Bill[] | null>(null);
 
   const apiFetch = useApiFetch();
+
+  const [billType, setBillType] = useState<BillType>('CITY');
 
   function handleSubmit(e: any) {
     const searchText = searchBoxRef.current!.value;
@@ -35,6 +37,10 @@ export default function SearchBillsModal(props: Props): ReactElement {
     props.handleHide();
   }
 
+  function handleBillTypeChanged(e: any) {
+    setBillType(e.target.value);
+  }
+
   return (
     <Modal show={props.show} onHide={handleHide} size="xl">
       <Modal.Header closeButton>
@@ -42,7 +48,28 @@ export default function SearchBillsModal(props: Props): ReactElement {
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3">
+          <Form.Check
+          inline
+          checked={billType === 'CITY'}
+          name="type"
+          label="City Council"
+          value="CITY"
+          type='radio'
+          onChange={handleBillTypeChanged}
+          id={`inline-radio-1`}
+          />
+          <Form.Check
+            inline
+            checked={billType !== 'CITY'}
+            label="NY State"
+            name="type"
+            value="STATE"
+            type='radio'
+            onChange={handleBillTypeChanged}
+            id={`inline-radio-2`}
+          />
+          {billType==='CITY' ? (
+          <Form.Group className="mb-3 mt-3">
             <Form.Label>
               Intro number (such as &quot;2317-2021&quot;)
             </Form.Label>
@@ -52,6 +79,22 @@ export default function SearchBillsModal(props: Props): ReactElement {
               ref={searchBoxRef}
             />
           </Form.Group>
+          ):           <Form.Group className="mb-3 mt-3">
+          <Form.Label>
+            Senate or assembly bill number (such as &quot;S4264&quot; or &quot;A6967&quot;):
+          </Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Senate or assembly bill number"
+          />
+           <Form.Label className="mt-3">
+            Session year:
+          </Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="The year the bill was introduced"
+          />
+        </Form.Group>}
 
           <Button variant="primary" type="submit" className="mb-2">
             Search
