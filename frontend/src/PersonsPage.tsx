@@ -37,15 +37,14 @@ export default function ConcilMembersPage({
     const lowerFilterText = filterText.toLowerCase();
     filteredPersons = persons.filter(
       (p) =>
-        p.type == 'COUNCIL_MEMBER' &&
-        (p.name.toLowerCase().includes(lowerFilterText) ||
-          p.councilMember?.borough?.toLowerCase().includes(lowerFilterText))
+        p.name.toLowerCase().includes(lowerFilterText) ||
+          p.councilMember?.borough?.toLowerCase().includes(lowerFilterText)
     );
   }
 
   return (
     <div>
-      <div className={styles.title}>Council members</div>
+      <div className={styles.title}>People</div>
       <div className={styles.content}>
         {filteredPersons == null ? (
           'Loading...'

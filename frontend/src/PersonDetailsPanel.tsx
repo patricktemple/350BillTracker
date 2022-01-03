@@ -73,11 +73,11 @@ export default function PersonDetailsPanel(props: Props) {
   }
 
   useMountEffect(() => {
-    apiFetch(`/api/council-members/${person.id}/sponsorships`).then(
-      (response) => {
-        setSponsorships(response);
-      }
-    );
+    // apiFetch(`/api/council-members/${person.id}/sponsorships`).then(
+    //   (response) => {
+    //     setSponsorships(response);
+    //   }
+    // );
     loadStaffers();
   });
 
@@ -117,6 +117,7 @@ export default function PersonDetailsPanel(props: Props) {
     });
   }
 
+  // should rewrite this w/o bootstrap grid
   return (
     <Form onSubmit={(e) => e.preventDefault()}>
       <Row className="mb-2">

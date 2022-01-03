@@ -8,7 +8,7 @@ from ..person.models import Person
 from .models import CitySponsorship
 from .schema import CityBillSponsorshipSchema, CouncilMemberSponsorshipSchema
 
-
+# TODO: Figure out routes for people
 @app.route(
     "/api/council-members/<uuid:council_member_id>/sponsorships",
     methods=["GET"],

@@ -49,11 +49,11 @@ function AppContent() {
         <Link to="/" className={styles.billsLink}>
           Bills
         </Link>
-        <Link to="/council-members" className={styles.legislatorsLogo}>
+        <Link to="/people" className={styles.legislatorsLogo}>
           <LegislatorIcon />
         </Link>
-        <Link to="/council-members" className={styles.legislatorsLink}>
-          Council members
+        <Link to="/people" className={styles.legislatorsLink}>
+          People
         </Link>
         <Link to="/setting" className={styles.settingsLogo}>
           <SettingsIcon />
@@ -73,7 +73,7 @@ function AppContent() {
           </Route>
           <Route exact path="/bills" component={BillListPage} />
           <Route path="/bills/:billId" component={BillDetailsPage} />
-          <Route path="/council-members/:personId?" component={PersonsPage} />
+          <Route path="/people/:personId?" component={PersonsPage} />
           <Route path="/settings" component={SettingsPage} />
         </main>
       </div>
