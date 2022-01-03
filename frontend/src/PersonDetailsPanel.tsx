@@ -11,6 +11,7 @@ import useAutosavingFormData from './utils/useAutosavingFormData';
 import useApiFetch from './useApiFetch';
 import Button from 'react-bootstrap/Button';
 import AddStafferModal from './AddStafferModal';
+import styles from './style/PersonDetailsPanel.module.scss';
 
 interface Props {
   person: Person;
@@ -119,63 +120,49 @@ export default function PersonDetailsPanel(props: Props) {
 
   // should rewrite this w/o bootstrap grid
   return (
-    <Form onSubmit={(e) => e.preventDefault()}>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Name:
-        </Col>
-        <Col>{person.name}</Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Email:
-        </Col>
-        <Col>{person.email}</Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          District phone:
-        </Col>
-        <Col>{person.phone}</Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Legislative phone:
-        </Col>
-        <Col>{person.councilMember!.legislativePhone}</Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Party:
-        </Col>
-        <Col>{person.party}</Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Website:
-        </Col>
-        <Col>
+    <Form onSubmit={(e) => e.preventDefault()} className={styles.root}>
+      <div className={styles.label}>
+          Name
+        </div>
+        <div className={styles.content}>{person.name}
+      </div>
+      <div className={styles.label}>
+          Email
+        </div>
+        <div className={styles.content}>{person.email}</div>
+      <div className={styles.label}>
+          District phone
+        </div>
+        <div className={styles.content}>{person.phone}</div>
+        <div className={styles.label}>
+          Legislative phone
+        </div>
+        <div className={styles.content}>{person.councilMember!.legislativePhone}</div>
+        <div className={styles.label}>
+          Party
+        </div>
+        <div className={styles.content}>{person.party}</div>
+        <div className={styles.label}>
+          Website
+        </div>
+        <div className={styles.content}>
           {person.councilMember!.website && (
             <a href={person.councilMember!.website} target="website">
               Visit website
             </a>
           )}
-        </Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Twitter:
-        </Col>
-        <Col>
+        </div>
+        <div className={styles.label}>
+          Twitter
+        </div>
+        <div className={styles.content}>
           {person.twitter && (
             <a href={`https://twitter.com/${person.twitter}`} target="twitter">
               @{person.twitter}
             </a>
           )}
-        </Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
+        </div>
+        <div className={styles.label}>
           Staffers:
           <Button
             variant="outline-secondary"
@@ -185,8 +172,8 @@ export default function PersonDetailsPanel(props: Props) {
           >
             Add staffer
           </Button>
-        </Col>
-        <Col>
+        </div>
+        <div className={styles.content}>
           {staffers &&
             staffers.map((staffer) => (
               <div key={staffer.id}>
@@ -197,23 +184,19 @@ export default function PersonDetailsPanel(props: Props) {
                 ]
               </div>
             ))}
-        </Col>
+        </div>
         <AddStafferModal
           show={addStafferModalVisible}
           handleAddStaffer={handleAddStaffer}
           onHide={() => setAddStafferModalVisible(false)}
         />
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2}>
-          <>
+      <div className={styles.label}>
             <div style={{ fontWeight: 'bold' }}>Sponsored bills</div>
             <div style={{ fontStyle: 'italic' }}>
               Only includes bills we are tracking
             </div>
-          </>
-        </Col>
-        <Col>
+        </div>
+        <div className={styles.content}>
           {sponsorships == null ? (
             'Loading...'
           ) : (
@@ -226,13 +209,11 @@ export default function PersonDetailsPanel(props: Props) {
               ))}
             </Stack>
           )}
-        </Col>
-      </Row>
-      <Form.Group as={Row} className="mb-2">
-        <Form.Label column lg={2} style={{ fontWeight: 'bold' }}>
+        </div>
+      <div className={styles.label}>
           Our notes:
-        </Form.Label>
-        <Col>
+          </div>
+          <div className={styles.content}>
           <Form.Control
             as="textarea"
             rows={3}
@@ -241,9 +222,8 @@ export default function PersonDetailsPanel(props: Props) {
             placeholder="Add our notes about this person"
             onChange={handleNotesChanged}
           />
-        </Col>
-      </Form.Group>
-      <div style={{ fontStyle: 'italic' }}>{saveStatus}</div>
+        </div>
+      <div className={styles.label}>{saveStatus}</div>
     </Form>
   );
 }

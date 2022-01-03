@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import useMountEffect from '@restart/hooks/useMountEffect';
-import Table from 'react-bootstrap/Table';
-import { Person, CouncilMember, PersonType } from './types';
-import Accordion from 'react-bootstrap/Accordion';
-import PersonDetailsPanel from './PersonDetailsPanel';
-import { Form } from 'react-bootstrap';
+import { Person } from './types';
 import LazyAccordionBody from './LazyAccordionBody';
 import useApiFetch from './useApiFetch';
 import styles from './style/LegislatorsPage.module.scss';
@@ -52,23 +48,19 @@ export default function PersonsPage({
         ) : (
           <Tabs className="mb-4">
             <Tab eventKey="all" title="All">
-              <>
                 <PersonsList
                   persons={persons}
                   filterText={filterText}
                   selectedPersonId={personId}
                 />
-              </>
             </Tab>
             <Tab eventKey="council" title="Council members">
-              <>
                 <PersonsList
                   persons={persons}
                   filterText={filterText}
                   selectedPersonId={personId}
                   personTypeFilter={'COUNCIL_MEMBER'}
                 />
-              </>
             </Tab>
             <Tab eventKey="senate" title="Senators">
               <PersonsList
