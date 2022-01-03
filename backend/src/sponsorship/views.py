@@ -71,14 +71,14 @@ def state_bill_sponsorships(bill_id):
         raise exceptions.NotFound()
     
     senate_sponsorships = (
-        SenateSponsorship.query.filter_by(senate_bill_id=state_bill.senate_bill.id)
+        SenateSponsorship.query.filter_by(senate_bill_id=bill_id)
         .options(joinedload(SenateSponsorship.senator))
         .all()
     )
     senate_non_sponsors = Senator.query.filter(Senator.person_id.not_in([s.senator_id for s in senate_sponsorships])).all()
 
     assembly_sponsorships = (
-        AssemblySponsorship.query.filter_by(senate_bill_id=state_bill.assembly_bill.id)
+        AssemblySponsorship.query.filter_by(assembly_bill_id=bill_id)
         .options(joinedload(AssemblySponsorship.assembly_member))
         .all()
     )

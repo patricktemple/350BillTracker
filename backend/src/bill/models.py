@@ -235,5 +235,5 @@ class AssemblyBill(db.Model, StateChamberMixin):
 
     state_bill = relationship(StateBill, back_populates="assembly_bill")
     sponsorships = relationship(
-        "AssemblySponsorship", back_populates="assembly_bil",         cascade="all, delete"
+        "AssemblySponsorship", back_populates="assembly_bill",         cascade="all, delete"
     )
