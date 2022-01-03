@@ -88,7 +88,7 @@ export default function SearchBillsModal(props: Props): ReactElement {
             placeholder="Senate or assembly bill number"
           />
            <Form.Label className="mt-3">
-            Session year:
+            Session year (optional):
           </Form.Label>
           <Form.Control
             type="text"

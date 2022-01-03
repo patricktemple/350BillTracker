@@ -123,3 +123,64 @@ def lookup_people(session_year):
         db.session.add(person)
     
     db.session.commit()
+
+
+# def _convert_matter_to_bill(matter):
+#     """Converts the City Council's representation of a bill, called Matters,
+#     into our own format."""
+#     return {
+#         "type": Bill.BillType.CITY,
+#         "name": matter["MatterName"],
+#         "description": matter["MatterTitle"],
+#         "city_bill": {
+#             "file": matter["MatterFile"],
+#             "council_body": matter["MatterBodyName"],
+#             "city_bill_id": matter["MatterId"],
+#             "intro_date": datetime.fromisoformat(
+#                 matter["MatterIntroDate"]
+#             ).replace(tzinfo=timezone.utc),
+#             "status": matter["MatterStatusName"],
+#             "active_version": matter["MatterVersion"],
+#         },
+#     }
+
+
+def _convert_state_bill_response_to_bill(state_bill):
+    input = state_bill['result']
+    bill_data = {
+        "type": Bill.BillType.STATE,
+        "name": input['title'],
+        "description": input['summary'],
+        "state_bill": {
+            "session_year": input['session']
+        }
+    }
+
+    # TODO: Fill in the other chamber too... or just make this return a single-chamber bill that doesn't conform to StateBill
+    chamber_bill = {
+        'base_print_no': input['basePrintNo'],
+        'active_version_name': input['activeVersion'], # todo rename to active_version
+        'status': input['status']['statusDesc']
+    }
+    if input['billType']['chamber'] == 'SENATE':
+        bill_data['state_bill']['senate_bill'] = chamber_bill
+    elif input['billType']['chamber'] == 'ASSEMBLY':
+        bill_data['state_bill']['assembly_bill'] = chamber_bill
+    else:
+        # ???
+        pass
+
+    return bill_data
+    
+
+
+def search_bills(code_name, session_year=None):
+    terms = [
+        f"(basePrintNo:{code_name} OR printNo:{code_name})",
+        "billType.resolution:false"
+    ]
+    if session_year:
+        terms.append(f"session:{session_year}")
+    
+    response = senate_get(f"bills/search", term=" AND ".join(terms))
+    return [_convert_state_bill_response_to_bill(item) for item in response['items']]
