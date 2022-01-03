@@ -56,11 +56,6 @@ class BillSchema(CamelCaseSchema):
     state_bill = fields.Nested(StateBillSchema)
 
 
-# class StateBillSearchParamsSchema(CamelCaseSchema):
-#     code_name = fields.String(required=True)
-#     session_year = fields.String(load_default=None)
-
-
 class StateBillSearchResultSchema(CamelCaseSchema):
     name = fields.String(dump_only=True)
     description = fields.String(dump_only=True)

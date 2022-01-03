@@ -1,14 +1,13 @@
 import React, { ReactElement, useState, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { Bill, CitySponsorship, BillAttachment, PowerHour } from './types';
+import { Bill, BillAttachment, PowerHour } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import AddAttachmentModal from './AddAttachmentModal';
 import useAutosavingFormData from './utils/useAutosavingFormData';
 import ConfirmDeleteBillModel from './ConfirmDeleteBillModal';
 import CreatePowerHourModal from './CreatePowerHourModal';
 import useApiFetch from './useApiFetch';
-import BillSponsorList from './BillSponsorList';
 import Popover from 'react-bootstrap/Popover';
 import Overlay from 'react-bootstrap/Overlay';
 import { MdHelpOutline } from 'react-icons/md';
@@ -33,11 +32,6 @@ interface FormData {
   twitterSearchTerms: string[];
 }
 
-/* 
-1. Rewrite this to use CSS grid instead of bootstrap grid
-2. Factor out all the common parts, and put the city-specific parts into a city component
-
-*/
 export default function BillDetailsPage(props: Props): ReactElement {
   const billId = props.match.params.billId;
 
@@ -169,7 +163,7 @@ export default function BillDetailsPage(props: Props): ReactElement {
     useState<boolean>(false);
 
   if (!bill) {
-    return <div>Loading</div>; // TODO improve
+    return <div>Loading</div>;
   }
 
   return (
@@ -237,7 +231,7 @@ export default function BillDetailsPage(props: Props): ReactElement {
               </>
             )}
           </div>
-          <div className={styles.label}>
+          {bill.type === 'CITY' && (<><div className={styles.label}>
             <div>
               <div style={{ fontWeight: 'bold' }}>
                 Power hours{' '}
@@ -307,8 +301,8 @@ export default function BillDetailsPage(props: Props): ReactElement {
                 ))}
               </>
             )}
-          </div>
-          <div className={styles.label}>
+          </div></>
+          )}<div className={styles.label}>
             Twitter search terms{' '}
             <span
               onClick={() =>
