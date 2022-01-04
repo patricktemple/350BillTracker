@@ -42,7 +42,7 @@ def test_get_city_bill_sponsorships(client, city_bill):
     assert response_data[1]["isSponsor"] == False
 
 
-def test_get_state_bill_sponsorships(client, state_bill, snapshot, get_uuid):
+def test_get_state_bill_sponsorships(client, state_bill, city_bill, snapshot, get_uuid):
     # Ugh I should really have other decoy data in there as well to make sure it's not returned...
     senate_non_sponsor = Person(id=get_uuid(),
         name="Senate non sponsor", type=Person.PersonType.SENATOR
@@ -80,7 +80,5 @@ def test_get_state_bill_sponsorships(client, state_bill, snapshot, get_uuid):
 
     assert response.status_code == 200
     response_data = get_response_data(response)
-
-    print(response_data, flush=True)
 
     assert response_data == snapshot
