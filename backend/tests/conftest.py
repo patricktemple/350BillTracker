@@ -109,7 +109,7 @@ def senator(get_uuid):
         twitter="thesenateguy",
         party="D",
     )
-    person.senator = Senator(state_member_id=50)
+    person.senator = Senator(state_member_id=50, district=3)
     db.session.add(person)
     db.session.commit()
     return person
@@ -145,7 +145,7 @@ def assembly_member(get_uuid):
         twitter="theassembly",
         party="D",
     )
-    person.assembly_member = AssemblyMember(state_member_id=51)
+    person.assembly_member = AssemblyMember(state_member_id=51, district=5)
     db.session.add(person)
     db.session.commit()
     return person

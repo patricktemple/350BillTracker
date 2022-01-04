@@ -2,8 +2,8 @@
   <class 'list'> [
     <class 'dict'> {
       'assemblyMember': <class 'dict'> {
-        'district': None,
-        'website': None,
+        'district': 5,
+        'website': 'https://nyassembly.gov/mem/?ad=5',
       },
       'councilMember': None,
       'email': 'me@assembly.com',
@@ -47,8 +47,8 @@
       'party': 'D',
       'phone': '1-555-555-5555',
       'senator': <class 'dict'> {
-        'district': None,
-        'website': None,
+        'district': 3,
+        'website': 'https://www.nysenate.gov/district/3',
       },
       'title': 'Senator',
       'twitter': 'thesenateguy',
