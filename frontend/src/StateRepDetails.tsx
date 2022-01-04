@@ -1,10 +1,10 @@
-import { Person, StateRepresentative  } from './types';
+import { Person, StateRepresentative } from './types';
 import React from 'react';
 import styles from './style/PersonDetailsPanel.module.scss';
 
 interface Props {
   person: Person;
-  representativeDetails: StateRepresentative; 
+  representativeDetails: StateRepresentative;
 }
 
 export default function StateRepDetails(props: Props) {
@@ -26,7 +26,13 @@ export default function StateRepDetails(props: Props) {
       <div className={styles.label}>Party</div>
       <div className={styles.content}>{person.party}</div>
       <div className={styles.label}>District website</div>
-      <div className={styles.content}>{website && (<a href={website} target="_blank" rel="noreferrer">District {props.representativeDetails.district}</a>)}</div>
+      <div className={styles.content}>
+        {website && (
+          <a href={website} target="_blank" rel="noreferrer">
+            District {props.representativeDetails.district}
+          </a>
+        )}
+      </div>
       <div className={styles.label}>Twitter</div>
       <div className={styles.content}>
         {person.twitter && (

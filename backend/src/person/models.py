@@ -135,7 +135,11 @@ class Senator(db.Model):
 
     @property
     def website(self):
-        return f"https://www.nysenate.gov/district/{self.district}" if self.district else None
+        return (
+            f"https://www.nysenate.gov/district/{self.district}"
+            if self.district
+            else None
+        )
 
 
 class AssemblyMember(db.Model):
@@ -159,12 +163,16 @@ class AssemblyMember(db.Model):
     sponsorships = relationship(
         "AssemblySponsorship", back_populates="assembly_member"
     )
-    
+
     district = Column(Integer)
 
     @property
     def website(self):
-        return f"https://nyassembly.gov/mem/?ad={self.district}" if self.district else None
+        return (
+            f"https://nyassembly.gov/mem/?ad={self.district}"
+            if self.district
+            else None
+        )
 
 
 # Staffers have a single boss. They're one to many.
