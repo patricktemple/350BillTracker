@@ -18,7 +18,6 @@ from .models import (
     CityBill,
     PowerHour,
     SenateBill,
-    StateBill,
 )
 from .schema import (
     BillAttachmentSchema,

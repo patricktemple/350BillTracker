@@ -1,5 +1,4 @@
 import logging
-from dataclasses import dataclass
 
 import requests
 
@@ -237,5 +236,5 @@ def search_bills(code_name, session_year=None):
     if session_year:
         terms.append(f"session:{session_year}")
 
-    response = senate_get(f"bills/search", term=" AND ".join(terms))
+    response = senate_get("bills/search", term=" AND ".join(terms))
     return [_convert_search_results(item) for item in response["items"]]
