@@ -65,7 +65,6 @@ class StateBillSearchResultSchema(CamelCaseSchema):
     chamber = EnumField(StateChamber, dump_only=True)
     active_version = fields.String(dump_only=True)
     tracked = fields.Boolean(dump_only=True)
-    # other_chamber_bill_print_no = fields.String(dump_only=True)
 
 
 # Bill attachments ----------------------------------------------------------------------

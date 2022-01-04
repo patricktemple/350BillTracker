@@ -30,60 +30,67 @@ function ChamberDetails({
           <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>
             {chamber} bill {chamberDetails?.basePrintNo}
           </div>
-          {chamberDetails == null ? <div>Not yet introduced in {chamber}</div>: (<>
-          <div>{chamberDetails?.status}</div>
-          <div>{chamberDetails?.sponsorCount} sponsors</div></>)}
+          {chamberDetails == null ? (
+            <div>Not yet introduced in {chamber}</div>
+          ) : (
+            <>
+              <div>{chamberDetails?.status}</div>
+              <div>{chamberDetails?.sponsorCount} sponsors</div>
+            </>
+          )}
         </div>
       </Accordion.Header>
-          {chamberDetails && (
-      <Accordion.Body>
-        <div className={styles.chamberDetails}>
-          <div className={styles.info}>
-            <a
-              className="d-block"
-              href={chamberDetails?.senateWebsite}
-              rel="noreferrer"
-              target="_blank"
-            >
-              View on Senate website
-            </a>
-            <a
-              className="d-block"
-              href={chamberDetails?.assemblyWebsite}
-              rel="noreferrer"
-              target="_blank"
-            >
-              View on Assembly website
-            </a>
+      {chamberDetails && (
+        <Accordion.Body>
+          <div className={styles.chamberDetails}>
+            <div className={styles.info}>
+              <a
+                className="d-block"
+                href={chamberDetails?.senateWebsite}
+                rel="noreferrer"
+                target="_blank"
+              >
+                View on Senate website
+              </a>
+              <a
+                className="d-block"
+                href={chamberDetails?.assemblyWebsite}
+                rel="noreferrer"
+                target="_blank"
+              >
+                View on Assembly website
+              </a>
+            </div>
+            <div className={styles.sponsorList}>
+              <span style={{ fontWeight: 'bold' }}>
+                Sponsors{sponsors != null && <> ({sponsors.length})</>}
+              </span>
+              {sponsors != null ? (
+                <BillSponsorList
+                  persons={sponsors}
+                  twitterSearchTerms={twitterSearchTerms}
+                />
+              ) : (
+                'Loading...'
+              )}
+            </div>
+            <div className={styles.nonSponsorList}>
+              <span style={{ fontWeight: 'bold' }}>
+                Non-sponsors
+                {nonSponsors != null && <> ({nonSponsors.length})</>}
+              </span>
+              {nonSponsors != null ? (
+                <BillSponsorList
+                  persons={nonSponsors}
+                  twitterSearchTerms={twitterSearchTerms}
+                />
+              ) : (
+                'Loading...'
+              )}
+            </div>
           </div>
-          <div className={styles.sponsorList}>
-            <span style={{ fontWeight: 'bold' }}>
-              Sponsors{sponsors != null && <> ({sponsors.length})</>}
-            </span>
-            {sponsors != null ? (
-              <BillSponsorList
-                persons={sponsors}
-                twitterSearchTerms={twitterSearchTerms}
-              />
-            ) : (
-              'Loading...'
-            )}
-          </div>
-          <div className={styles.nonSponsorList}>
-            <span style={{ fontWeight: 'bold' }}>
-              Non-sponsors{nonSponsors != null && <> ({nonSponsors.length})</>}
-            </span>
-            {nonSponsors != null ? (
-              <BillSponsorList
-                persons={nonSponsors}
-                twitterSearchTerms={twitterSearchTerms}
-              />
-            ) : (
-              'Loading...'
-            )}
-          </div>
-        </div>
-      </Accordion.Body>)}
+        </Accordion.Body>
+      )}
     </Accordion.Item>
   );
 }
