@@ -19,5 +19,10 @@ def api_not_found(path):
 def index(path):
     return render_template("index.html")
 
+@app.after_request
+def after_request(response):
+    response.headers['Content-Security-Policy'] = "default-src 'self'; style-src 'self' fonts.googleapis.com; font-src fonts.googleapis.com fonts.gstatic.com"
+    return response
+
 
 # BUG: This seems to leave open stale SQLA sessions
