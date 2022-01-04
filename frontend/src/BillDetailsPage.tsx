@@ -337,14 +337,17 @@ export default function BillDetailsPage(props: Props): ReactElement {
                     Twitter accounts for keywords related to a bill, while
                     researching their stance on the bill.
                   </p>
-                  <p className="mb-0">
+                  <p>
                     You can keywords for the bill here, comma-separated. Then
                     all the <TwitterIcon style={{ width: '1rem' }} /> icons
                     above, next to the council members, will link to a search of
                     that council member&apos;s Twitter history for those terms.
                     (In the Power Hour spreadsheets, the{' '}
                     <em>Relevant tweets</em> links do these same searches.)
-                  </p>
+                  </p><p className="mb-0">
+                  Note: Due to a Twitter bug, the Twitter search sometimes displays 0
+                    results even when there should be should be matching tweets.
+                    Refreshing the Twitter page often fixes this.</p>
                 </Popover.Body>
               </Popover>
             </Overlay>

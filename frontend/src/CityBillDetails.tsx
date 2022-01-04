@@ -51,11 +51,6 @@ export default function CityBillSponsorList({
           Sponsors{' '}
           {positiveSponsors != null && <>({positiveSponsors.length})</>}:
         </div>
-        <div style={{ fontSize: '0.8rem', fontStyle: 'italic' }}>
-          Note: Due to a Twitter bug, the Twitter search sometimes displays 0
-          results even when there should be should be matching tweets.
-          Refreshing the Twitter page often fixes this.
-        </div>
       </div>
       <div className={styles.sponsorList}>
         {positiveSponsors == null ? (

@@ -34,6 +34,9 @@
             <class 'dict'> {
               'pixelSize': 250,
             },
+            <class 'dict'> {
+              'pixelSize': 250,
+            },
           ],
           'rowData': <class 'list'> [
             <class 'dict'> {
@@ -490,6 +493,9 @@
             },
             <class 'dict'> {
               'pixelSize': 200,
+            },
+            <class 'dict'> {
+              'pixelSize': 250,
             },
             <class 'dict'> {
               'pixelSize': 250,
