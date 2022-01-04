@@ -344,10 +344,13 @@ export default function BillDetailsPage(props: Props): ReactElement {
                     that council member&apos;s Twitter history for those terms.
                     (In the Power Hour spreadsheets, the{' '}
                     <em>Relevant tweets</em> links do these same searches.)
-                  </p><p className="mb-0">
-                  Note: Due to a Twitter bug, the Twitter search sometimes displays 0
-                    results even when there should be should be matching tweets.
-                    Refreshing the Twitter page often fixes this.</p>
+                  </p>
+                  <p className="mb-0">
+                    Note: Due to a Twitter bug, the Twitter search sometimes
+                    displays 0 results even when there should be should be
+                    matching tweets. Refreshing the Twitter page often fixes
+                    this.
+                  </p>
                 </Popover.Body>
               </Popover>
             </Overlay>
