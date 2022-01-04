@@ -39,8 +39,6 @@ interface Props {
 }
 
 export default function StateBillListItem({ bill }: Props) {
-  // TODO merge with cityBillListItem
-
   const history = useHistory();
 
   const stateBill = bill.stateBill!;

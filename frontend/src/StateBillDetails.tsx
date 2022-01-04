@@ -23,8 +23,6 @@ function ChamberDetails({
   nonSponsors,
   twitterSearchTerms
 }: ChamberProps) {
-  // todo handle null chamber details
-  // todo explain senate vs assembly website?
   return (
     <Accordion.Item key={chamber} eventKey={chamber}>
       <Accordion.Header>
@@ -32,10 +30,12 @@ function ChamberDetails({
           <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>
             {chamber} bill {chamberDetails?.basePrintNo}
           </div>
+          {chamberDetails == null ? <div>Not yet introduced in {chamber}</div>: (<>
           <div>{chamberDetails?.status}</div>
-          <div>{chamberDetails?.sponsorCount} sponsors</div>
+          <div>{chamberDetails?.sponsorCount} sponsors</div></>)}
         </div>
       </Accordion.Header>
+          {chamberDetails && (
       <Accordion.Body>
         <div className={styles.chamberDetails}>
           <div className={styles.info}>
@@ -83,7 +83,7 @@ function ChamberDetails({
             )}
           </div>
         </div>
-      </Accordion.Body>
+      </Accordion.Body>)}
     </Accordion.Item>
   );
 }

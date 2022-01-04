@@ -208,7 +208,9 @@ def add_state_representatives(session_year=CURRENT_SESSION_YEAR):
 
         db.session.commit()
     except Exception:
-        logging.exception("Unhandled exception when adding state representatives")
+        logging.exception(
+            "Unhandled exception when adding state representatives"
+        )
 
 
 def _convert_search_results(state_bill):

@@ -10,14 +10,14 @@ export interface CityBill {
   file: string;
   cityBillId: number;
   councilBody: string; // this is the committee name
-  sponsorCount: number; // TODO: implement on backend
+  sponsorCount: number;
 }
 
 export interface StateChamberBill {
   basePrintNo: string;
-  activeVersionName: string; // rename to active_version
+  activeVersion: string;
   status: string;
-  sponsorCount: number; // TODO: implement on backend
+  sponsorCount: number;
   senateWebsite: string;
   assemblyWebsite: string;
 }
