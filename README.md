@@ -13,7 +13,8 @@ Key features:
 
 The main design principle is to keep it simple, and build only features that are useful and don't exist elsewhere. The city and state both already have websites displaying legislative info, and there's no point in recreating those. Along the same lines, a lot of activists work using simple tools like Google Sheets. We don't want to force too much of their workflow into this app instead, which has specific use cases in mind and requires software work to change.
 
-Instead, this tool provides specific time-saving features by pulling in information that's helpful to have tracked in one place. It is meant to work alongside 3rd party websites and spreadsheets, rather than replace them.
+Instead, this tool provides specific time-saving features by pulling in information that's helpful to have tracked in one place. It isgs
+ meant to work alongside 3rd party websites and spreadsheets, rather than replace them.
 
 
 ## Tech stack
@@ -77,11 +78,11 @@ script/format
 
 # Demos
 ## Tracking a new state bill
-![Tracking a new state bill](http://g.recordit.co/4C5b5e5mcb.gif) 
+![Tracking a new state bill](demo/track-state-bill.gif) 
 
 ## Generating a power hour spreadsheet
 Each week, 350 Brooklyn runs phone bank sessions in which volunteers call the city
 council members for particular bills to ask them to sponsor the bill. We run these
 off a spreadsheet where volunteers log the results of each conversation. This tool
 autogenerates the sheets along with the latest sponsorship status and contact info.
-![Generating a power hour](http://g.recordit.co/O9LmZ3mGmy.gif)
+![Generating a power hour](demo/power-hour.gif)
