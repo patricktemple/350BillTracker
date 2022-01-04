@@ -1,0 +1,73 @@
+# name: test_get_state_bill_sponsorships
+  <class 'dict'> {
+    'assemblyNonSponsors': <class 'list'> [
+      <class 'dict'> {
+        'assemblyMember': <class 'dict'> {
+        },
+        'councilMember': None,
+        'email': None,
+        'id': '00000000-0000-0000-0000-000000000004',
+        'name': 'Assembly non sponsor',
+        'notes': None,
+        'party': None,
+        'phone': None,
+        'senator': None,
+        'title': None,
+        'twitter': None,
+        'type': 'ASSEMBLY_MEMBER',
+      },
+    ],
+    'assemblySponsors': <class 'list'> [
+      <class 'dict'> {
+        'assemblyMember': <class 'dict'> {
+        },
+        'councilMember': None,
+        'email': None,
+        'id': '00000000-0000-0000-0000-000000000005',
+        'name': 'Assembly sponsor',
+        'notes': None,
+        'party': None,
+        'phone': None,
+        'senator': None,
+        'title': None,
+        'twitter': None,
+        'type': 'ASSEMBLY_MEMBER',
+      },
+    ],
+    'billId': '00000000-0000-0000-0000-000000000001',
+    'senateNonSponsors': <class 'list'> [
+      <class 'dict'> {
+        'assemblyMember': None,
+        'councilMember': None,
+        'email': None,
+        'id': '00000000-0000-0000-0000-000000000002',
+        'name': 'Senate non sponsor',
+        'notes': None,
+        'party': None,
+        'phone': None,
+        'senator': <class 'dict'> {
+        },
+        'title': None,
+        'twitter': None,
+        'type': 'SENATOR',
+      },
+    ],
+    'senateSponsors': <class 'list'> [
+      <class 'dict'> {
+        'assemblyMember': None,
+        'councilMember': None,
+        'email': None,
+        'id': '00000000-0000-0000-0000-000000000003',
+        'name': 'Senate sponsor',
+        'notes': None,
+        'party': None,
+        'phone': None,
+        'senator': <class 'dict'> {
+        },
+        'title': None,
+        'twitter': None,
+        'type': 'SENATOR',
+      },
+    ],
+  }
+---

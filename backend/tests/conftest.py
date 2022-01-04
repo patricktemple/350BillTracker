@@ -1,4 +1,4 @@
-from uuid import uuid4
+from uuid import uuid4, UUID
 
 import pytest
 
@@ -28,6 +28,16 @@ def autouse_fixtures():
 #     with app.test_request_context():
 #         yield
 
+@pytest.fixture
+def get_uuid():
+    count = 0
+    def impl():
+        nonlocal count
+        count += 1
+        return UUID(int=count)
+    
+    return impl
+
 
 @pytest.fixture
 def city_bill():
@@ -45,8 +55,8 @@ def city_bill():
 
 
 @pytest.fixture
-def council_member():
-    person = Person(type=Person.PersonType.COUNCIL_MEMBER, name="council member name", title="Council member", email="me@example.com", phone="1-555-555-5555", twitter="pmtemple", party="D")
+def council_member(get_uuid):
+    person = Person(id=get_uuid(), type=Person.PersonType.COUNCIL_MEMBER, name="council member name", title="Council member", email="me@example.com", phone="1-555-555-5555", twitter="pmtemple", party="D")
     person.council_member = CouncilMember(city_council_person_id=50, legislative_phone="1-222-333-4444", borough="Bronx", website="http://council.nyc.gov")
     db.session.add(person)
     db.session.commit()
@@ -54,8 +64,8 @@ def council_member():
 
 
 @pytest.fixture
-def senator():
-    person = Person(type=Person.PersonType.SENATOR, name="senator name", title="Senator", email="me@senate.com", phone="1-555-555-5555", twitter="thesenateguy", party="D")
+def senator(get_uuid):
+    person = Person(id=get_uuid(), type=Person.PersonType.SENATOR, name="senator name", title="Senator", email="me@senate.com", phone="1-555-555-5555", twitter="thesenateguy", party="D")
     person.senator = Senator(state_member_id=50)
     db.session.add(person)
     db.session.commit()
@@ -63,8 +73,8 @@ def senator():
 
 
 @pytest.fixture
-def senate_staffer(senator):
-    person = Person(type=Person.PersonType.STAFFER, name="staffer name", title="Chief of staffer", email="me@staff.com", phone="1-555-555-5555", twitter="thestaff", party="D")
+def senate_staffer(senator, get_uuid):
+    person = Person(id=get_uuid(), type=Person.PersonType.STAFFER, name="staffer name", title="Chief of staffer", email="me@staff.com", phone="1-555-555-5555", twitter="thestaff", party="D")
     person.staffer = Staffer(boss_id=senator.id)
     db.session.add(person)
     db.session.commit()
@@ -73,8 +83,8 @@ def senate_staffer(senator):
 
 
 @pytest.fixture
-def assembly_member():
-    person = Person(type=Person.PersonType.ASSEMBLY_MEMBER, name="assemblymember name", title="Assemblymember", email="me@assembly.com", phone="1-555-555-5555", twitter="theassembly", party="D")
+def assembly_member(get_uuid):
+    person = Person(id=get_uuid(), type=Person.PersonType.ASSEMBLY_MEMBER, name="assemblymember name", title="Assemblymember", email="me@assembly.com", phone="1-555-555-5555", twitter="theassembly", party="D")
     person.assembly_member = AssemblyMember(state_member_id=51)
     db.session.add(person)
     db.session.commit()
@@ -82,8 +92,8 @@ def assembly_member():
 
 
 @pytest.fixture
-def state_bill():
-    bill = Bill(id=uuid4(), name="state bill", description="description", nickname="nickname", type=Bill.BillType.STATE)
+def state_bill(get_uuid):
+    bill = Bill(id=get_uuid(), name="state bill", description="description", nickname="nickname", type=Bill.BillType.STATE)
     bill.state_bill = StateBill(
         session_year=2021,
     )

@@ -85,6 +85,8 @@ def test_track_bill(client):
         name="Senate non sponsor", type=Person.PersonType.SENATOR
     )
     senate_non_sponsor.senator = Senator(state_member_id=5)
+    db.session.add(senate_non_sponsor)
+
     senate_sponsor = Person(
         name="Senate sponsor", type=Person.PersonType.SENATOR
     )
@@ -95,6 +97,8 @@ def test_track_bill(client):
         name="Assembly non sponsor", type=Person.PersonType.ASSEMBLY_MEMBER
     )
     assembly_non_sponsor.assembly_member = AssemblyMember(state_member_id=50)
+    db.session.add(assembly_non_sponsor)
+
     assembly_sponsor = Person(
         name="Assembly sponsor", type=Person.PersonType.ASSEMBLY_MEMBER
     )
