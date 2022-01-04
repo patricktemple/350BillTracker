@@ -6,6 +6,7 @@ from src import app, models
 from src.bill.models import (AssemblyBill, Bill, CityBill, SenateBill,
                              StateBill, db)
 from src.user.models import User
+from src.person.models import Person, CouncilMember, AssemblyMember, Senator, Staffer
 from src.utils import now
 
 from .utils import ApiClient
@@ -41,6 +42,43 @@ def city_bill():
     db.session.add(bill)
     db.session.commit()
     return bill
+
+
+@pytest.fixture
+def council_member():
+    person = Person(type=Person.PersonType.COUNCIL_MEMBER, name="council member name", title="Council member", email="me@example.com", phone="1-555-555-5555", twitter="pmtemple", party="D")
+    person.council_member = CouncilMember(city_council_person_id=50, legislative_phone="1-222-333-4444", borough="Bronx", website="http://council.nyc.gov")
+    db.session.add(person)
+    db.session.commit()
+    return person
+
+
+@pytest.fixture
+def senator():
+    person = Person(type=Person.PersonType.SENATOR, name="senator name", title="Senator", email="me@senate.com", phone="1-555-555-5555", twitter="thesenateguy", party="D")
+    person.senator = Senator(state_member_id=50)
+    db.session.add(person)
+    db.session.commit()
+    return person
+
+
+@pytest.fixture
+def senate_staffer(senator):
+    person = Person(type=Person.PersonType.STAFFER, name="staffer name", title="Chief of staffer", email="me@staff.com", phone="1-555-555-5555", twitter="thestaff", party="D")
+    person.staffer = Staffer(boss_id=senator.id)
+    db.session.add(person)
+    db.session.commit()
+    return person
+
+
+
+@pytest.fixture
+def assembly_member():
+    person = Person(type=Person.PersonType.ASSEMBLY_MEMBER, name="assemblymember name", title="Assemblymember", email="me@assembly.com", phone="1-555-555-5555", twitter="theassembly", party="D")
+    person.assembly_member = AssemblyMember(state_member_id=51)
+    db.session.add(person)
+    db.session.commit()
+    return person
 
 
 @pytest.fixture
