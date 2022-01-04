@@ -75,12 +75,15 @@ def update_all_sponsorships():
         # error handling
 
 
-def import_bill(session_year, senate_print_no):
-    initial_chamber_response = senate_get(f"bills/{session_year}/{senate_print_no}", view="no_fulltext")
+def import_bill(session_year, base_print_no):
+    """TODO comment
+    
+    this can insert duplicates but application logic should prevent that
+    """
+    initial_chamber_response = senate_get(f"bills/{session_year}/{base_print_no}", view="no_fulltext")
 
     # todo filter out resolutions
 
-    # Right now this will just keep inserting duplicates
     bill = Bill(type=Bill.BillType.STATE, name=initial_chamber_response['title'], description=initial_chamber_response['summary'])
     bill.state_bill = StateBill(
         session_year=session_year)
@@ -89,19 +92,22 @@ def import_bill(session_year, senate_print_no):
          initial_chamber_response['activeVersion']
     ]
 
+    initial_chamber = initial_chamber_response['billType']['chamber']
+
     same_as_versions = active_amendment['sameAs']['items']
+    alternate_chamber_response = None
     if same_as_versions:
-        assembly_print_no = same_as_versions[0]['basePrintNo']
-        alternate_chamber_response = senate_get(f"bills/{session_year}/{assembly_print_no}", view="no_fulltext")
-    else:
-        alternate_chamber_response = None
+        same_as_print_no = same_as_versions[0]['basePrintNo']
+        alternate_chamber_response = senate_get(f"bills/{session_year}/{same_as_print_no}", view="no_fulltext")
+
+        if {initial_chamber, alternate_chamber_response['billType']['chamber']} != {'SENATE', "ASSEMBLY"}:
+            alternate_chamber_response = None
+            logging.error(f"Bill {session_year}/{base_print_no} had same_as={same_as_print_no}, in same chamber!")
     
-    if initial_chamber_response['billType']['chamber'] == 'SENATE':
-        assert alternate_chamber_response['billType']['chamber'] == 'ASSEMBLY' # todo
+    if initial_chamber == 'SENATE':
         senate_data = initial_chamber_response
         assembly_data = alternate_chamber_response
     else:
-        assert alternate_chamber_response['billType']['chamber'] == 'SENATE' # todo
         senate_data = alternate_chamber_response
         assembly_data = initial_chamber_response
 
@@ -120,9 +126,6 @@ def import_bill(session_year, senate_print_no):
         )
         _add_senate_sponsorships(bill, senate_data)
     
-    # need to make sure this works if one chamber is null
-    # and verify that this is the correct "same as" logic
-
     db.session.add(bill)
     db.session.commit()
     return bill

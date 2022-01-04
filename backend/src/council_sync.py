@@ -208,7 +208,7 @@ def update_bill_sponsorships(city_bill, set_added_at=False):
 
 
 def update_all_sponsorships():
-    bills = Bill.query.all()
+    bills = Bill.query.filter_by(type=Bill.BillType.CITY).all()
     for bill in bills:
         logging.info(f"Updating sponsorships for bill {bill.id} {bill.name}")
         update_bill_sponsorships(bill.city_bill, set_added_at=True)

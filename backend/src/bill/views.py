@@ -134,16 +134,14 @@ def track_state_bill():
     data = TrackStateBillSchema().load(request.json)
     base_print_no = data["base_print_no"]
     session_year = data['session_year']
-    # if SenateBill.query.filter_by(base_print_no=base_print_no, session_year=session_year).one_or_none() \
-    #     or AssemblyBill.query.filter_by(base_print_no=base_print_no, session_year=session_year).one_or_none():
-    #     # There's a race condition of checking this and then inserting,
-    #     # but in that rare case it will hit the DB unique constraint instead.
-    #     raise exceptions.Conflict()
+    existing_bills = SenateBill.query.filter_by(base_print_no=base_print_no).all()
+    existing_bills.extend(AssemblyBill.query.filter_by(base_print_no=base_print_no).all())
+    for bill in existing_bills:
+        # This is a lame way of querying by session year, which would be better
+        if bill.state_bill.session_year == session_year:
+            raise exceptions.Conflict()
     
-    # right nwo this only works for senate
     state_api.import_bill(session_year, base_print_no)
-
-    # this also does sponsorships!
 
     return jsonify({})
 

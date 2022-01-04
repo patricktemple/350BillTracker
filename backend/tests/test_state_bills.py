@@ -35,18 +35,13 @@ def test_delete_bill(client, state_bill):
     assert_response(response, 200, [])
 
 
-
-@responses.activate
-def test_track_bill(client):
-    responses.add(
-        responses.GET,
-        url="https://legislation.nysenate.gov/api/3/bills/2021/S100?view=no_fulltext&key=fake_key",
-        json={"result": {
-            "title": "Senate bill title",
-            "summary": "Senate bill summary",
+def create_mock_bill_response(*, base_print_no, chamber, cosponsor_member_id, same_as_base_print_no=None, same_as_chamber=None):
+    return {"result": {
+            "title": f"{base_print_no} bill title",
+            "summary": f"{base_print_no} bill summary",
             "activeVersion": "A",
-            "basePrintNo": "S100",
-            "billType": {'chamber': "SENATE"},
+            "basePrintNo": base_print_no,
+            "billType": {'chamber': chamber},
             "status": {
                 "statusDesc": "In Committee",
             },
@@ -55,48 +50,35 @@ def test_track_bill(client):
                     "A": {
                         "coSponsors": {
                             "items": [{
-                                "memberId": 2,
+                                "memberId": cosponsor_member_id,
                                 "fullName": "Jabari"
                             }]
                         },
                         "sameAs": {
-                            "items": [
+                            "items": None if not same_as_base_print_no else [
                                 {
-                                    "basePrintNo": "A123",
-                                    "billType": "ASSEMBLY"
+                                    "basePrintNo": same_as_base_print_no,
+                                    "billType": {'chamber': same_as_chamber},
                                 }
                             ]
                         }
                     }
                 }
             }
-        }},
+        }}
+
+
+@responses.activate
+def test_track_bill(client):
+    responses.add(
+        responses.GET,
+        url="https://legislation.nysenate.gov/api/3/bills/2021/S100?view=no_fulltext&key=fake_key",
+        json=create_mock_bill_response(base_print_no="S100", chamber="SENATE", same_as_chamber="ASSEMBLY", same_as_base_print_no="A123", cosponsor_member_id=2),
     )
     responses.add(
         responses.GET,
         url="https://legislation.nysenate.gov/api/3/bills/2021/A123?view=no_fulltext&key=fake_key",
-        json={"result": {
-            "title": "Assembly bill title",
-            "summary": "Assembly bill summary",
-            "activeVersion": "",
-            "basePrintNo": "A123",
-            "billType": {'chamber': "ASSEMBLY"},
-            "status": {
-                "statusDesc": "Signed",
-            },
-            "amendments": {
-                "items": {
-                    "": {
-                        "coSponsors": {
-                            "items": [{
-                                "memberId": 1,
-                                "fullName": "Jabari"
-                            }]
-                        },
-                    }
-                }
-            }
-        }},
+        json=create_mock_bill_response(base_print_no="A123", chamber="ASSEMBLY", cosponsor_member_id=1),
     )
 
     senate_non_sponsor = Person(
@@ -134,8 +116,8 @@ def test_track_bill(client):
     assert bill.state_bill.senate_bill.status == "In Committee"
     assert bill.state_bill.senate_bill.active_version == "A"
     assert bill.state_bill.assembly_bill.base_print_no == "A123"
-    assert bill.state_bill.assembly_bill.status == "Signed"
-    assert bill.state_bill.assembly_bill.active_version == ""
+    assert bill.state_bill.assembly_bill.status == "In Committee"
+    assert bill.state_bill.assembly_bill.active_version == "A"
 
     assert len(bill.state_bill.senate_bill.sponsorships) == 1
     assert (
@@ -148,31 +130,100 @@ def test_track_bill(client):
     )
 
 
-# TODO: Add test for importing a bill that already exists
-# And for one that doesn't have a "same as"
-# And for one that only recently got a "same as"
+@responses.activate
+def test_track_bill__senate_only(client):
+    responses.add(
+        responses.GET,
+        url="https://legislation.nysenate.gov/api/3/bills/2021/S100?view=no_fulltext&key=fake_key",
+        json=create_mock_bill_response(base_print_no="S100", chamber="SENATE", cosponsor_member_id=2),
+    )
+
+    db.session.commit()
+
+    response = client.post(
+        "/api/state-bills/track",
+        data={"sessionYear": 2021, "basePrintNo": "S100"},
+    )
+    assert response.status_code == 200
+
+    bill = Bill.query.one()
+    assert bill.type == Bill.BillType.STATE
+    assert bill.state_bill.session_year == 2021
+    assert bill.state_bill.senate_bill.base_print_no == "S100"
+    assert bill.state_bill.senate_bill.status == "In Committee"
+    assert bill.state_bill.senate_bill.active_version == "A"
+    assert bill.state_bill.assembly_bill is None
 
 
-# @responses.activate
-# def test_save_bill__already_exists(client):
-#     bill = Bill(name="name", description="description", type=Bill.BillType.CITY)
-#     bill.city_bill = CityBill(
-#         city_bill_id=1,
-#         file="file",
-#         intro_date=now(),
-#         status="Committee",
-#         active_version="A",
-#     )
-#     db.session.add(bill)
-#     db.session.commit()
+@responses.activate
+def test_track_bill__assembly_only(client):
+    responses.add(
+        responses.GET,
+        url="https://legislation.nysenate.gov/api/3/bills/2021/A100?view=no_fulltext&key=fake_key",
+        json=create_mock_bill_response(base_print_no="A100", chamber="ASSEMBLY", cosponsor_member_id=2),
+    )
 
-#     response = client.post(
-#         "/api/city-bills/track",
-#         data={"cityBillId": 1},
-#     )
-#     assert response.status_code == 409
+    db.session.commit()
 
-# Test that it filters resolutions too?
+    response = client.post(
+        "/api/state-bills/track",
+        data={"sessionYear": 2021, "basePrintNo": "A100"},
+    )
+    assert response.status_code == 200
+
+    bill = Bill.query.one()
+    assert bill.type == Bill.BillType.STATE
+    assert bill.state_bill.session_year == 2021
+    assert bill.state_bill.assembly_bill.base_print_no == "A100"
+    assert bill.state_bill.assembly_bill.status == "In Committee"
+    assert bill.state_bill.assembly_bill.active_version == "A"
+    assert bill.state_bill.senate_bill is None
+
+
+@responses.activate
+def test_track_bill__senate_already_exists(client):
+    responses.add(
+        responses.GET,
+        url="https://legislation.nysenate.gov/api/3/bills/2021/S100?view=no_fulltext&key=fake_key",
+        json=create_mock_bill_response(base_print_no="S100", chamber="SENATE", cosponsor_member_id=2),
+    )
+
+    bill = Bill(id=uuid4(), name="state bill", description="description", nickname="nickname", type=Bill.BillType.STATE)
+    bill.state_bill = StateBill(
+        session_year=2021,
+    )
+    bill.state_bill.senate_bill = SenateBill(base_print_no="S100", active_version="", status="Committee")
+    db.session.add(bill)
+    db.session.commit()
+
+    response = client.post(
+        "/api/state-bills/track",
+        data={"sessionYear": 2021, "basePrintNo": "S100"},
+    )
+    assert response.status_code == 409
+
+
+@responses.activate
+def test_track_bill__assembly_already_exists(client):
+    responses.add(
+        responses.GET,
+        url="https://legislation.nysenate.gov/api/3/bills/2021/A100?view=no_fulltext&key=fake_key",
+        json=create_mock_bill_response(base_print_no="A100", chamber="ASSEMBLY", cosponsor_member_id=2),
+    )
+
+    bill = Bill(id=uuid4(), name="state bill", description="description", nickname="nickname", type=Bill.BillType.STATE)
+    bill.state_bill = StateBill(
+        session_year=2021,
+    )
+    bill.state_bill.assembly_bill = AssemblyBill(base_print_no="A100", active_version="", status="Committee")
+    db.session.add(bill)
+    db.session.commit()
+
+    response = client.post(
+        "/api/state-bills/track",
+        data={"sessionYear": 2021, "basePrintNo": "A100"},
+    )
+    assert response.status_code == 409
 
 
 @responses.activate
@@ -224,32 +275,3 @@ def test_search_bill(client, tracked):
         "sessionYear": 2021,
         "tracked": tracked,
     }
-
-
-# @responses.activate
-# def test_lookup_bill_already_tracked(client):
-#     bill = Bill(name="name", description="description", type=Bill.BillType.CITY)
-#     bill.city_bill = CityBill(
-#         city_bill_id=1,
-#         file="file",
-#         intro_date=now(),
-#         status="Enacted",
-#         active_version="A",
-#     )
-#     db.session.add(bill)
-#     db.session.commit()
-
-#     responses.add(
-#         responses.GET,
-#         url="https://webapi.legistar.com/v1/nyc/matters?token=fake_token&%24filter=MatterTypeName+eq+%27Introduction%27+and+substringof%28%271234%27%2C+MatterFile%29+eq+true",
-#         json=[create_fake_matter(1)],
-#     )
-
-#     response = client.get(
-#         "/api/city-bills/search?file=1234",
-#     )
-#     # assert more fields?
-#     assert response.status_code == 200
-#     response_data = json.loads(response.data)[0]
-#     assert response_data["cityBill"]["cityBillId"] == 1
-#     assert response_data["tracked"] == True
