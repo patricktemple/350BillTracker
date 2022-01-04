@@ -25,13 +25,14 @@ def create_fake_matter(matter_id):
 
 
 def test_get_bills_unauthorized(unauthenticated_client):
-    response = unauthenticated_client.get("/api/saved-bills")
+    response = unauthenticated_client.get("/api/bills")
     assert response.status_code == 401
 
 
 def test_get_saved_bills(client):
     bill = Bill(
         name="name",
+        description="description",
         nickname="ban gas",
         notes="Good job everyone",
         type=Bill.BillType.CITY,
@@ -42,13 +43,12 @@ def test_get_saved_bills(client):
         council_body="Committee on environment",
         status="Enacted",
         intro_date=now(),
-        title="title",
         active_version="A",
     )
     db.session.add(bill)
     db.session.commit()
 
-    response = client.get("/api/saved-bills")
+    response = client.get("/api/bills")
     assert_response(
         response,
         200,
@@ -61,10 +61,13 @@ def test_get_saved_bills(client):
                     "cityBillId": 1,
                     "councilBody": "Committee on environment",
                     "file": "file",
-                    "title": "title",
                     "status": "Enacted",
+                    "sponsorCount": 0,
                 },
+                "codeName": "file",
+                "status": "Enacted",
                 "name": "name",
+                "description": "description",
                 "nickname": "ban gas",
                 "notes": "Good job everyone",
                 "twitterSearchTerms": DEFAULT_TWITTER_SEARCH_TERMS,
@@ -75,11 +78,12 @@ def test_get_saved_bills(client):
 
 
 def test_delete_bill(client):
-    bill = Bill(name="name", type=Bill.BillType.CITY)
+    bill = Bill(
+        name="name", description="description", type=Bill.BillType.CITY
+    )
     bill.city_bill = CityBill(
         city_bill_id=1,
         file="file",
-        title="title",
         status="Enacted",
         intro_date=now(),
         active_version="A",
@@ -87,24 +91,28 @@ def test_delete_bill(client):
     db.session.add(bill)
     db.session.commit()
 
-    response = client.get("/api/saved-bills")
+    response = client.get("/api/bills")
     assert response.status_code == 200
     assert len(json.loads(response.data)) == 1
 
-    response = client.delete(f"/api/saved-bills/{bill.id}")
+    response = client.delete(f"/api/bills/{bill.id}")
     assert response.status_code == 200
 
-    response = client.get("/api/saved-bills")
+    response = client.get("/api/bills")
     assert_response(response, 200, [])
 
 
 def test_update_bill(client):
     bill_id = uuid4()
-    bill = Bill(id=bill_id, name="name", type=Bill.BillType.CITY)
+    bill = Bill(
+        id=bill_id,
+        name="name",
+        description="description",
+        type=Bill.BillType.CITY,
+    )
     bill.city_bill = CityBill(
         city_bill_id=1,
         file="file",
-        title="title",
         status="Enacted",
         intro_date=now(),
         active_version="A",
@@ -113,7 +121,7 @@ def test_update_bill(client):
     db.session.commit()
 
     response = client.put(
-        f"/api/saved-bills/{bill.id}",
+        f"/api/bills/{bill.id}",
         data={
             "notes": "good bill",
             "nickname": "skip the stuff",
@@ -122,7 +130,7 @@ def test_update_bill(client):
     )
     assert response.status_code == 200
 
-    response = client.get("/api/saved-bills")
+    response = client.get("/api/bills")
     assert_response(
         response,
         200,
@@ -130,14 +138,17 @@ def test_update_bill(client):
             {
                 "id": str(bill_id),
                 "type": "CITY",
+                "description": "description",
                 "stateBill": None,
                 "cityBill": {
                     "cityBillId": 1,
                     "councilBody": None,
                     "file": "file",
                     "status": "Enacted",
-                    "title": "title",
+                    "sponsorCount": 0,
                 },
+                "codeName": "file",
+                "status": "Enacted",
                 "name": "name",
                 "nickname": "skip the stuff",
                 "notes": "good bill",
@@ -179,7 +190,7 @@ def test_save_bill(client):
     db.session.add(sponsor)
 
     response = client.post(
-        "/api/saved-bills",
+        "/api/city-bills/track",
         data={"cityBillId": 123},
     )
     assert response.status_code == 200
@@ -197,11 +208,12 @@ def test_save_bill(client):
 
 @responses.activate
 def test_save_bill__already_exists(client):
-    bill = Bill(name="name", type=Bill.BillType.CITY)
+    bill = Bill(
+        name="name", description="description", type=Bill.BillType.CITY
+    )
     bill.city_bill = CityBill(
         city_bill_id=1,
         file="file",
-        title="title",
         intro_date=now(),
         status="Committee",
         active_version="A",
@@ -210,7 +222,7 @@ def test_save_bill__already_exists(client):
     db.session.commit()
 
     response = client.post(
-        "/api/saved-bills",
+        "/api/city-bills/track",
         data={"cityBillId": 1},
     )
     assert response.status_code == 409
@@ -225,7 +237,7 @@ def test_lookup_bill_not_tracked(client):
     )
 
     response = client.get(
-        "/api/search-bills?file=1234",
+        "/api/city-bills/search?file=1234",
     )
     assert response.status_code == 200
     response_data = json.loads(response.data)[0]
@@ -238,11 +250,12 @@ def test_lookup_bill_not_tracked(client):
 
 @responses.activate
 def test_lookup_bill_already_tracked(client):
-    bill = Bill(name="name", type=Bill.BillType.CITY)
+    bill = Bill(
+        name="name", description="description", type=Bill.BillType.CITY
+    )
     bill.city_bill = CityBill(
         city_bill_id=1,
         file="file",
-        title="title",
         intro_date=now(),
         status="Enacted",
         active_version="A",
@@ -257,7 +270,7 @@ def test_lookup_bill_already_tracked(client):
     )
 
     response = client.get(
-        "/api/search-bills?file=1234",
+        "/api/city-bills/search?file=1234",
     )
     # assert more fields?
     assert response.status_code == 200

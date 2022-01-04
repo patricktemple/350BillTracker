@@ -1,2 +1,2 @@
-(cd backend; fourmat fix)
+(cd backend; fourmat fix src tests)
 (cd frontend; yarn format)

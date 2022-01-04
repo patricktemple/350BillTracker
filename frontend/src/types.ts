@@ -3,20 +3,59 @@
 export type Uuid = string;
 
 export type BillType = 'CITY' | 'STATE';
+export type StateChamber = 'SENATE' | 'ASSEMBLY';
 
 export interface CityBill {
-  title: string;
   status: string;
   file: string;
   cityBillId: number;
   councilBody: string; // this is the committee name
+  sponsorCount: number;
+}
+
+export interface StateChamberBill {
+  basePrintNo: string;
+  activeVersion: string;
+  status: string;
+  sponsorCount: number;
+  senateWebsite: string;
+  assemblyWebsite: string;
+}
+
+export interface StateBill {
+  sessionYear: number;
+  summary: string;
+  senateBill: StateChamberBill | null;
+  assemblyBill: StateChamberBill | null;
+}
+
+export interface StateBillSponsorships {
+  billId: string;
+  senateSponsors: Person[];
+  senateNonSponsors: Person[];
+  assemblySponsors: Person[];
+  assemblyNonSponsors: Person[];
+}
+
+export interface StateBillSearchResult {
+  name: string;
+  description: string;
+  status: string;
+  basePrintNo: string;
+  sessionYear: number;
+  chamber: StateChamber;
+  activeVersion: string;
+  tracked: boolean;
 }
 
 export interface Bill {
   // Non-editable fields
   id: string;
   name: string;
+  description: string;
   tracked: boolean;
+  codeName: string;
+  status: string;
 
   // Editable fields
   notes: string;
@@ -25,9 +64,14 @@ export interface Bill {
 
   type: BillType;
   cityBill: CityBill | null;
+  stateBill: StateBill | null;
 }
 
-export type PersonType = 'COUNCIL_MEMBER' | 'SENATOR' | 'ASSEMBLY_MEMBER';
+export type PersonType =
+  | 'COUNCIL_MEMBER'
+  | 'SENATOR'
+  | 'ASSEMBLY_MEMBER'
+  | 'STAFFER';
 
 export interface CouncilMember {
   legislativePhone: string;
@@ -63,7 +107,7 @@ export interface CitySponsorship {
   billId: string;
   person: Person;
   isSponsor: boolean;
-  sponsorSequence: number;
+  sponsorSequence: number | null;
 }
 
 export interface BillAttachment {

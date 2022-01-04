@@ -1,81 +1,73 @@
 import React, { useState } from 'react';
 import useMountEffect from '@restart/hooks/useMountEffect';
-import Table from 'react-bootstrap/Table';
-import { Person, CouncilMember } from './types';
-import Accordion from 'react-bootstrap/Accordion';
-import PersonDetailsPanel from './PersonDetailsPanel';
-import { Form } from 'react-bootstrap';
+import { Person } from './types';
 import LazyAccordionBody from './LazyAccordionBody';
 import useApiFetch from './useApiFetch';
 import styles from './style/LegislatorsPage.module.scss';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
+import PersonsList from './PersonsList';
 
 interface Props {
   match: { params: { personId?: string } };
 }
 
-export default function ConcilMembersPage({
+export default function PersonsPage({
   match: {
     params: { personId }
   }
 }: Props) {
-  const [persons, setPersons] = useState<Person[] | null>(null);
   const [filterText, setFilterText] = useState<string>('');
-  const apiFetch = useApiFetch();
-
-  useMountEffect(() => {
-    apiFetch('/api/persons').then((response) => {
-      setPersons(response);
-    });
-  });
 
   function handleFilterTextChanged(e: any) {
     setFilterText(e.target.value);
   }
 
-  let filteredPersons = null;
-  if (persons) {
-    const lowerFilterText = filterText.toLowerCase();
-    filteredPersons = persons.filter(
-      (p) =>
-        p.type == 'COUNCIL_MEMBER' &&
-        (p.name.toLowerCase().includes(lowerFilterText) ||
-          p.councilMember?.borough?.toLowerCase().includes(lowerFilterText))
-    );
-  }
-
   return (
     <div>
-      <div className={styles.title}>Council members</div>
+      <div className={styles.title}>People</div>
       <div className={styles.content}>
-        {filteredPersons == null ? (
-          'Loading...'
-        ) : (
-          <>
-            <input
-              type="text"
-              placeholder="Search"
-              value={filterText}
-              className="mb-2"
-              size={30}
-              onChange={handleFilterTextChanged}
+        <input
+          type="text"
+          placeholder="Type name to search"
+          value={filterText}
+          className="mb-2"
+          size={30}
+          onChange={handleFilterTextChanged}
+        />
+        <Tabs className="mb-4" unmountOnExit={true}>
+          <Tab eventKey="all" title="All">
+            <PersonsList filterText={filterText} selectedPersonId={personId} />
+          </Tab>
+          <Tab eventKey="council" title="Council members">
+            <PersonsList
+              filterText={filterText}
+              selectedPersonId={personId}
+              personTypeFilter={'COUNCIL_MEMBER'}
             />
-            <Accordion defaultActiveKey={personId}>
-              {filteredPersons.map((person) => (
-                <Accordion.Item key={person.id} eventKey={person.id}>
-                  <Accordion.Header>
-                    <strong>{person.name}</strong>
-                    {person.councilMember?.borough && (
-                      <>&nbsp;({person.councilMember.borough})</>
-                    )}
-                  </Accordion.Header>
-                  <LazyAccordionBody eventKey={person.id}>
-                    <PersonDetailsPanel person={person} />
-                  </LazyAccordionBody>
-                </Accordion.Item>
-              ))}
-            </Accordion>
-          </>
-        )}
+          </Tab>
+          <Tab eventKey="senate" title="Senators">
+            <PersonsList
+              filterText={filterText}
+              selectedPersonId={personId}
+              personTypeFilter={'SENATOR'}
+            />
+          </Tab>
+          <Tab eventKey="assembly" title="Assembly members">
+            <PersonsList
+              filterText={filterText}
+              selectedPersonId={personId}
+              personTypeFilter={'ASSEMBLY_MEMBER'}
+            />
+          </Tab>
+          <Tab eventKey="staffers" title="Staffers">
+            <PersonsList
+              filterText={filterText}
+              selectedPersonId={personId}
+              personTypeFilter={'STAFFER'}
+            />
+          </Tab>
+        </Tabs>
       </div>
     </div>
   );

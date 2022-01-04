@@ -121,6 +121,7 @@ def _update_bill(bill):
     )
 
     bill.name = bill_data["name"]
+    bill.description = bill_data["description"]
     for key in bill_data["city_bill"].keys():
         setattr(bill.city_bill, key, bill_data["city_bill"][key])
 
@@ -141,6 +142,8 @@ def update_bill_sponsorships(city_bill, set_added_at=False):
     3) If new sponsors aren't in the existing legislators (e.g. they're not longer in office),
        ignore them.
     """
+
+    # TODO: Simplify this. We don't need to track added_at, therefore we can just wipe the sponsorships each time and start fresh
     logging.info(f"Updating sponsorships for {city_bill.file}")
     previous_bill_sponsorships = CitySponsorship.query.filter_by(
         bill_id=city_bill.bill_id
@@ -209,7 +212,7 @@ def update_bill_sponsorships(city_bill, set_added_at=False):
 
 
 def update_all_sponsorships():
-    bills = Bill.query.all()
+    bills = Bill.query.filter_by(type=Bill.BillType.CITY).all()
     for bill in bills:
         logging.info(f"Updating sponsorships for bill {bill.id} {bill.name}")
         update_bill_sponsorships(bill.city_bill, set_added_at=True)

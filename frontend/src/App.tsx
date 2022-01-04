@@ -1,25 +1,20 @@
 import './style/App.scss';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
-import BillsPage from './BillsPage';
+import BillListPage from './BillListPage';
 import PersonsPage from './PersonsPage';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Nav from 'react-bootstrap/Nav';
 import styles from './style/App.module.scss';
 import { Link } from 'react-router-dom';
 import { ReactComponent as SettingsIcon } from './assets/settings.svg';
 import { ReactComponent as LogoutIcon } from './assets/logout.svg';
 import { ReactComponent as BillsIcon } from './assets/paper.svg';
 import { ReactComponent as LegislatorIcon } from './assets/person.svg';
-import React, { useState, useContext } from 'react';
-import { MdPeople, MdDescription } from 'react-icons/md';
+import React, { useContext } from 'react';
 import RequestLoginLinkPage from './RequestLoginLinkPage';
 import { AuthContextProvider, AuthContext } from './AuthContext';
 import { useLocation } from 'react-router-dom';
 import LoginFromTokenPage from './LoginFromTokenPage';
-import Button from 'react-bootstrap/Button';
 import SettingsPage from './SettingsPage';
+import BillDetailsPage from './BillDetailsPage';
 
 function AppContent() {
   const authContext = useContext(AuthContext);
@@ -54,11 +49,11 @@ function AppContent() {
         <Link to="/" className={styles.billsLink}>
           Bills
         </Link>
-        <Link to="/council-members" className={styles.legislatorsLogo}>
+        <Link to="/people" className={styles.legislatorsLogo}>
           <LegislatorIcon />
         </Link>
-        <Link to="/council-members" className={styles.legislatorsLink}>
-          Council members
+        <Link to="/people" className={styles.legislatorsLink}>
+          People
         </Link>
         <Link to="/setting" className={styles.settingsLogo}>
           <SettingsIcon />
@@ -73,11 +68,12 @@ function AppContent() {
           Logout
         </a>
         <main className={styles.content}>
-          <Route path="/" exact>
-            <Redirect to="/saved-bills" />
+          <Route exact path="/">
+            <Redirect to="/bills" />
           </Route>
-          <Route path="/saved-bills/:billId?" exact component={BillsPage} />
-          <Route path="/council-members/:personId?" component={PersonsPage} />
+          <Route exact path="/bills" component={BillListPage} />
+          <Route path="/bills/:billId" component={BillDetailsPage} />
+          <Route path="/people/:personId?" component={PersonsPage} />
           <Route path="/settings" component={SettingsPage} />
         </main>
       </div>

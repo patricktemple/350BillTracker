@@ -4,33 +4,49 @@ from uuid import uuid4
 from flask import jsonify, request
 from werkzeug import exceptions
 
+from .. import state_api
 from ..app import app
 from ..auth import auth_required
 from ..council_api import lookup_bill, lookup_bills
 from ..council_sync import update_bill_sponsorships
 from ..google_sheets import create_power_hour
 from ..models import db
-from .models import Bill, BillAttachment, CityBill, PowerHour
+from .models import (
+    AssemblyBill,
+    Bill,
+    BillAttachment,
+    CityBill,
+    PowerHour,
+    SenateBill,
+)
 from .schema import (
     BillAttachmentSchema,
     BillSchema,
     CreatePowerHourSchema,
     PowerHourSchema,
+    StateBillSearchResultSchema,
     TrackCityBillSchema,
+    TrackStateBillSchema,
 )
 
 # Views ----------------------------------------------------------------------
 
-# TODO: Rename to not be saved-bills?
-@app.route("/api/saved-bills", methods=["GET"])
+
+@app.route("/api/bills", methods=["GET"])
 @auth_required
 def bills():
     bills = Bill.query.order_by(Bill.name).all()
     return BillSchema(many=True).jsonify(bills)
 
 
-# TODO: Rename to city-bills?
-@app.route("/api/saved-bills", methods=["POST"])
+@app.route("/api/bills/<uuid:bill_id>", methods=["GET"])
+@auth_required
+def get_bill(bill_id):
+    bill = Bill.query.get(bill_id)
+    return BillSchema().jsonify(bill)
+
+
+@app.route("/api/city-bills/track", methods=["POST"])
 @auth_required
 def track_city_bill():
     data = TrackCityBillSchema().load(request.json)
@@ -45,7 +61,12 @@ def track_city_bill():
         f"Saving bill {city_bill_id}, council API returned {bill_data}"
     )
 
-    bill = Bill(id=uuid4(), type=Bill.BillType.CITY, name=bill_data["name"])
+    bill = Bill(
+        id=uuid4(),
+        type=Bill.BillType.CITY,
+        name=bill_data["name"],
+        description=bill_data["description"],
+    )
     bill.city_bill = CityBill(**bill_data["city_bill"])
     db.session.add(bill)
 
@@ -56,7 +77,7 @@ def track_city_bill():
     return jsonify({})
 
 
-@app.route("/api/saved-bills/<uuid:bill_id>", methods=["PUT"])
+@app.route("/api/bills/<uuid:bill_id>", methods=["PUT"])
 @auth_required
 def update_bill(bill_id):
     data = BillSchema().load(request.json)
@@ -72,7 +93,7 @@ def update_bill(bill_id):
     return jsonify({})
 
 
-@app.route("/api/saved-bills/<uuid:bill_id>", methods=["DELETE"])
+@app.route("/api/bills/<uuid:bill_id>", methods=["DELETE"])
 @auth_required
 def delete_bill(bill_id):
     bill = Bill.query.get(bill_id)
@@ -82,7 +103,7 @@ def delete_bill(bill_id):
     return jsonify({})
 
 
-@app.route("/api/search-bills", methods=["GET"])
+@app.route("/api/city-bills/search", methods=["GET"])
 @auth_required
 def search_bills():
     file = request.args.get("file")
@@ -104,7 +125,67 @@ def search_bills():
     return BillSchema(many=True).jsonify(external_bills)
 
 
-@app.route("/api/saved-bills/<uuid:bill_id>/power-hours", methods=["GET"])
+@app.route("/api/state-bills/search", methods=["GET"])
+@auth_required
+def search_state_bills():
+    code_name = request.args.get("codeName")
+    session_year = request.args.get("sessionYear")
+    bill_results = state_api.search_bills(code_name, session_year)
+
+    # Is this a lazy load of state bill?
+    bill_print_nos = [b["base_print_no"] for b in bill_results]
+    tracked_assembly_bills = AssemblyBill.query.filter(
+        AssemblyBill.base_print_no.in_(bill_print_nos)
+    ).all()
+    tracked_assembly_bill_set = set(
+        [
+            (b.state_bill.session_year, b.base_print_no)
+            for b in tracked_assembly_bills
+        ]
+    )
+    tracked_senate_bills = SenateBill.query.filter(
+        SenateBill.base_print_no.in_(bill_print_nos)
+    ).all()
+    tracked_senate_bill_set = set(
+        [
+            (b.state_bill.session_year, b.base_print_no)
+            for b in tracked_senate_bills
+        ]
+    )
+
+    for bill in bill_results:
+        bill_identifier = (bill["session_year"], bill["base_print_no"])
+        bill["tracked"] = (
+            bill_identifier in tracked_assembly_bill_set
+            or bill_identifier in tracked_senate_bill_set
+        )
+
+    return StateBillSearchResultSchema(many=True).jsonify(bill_results)
+
+
+@app.route("/api/state-bills/track", methods=["POST"])
+@auth_required
+def track_state_bill():
+    data = TrackStateBillSchema().load(request.json)
+    base_print_no = data["base_print_no"]
+    session_year = data["session_year"]
+    existing_bills = SenateBill.query.filter_by(
+        base_print_no=base_print_no
+    ).all()
+    existing_bills.extend(
+        AssemblyBill.query.filter_by(base_print_no=base_print_no).all()
+    )
+    for bill in existing_bills:
+        # This is a lame way of querying by session year, which would be better
+        if bill.state_bill.session_year == session_year:
+            raise exceptions.Conflict()
+
+    state_api.import_bill(session_year, base_print_no)
+
+    return jsonify({})
+
+
+@app.route("/api/bills/<uuid:bill_id>/power-hours", methods=["GET"])
 @auth_required
 def bill_power_hours(bill_id):
     power_hours = (
@@ -116,7 +197,7 @@ def bill_power_hours(bill_id):
 
 
 @app.route(
-    "/api/saved-bills/<uuid:bill_id>/power-hours",
+    "/api/bills/<uuid:bill_id>/power-hours",
     methods=["POST"],
 )
 @auth_required
@@ -147,14 +228,14 @@ def create_spreadsheet(bill_id):
     )
 
 
-@app.route("/api/saved-bills/<uuid:bill_id>/attachments", methods=["GET"])
+@app.route("/api/bills/<uuid:bill_id>/attachments", methods=["GET"])
 @auth_required
 def bill_attachments(bill_id):
     attachments = BillAttachment.query.filter_by(bill_id=bill_id).all()
     return BillAttachmentSchema(many=True).jsonify(attachments)
 
 
-@app.route("/api/saved-bills/<uuid:bill_id>/attachments", methods=["POST"])
+@app.route("/api/bills/<uuid:bill_id>/attachments", methods=["POST"])
 @auth_required
 def add_bill_attachment(bill_id):
     data = BillAttachmentSchema().load(request.json)
@@ -170,9 +251,7 @@ def add_bill_attachment(bill_id):
     return jsonify({})
 
 
-@app.route(
-    "/api/saved-bills/-/attachments/<uuid:attachment_id>", methods=["DELETE"]
-)
+@app.route("/api/bills/-/attachments/<uuid:attachment_id>", methods=["DELETE"])
 @auth_required
 def delete_bill_attachment(attachment_id):
     attachment = BillAttachment.query.filter_by(id=attachment_id).one()

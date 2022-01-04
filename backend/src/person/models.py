@@ -129,6 +129,8 @@ class Senator(db.Model):
 
     sponsorships = relationship("SenateSponsorship", back_populates="senator")
 
+    state_member_id = Column(Integer, nullable=False, unique=True)
+
 
 class AssemblyMember(db.Model):
     """
@@ -145,6 +147,8 @@ class AssemblyMember(db.Model):
     person = relationship(
         "Person", back_populates="assembly_member", lazy="joined"
     )
+
+    state_member_id = Column(Integer, nullable=False, unique=True)
 
     sponsorships = relationship(
         "AssemblySponsorship", back_populates="assembly_member"

@@ -3,6 +3,7 @@ from uuid import uuid4
 
 from sqlalchemy import Column, Enum, ForeignKey, Integer, Text
 from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 
 from ..models import TIMESTAMP, UUID, db
@@ -15,6 +16,11 @@ DEFAULT_TWITTER_SEARCH_TERMS = [
     "renewable",
     "fossil fuel",
 ]
+
+
+class StateChamber(enum.Enum):
+    SENATE = 1
+    ASSEMBLY = 2
 
 
 class Bill(db.Model):
@@ -33,7 +39,12 @@ class Bill(db.Model):
         STATE = 2
 
     id = Column(UUID, primary_key=True, default=uuid4)
+
+    # For city this is the "MatterName", for state it is the "title"
     name = Column(Text, nullable=False)
+
+    # For city this is the "title", for state this is the "summary"
+    description = Column(Text, nullable=False)
 
     # Info on child objects:
     type = Column(Enum(BillType), nullable=False)
@@ -78,14 +89,48 @@ class Bill(db.Model):
     def tracked(self):
         return True
 
+    @property
+    def status(self):
+        if self.type == Bill.BillType.CITY:
+            return self.city_bill.status
+
+        senate_status = (
+            self.state_bill.senate_bill.status
+            if self.state_bill.senate_bill
+            else "(No Senate bill)"
+        )
+        assembly_status = (
+            self.state_bill.assembly_bill.status
+            if self.state_bill.assembly_bill
+            else "(No Assembly bill)"
+        )
+
+        return f"{senate_status} / {assembly_status}"
+
+    @property
+    def code_name(self):
+        if self.type == Bill.BillType.CITY:
+            return self.city_bill.file
+
+        senate_print_no = (
+            self.state_bill.senate_bill.base_print_no
+            if self.state_bill.senate_bill
+            else "(No Senate bill)"
+        )
+        assembly_print_no = (
+            self.state_bill.assembly_bill.base_print_no
+            if self.state_bill.assembly_bill
+            else "(No Assembly bill)"
+        )
+
+        return f"{senate_print_no} / {assembly_print_no} from {self.state_bill.session_year} session"
+
 
 class BillAttachment(db.Model):
     __tablename__ = "bill_attachments"
 
     id = Column(UUID, primary_key=True, default=uuid4)
-    bill_id = Column(
-        UUID, ForeignKey("bills.id"), nullable=False, index=True
-    )
+    bill_id = Column(UUID, ForeignKey("bills.id"), nullable=False, index=True)
     bill = relationship("Bill", back_populates="attachments")
 
     name = Column(Text)
@@ -96,9 +141,7 @@ class PowerHour(db.Model):
     __tablename__ = "power_hours"
 
     id = Column(UUID, primary_key=True, default=uuid4)
-    bill_id = Column(
-        UUID, ForeignKey("bills.id"), nullable=False, index=True
-    )
+    bill_id = Column(UUID, ForeignKey("bills.id"), nullable=False, index=True)
 
     title = Column(Text)
     spreadsheet_url = Column(Text, nullable=False)
@@ -127,8 +170,6 @@ class CityBill(db.Model):
     # The parent Bill object that represents this.
     bill = relationship("Bill", back_populates="city_bill", lazy="joined")
 
-    title = Column(Text, nullable=False)
-
     intro_date = Column(TIMESTAMP, nullable=False)
 
     status = Column(Text, nullable=False)
@@ -145,6 +186,7 @@ class CityBill(db.Model):
     council_body = Column(Text)
 
 
+# TODO: Understand bill substitution and change if needed
 class StateBill(db.Model):
     """
     State-specific details about a state bill. There must also be an associated
@@ -155,24 +197,62 @@ class StateBill(db.Model):
     bill_id = Column(UUID, ForeignKey(Bill.id), primary_key=True)
     bill = relationship(Bill, back_populates="state_bill", lazy="joined")
 
+    # The start of the 2-year legislative session this belongs to.
+    session_year = Column(Integer, nullable=False)
 
-class SenateBillVersion(db.Model):
-    __tablename__ = "senate_bill_versions"
-
-    id = Column(UUID, primary_key=True)
-    bill_id = Column(UUID, ForeignKey(StateBill.bill_id), index=True)
-    version_name = Column(Text, nullable=False)
-    sponsorships = relationship(
-        "SenateSponsorship", back_populates="senate_version"
+    senate_bill = relationship(
+        "SenateBill",
+        back_populates="state_bill",
+        uselist=False,
+        cascade="all, delete",
+    )
+    assembly_bill = relationship(
+        "AssemblyBill",
+        back_populates="state_bill",
+        uselist=False,
+        cascade="all, delete",
     )
 
 
-class AssemblyBillVersion(db.Model):
-    __tablename__ = "assembly_bill_versions"
+class StateChamberMixin:
+    active_version = Column(Text, nullable=False)
+    status = Column(Text, nullable=False)
+    base_print_no = Column(Text, nullable=False)
 
-    id = Column(UUID, primary_key=True)
-    bill_id = Column(UUID, ForeignKey(StateBill.bill_id), index=True)
-    version_name = Column(Text, nullable=False)
+    @declared_attr
+    def bill_id(self):
+        return Column(UUID, ForeignKey(StateBill.bill_id), primary_key=True)
+
+    # The Senate and the Assembly each run separate websites, and each website can
+    # lookup both senate and assembly bills. So they're redundant websites with
+    # very different UI. Therefore senate and assembly bills each have a
+    # both assembly and senate websites.
+    @property
+    def senate_website(self):
+        return f"https://www.nysenate.gov/legislation/bills/{self.state_bill.session_year}/{self.base_print_no}"
+
+    @property
+    def assembly_website(self):
+        return f"https://nyassembly.gov/leg/?term={self.state_bill.session_year}&bn={self.base_print_no}"
+
+
+class SenateBill(db.Model, StateChamberMixin):
+    __tablename__ = "senate_bills"
+
+    state_bill = relationship(StateBill, back_populates="senate_bill")
     sponsorships = relationship(
-        "AssemblySponsorship", back_populates="assembly_version"
+        "SenateSponsorship",
+        back_populates="senate_bill",
+        cascade="all, delete",
+    )
+
+
+class AssemblyBill(db.Model, StateChamberMixin):
+    __tablename__ = "assembly_bills"
+
+    state_bill = relationship(StateBill, back_populates="assembly_bill")
+    sponsorships = relationship(
+        "AssemblySponsorship",
+        back_populates="assembly_bill",
+        cascade="all, delete",
     )

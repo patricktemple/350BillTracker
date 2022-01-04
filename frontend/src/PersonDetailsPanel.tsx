@@ -11,6 +11,10 @@ import useAutosavingFormData from './utils/useAutosavingFormData';
 import useApiFetch from './useApiFetch';
 import Button from 'react-bootstrap/Button';
 import AddStafferModal from './AddStafferModal';
+import styles from './style/PersonDetailsPanel.module.scss';
+import CouncilMemberDetails from './CouncilMemberDetails';
+import StateRepDetails from './StateRepDetails';
+import StafferDetails from './StafferDetails';
 
 interface Props {
   person: Person;
@@ -53,9 +57,6 @@ function formatStaffer(staffer: Staffer) {
 export default function PersonDetailsPanel(props: Props) {
   const person = props.person;
 
-  const [sponsorships, setSponsorships] = useState<
-    SingleMemberSponsorship[] | null
-  >(null);
   const [staffers, setStaffers] = useState<Staffer[] | null>(null);
   const [addStafferModalVisible, setAddStafferModalVisible] =
     useState<boolean>(false);
@@ -73,11 +74,6 @@ export default function PersonDetailsPanel(props: Props) {
   }
 
   useMountEffect(() => {
-    apiFetch(`/api/council-members/${person.id}/sponsorships`).then(
-      (response) => {
-        setSponsorships(response);
-      }
-    );
     loadStaffers();
   });
 
@@ -118,131 +114,62 @@ export default function PersonDetailsPanel(props: Props) {
   }
 
   return (
-    <Form onSubmit={(e) => e.preventDefault()}>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Name:
-        </Col>
-        <Col>{person.name}</Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Email:
-        </Col>
-        <Col>{person.email}</Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          District phone:
-        </Col>
-        <Col>{person.phone}</Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Legislative phone:
-        </Col>
-        <Col>{person.councilMember!.legislativePhone}</Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Party:
-        </Col>
-        <Col>{person.party}</Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Website:
-        </Col>
-        <Col>
-          {person.councilMember!.website && (
-            <a href={person.councilMember!.website} target="website">
-              Visit website
-            </a>
-          )}
-        </Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Twitter:
-        </Col>
-        <Col>
-          {person.twitter && (
-            <a href={`https://twitter.com/${person.twitter}`} target="twitter">
-              @{person.twitter}
-            </a>
-          )}
-        </Col>
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2} style={{ fontWeight: 'bold' }}>
-          Staffers:
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            onClick={() => setAddStafferModalVisible(true)}
-            className="mt-2 mb-2 d-block"
-          >
-            Add staffer
-          </Button>
-        </Col>
-        <Col>
-          {staffers &&
-            staffers.map((staffer) => (
-              <div key={staffer.id}>
-                {formatStaffer(staffer)} [
-                <a href="#" onClick={(e) => handleRemoveStaffer(e, staffer.id)}>
-                  Delete
-                </a>
-                ]
-              </div>
-            ))}
-        </Col>
-        <AddStafferModal
-          show={addStafferModalVisible}
-          handleAddStaffer={handleAddStaffer}
-          onHide={() => setAddStafferModalVisible(false)}
-        />
-      </Row>
-      <Row className="mb-2">
-        <Col lg={2}>
-          <>
-            <div style={{ fontWeight: 'bold' }}>Sponsored bills</div>
-            <div style={{ fontStyle: 'italic' }}>
-              Only includes bills we are tracking
-            </div>
-          </>
-        </Col>
-        <Col>
-          {sponsorships == null ? (
-            'Loading...'
-          ) : (
-            <Stack direction="vertical">
-              {sponsorships.map((s) => (
-                <Link to={'/saved-bills/' + s.bill.id} key={s.bill.id}>
-                  {s.bill.cityBill!.file}:{' '}
-                  <em>{s.bill.nickname || s.bill.name}</em>
-                </Link>
+    <Form onSubmit={(e) => e.preventDefault()} className={styles.root}>
+      {person.type === 'COUNCIL_MEMBER' && (
+        <CouncilMemberDetails person={person} />
+      )}
+      {(person.type === 'SENATOR' || person.type === 'ASSEMBLY_MEMBER') && (
+        <StateRepDetails person={person} />
+      )}
+      {person.type === 'STAFFER' ? (
+        <StafferDetails person={person} />
+      ) : (
+        <>
+          <div className={styles.label}>
+            Staffers:
+            <Button
+              variant="outline-secondary"
+              size="sm"
+              onClick={() => setAddStafferModalVisible(true)}
+              className="mt-2 mb-2 d-block"
+            >
+              Add staffer
+            </Button>
+          </div>
+          <div className={styles.content}>
+            {staffers &&
+              staffers.map((staffer) => (
+                <div key={staffer.id}>
+                  {formatStaffer(staffer)} [
+                  <a
+                    href="#"
+                    onClick={(e) => handleRemoveStaffer(e, staffer.id)}
+                  >
+                    Delete
+                  </a>
+                  ]
+                </div>
               ))}
-            </Stack>
-          )}
-        </Col>
-      </Row>
-      <Form.Group as={Row} className="mb-2">
-        <Form.Label column lg={2} style={{ fontWeight: 'bold' }}>
-          Our notes:
-        </Form.Label>
-        <Col>
-          <Form.Control
-            as="textarea"
-            rows={3}
-            size="sm"
-            value={formData.notes}
-            placeholder="Add our notes about this person"
-            onChange={handleNotesChanged}
+          </div>{' '}
+          <AddStafferModal
+            show={addStafferModalVisible}
+            handleAddStaffer={handleAddStaffer}
+            onHide={() => setAddStafferModalVisible(false)}
           />
-        </Col>
-      </Form.Group>
-      <div style={{ fontStyle: 'italic' }}>{saveStatus}</div>
+        </>
+      )}
+      <div className={styles.label}>Our notes:</div>
+      <div className={styles.content}>
+        <Form.Control
+          as="textarea"
+          rows={3}
+          size="sm"
+          value={formData.notes}
+          placeholder="Add our notes about this person"
+          onChange={handleNotesChanged}
+        />
+      </div>
+      <div className={styles.label}>{saveStatus}</div>
     </Form>
   );
 }

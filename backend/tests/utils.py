@@ -1,4 +1,5 @@
 import json
+from uuid import UUID
 
 from flask.testing import FlaskClient
 

@@ -1,14 +1,16 @@
 from uuid import uuid4
 
-from sqlalchemy import Column, ForeignKey, Integer, UniqueConstraint
-from sqlalchemy.orm import foreign, relationship, remote
-
-from ..bill.models import (
-    AssemblyBillVersion,
-    Bill,
-    CityBill,
-    SenateBillVersion,
+from sqlalchemy import (
+    Column,
+    ForeignKey,
+    Integer,
+    UniqueConstraint,
+    func,
+    select,
 )
+from sqlalchemy.orm import column_property, foreign, relationship, remote
+
+from ..bill.models import AssemblyBill, Bill, CityBill, SenateBill
 from ..models import TIMESTAMP, UUID, db
 from ..person.models import AssemblyMember, CouncilMember, Person, Senator
 
@@ -72,13 +74,13 @@ CitySponsorship.person = relationship(
 class SenateSponsorship(db.Model):
     __tablename__ = "senate_sponsorships"
 
-    id = Column(UUID, primary_key=True)
+    id = Column(UUID, primary_key=True, default=uuid4)
 
-    senate_version_id = Column(
-        UUID, ForeignKey(SenateBillVersion.id), nullable=False, index=True
+    senate_bill_id = Column(
+        UUID, ForeignKey(SenateBill.bill_id), nullable=False, index=True
     )
-    senate_version = relationship(
-        SenateBillVersion,
+    senate_bill = relationship(
+        SenateBill,
         back_populates="sponsorships",
     )
 
@@ -88,19 +90,18 @@ class SenateSponsorship(db.Model):
     senator = relationship(Senator, back_populates="sponsorships")
 
     # TODO: Add sponsor_sequence like we have with city, if needed
-    # TODO: Unique constraint
 
 
 class AssemblySponsorship(db.Model):
     __tablename__ = "assembly_sponsorships"
 
-    id = Column(UUID, primary_key=True)
+    id = Column(UUID, primary_key=True, default=uuid4)
 
-    assembly_version_id = Column(
-        UUID, ForeignKey(AssemblyBillVersion.id), nullable=False, index=True
+    assembly_bill_id = Column(
+        UUID, ForeignKey(AssemblyBill.bill_id), nullable=False, index=True
     )
-    assembly_version = relationship(
-        AssemblyBillVersion,
+    assembly_bill = relationship(
+        AssemblyBill,
         back_populates="sponsorships",
     )
 
@@ -112,4 +113,24 @@ class AssemblySponsorship(db.Model):
     )
 
     # TODO: Add sponsor_sequence like we have with city, if needed
-    # TODO: Unique constraint
+
+
+# This may be inefficient because it loads this on every bill even if these fields aren't needed
+CityBill.sponsor_count = column_property(
+    select(func.count(CitySponsorship.id))
+    .where(CitySponsorship.bill_id == CityBill.bill_id)
+    .correlate_except(CitySponsorship)
+    .scalar_subquery()
+)
+SenateBill.sponsor_count = column_property(
+    select(func.count(SenateSponsorship.id))
+    .where(SenateSponsorship.senate_bill_id == SenateBill.bill_id)
+    .correlate_except(SenateSponsorship)
+    .scalar_subquery()
+)
+AssemblyBill.sponsor_count = column_property(
+    select(func.count(AssemblySponsorship.id))
+    .where(AssemblySponsorship.assembly_bill_id == AssemblyBill.bill_id)
+    .correlate_except(AssemblySponsorship)
+    .scalar_subquery()
+)

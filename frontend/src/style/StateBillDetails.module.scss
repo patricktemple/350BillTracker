@@ -1,0 +1,21 @@
+.chamberDetails {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 10px;
+}
+
+.info {
+    grid-row: 1;
+    grid-column: 1 / span 2;
+}
+
+.sponsorList {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.nonSponsorList {
+    grid-column: 2;
+    grid-row: 2;
+}

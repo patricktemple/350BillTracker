@@ -6,22 +6,22 @@ from src.models import db
 from .utils import assert_response
 
 
-def test_get_bill_attachments(client, bill):
+def test_get_bill_attachments(client, city_bill):
     attachment = BillAttachment(
         id=uuid4(),
         name="power hour tracker",
         url="http://sheets.google.com/123",
     )
-    bill.attachments.append(attachment)
+    city_bill.attachments.append(attachment)
     db.session.commit()
 
-    response = client.get(f"/api/saved-bills/{bill.id}/attachments")
+    response = client.get(f"/api/bills/{city_bill.id}/attachments")
     assert_response(
         response,
         200,
         [
             {
-                "billId": str(bill.id),
+                "billId": str(city_bill.id),
                 "id": str(attachment.id),
                 "name": "power hour tracker",
                 "url": "http://sheets.google.com/123",
@@ -30,9 +30,9 @@ def test_get_bill_attachments(client, bill):
     )
 
 
-def test_add_bill_attachments(client, bill):
+def test_add_bill_attachments(client, city_bill):
     response = client.post(
-        f"/api/saved-bills/{bill.id}/attachments",
+        f"/api/bills/{city_bill.id}/attachments",
         data={
             "name": "power hour tracker",
             "url": "http://sheets.google.com/123",
@@ -45,16 +45,16 @@ def test_add_bill_attachments(client, bill):
     assert attachment.url == "http://sheets.google.com/123"
 
 
-def test_delete_bill_attachment(client, bill):
+def test_delete_bill_attachment(client, city_bill):
     attachment = BillAttachment(
         id=uuid4(),
         name="power hour tracker",
         url="http://sheets.google.com/123",
     )
-    bill.attachments.append(attachment)
+    city_bill.attachments.append(attachment)
     db.session.commit()
 
-    client.delete(f"/api/saved-bills/-/attachments/{attachment.id}")
+    client.delete(f"/api/bills/-/attachments/{attachment.id}")
 
     attachments = BillAttachment.query.all()
     assert len(attachments) == 0

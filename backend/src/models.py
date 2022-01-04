@@ -15,4 +15,6 @@ class UUID(TypeDecorator):
 
 
 class TIMESTAMP(TypeDecorator):
+    cache_ok = True
+
     impl = _TIMESTAMP(timezone=True)

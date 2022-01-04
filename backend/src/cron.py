@@ -1,7 +1,7 @@
 import logging
 from time import sleep
 
-from . import bill_notifications, council_sync, models
+from . import bill_notifications, council_sync, models, state_api
 from .app import app
 from .settings import ENABLE_CRON
 
@@ -14,15 +14,18 @@ def cron_command():
         if ENABLE_CRON:
             try:
                 logging.info("Syncing data...")
-                logging.info("Adding council members")
+                logging.info("Adding city council members")
                 council_sync.add_council_members()
 
-                logging.info("Updating council member contact info")
+                logging.info("Updating city council member contact info")
                 council_sync.fill_council_person_data_from_api()
 
-                logging.info("Refreshing council_member_static_data")
+                logging.info("Refreshing city council_member_static_data")
                 # TODO: This doesn't need to run at cron time though! Just once on startup
                 council_sync.fill_council_person_static_data()
+
+                logging.info("Adding state reps")
+                state_api.add_state_representatives()  # todo exception handling
 
                 bill_snapshots = bill_notifications.snapshot_bills()
 
