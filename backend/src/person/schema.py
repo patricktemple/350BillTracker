@@ -14,11 +14,13 @@ class CouncilMemberSchema(CamelCaseSchema):
 
 
 class SenatorSchema(CamelCaseSchema):
-    pass
+    website = fields.String(dump_only=True)
+    district = fields.Integer(dump_only=True)
 
 
 class AssemblyMemberSchema(CamelCaseSchema):
-    pass
+    website = fields.String(dump_only=True)
+    district = fields.Integer(dump_only=True)
 
 
 class CreateStafferSchema(CamelCaseSchema):

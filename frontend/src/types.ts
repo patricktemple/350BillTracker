@@ -82,6 +82,11 @@ export interface CouncilMember {
   termEnd: string;
 }
 
+export interface StateRepresentative {
+  website: string;
+  district: number;
+}
+
 // TODO: Change types to reflect nullability
 export interface Person {
   id: string;
@@ -95,7 +100,10 @@ export interface Person {
   // Editable data
   notes: string;
   type: PersonType;
+
   councilMember: CouncilMember | null;
+  senator: StateRepresentative | null;
+  assemblyMember: StateRepresentative | null;
 }
 
 export interface SingleMemberSponsorship {

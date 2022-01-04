@@ -18,6 +18,7 @@ def test_import_state_reps(client, senator, assembly_member, snapshot):
                     {
                         "memberId": 1,
                         "chamber": "SENATE",
+                        "districtCode": 1,
                         "person": {
                             "fullName": "New senator",
                             "prefix": "Senator",
@@ -27,6 +28,7 @@ def test_import_state_reps(client, senator, assembly_member, snapshot):
                     {
                         "memberId": senator.senator.state_member_id,
                         "chamber": "SENATE",
+                        "districtCode": 2,
                         "person": {
                             "fullName": "Existing senator",
                             "prefix": "Senator",
@@ -36,6 +38,7 @@ def test_import_state_reps(client, senator, assembly_member, snapshot):
                     {
                         "memberId": 1,
                         "chamber": "ASSEMBLY",
+                        "districtCode": 3,
                         "person": {
                             "fullName": "New assembly member",
                             "prefix": "Assembly member",
@@ -45,6 +48,7 @@ def test_import_state_reps(client, senator, assembly_member, snapshot):
                     {
                         "memberId": assembly_member.assembly_member.state_member_id,
                         "chamber": "ASSEMBLY",
+                        "districtCode": 4,
                         "person": {
                             "fullName": "Existing assembly member",
                             "prefix": "Assembly",

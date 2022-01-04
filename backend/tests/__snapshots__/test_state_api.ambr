@@ -2,6 +2,8 @@
   <class 'list'> [
     <class 'dict'> {
       'assemblyMember': <class 'dict'> {
+        'district': 4,
+        'website': 'https://nyassembly.gov/mem/?ad=4',
       },
       'councilMember': None,
       'email': 'd@example.com',
@@ -23,6 +25,8 @@
       'party': 'D',
       'phone': '1-555-555-5555',
       'senator': <class 'dict'> {
+        'district': 2,
+        'website': 'https://www.nysenate.gov/district/2',
       },
       'title': 'Senator',
       'twitter': 'thesenateguy',
@@ -30,6 +34,8 @@
     },
     <class 'dict'> {
       'assemblyMember': <class 'dict'> {
+        'district': 3,
+        'website': 'https://nyassembly.gov/mem/?ad=3',
       },
       'councilMember': None,
       'email': 'c@example.com',
@@ -51,6 +57,8 @@
       'party': None,
       'phone': None,
       'senator': <class 'dict'> {
+        'district': 1,
+        'website': 'https://www.nysenate.gov/district/1',
       },
       'title': 'Senator',
       'twitter': None,

@@ -187,6 +187,7 @@ def add_state_representatives(session_year=CURRENT_SESSION_YEAR):
                 pass
 
             if existing_member:
+                existing_member.district = member['districtCode']
                 logging.info(
                     f"Person {existing_member.person.name} already in DB, updating"
                 )
@@ -196,10 +197,12 @@ def add_state_representatives(session_year=CURRENT_SESSION_YEAR):
                 person = Person(type=person_type)
                 if person_type == Person.PersonType.ASSEMBLY_MEMBER:
                     person.assembly_member = AssemblyMember(
-                        state_member_id=member_id
+                        state_member_id=member_id,
+                        district=member['districtCode']
                     )
                 else:
-                    person.senator = Senator(state_member_id=member_id)
+                    person.senator = Senator(state_member_id=member_id, 
+                        district=member['districtCode'])
                 db.session.add(person)
 
             person.name = member["person"]["fullName"]
