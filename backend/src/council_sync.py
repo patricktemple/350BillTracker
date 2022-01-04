@@ -4,8 +4,12 @@ from datetime import datetime, timezone
 from requests import HTTPError
 
 from .bill.models import Bill
-from .council_api import (get_bill_sponsors, get_current_council_members,
-                          get_person, lookup_bill)
+from .council_api import (
+    get_bill_sponsors,
+    get_current_council_members,
+    get_person,
+    lookup_bill,
+)
 from .models import db
 from .person.models import CouncilMember, Person
 from .sponsorship.models import CitySponsorship
@@ -117,7 +121,7 @@ def _update_bill(bill):
     )
 
     bill.name = bill_data["name"]
-    bill.description = bill_data['description']
+    bill.description = bill_data["description"]
     for key in bill_data["city_bill"].keys():
         setattr(bill.city_bill, key, bill_data["city_bill"][key])
 

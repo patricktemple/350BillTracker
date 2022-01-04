@@ -11,13 +11,27 @@ from ..council_api import lookup_bill, lookup_bills
 from ..council_sync import update_bill_sponsorships
 from ..google_sheets import create_power_hour
 from ..models import db
-from .models import (AssemblyBill, Bill, BillAttachment, CityBill, PowerHour,
-                     SenateBill, StateBill)
-from .schema import (BillAttachmentSchema, BillSchema, CreatePowerHourSchema,
-                     PowerHourSchema, StateBillSearchResultSchema,
-                     TrackCityBillSchema, TrackStateBillSchema)
+from .models import (
+    AssemblyBill,
+    Bill,
+    BillAttachment,
+    CityBill,
+    PowerHour,
+    SenateBill,
+    StateBill,
+)
+from .schema import (
+    BillAttachmentSchema,
+    BillSchema,
+    CreatePowerHourSchema,
+    PowerHourSchema,
+    StateBillSearchResultSchema,
+    TrackCityBillSchema,
+    TrackStateBillSchema,
+)
 
 # Views ----------------------------------------------------------------------
+
 
 @app.route("/api/bills", methods=["GET"])
 @auth_required
@@ -48,7 +62,12 @@ def track_city_bill():
         f"Saving bill {city_bill_id}, council API returned {bill_data}"
     )
 
-    bill = Bill(id=uuid4(), type=Bill.BillType.CITY, name=bill_data["name"], description=bill_data['description'])
+    bill = Bill(
+        id=uuid4(),
+        type=Bill.BillType.CITY,
+        name=bill_data["name"],
+        description=bill_data["description"],
+    )
     bill.city_bill = CityBill(**bill_data["city_bill"])
     db.session.add(bill)
 
@@ -115,15 +134,32 @@ def search_state_bills():
     bill_results = state_api.search_bills(code_name, session_year)
 
     # Is this a lazy load of state bill?
-    bill_print_nos = [b['base_print_no'] for b in bill_results]
-    tracked_assembly_bills = AssemblyBill.query.filter(AssemblyBill.base_print_no.in_(bill_print_nos)).all()
-    tracked_assembly_bill_set = set([(b.state_bill.session_year, b.base_print_no) for b in tracked_assembly_bills])
-    tracked_senate_bills = SenateBill.query.filter(SenateBill.base_print_no.in_(bill_print_nos)).all()
-    tracked_senate_bill_set = set([(b.state_bill.session_year, b.base_print_no) for b in tracked_senate_bills])
+    bill_print_nos = [b["base_print_no"] for b in bill_results]
+    tracked_assembly_bills = AssemblyBill.query.filter(
+        AssemblyBill.base_print_no.in_(bill_print_nos)
+    ).all()
+    tracked_assembly_bill_set = set(
+        [
+            (b.state_bill.session_year, b.base_print_no)
+            for b in tracked_assembly_bills
+        ]
+    )
+    tracked_senate_bills = SenateBill.query.filter(
+        SenateBill.base_print_no.in_(bill_print_nos)
+    ).all()
+    tracked_senate_bill_set = set(
+        [
+            (b.state_bill.session_year, b.base_print_no)
+            for b in tracked_senate_bills
+        ]
+    )
 
     for bill in bill_results:
-        bill_identifier = (bill['session_year'], bill['base_print_no'])
-        bill['tracked'] = bill_identifier in tracked_assembly_bill_set or bill_identifier in tracked_senate_bill_set
+        bill_identifier = (bill["session_year"], bill["base_print_no"])
+        bill["tracked"] = (
+            bill_identifier in tracked_assembly_bill_set
+            or bill_identifier in tracked_senate_bill_set
+        )
 
     return StateBillSearchResultSchema(many=True).jsonify(bill_results)
 
@@ -133,14 +169,18 @@ def search_state_bills():
 def track_state_bill():
     data = TrackStateBillSchema().load(request.json)
     base_print_no = data["base_print_no"]
-    session_year = data['session_year']
-    existing_bills = SenateBill.query.filter_by(base_print_no=base_print_no).all()
-    existing_bills.extend(AssemblyBill.query.filter_by(base_print_no=base_print_no).all())
+    session_year = data["session_year"]
+    existing_bills = SenateBill.query.filter_by(
+        base_print_no=base_print_no
+    ).all()
+    existing_bills.extend(
+        AssemblyBill.query.filter_by(base_print_no=base_print_no).all()
+    )
     for bill in existing_bills:
         # This is a lame way of querying by session year, which would be better
         if bill.state_bill.session_year == session_year:
             raise exceptions.Conflict()
-    
+
     state_api.import_bill(session_year, base_print_no)
 
     return jsonify({})
@@ -212,9 +252,7 @@ def add_bill_attachment(bill_id):
     return jsonify({})
 
 
-@app.route(
-    "/api/bills/-/attachments/<uuid:attachment_id>", methods=["DELETE"]
-)
+@app.route("/api/bills/-/attachments/<uuid:attachment_id>", methods=["DELETE"])
 @auth_required
 def delete_bill_attachment(attachment_id):
     attachment = BillAttachment.query.filter_by(id=attachment_id).one()

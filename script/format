@@ -1,2 +1,2 @@
-(cd backend; fourmat fix)
+(cd backend; fourmat fix src)
 (cd frontend; yarn format)

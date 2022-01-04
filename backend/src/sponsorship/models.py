@@ -1,11 +1,22 @@
 from uuid import uuid4
 
-from sqlalchemy import (Column, ForeignKey, Integer, UniqueConstraint, func,
-                        select)
+from sqlalchemy import (
+    Column,
+    ForeignKey,
+    Integer,
+    UniqueConstraint,
+    func,
+    select,
+)
 from sqlalchemy.orm import column_property, foreign, relationship, remote
 
-from ..bill.models import (AssemblyBill, Bill, CityBill, SenateBill,
-                           StateChamberMixin)
+from ..bill.models import (
+    AssemblyBill,
+    Bill,
+    CityBill,
+    SenateBill,
+    StateChamberMixin,
+)
 from ..models import TIMESTAMP, UUID, db
 from ..person.models import AssemblyMember, CouncilMember, Person, Senator
 
@@ -111,6 +122,21 @@ class AssemblySponsorship(db.Model):
 
 
 # This may be inefficient because it loads this on every bill even if these fields aren't needed
-CityBill.sponsor_count = column_property(select(func.count(CitySponsorship.id)).where(CitySponsorship.bill_id==CityBill.bill_id).correlate_except(CitySponsorship).scalar_subquery())
-SenateBill.sponsor_count = column_property(select(func.count(SenateSponsorship.id)).where(SenateSponsorship.senate_bill_id==SenateBill.bill_id).correlate_except(SenateSponsorship).scalar_subquery())
-AssemblyBill.sponsor_count = column_property(select(func.count(AssemblySponsorship.id)).where(AssemblySponsorship.assembly_bill_id==AssemblyBill.bill_id).correlate_except(AssemblySponsorship).scalar_subquery())
+CityBill.sponsor_count = column_property(
+    select(func.count(CitySponsorship.id))
+    .where(CitySponsorship.bill_id == CityBill.bill_id)
+    .correlate_except(CitySponsorship)
+    .scalar_subquery()
+)
+SenateBill.sponsor_count = column_property(
+    select(func.count(SenateSponsorship.id))
+    .where(SenateSponsorship.senate_bill_id == SenateBill.bill_id)
+    .correlate_except(SenateSponsorship)
+    .scalar_subquery()
+)
+AssemblyBill.sponsor_count = column_property(
+    select(func.count(AssemblySponsorship.id))
+    .where(AssemblySponsorship.assembly_bill_id == AssemblyBill.bill_id)
+    .correlate_except(AssemblySponsorship)
+    .scalar_subquery()
+)

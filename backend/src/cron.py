@@ -25,7 +25,7 @@ def cron_command():
                 council_sync.fill_council_person_static_data()
 
                 logging.info("Adding state reps")
-                state_api.add_state_representatives() # todo exception handling
+                state_api.add_state_representatives()  # todo exception handling
 
                 # logging.info("Filling state rep static data")
                 # state_api.fill_state_representative_static_data()

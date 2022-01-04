@@ -6,8 +6,11 @@ from ..auth import auth_required
 from ..bill.models import CityBill, StateBill
 from ..person.models import AssemblyMember, Person, Senator
 from .models import AssemblySponsorship, CitySponsorship, SenateSponsorship
-from .schema import (CityBillSponsorshipSchema, CouncilMemberSponsorshipSchema,
-                     StateBillSponsorshipsSchema)
+from .schema import (
+    CityBillSponsorshipSchema,
+    CouncilMemberSponsorshipSchema,
+    StateBillSponsorshipsSchema,
+)
 
 
 @app.route(
@@ -68,25 +71,35 @@ def state_bill_sponsorships(bill_id):
     state_bill = StateBill.query.get(bill_id)
     if not state_bill:
         raise exceptions.NotFound()
-    
+
     senate_sponsorships = (
         SenateSponsorship.query.filter_by(senate_bill_id=bill_id)
         .options(joinedload(SenateSponsorship.senator))
         .all()
     )
-    senate_non_sponsors = Senator.query.filter(Senator.person_id.not_in([s.senator_id for s in senate_sponsorships])).all()
+    senate_non_sponsors = Senator.query.filter(
+        Senator.person_id.not_in([s.senator_id for s in senate_sponsorships])
+    ).all()
 
     assembly_sponsorships = (
         AssemblySponsorship.query.filter_by(assembly_bill_id=bill_id)
         .options(joinedload(AssemblySponsorship.assembly_member))
         .all()
     )
-    assembly_non_sponsors = AssemblyMember.query.filter(AssemblyMember.person_id.not_in([s.assembly_member_id for s in assembly_sponsorships])).all()
+    assembly_non_sponsors = AssemblyMember.query.filter(
+        AssemblyMember.person_id.not_in(
+            [s.assembly_member_id for s in assembly_sponsorships]
+        )
+    ).all()
 
-    return StateBillSponsorshipsSchema().jsonify({
-        "bill_id": bill_id,
-        "senate_sponsors": (s.senator.person for s in senate_sponsorships),
-        "senate_non_sponsors": (s.person for s in senate_non_sponsors),
-        "assembly_sponsors": (s.assembly_member.person for s in assembly_sponsorships),
-        "assembly_non_sponsors": (a.person for a in assembly_non_sponsors),
-    })
+    return StateBillSponsorshipsSchema().jsonify(
+        {
+            "bill_id": bill_id,
+            "senate_sponsors": (s.senator.person for s in senate_sponsorships),
+            "senate_non_sponsors": (s.person for s in senate_non_sponsors),
+            "assembly_sponsors": (
+                s.assembly_member.person for s in assembly_sponsorships
+            ),
+            "assembly_non_sponsors": (a.person for a in assembly_non_sponsors),
+        }
+    )

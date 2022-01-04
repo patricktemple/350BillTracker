@@ -88,26 +88,42 @@ class Bill(db.Model):
     @property
     def tracked(self):
         return True
-    
+
     @property
     def status(self):
         if self.type == Bill.BillType.CITY:
             return self.city_bill.status
 
-        senate_status = self.state_bill.senate_bill.status if self.state_bill.senate_bill else "(No Senate bill)"
-        assembly_status = self.state_bill.assembly_bill.status if self.state_bill.assembly_bill else "(No Assembly bill)"
-    
+        senate_status = (
+            self.state_bill.senate_bill.status
+            if self.state_bill.senate_bill
+            else "(No Senate bill)"
+        )
+        assembly_status = (
+            self.state_bill.assembly_bill.status
+            if self.state_bill.assembly_bill
+            else "(No Assembly bill)"
+        )
+
         # TODO: This might be a bit misleading when a bill is signed. Figure out how bill substitutions work.
         return f"{senate_status} / {assembly_status}"
-    
+
     @property
     def code_name(self):
         if self.type == Bill.BillType.CITY:
             return self.city_bill.file
 
-        senate_print_no = self.state_bill.senate_bill.base_print_no if self.state_bill.senate_bill else "(No Senate bill)"
-        assembly_print_no = self.state_bill.assembly_bill.base_print_no if self.state_bill.assembly_bill else "(No Assembly bill)"
-    
+        senate_print_no = (
+            self.state_bill.senate_bill.base_print_no
+            if self.state_bill.senate_bill
+            else "(No Senate bill)"
+        )
+        assembly_print_no = (
+            self.state_bill.assembly_bill.base_print_no
+            if self.state_bill.assembly_bill
+            else "(No Assembly bill)"
+        )
+
         return f"{senate_print_no} / {assembly_print_no} from {self.state_bill.session_year} session"
 
 
@@ -115,9 +131,7 @@ class BillAttachment(db.Model):
     __tablename__ = "bill_attachments"
 
     id = Column(UUID, primary_key=True, default=uuid4)
-    bill_id = Column(
-        UUID, ForeignKey("bills.id"), nullable=False, index=True
-    )
+    bill_id = Column(UUID, ForeignKey("bills.id"), nullable=False, index=True)
     bill = relationship("Bill", back_populates="attachments")
 
     name = Column(Text)
@@ -128,9 +142,7 @@ class PowerHour(db.Model):
     __tablename__ = "power_hours"
 
     id = Column(UUID, primary_key=True, default=uuid4)
-    bill_id = Column(
-        UUID, ForeignKey("bills.id"), nullable=False, index=True
-    )
+    bill_id = Column(UUID, ForeignKey("bills.id"), nullable=False, index=True)
 
     title = Column(Text)
     spreadsheet_url = Column(Text, nullable=False)
@@ -189,9 +201,19 @@ class StateBill(db.Model):
     # The start of the 2-year legislative session this belongs to.
     session_year = Column(Integer, nullable=False)
 
-    senate_bill = relationship("SenateBill", back_populates="state_bill", uselist=False, cascade="all, delete")
-    assembly_bill = relationship("AssemblyBill", back_populates="state_bill", uselist=False, cascade="all, delete")
- 
+    senate_bill = relationship(
+        "SenateBill",
+        back_populates="state_bill",
+        uselist=False,
+        cascade="all, delete",
+    )
+    assembly_bill = relationship(
+        "AssemblyBill",
+        back_populates="state_bill",
+        uselist=False,
+        cascade="all, delete",
+    )
+
 
 class StateChamberMixin:
     active_version = Column(Text, nullable=False)
@@ -200,7 +222,7 @@ class StateChamberMixin:
 
     @declared_attr
     def bill_id(self):
-       return Column(UUID, ForeignKey(StateBill.bill_id), primary_key=True)
+        return Column(UUID, ForeignKey(StateBill.bill_id), primary_key=True)
 
     # The Senate and the Assembly each run separate websites, and each website can
     # lookup both senate and assembly bills. So they're redundant websites with
@@ -209,7 +231,7 @@ class StateChamberMixin:
     @property
     def senate_website(self):
         return f"https://www.nysenate.gov/legislation/bills/{self.state_bill.session_year}/{self.base_print_no}"
-    
+
     @property
     def assembly_website(self):
         # use urlparse to construct it?
@@ -221,7 +243,9 @@ class SenateBill(db.Model, StateChamberMixin):
 
     state_bill = relationship(StateBill, back_populates="senate_bill")
     sponsorships = relationship(
-        "SenateSponsorship", back_populates="senate_bill", cascade="all, delete"
+        "SenateSponsorship",
+        back_populates="senate_bill",
+        cascade="all, delete",
     )
 
 
@@ -230,5 +254,7 @@ class AssemblyBill(db.Model, StateChamberMixin):
 
     state_bill = relationship(StateBill, back_populates="assembly_bill")
     sponsorships = relationship(
-        "AssemblySponsorship", back_populates="assembly_bill", cascade="all, delete"
+        "AssemblySponsorship",
+        back_populates="assembly_bill",
+        cascade="all, delete",
     )
