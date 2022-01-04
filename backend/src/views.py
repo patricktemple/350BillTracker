@@ -1,9 +1,8 @@
 from flask import render_template
 from werkzeug import exceptions
 
-from .app import app
-
 from . import settings
+from .app import app
 
 
 @app.route("/healthz", methods=["GET"])
@@ -21,13 +20,16 @@ def api_not_found(path):
 def index(path):
     return render_template("index.html")
 
+
 @app.after_request
 def after_request(response):
-    response.headers['Content-Security-Policy'] = "default-src 'self'; style-src 'self' fonts.googleapis.com; font-src fonts.googleapis.com fonts.gstatic.com"
-    response.headers['X-Frame-Options'] = "DENY"
+    response.headers[
+        "Content-Security-Policy"
+    ] = "default-src 'self'; style-src 'self' fonts.googleapis.com; font-src fonts.googleapis.com fonts.gstatic.com"
+    response.headers["X-Frame-Options"] = "DENY"
 
     if not settings.DISABLE_STRICT_TRANSPORT_SECURITY:
-        response.headers['Strict-Transport-Security'] = "max-age=31536000"
+        response.headers["Strict-Transport-Security"] = "max-age=31536000"
     return response
 
 

@@ -21,7 +21,9 @@ APP_TITLE = os.environ.get("APP_TITLE", "350 Brooklyn Bill Tracker")
 
 SENATE_API_TOKEN = os.environ["SENATE_API_TOKEN"]
 
-DISABLE_STRICT_TRANSPORT_SECURITY = os.environ.get("DISABLE_STRICT_TRANSPORT_SECURITY") == "True"
+DISABLE_STRICT_TRANSPORT_SECURITY = (
+    os.environ.get("DISABLE_STRICT_TRANSPORT_SECURITY") == "True"
+)
 
 
 # TODO: Share this with TogglSync via a utils package?
