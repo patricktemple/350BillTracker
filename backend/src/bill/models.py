@@ -105,7 +105,6 @@ class Bill(db.Model):
             else "(No Assembly bill)"
         )
 
-        # TODO: This might be a bit misleading when a bill is signed. Figure out how bill substitutions work.
         return f"{senate_status} / {assembly_status}"
 
     @property
@@ -234,7 +233,6 @@ class StateChamberMixin:
 
     @property
     def assembly_website(self):
-        # use urlparse to construct it?
         return f"https://nyassembly.gov/leg/?term={self.state_bill.session_year}&bn={self.base_print_no}"
 
 

@@ -5,11 +5,14 @@ import responses
 
 from src.app import app
 from src.bill.models import AssemblyBill, Bill, CityBill, SenateBill, StateBill
-from src.bill_notifications import (BillDiff, BillSnapshot,
-                                    _calculate_bill_diffs,
-                                    _convert_bill_diff_to_template_variables,
-                                    _get_bill_update_subject_line,
-                                    send_bill_update_notifications)
+from src.bill_notifications import (
+    BillDiff,
+    BillSnapshot,
+    _calculate_bill_diffs,
+    _convert_bill_diff_to_template_variables,
+    _get_bill_update_subject_line,
+    send_bill_update_notifications,
+)
 from src.models import db
 from src.person.models import CouncilMember, Person
 from src.sponsorship.models import CitySponsorship
@@ -20,7 +23,10 @@ from src.utils import now
 # TODO: Switch to Factory
 def add_test_bill(city_bill_id, status) -> Bill:
     bill = Bill(
-        id=uuid4(), name=f"{city_bill_id} name", description="description", type=Bill.BillType.CITY
+        id=uuid4(),
+        name=f"{city_bill_id} name",
+        description="description",
+        type=Bill.BillType.CITY,
     )
     bill.city_bill = CityBill(
         city_bill_id=city_bill_id,
@@ -214,15 +220,20 @@ def test_email_contents__sponsor_added_and_removed():
 @patch("src.ses.client")
 def test_state_bill_ignored(mock_ses_client):
     bill = Bill(
-        id=uuid4(), name=f"state bill", description="description", type=Bill.BillType.STATE
+        id=uuid4(),
+        name=f"state bill",
+        description="description",
+        type=Bill.BillType.STATE,
     )
     bill.state_bill = StateBill(
         session_year=2021,
     )
-    bill.state_bill.senate_bill = SenateBill(base_print_no="S1234", active_version="A", 
-        status="Signed by governor")
-    bill.state_bill.assembly_bill = AssemblyBill(base_print_no="A1234", active_version="", 
-        status="Signed by governor")
+    bill.state_bill.senate_bill = SenateBill(
+        base_print_no="S1234", active_version="A", status="Signed by governor"
+    )
+    bill.state_bill.assembly_bill = AssemblyBill(
+        base_print_no="A1234", active_version="", status="Signed by governor"
+    )
     db.session.add(bill)
     db.session.commit()
 

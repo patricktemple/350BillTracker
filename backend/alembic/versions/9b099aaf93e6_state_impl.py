@@ -1,4 +1,4 @@
-"""state impl
+"""Implement basic NY state stuff
 
 Revision ID: 9b099aaf93e6
 Revises: 0b79940ebfd8

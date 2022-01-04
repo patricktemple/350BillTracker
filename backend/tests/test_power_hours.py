@@ -32,7 +32,9 @@ def test_get_power_hours(client, city_bill):
 
 
 @patch("src.bill.views.create_power_hour")
-def test_create_power_hour__no_import(mock_create_power_hour, client, city_bill):
+def test_create_power_hour__no_import(
+    mock_create_power_hour, client, city_bill
+):
     mock_create_power_hour.return_value = (
         {"spreadsheetId": 1, "spreadsheetUrl": "http://example.com"},
         ["Power hour created"],
@@ -54,7 +56,9 @@ def test_create_power_hour__no_import(mock_create_power_hour, client, city_bill)
 
 
 @patch("src.bill.views.create_power_hour")
-def test_create_power_hour__with_import(mock_create_power_hour, client, city_bill):
+def test_create_power_hour__with_import(
+    mock_create_power_hour, client, city_bill
+):
     power_hour = PowerHour(
         bill_id=city_bill.id,
         spreadsheet_id="123",
@@ -79,4 +83,6 @@ def test_create_power_hour__with_import(mock_create_power_hour, client, city_bil
     )
 
     assert response.status_code == 200
-    mock_create_power_hour.assert_called_with(city_bill.id, "My power hour", "123")
+    mock_create_power_hour.assert_called_with(
+        city_bill.id, "My power hour", "123"
+    )

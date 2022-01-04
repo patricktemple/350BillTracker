@@ -1,25 +1,67 @@
 import json
 from uuid import uuid4
 
+import pytest
 import responses
 
-from src.bill.models import DEFAULT_TWITTER_SEARCH_TERMS, Bill, StateBill, SenateBill, AssemblyBill
+from src.bill.models import (
+    DEFAULT_TWITTER_SEARCH_TERMS,
+    AssemblyBill,
+    Bill,
+    SenateBill,
+    StateBill,
+)
 from src.models import db
 from src.person.models import AssemblyMember, Person, Senator
 from src.utils import now
 
-import pytest
-
 from .utils import assert_response
 
 
-# TODO: Fix black formatter!!!
 def test_get_bills(client, state_bill):
     response = client.get("/api/bills")
     assert_response(
         response,
         200,
-[{'cityBill': None, 'codeName': 'S1234 / A1234 from 2021 session', 'description': 'description', 'id': str(state_bill.id), 'name': 'state bill', 'nickname': 'nickname', 'notes': '', 'stateBill': {'assemblyBill': {'activeVersion': 'A', 'assemblyWebsite': 'https://nyassembly.gov/leg/?term=2021&bn=A1234', 'basePrintNo': 'A1234', 'senateWebsite': 'https://www.nysenate.gov/legislation/bills/2021/A1234', 'sponsorCount': 0, 'status': 'Voted'}, 'senateBill': {'activeVersion': '', 'assemblyWebsite': 'https://nyassembly.gov/leg/?term=2021&bn=S1234', 'basePrintNo': 'S1234', 'senateWebsite': 'https://www.nysenate.gov/legislation/bills/2021/S1234', 'sponsorCount': 0, 'status': 'Committee'}}, 'status': 'Committee / Voted', 'tracked': True, 'twitterSearchTerms': ['solar', 'climate', 'wind power', 'renewable', 'fossil fuel'], 'type': 'STATE'}],
+        [
+            {
+                "cityBill": None,
+                "codeName": "S1234 / A1234 from 2021 session",
+                "description": "description",
+                "id": str(state_bill.id),
+                "name": "state bill",
+                "nickname": "nickname",
+                "notes": "",
+                "stateBill": {
+                    "assemblyBill": {
+                        "activeVersion": "A",
+                        "assemblyWebsite": "https://nyassembly.gov/leg/?term=2021&bn=A1234",
+                        "basePrintNo": "A1234",
+                        "senateWebsite": "https://www.nysenate.gov/legislation/bills/2021/A1234",
+                        "sponsorCount": 0,
+                        "status": "Voted",
+                    },
+                    "senateBill": {
+                        "activeVersion": "",
+                        "assemblyWebsite": "https://nyassembly.gov/leg/?term=2021&bn=S1234",
+                        "basePrintNo": "S1234",
+                        "senateWebsite": "https://www.nysenate.gov/legislation/bills/2021/S1234",
+                        "sponsorCount": 0,
+                        "status": "Committee",
+                    },
+                },
+                "status": "Committee / Voted",
+                "tracked": True,
+                "twitterSearchTerms": [
+                    "solar",
+                    "climate",
+                    "wind power",
+                    "renewable",
+                    "fossil fuel",
+                ],
+                "type": "STATE",
+            }
+        ],
     )
 
 
@@ -35,13 +77,21 @@ def test_delete_bill(client, state_bill):
     assert_response(response, 200, [])
 
 
-def create_mock_bill_response(*, base_print_no, chamber, cosponsor_member_id, same_as_base_print_no=None, same_as_chamber=None):
-    return {"result": {
+def create_mock_bill_response(
+    *,
+    base_print_no,
+    chamber,
+    cosponsor_member_id,
+    same_as_base_print_no=None,
+    same_as_chamber=None,
+):
+    return {
+        "result": {
             "title": f"{base_print_no} bill title",
             "summary": f"{base_print_no} bill summary",
             "activeVersion": "A",
             "basePrintNo": base_print_no,
-            "billType": {'chamber': chamber},
+            "billType": {"chamber": chamber},
             "status": {
                 "statusDesc": "In Committee",
             },
@@ -49,23 +99,28 @@ def create_mock_bill_response(*, base_print_no, chamber, cosponsor_member_id, sa
                 "items": {
                     "A": {
                         "coSponsors": {
-                            "items": [{
-                                "memberId": cosponsor_member_id,
-                                "fullName": "Jabari"
-                            }]
-                        },
-                        "sameAs": {
-                            "items": None if not same_as_base_print_no else [
+                            "items": [
                                 {
-                                    "basePrintNo": same_as_base_print_no,
-                                    "billType": {'chamber': same_as_chamber},
+                                    "memberId": cosponsor_member_id,
+                                    "fullName": "Jabari",
                                 }
                             ]
-                        }
+                        },
+                        "sameAs": {
+                            "items": None
+                            if not same_as_base_print_no
+                            else [
+                                {
+                                    "basePrintNo": same_as_base_print_no,
+                                    "billType": {"chamber": same_as_chamber},
+                                }
+                            ]
+                        },
                     }
                 }
-            }
-        }}
+            },
+        }
+    }
 
 
 @responses.activate
@@ -73,12 +128,20 @@ def test_track_bill(client):
     responses.add(
         responses.GET,
         url="https://legislation.nysenate.gov/api/3/bills/2021/S100?view=no_fulltext&key=fake_key",
-        json=create_mock_bill_response(base_print_no="S100", chamber="SENATE", same_as_chamber="ASSEMBLY", same_as_base_print_no="A123", cosponsor_member_id=2),
+        json=create_mock_bill_response(
+            base_print_no="S100",
+            chamber="SENATE",
+            same_as_chamber="ASSEMBLY",
+            same_as_base_print_no="A123",
+            cosponsor_member_id=2,
+        ),
     )
     responses.add(
         responses.GET,
         url="https://legislation.nysenate.gov/api/3/bills/2021/A123?view=no_fulltext&key=fake_key",
-        json=create_mock_bill_response(base_print_no="A123", chamber="ASSEMBLY", cosponsor_member_id=1),
+        json=create_mock_bill_response(
+            base_print_no="A123", chamber="ASSEMBLY", cosponsor_member_id=1
+        ),
     )
 
     senate_non_sponsor = Person(
@@ -125,12 +188,16 @@ def test_track_bill(client):
 
     assert len(bill.state_bill.senate_bill.sponsorships) == 1
     assert (
-        bill.state_bill.senate_bill.sponsorships[0].senator.person.name == "Senate sponsor"
+        bill.state_bill.senate_bill.sponsorships[0].senator.person.name
+        == "Senate sponsor"
     )
 
     assert len(bill.state_bill.assembly_bill.sponsorships) == 1
     assert (
-        bill.state_bill.assembly_bill.sponsorships[0].assembly_member.person.name == "Assembly sponsor"
+        bill.state_bill.assembly_bill.sponsorships[
+            0
+        ].assembly_member.person.name
+        == "Assembly sponsor"
     )
 
 
@@ -139,7 +206,9 @@ def test_track_bill__senate_only(client):
     responses.add(
         responses.GET,
         url="https://legislation.nysenate.gov/api/3/bills/2021/S100?view=no_fulltext&key=fake_key",
-        json=create_mock_bill_response(base_print_no="S100", chamber="SENATE", cosponsor_member_id=2),
+        json=create_mock_bill_response(
+            base_print_no="S100", chamber="SENATE", cosponsor_member_id=2
+        ),
     )
 
     db.session.commit()
@@ -164,7 +233,9 @@ def test_track_bill__assembly_only(client):
     responses.add(
         responses.GET,
         url="https://legislation.nysenate.gov/api/3/bills/2021/A100?view=no_fulltext&key=fake_key",
-        json=create_mock_bill_response(base_print_no="A100", chamber="ASSEMBLY", cosponsor_member_id=2),
+        json=create_mock_bill_response(
+            base_print_no="A100", chamber="ASSEMBLY", cosponsor_member_id=2
+        ),
     )
 
     db.session.commit()
@@ -189,14 +260,24 @@ def test_track_bill__senate_already_exists(client):
     responses.add(
         responses.GET,
         url="https://legislation.nysenate.gov/api/3/bills/2021/S100?view=no_fulltext&key=fake_key",
-        json=create_mock_bill_response(base_print_no="S100", chamber="SENATE", cosponsor_member_id=2),
+        json=create_mock_bill_response(
+            base_print_no="S100", chamber="SENATE", cosponsor_member_id=2
+        ),
     )
 
-    bill = Bill(id=uuid4(), name="state bill", description="description", nickname="nickname", type=Bill.BillType.STATE)
+    bill = Bill(
+        id=uuid4(),
+        name="state bill",
+        description="description",
+        nickname="nickname",
+        type=Bill.BillType.STATE,
+    )
     bill.state_bill = StateBill(
         session_year=2021,
     )
-    bill.state_bill.senate_bill = SenateBill(base_print_no="S100", active_version="", status="Committee")
+    bill.state_bill.senate_bill = SenateBill(
+        base_print_no="S100", active_version="", status="Committee"
+    )
     db.session.add(bill)
     db.session.commit()
 
@@ -212,14 +293,24 @@ def test_track_bill__assembly_already_exists(client):
     responses.add(
         responses.GET,
         url="https://legislation.nysenate.gov/api/3/bills/2021/A100?view=no_fulltext&key=fake_key",
-        json=create_mock_bill_response(base_print_no="A100", chamber="ASSEMBLY", cosponsor_member_id=2),
+        json=create_mock_bill_response(
+            base_print_no="A100", chamber="ASSEMBLY", cosponsor_member_id=2
+        ),
     )
 
-    bill = Bill(id=uuid4(), name="state bill", description="description", nickname="nickname", type=Bill.BillType.STATE)
+    bill = Bill(
+        id=uuid4(),
+        name="state bill",
+        description="description",
+        nickname="nickname",
+        type=Bill.BillType.STATE,
+    )
     bill.state_bill = StateBill(
         session_year=2021,
     )
-    bill.state_bill.assembly_bill = AssemblyBill(base_print_no="A100", active_version="", status="Committee")
+    bill.state_bill.assembly_bill = AssemblyBill(
+        base_print_no="A100", active_version="", status="Committee"
+    )
     db.session.add(bill)
     db.session.commit()
 
@@ -236,31 +327,39 @@ def test_search_bill(client, tracked):
     responses.add(
         responses.GET,
         url="https://legislation.nysenate.gov/api/3/bills/search?term=%28basePrintNo%3AS123+OR+printNo%3AS123%29+AND+billType.resolution%3Afalse+AND+session%3A2021&key=fake_key",
-        json={"result": {
-            "items": [{
-                "result": {
-                    "title": "Bill title",
-                    "summary": "Long bill summary",
-                    "session": 2021,
-                    "basePrintNo": "S123",
-                    "activeVersion": "A",
-                    "status": {
-                        "statusDesc": "Committee"
-                    },
-                    "billType": {
-                        "chamber": "SENATE"
+        json={
+            "result": {
+                "items": [
+                    {
+                        "result": {
+                            "title": "Bill title",
+                            "summary": "Long bill summary",
+                            "session": 2021,
+                            "basePrintNo": "S123",
+                            "activeVersion": "A",
+                            "status": {"statusDesc": "Committee"},
+                            "billType": {"chamber": "SENATE"},
+                        }
                     }
-                }
-            }]
-        }},
+                ]
+            }
+        },
     )
 
     if tracked:
-        bill = Bill(id=uuid4(), name="state bill", description="description", nickname="nickname", type=Bill.BillType.STATE)
+        bill = Bill(
+            id=uuid4(),
+            name="state bill",
+            description="description",
+            nickname="nickname",
+            type=Bill.BillType.STATE,
+        )
         bill.state_bill = StateBill(
             session_year=2021,
         )
-        bill.state_bill.senate_bill = SenateBill(base_print_no="S123", active_version="", status="Committee")
+        bill.state_bill.senate_bill = SenateBill(
+            base_print_no="S123", active_version="", status="Committee"
+        )
         db.session.add(bill)
         db.session.commit()
 

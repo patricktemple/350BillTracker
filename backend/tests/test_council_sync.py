@@ -5,10 +5,13 @@ import responses
 from freezegun import freeze_time
 
 from src.bill.models import Bill, CityBill
-from src.council_sync import (add_council_members,
-                              fill_council_person_data_from_api,
-                              fill_council_person_static_data,
-                              sync_bill_updates, update_all_sponsorships)
+from src.council_sync import (
+    add_council_members,
+    fill_council_person_data_from_api,
+    fill_council_person_static_data,
+    sync_bill_updates,
+    update_all_sponsorships,
+)
 from src.models import db
 from src.person.models import CouncilMember, Person
 from src.sponsorship.models import CitySponsorship

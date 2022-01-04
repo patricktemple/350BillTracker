@@ -35,7 +35,6 @@ def senate_get(path: str, **params):
     return response.json()["result"]
 
 
-# todo put types on the args
 def _add_senate_sponsorships(bill, chamber_data):
     active_amendment = chamber_data["amendments"]["items"][
         chamber_data["activeVersion"]
@@ -58,7 +57,7 @@ def _add_senate_sponsorships(bill, chamber_data):
             )
 
 
-# dedupe with above?
+# Dedupe with above?
 def _add_assembly_sponsorships(bill, chamber_data):
     active_amendment = chamber_data["amendments"]["items"][
         chamber_data["activeVersion"]
@@ -91,20 +90,21 @@ def update_all_sponsorships():
     bills = StateBill.query.all()
     for bill in bills:
         _update_bill_sponsorships(bill)
-        # error handling
 
 
 def import_bill(session_year, base_print_no):
-    """TODO comment
-
-    this can insert duplicates but application logic should prevent that
+    """Looks up a bill in the State API and starts tracking it. In the state
+    API, a "bill" represents either a senate or assembly bill, with linkages
+    between the two. In our models, both senate and assembly are captured under
+    a single StateBill. Thus, this first looks up the requested senate or assembly
+    bill, and then it tries to find out the equivalent bill in the other chamber
+    and track that too.
     """
     initial_chamber_response = senate_get(
         f"bills/{session_year}/{base_print_no}", view="no_fulltext"
     )
 
-    # todo filter out resolutions
-
+    # TODO: Filter out resolutions?
     bill = Bill(
         type=Bill.BillType.STATE,
         name=initial_chamber_response["title"],
@@ -163,50 +163,52 @@ def import_bill(session_year, base_print_no):
 
 
 def add_state_representatives(session_year=CURRENT_SESSION_YEAR):
-    """TODO comment"""
-    members = senate_get(f"members/{session_year}?limit=1000&full=true")
-    for member in members["items"]:
-        member_id = member["memberId"]
-        if member["chamber"] == "ASSEMBLY":
-            person_type = Person.PersonType.ASSEMBLY_MEMBER
-            existing_member = AssemblyMember.query.filter_by(
-                state_member_id=member_id
-            ).one_or_none()
-        elif member["chamber"] == "SENATE":
-            person_type = Person.PersonType.SENATOR
-            existing_member = Senator.query.filter_by(
-                state_member_id=member_id
-            ).one_or_none()
-        else:
-            # ???
-            pass
+    """Queries the NY State API to retrieve all senators and assembly members
+    in the current session year. If they already exist in the DB, updates
+    their contact info."""
 
-        if existing_member:
-            logging.info(
-                f"Person {existing_member.person.name} already in DB, updating"
-            )
-            person = existing_member.person
-        else:
-            logging.info(f"Adding person {member['person']['fullName']}")
-            person = Person(type=person_type)
-            if person_type == Person.PersonType.ASSEMBLY_MEMBER:
-                person.assembly_member = AssemblyMember(
+    try:
+        members = senate_get(f"members/{session_year}?limit=1000&full=true")
+
+        for member in members["items"]:
+            member_id = member["memberId"]
+            if member["chamber"] == "ASSEMBLY":
+                person_type = Person.PersonType.ASSEMBLY_MEMBER
+                existing_member = AssemblyMember.query.filter_by(
                     state_member_id=member_id
-                )
+                ).one_or_none()
+            elif member["chamber"] == "SENATE":
+                person_type = Person.PersonType.SENATOR
+                existing_member = Senator.query.filter_by(
+                    state_member_id=member_id
+                ).one_or_none()
             else:
-                person.senator = Senator(state_member_id=member_id)
-            db.session.add(person)
+                # ???
+                pass
 
-        person.name = member["person"]["fullName"]
-        person.title = member["person"]["prefix"]
-        person.email = member["person"]["email"]
+            if existing_member:
+                logging.info(
+                    f"Person {existing_member.person.name} already in DB, updating"
+                )
+                person = existing_member.person
+            else:
+                logging.info(f"Adding person {member['person']['fullName']}")
+                person = Person(type=person_type)
+                if person_type == Person.PersonType.ASSEMBLY_MEMBER:
+                    person.assembly_member = AssemblyMember(
+                        state_member_id=member_id
+                    )
+                else:
+                    person.senator = Senator(state_member_id=member_id)
+                db.session.add(person)
 
-    db.session.commit()
+            person.name = member["person"]["fullName"]
+            person.title = member["person"]["prefix"]
+            person.email = member["person"]["email"]
 
-
-def fill_state_representative_static_data():
-    # TODO: Implement
-    pass
+        db.session.commit()
+    except Exception:
+        logging.exception("Unhandled exception when adding state representatives")
 
 
 def _convert_search_results(state_bill):
@@ -223,12 +225,13 @@ def _convert_search_results(state_bill):
         if input["billType"]["chamber"] == "SENATE"
         else StateChamber.ASSEMBLY,
     }
-    # active_amendment = input['amendments'][input['activeVersion']]
-    # if active_amendment['']
     return result
 
 
 def search_bills(code_name, session_year=None):
+    """Searches for a bill by print number and session year. Returns all
+    matching results.
+    """
     terms = [
         f"(basePrintNo:{code_name} OR printNo:{code_name})",
         "billType.resolution:false",

@@ -1,8 +1,10 @@
 from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
-from src.google_sheets import (_extract_data_from_previous_spreadsheet,
-                               create_power_hour)
+from src.google_sheets import (
+    _extract_data_from_previous_spreadsheet,
+    create_power_hour,
+)
 from src.models import db
 from src.person.models import CouncilMember, Person
 from src.sponsorship.models import CitySponsorship
@@ -39,7 +41,9 @@ def test_generate_google_sheet__no_import(
 
     db.session.add(
         CitySponsorship(
-            council_member_id=sponsor.id, bill_id=city_bill.id, sponsor_sequence=0
+            council_member_id=sponsor.id,
+            bill_id=city_bill.id,
+            sponsor_sequence=0,
         )
     )
     db.session.commit()
@@ -121,7 +125,9 @@ def test_generate_google_sheet__with_import(
 
     db.session.add(
         CitySponsorship(
-            council_member_id=sponsor.id, bill_id=city_bill.id, sponsor_sequence=0
+            council_member_id=sponsor.id,
+            bill_id=city_bill.id,
+            sponsor_sequence=0,
         )
     )
     db.session.commit()

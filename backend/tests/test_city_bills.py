@@ -78,7 +78,9 @@ def test_get_saved_bills(client):
 
 
 def test_delete_bill(client):
-    bill = Bill(name="name", description="description", type=Bill.BillType.CITY)
+    bill = Bill(
+        name="name", description="description", type=Bill.BillType.CITY
+    )
     bill.city_bill = CityBill(
         city_bill_id=1,
         file="file",
@@ -102,7 +104,12 @@ def test_delete_bill(client):
 
 def test_update_bill(client):
     bill_id = uuid4()
-    bill = Bill(id=bill_id, name="name", description="description", type=Bill.BillType.CITY)
+    bill = Bill(
+        id=bill_id,
+        name="name",
+        description="description",
+        type=Bill.BillType.CITY,
+    )
     bill.city_bill = CityBill(
         city_bill_id=1,
         file="file",
@@ -201,7 +208,9 @@ def test_save_bill(client):
 
 @responses.activate
 def test_save_bill__already_exists(client):
-    bill = Bill(name="name", description="description", type=Bill.BillType.CITY)
+    bill = Bill(
+        name="name", description="description", type=Bill.BillType.CITY
+    )
     bill.city_bill = CityBill(
         city_bill_id=1,
         file="file",
@@ -241,7 +250,9 @@ def test_lookup_bill_not_tracked(client):
 
 @responses.activate
 def test_lookup_bill_already_tracked(client):
-    bill = Bill(name="name", description="description", type=Bill.BillType.CITY)
+    bill = Bill(
+        name="name", description="description", type=Bill.BillType.CITY
+    )
     bill.city_bill = CityBill(
         city_bill_id=1,
         file="file",

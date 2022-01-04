@@ -2,8 +2,12 @@ from uuid import uuid4
 
 from src.bill.models import Bill, CityBill
 from src.models import db
-from src.person.models import CouncilMember, Person, Senator, AssemblyMember
-from src.sponsorship.models import CitySponsorship, SenateSponsorship, AssemblySponsorship
+from src.person.models import AssemblyMember, CouncilMember, Person, Senator
+from src.sponsorship.models import (
+    AssemblySponsorship,
+    CitySponsorship,
+    SenateSponsorship,
+)
 from src.utils import now
 
 from .utils import get_response_data
@@ -42,36 +46,47 @@ def test_get_city_bill_sponsorships(client, city_bill):
     assert response_data[1]["isSponsor"] == False
 
 
-def test_get_state_bill_sponsorships(client, state_bill, city_bill, snapshot, get_uuid):
-    # Ugh I should really have other decoy data in there as well to make sure it's not returned...
-    senate_non_sponsor = Person(id=get_uuid(),
-        name="Senate non sponsor", type=Person.PersonType.SENATOR
+def test_get_state_bill_sponsorships(
+    client, state_bill, city_bill, snapshot, get_uuid
+):
+    senate_non_sponsor = Person(
+        id=get_uuid(),
+        name="Senate non sponsor",
+        type=Person.PersonType.SENATOR,
     )
     senate_non_sponsor.senator = Senator(state_member_id=5)
     db.session.add(senate_non_sponsor)
 
-    senate_sponsor = Person(id=get_uuid(),
-        name="Senate sponsor", type=Person.PersonType.SENATOR
+    senate_sponsor = Person(
+        id=get_uuid(), name="Senate sponsor", type=Person.PersonType.SENATOR
     )
     senate_sponsor.senator = Senator(state_member_id=2)
     db.session.add(senate_sponsor)
 
-    assembly_non_sponsor = Person(id=get_uuid(),
-        name="Assembly non sponsor", type=Person.PersonType.ASSEMBLY_MEMBER
+    assembly_non_sponsor = Person(
+        id=get_uuid(),
+        name="Assembly non sponsor",
+        type=Person.PersonType.ASSEMBLY_MEMBER,
     )
     assembly_non_sponsor.assembly_member = AssemblyMember(state_member_id=50)
     db.session.add(assembly_non_sponsor)
 
-    assembly_sponsor = Person(id=get_uuid(),
-        name="Assembly sponsor", type=Person.PersonType.ASSEMBLY_MEMBER
+    assembly_sponsor = Person(
+        id=get_uuid(),
+        name="Assembly sponsor",
+        type=Person.PersonType.ASSEMBLY_MEMBER,
     )
     assembly_sponsor.assembly_member = AssemblyMember(state_member_id=1)
     db.session.add(assembly_sponsor)
 
-    senate_sponsorship = SenateSponsorship(senate_bill_id=state_bill.id, senator_id=senate_sponsor.id)
+    senate_sponsorship = SenateSponsorship(
+        senate_bill_id=state_bill.id, senator_id=senate_sponsor.id
+    )
     db.session.add(senate_sponsorship)
 
-    assembly_sponsorship = AssemblySponsorship(assembly_bill_id=state_bill.id, assembly_member_id=assembly_sponsor.id)
+    assembly_sponsorship = AssemblySponsorship(
+        assembly_bill_id=state_bill.id, assembly_member_id=assembly_sponsor.id
+    )
     db.session.add(assembly_sponsorship)
 
     db.session.commit()

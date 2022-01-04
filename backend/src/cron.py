@@ -27,10 +27,6 @@ def cron_command():
                 logging.info("Adding state reps")
                 state_api.add_state_representatives()  # todo exception handling
 
-                # logging.info("Filling state rep static data")
-                # state_api.fill_state_representative_static_data()
-                # TODO: Update state sponsorships, bill status
-
                 bill_snapshots = bill_notifications.snapshot_bills()
 
                 logging.info("Syncing all bill updates")

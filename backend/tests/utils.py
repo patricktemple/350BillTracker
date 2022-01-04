@@ -1,9 +1,9 @@
 import json
+from uuid import UUID
 
 from flask.testing import FlaskClient
 
 from src.auth import create_jwt
-from uuid import UUID
 
 
 class ApiClient(FlaskClient):
