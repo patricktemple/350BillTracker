@@ -118,8 +118,17 @@ export default function PersonDetailsPanel(props: Props) {
       {person.type === 'COUNCIL_MEMBER' && (
         <CouncilMemberDetails person={person} />
       )}
-      {(person.type === 'SENATOR' || person.type === 'ASSEMBLY_MEMBER') && (
-        <StateRepDetails person={person} />
+      {person.type === 'SENATOR' && (
+        <StateRepDetails
+          person={person}
+          representativeDetails={person.senator!}
+        />
+      )}
+      {person.type === 'ASSEMBLY_MEMBER' && (
+        <StateRepDetails
+          person={person}
+          representativeDetails={person.assemblyMember!}
+        />
       )}
       {person.type === 'STAFFER' ? (
         <StafferDetails person={person} />

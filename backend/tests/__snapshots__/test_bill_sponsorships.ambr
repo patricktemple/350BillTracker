@@ -3,6 +3,8 @@
     'assemblyNonSponsors': <class 'list'> [
       <class 'dict'> {
         'assemblyMember': <class 'dict'> {
+          'district': None,
+          'website': None,
         },
         'councilMember': None,
         'email': None,
@@ -20,6 +22,8 @@
     'assemblySponsors': <class 'list'> [
       <class 'dict'> {
         'assemblyMember': <class 'dict'> {
+          'district': None,
+          'website': None,
         },
         'councilMember': None,
         'email': None,
@@ -46,6 +50,8 @@
         'party': None,
         'phone': None,
         'senator': <class 'dict'> {
+          'district': None,
+          'website': None,
         },
         'title': None,
         'twitter': None,
@@ -63,6 +69,8 @@
         'party': None,
         'phone': None,
         'senator': <class 'dict'> {
+          'district': None,
+          'website': None,
         },
         'title': None,
         'twitter': None,
