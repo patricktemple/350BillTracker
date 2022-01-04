@@ -3,6 +3,8 @@ from werkzeug import exceptions
 
 from .app import app
 
+from . import settings
+
 
 @app.route("/healthz", methods=["GET"])
 def healthz():
@@ -22,6 +24,10 @@ def index(path):
 @app.after_request
 def after_request(response):
     response.headers['Content-Security-Policy'] = "default-src 'self'; style-src 'self' fonts.googleapis.com; font-src fonts.googleapis.com fonts.gstatic.com"
+    response.headers['X-Frame-Options'] = "DENY"
+
+    if not settings.DISABLE_STRICT_TRANSPORT_SECURITY:
+        response.headers['Strict-Transport-Security'] = "max-age=31536000"
     return response
 
 
