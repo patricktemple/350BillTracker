@@ -80,8 +80,8 @@ script/format
 ## Tracking a new state bill
 ![Tracking a new state bill](demo/track-state-bill.gif) 
 
-## Generating a power hour spreadsheet
-Each week, 350 Brooklyn runs phone bank sessions in which volunteers call the city
+## Generating a Power Hour spreadsheet
+Each week, 350 Brooklyn runs "Power Hour" phone bank sessions in which volunteers call the city
 council members for particular bills to ask them to sponsor the bill. We run these
 off a spreadsheet where volunteers log the results of each conversation. This tool
 autogenerates the sheets along with the latest sponsorship status and contact info.
