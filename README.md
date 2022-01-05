@@ -2,7 +2,7 @@
 
 ## Overview
 The 350 Bill Tracker is a web app made for 350.org's Brooklyn chapter to help them lobby for strong climate legislation in NYC and New York State. It's a centralized place for volunteers to keep track of the bills that the group is pushing
-and organize efforts to get them passed. It's hosted at 350billtracker.com but its use is locked down to organizers within the group. Some demos are displayed on this page below.
+and organize efforts to get them passed. It's hosted at [350billtracker.com](https://350billtracker.com) but its use is locked down to organizers within the group. Some demos are displayed on this page below.
 
 Key features:
 - Easily look up a bill from the NYC or NY State legislative data and start tracking it
