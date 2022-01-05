@@ -30,7 +30,7 @@ export default function useApiFetch() {
       return response.json();
     }
 
-    if (response.status === 401) {
+    if (response.status === 401 || response.status === 403) {
       // Assume that the token has expired. Refresh to be bounced to the login page.
       authContext.updateToken(null);
       window.location.reload();
