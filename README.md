@@ -2,7 +2,7 @@
 
 ## Overview
 The 350 Bill Tracker is a web app made for 350.org's Brooklyn chapter to help them lobby for strong climate legislation in NYC and New York State. It's a centralized place for volunteers to keep track of the bills that the group is pushing
-and organize efforts to get them passed. Its use is locked down to organizers within the group, but some demos are displayed below.
+and organize efforts to get them passed. It's hosted at 350billtracker.com but its use is locked down to organizers within the group. Some demos are displayed on this page below.
 
 Key features:
 - Easily look up a bill from the NYC or NY State legislative data and start tracking it
@@ -13,7 +13,7 @@ Key features:
 
 The main design principle is to keep it simple, and build only features that are useful and don't exist elsewhere. The city and state both already have websites displaying legislative info, and there's no point in recreating those. Along the same lines, a lot of activists work using simple tools like Google Sheets. We don't want to force too much of their workflow into this app instead, which has specific use cases in mind and requires software work to change.
 
-Instead, this tool provides specific time-saving features by pulling in information that's helpful to have tracked in one place. It isgs
+Instead, this tool provides specific time-saving features by pulling in information that's helpful to have tracked in one place. It is
  meant to work alongside 3rd party websites and spreadsheets, rather than replace them.
 
 
@@ -30,7 +30,7 @@ Backend:
 Frontend:
 - React and Typescript via Create React App
 - Styling is a messy mixture of React Bootstrap and handcrafted HTML/SASS
-- UX design by a software engineer whose only qualification is a few hours of Youtube videos 😱
+- UX design by a software engineer based on just a few hours Youtube videos 😱
 
 Deployment:
 - Hosted on Amazon Elastic Beanstalk
