@@ -39,12 +39,6 @@ def city_bill_sponsorships(bill_id):
         .order_by(CitySponsorship.sponsor_sequence)
         .all()
     )
-    if sponsorships and sponsorships[0].sponsor_sequence == 0:
-        lead_sponsor = sponsorships[0].person
-        sponsorships.pop(0)
-    else:
-        lead_sponsor = None
-
     non_sponsors = (
         Person.query.filter(
             Person.id.not_in([s.council_member_id for s in sponsorships])
@@ -53,6 +47,11 @@ def city_bill_sponsorships(bill_id):
         .order_by(Person.name)
         .all()
     )
+    if sponsorships and sponsorships[0].sponsor_sequence == 0:
+        lead_sponsor = sponsorships[0].person
+        sponsorships.pop(0)
+    else:
+        lead_sponsor = None
     return SponsorListSchema().jsonify(
         {
             "lead_sponsor": lead_sponsor,
