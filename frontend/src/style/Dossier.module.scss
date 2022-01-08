@@ -24,18 +24,20 @@ $scale: .03rem;
     color: white;
     // border: 1px solid white;
     margin: 30 * $scale;
+    padding-top: 10 * $scale;
     height: 80 * $scale;
-    font-size: 60 * $scale;
+    font-size: 58 * $scale;
     font-weight: bold;
+    text-transform: uppercase;
 }
 
 .image {
-    // border: (6 * $scale) solid $dossier-yellow;
+    border: (6 * $scale) solid $dossier-yellow;
     // width: 576 * $scale;
     height: 653 * $scale;
     margin-left: 30 * $scale;
     margin-right: 30 * $scale;
-    // border-radius: 0 (64 * $scale) 0 0;
+    border-radius: 0 (64 * $scale) 0 0;
 }
 
 .districtOverlay {
@@ -84,12 +86,7 @@ $scale: .03rem;
 
 .backSection {
     padding: (8 * $scale) (20 * $scale) (8 * $scale) (20 * $scale);
-    font-size: 20 * $scale;
-}
-
-.infoSection {
-    // background-color: white;
-    // padding: 20px;
+    font-size: 18 * $scale;
 }
 
 .sectionHeading {
@@ -117,6 +114,8 @@ $scale: .03rem;
 }
 
 .sectionBottom {
+    @extend .backSection;
+
     border-bottom-left-radius: 16 * $scale;
     border-bottom-right-radius: 16 * $scale;
     margin-bottom: 20 * $scale;
@@ -125,6 +124,27 @@ $scale: .03rem;
 .infoBody {
     @extend .sectionBody;
     @extend .sectionBottom;
+}
+
+.socialMediaSection {
+    @extend .backSection;
+
+    background-color: $dossier-light-blue;
+    border-top-left-radius: 16 * $scale;
+    border-bottom-right-radius: 16 * $scale;
+
+    margin-bottom: 20 * $scale;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.socialMediaLeft {
+    grid-column: 1;
+}
+
+.socialMediaRight {
+    grid-column: 2;
 }
 
 .bioHeading {
@@ -144,10 +164,13 @@ $scale: .03rem;
     background-color: $dossier-green;
     font-style: italic;
     font-weight: bold;
-    font-size: 18 * $scale;
+
     padding: 20 * $scale;
 }
 
 .email {
-    
+    text-align: center;
+    color: $dossier-light-blue;
+    font-size: 18 * $scale;
+    font-weight: bold;
 }

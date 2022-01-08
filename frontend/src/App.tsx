@@ -15,7 +15,10 @@ import { useLocation } from 'react-router-dom';
 import LoginFromTokenPage from './LoginFromTokenPage';
 import SettingsPage from './SettingsPage';
 import BillDetailsPage from './BillDetailsPage';
-import Dossier from './Dossier';
+import Dossier, { DossierPerson } from './Dossier';
+import Adams from './assets/adams.png';
+import Justin from './assets/justin.png'
+
 
 function AppContent() {
   const authContext = useContext(AuthContext);
@@ -83,7 +86,37 @@ function AppContent() {
 }
 
 function App() {
-  return <Dossier />;
+  const dossierPerson: DossierPerson = {
+    name: "Adrienne Adams",
+    district: 28,
+    borough: "Queens",
+    neighborhoods: "Jamaica, Richmond Hill, Rochdale Village, South Ozone Park",
+    party: "Democrat",
+    twitter: "CMAdrienneAdams",
+    title: "Speaker",
+    bio: "Before helming Community Board 12 and being elected CM was a former Corporate Trainer who worked in Human Capital Management at several Fortune 500 corporations, specializing in Executive Training and Telecom Management. Served as a Child Development Associate Instructor, training child care professionals.",
+    priorities: "Seeing the city through the pandemic and working to strengthen families that have been damaged in its wake.",
+    otherNotes: "Strong education focus. Attended same high school as Mayor Adams. An AKA. Attended Spelman as did CM Hudson.",
+    quote: "“All roads lead through this pandemic,” she said. “When I think of my priorities, I think of rebuilding a city.” ",
+    email: "AEAdams@council.nyc.gov",
+    image: Adams,
+  }
+  const justin = {
+    name: "Justin Brannan",
+    district: 43,
+    borough: "Brooklyn",
+    neighborhoods: "Bay Ridge",
+    party: "Democrat",
+    twitter: "JustinBrannan",
+    title: "Guitarist",
+    bio: 'Before entering politics, Justin Brannan was a hardcore punk guitarist for the bands Indecision from 1993 to 2000 and Most Precious Blood from 2000 onwards. Both bands were known for their outspoken commitment to social justice and vegetarianism. Indecision is widely known for their song "Hallowed be Thy Name". The song features a lyric ("For Those I Love I Will Sacrifice") wrote by Brannan when he was sixteen years old that fans across the world have turned into a tattoo.',
+    priorities: "Public schools, homelessness, protecting new immigrants, the opioid epidemic, and income inequality.",
+    otherNotes: "Brannan also founded the deathgrind band Caninus, known for using two dogs as vocalists.",
+    quote: "“Who should I die for, who will collapse me, FOR THOSE I LOVE I WILL SACRIFICE, Hallowed be thy name”",
+    email: "JustinBrannan@council.nyc.gov",
+    image: Justin
+  }
+  return <div><Dossier dossierPerson={dossierPerson}/><Dossier dossierPerson={justin} /></div>
   // return (
   //   <AuthContextProvider>
   //     <Router>
