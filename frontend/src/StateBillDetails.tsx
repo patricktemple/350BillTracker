@@ -1,26 +1,25 @@
 import React, { useState } from 'react';
-import { Bill, StateBillSponsorships, Person } from './types';
+import { Bill, StateBillSponsorships, Person, SponsorList } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import useApiFetch from './useApiFetch';
 import BillSponsorList from './BillSponsorList';
 import { StateChamberBill } from './types';
 import Accordion from 'react-bootstrap/Accordion';
+import BillSponsorItem from './BillSponsorItem';
 
 import styles from './style/StateBillDetails.module.scss';
 
 interface ChamberProps {
   chamber: string;
   chamberDetails: StateChamberBill | null;
-  sponsors?: Person[];
-  nonSponsors?: Person[];
+  sponsorships?: SponsorList;
   twitterSearchTerms: string[];
 }
 
 function ChamberDetails({
   chamber,
   chamberDetails,
-  sponsors,
-  nonSponsors,
+  sponsorships,
   twitterSearchTerms
 }: ChamberProps) {
   return (
@@ -60,14 +59,26 @@ function ChamberDetails({
               >
                 View on Assembly website
               </a>
+              <div className="mt-2">
+                <span style={{ fontWeight: 'bold' }}>Lead sponsor: </span>
+                {sponsorships?.leadSponsor && (
+                  <BillSponsorItem
+                    person={sponsorships.leadSponsor}
+                    twitterSearchTerms={twitterSearchTerms}
+                  />
+                )}
+              </div>
             </div>
             <div className={styles.sponsorList}>
               <span style={{ fontWeight: 'bold' }}>
-                Sponsors{sponsors != null && <> ({sponsors.length})</>}
+                Co-sponsors
+                {sponsorships != null && (
+                  <> ({sponsorships.cosponsors.length})</>
+                )}
               </span>
-              {sponsors != null ? (
+              {sponsorships != null ? (
                 <BillSponsorList
-                  persons={sponsors}
+                  persons={sponsorships.cosponsors}
                   twitterSearchTerms={twitterSearchTerms}
                 />
               ) : (
@@ -77,11 +88,13 @@ function ChamberDetails({
             <div className={styles.nonSponsorList}>
               <span style={{ fontWeight: 'bold' }}>
                 Non-sponsors
-                {nonSponsors != null && <> ({nonSponsors.length})</>}
+                {sponsorships != null && (
+                  <> ({sponsorships.nonSponsors.length})</>
+                )}
               </span>
-              {nonSponsors != null ? (
+              {sponsorships != null ? (
                 <BillSponsorList
-                  persons={nonSponsors}
+                  persons={sponsorships.nonSponsors}
                   twitterSearchTerms={twitterSearchTerms}
                 />
               ) : (
@@ -116,15 +129,13 @@ export default function StateBillDetails({ bill, twitterSearchTerms }: Props) {
       <ChamberDetails
         chamber="Senate"
         chamberDetails={bill.stateBill!.senateBill}
-        sponsors={sponsorships?.senateSponsors}
-        nonSponsors={sponsorships?.senateNonSponsors}
+        sponsorships={sponsorships?.senateSponsorships}
         twitterSearchTerms={twitterSearchTerms}
       />
       <ChamberDetails
         chamber="Assembly"
         chamberDetails={bill.stateBill!.assemblyBill}
-        sponsors={sponsorships?.assemblySponsors}
-        nonSponsors={sponsorships?.assemblyNonSponsors}
+        sponsorships={sponsorships?.assemblySponsorships}
         twitterSearchTerms={twitterSearchTerms}
       />
     </Accordion>

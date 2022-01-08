@@ -1,26 +1,9 @@
 # name: test_get_state_bill_sponsorships
   <class 'dict'> {
-    'assemblyNonSponsors': <class 'list'> [
-      <class 'dict'> {
-        'assemblyMember': <class 'dict'> {
-          'district': None,
-          'website': None,
-        },
-        'councilMember': None,
-        'email': None,
-        'id': '00000000-0000-0000-0000-000000000004',
-        'name': 'Assembly non sponsor',
-        'notes': None,
-        'party': None,
-        'phone': None,
-        'senator': None,
-        'title': None,
-        'twitter': None,
-        'type': 'ASSEMBLY_MEMBER',
-      },
-    ],
-    'assemblySponsors': <class 'list'> [
-      <class 'dict'> {
+    'assemblySponsorships': <class 'dict'> {
+      'cosponsors': <class 'list'> [
+      ],
+      'leadSponsor': <class 'dict'> {
         'assemblyMember': <class 'dict'> {
           'district': None,
           'website': None,
@@ -28,7 +11,7 @@
         'councilMember': None,
         'email': None,
         'id': '00000000-0000-0000-0000-000000000005',
-        'name': 'Assembly sponsor',
+        'name': 'Assembly lead sponsor',
         'notes': None,
         'party': None,
         'phone': None,
@@ -37,45 +20,66 @@
         'twitter': None,
         'type': 'ASSEMBLY_MEMBER',
       },
-    ],
-    'billId': '00000000-0000-0000-0000-000000000001',
-    'senateNonSponsors': <class 'list'> [
-      <class 'dict'> {
-        'assemblyMember': None,
-        'councilMember': None,
-        'email': None,
-        'id': '00000000-0000-0000-0000-000000000002',
-        'name': 'Senate non sponsor',
-        'notes': None,
-        'party': None,
-        'phone': None,
-        'senator': <class 'dict'> {
-          'district': None,
-          'website': None,
+      'nonSponsors': <class 'list'> [
+        <class 'dict'> {
+          'assemblyMember': <class 'dict'> {
+            'district': None,
+            'website': None,
+          },
+          'councilMember': None,
+          'email': None,
+          'id': '00000000-0000-0000-0000-000000000004',
+          'name': 'Assembly non sponsor',
+          'notes': None,
+          'party': None,
+          'phone': None,
+          'senator': None,
+          'title': None,
+          'twitter': None,
+          'type': 'ASSEMBLY_MEMBER',
         },
-        'title': None,
-        'twitter': None,
-        'type': 'SENATOR',
-      },
-    ],
-    'senateSponsors': <class 'list'> [
-      <class 'dict'> {
-        'assemblyMember': None,
-        'councilMember': None,
-        'email': None,
-        'id': '00000000-0000-0000-0000-000000000003',
-        'name': 'Senate sponsor',
-        'notes': None,
-        'party': None,
-        'phone': None,
-        'senator': <class 'dict'> {
-          'district': None,
-          'website': None,
+      ],
+    },
+    'senateSponsorships': <class 'dict'> {
+      'cosponsors': <class 'list'> [
+        <class 'dict'> {
+          'assemblyMember': None,
+          'councilMember': None,
+          'email': None,
+          'id': '00000000-0000-0000-0000-000000000003',
+          'name': 'Senate sponsor',
+          'notes': None,
+          'party': None,
+          'phone': None,
+          'senator': <class 'dict'> {
+            'district': None,
+            'website': None,
+          },
+          'title': None,
+          'twitter': None,
+          'type': 'SENATOR',
         },
-        'title': None,
-        'twitter': None,
-        'type': 'SENATOR',
-      },
-    ],
+      ],
+      'leadSponsor': None,
+      'nonSponsors': <class 'list'> [
+        <class 'dict'> {
+          'assemblyMember': None,
+          'councilMember': None,
+          'email': None,
+          'id': '00000000-0000-0000-0000-000000000002',
+          'name': 'Senate non sponsor',
+          'notes': None,
+          'party': None,
+          'phone': None,
+          'senator': <class 'dict'> {
+            'district': None,
+            'website': None,
+          },
+          'title': None,
+          'twitter': None,
+          'type': 'SENATOR',
+        },
+      ],
+    },
   }
 ---

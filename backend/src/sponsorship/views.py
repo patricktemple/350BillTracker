@@ -7,8 +7,8 @@ from ..bill.models import CityBill, StateBill
 from ..person.models import AssemblyMember, Person, Senator
 from .models import AssemblySponsorship, CitySponsorship, SenateSponsorship
 from .schema import (
-    CityBillSponsorshipSchema,
     CouncilMemberSponsorshipSchema,
+    SponsorListSchema,
     StateBillSponsorshipsSchema,
 )
 
@@ -39,11 +39,6 @@ def city_bill_sponsorships(bill_id):
         .order_by(CitySponsorship.sponsor_sequence)
         .all()
     )
-    for sponsorship in sponsorships:
-        # This is not a field on the SQLA object, but we set it so that it gets
-        # serialized into the response.
-        sponsorship.is_sponsor = True
-
     non_sponsors = (
         Person.query.filter(
             Person.id.not_in([s.council_member_id for s in sponsorships])
@@ -52,16 +47,17 @@ def city_bill_sponsorships(bill_id):
         .order_by(Person.name)
         .all()
     )
-    non_sponsorships = [
+    if sponsorships and sponsorships[0].sponsor_sequence == 0:
+        lead_sponsor = sponsorships[0].person
+        sponsorships.pop(0)
+    else:
+        lead_sponsor = None
+    return SponsorListSchema().jsonify(
         {
-            "bill_id": bill_id,
-            "is_sponsor": False,
-            "person": person,
+            "lead_sponsor": lead_sponsor,
+            "cosponsors": [s.person for s in sponsorships],
+            "non_sponsors": non_sponsors,
         }
-        for person in non_sponsors
-    ]
-    return CityBillSponsorshipSchema(many=True).jsonify(
-        sponsorships + non_sponsorships
     )
 
 
@@ -77,6 +73,15 @@ def state_bill_sponsorships(bill_id):
         .options(joinedload(SenateSponsorship.senator))
         .all()
     )
+    senate_cosponsors = (
+        s.senator.person for s in senate_sponsorships if not s.is_lead_sponsor
+    )
+    senate_lead_sponsor_list = [
+        s.senator.person for s in senate_sponsorships if s.is_lead_sponsor
+    ]
+    senate_lead_sponsor = (
+        senate_lead_sponsor_list[0] if senate_lead_sponsor_list else None
+    )
     senate_non_sponsors = Senator.query.filter(
         Senator.person_id.not_in([s.senator_id for s in senate_sponsorships])
     ).all()
@@ -85,6 +90,19 @@ def state_bill_sponsorships(bill_id):
         AssemblySponsorship.query.filter_by(assembly_bill_id=bill_id)
         .options(joinedload(AssemblySponsorship.assembly_member))
         .all()
+    )
+    assembly_cosponsors = (
+        s.assembly_member.person
+        for s in assembly_sponsorships
+        if not s.is_lead_sponsor
+    )
+    assembly_lead_sponsor_list = [
+        s.assembly_member.person
+        for s in assembly_sponsorships
+        if s.is_lead_sponsor
+    ]
+    assembly_lead_sponsor = (
+        assembly_lead_sponsor_list[0] if assembly_lead_sponsor_list else None
     )
     assembly_non_sponsors = AssemblyMember.query.filter(
         AssemblyMember.person_id.not_in(
@@ -95,11 +113,15 @@ def state_bill_sponsorships(bill_id):
     return StateBillSponsorshipsSchema().jsonify(
         {
             "bill_id": bill_id,
-            "senate_sponsors": (s.senator.person for s in senate_sponsorships),
-            "senate_non_sponsors": (s.person for s in senate_non_sponsors),
-            "assembly_sponsors": (
-                s.assembly_member.person for s in assembly_sponsorships
-            ),
-            "assembly_non_sponsors": (a.person for a in assembly_non_sponsors),
+            "senate_sponsorships": {
+                "lead_sponsor": senate_lead_sponsor,
+                "cosponsors": senate_cosponsors,
+                "non_sponsors": (s.person for s in senate_non_sponsors),
+            },
+            "assembly_sponsorships": {
+                "lead_sponsor": assembly_lead_sponsor,
+                "cosponsors": assembly_cosponsors,
+                "non_sponsors": (a.person for a in assembly_non_sponsors),
+            },
         }
     )

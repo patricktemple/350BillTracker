@@ -10,18 +10,12 @@ class CouncilMemberSponsorshipSchema(CamelCaseSchema):
     bill = fields.Nested(BillSchema)
 
 
-# TODO: Separate out positive and negative sponsors into different types, this gets ugly
-class CityBillSponsorshipSchema(CamelCaseSchema):
-    bill_id = fields.UUID(required=True)
-    person = fields.Nested(PersonSchema)
-    is_sponsor = fields.Boolean()
-    sponsor_sequence = fields.Integer()
+class SponsorListSchema(CamelCaseSchema):
+    lead_sponsor = fields.Nested(PersonSchema)
+    cosponsors = fields.List(fields.Nested(PersonSchema))
+    non_sponsors = fields.List(fields.Nested(PersonSchema))
 
 
 class StateBillSponsorshipsSchema(CamelCaseSchema):
-    bill_id = fields.UUID(required=True)
-    senate_sponsors = fields.List(fields.Nested(PersonSchema))
-    senate_non_sponsors = fields.List(fields.Nested(PersonSchema))
-
-    assembly_sponsors = fields.List(fields.Nested(PersonSchema))
-    assembly_non_sponsors = fields.List(fields.Nested(PersonSchema))
+    senate_sponsorships = fields.Nested(SponsorListSchema)
+    assembly_sponsorships = fields.Nested(SponsorListSchema)
