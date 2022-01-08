@@ -18,3 +18,4 @@ boto3
 freezegun
 syrupy
 marshmallow-enum
+bs4
