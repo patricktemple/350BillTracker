@@ -3,48 +3,131 @@ import requests
 
 import re
 
-senator_list_html = requests.get('https://www.nysenate.gov/senators-committees').text
+from src.app import app
+from src.person.models import Person, Senator, AssemblyMember
 
-url_root = "https://www.nysenate.gov"
+def get_senate_data():
+    senator_list_html = requests.get('https://www.nysenate.gov/senators-committees').text
 
-list_soup = BeautifulSoup(senator_list_html)
+    url_root = "https://www.nysenate.gov"
 
-senator_urls = set()
-for link in list_soup.find_all('a'):
-    href = link.get('href')
-    if href is not None and href.startswith('/senators/'):
-        senator_urls.add(url_root + href + "/contact")
+    list_soup = BeautifulSoup(senator_list_html)
 
-# print(senator_urls)
+    senator_urls = set()
+    for link in list_soup.find_all('a'):
+        href = link.get('href')
+        if href is not None and href.startswith('/senators/'):
+            senator_urls.add(url_root + href + "/contact")
 
-def extract_contact_info(address_section):
-    phone = address_section.find('span', string="Phone: ")
-    fax = address_section.find('span', string="Fax: ")
-    return {
-        "phone": phone and phone.next_sibling,
-        "fax": fax and fax.next_sibling,
-    }
+    # print(senator_urls)
 
-for contact_url in senator_urls:
-    print(contact_url)
-    contact_page = requests.get(contact_url).text
-    contact_soup = BeautifulSoup(contact_page)
-    address_tags = contact_soup.find_all('div', class_='location vcard')
-    district = [t for t in address_tags if 'district office' in str(t).lower()]
-    albany = [t for t in address_tags if 'albany office' in str(t).lower()]
+    def extract_contact_info(address_section):
+        phone = address_section.find('span', string="Phone: ")
+        fax = address_section.find('span', string="Fax: ")
+        return {
+            "phone": phone and phone.next_sibling,
+            "fax": fax and fax.next_sibling,
+        }
 
-    email = contact_soup.find('div', class_='c-block--senator-email').find('div', class_='field-content').find('a').string
+    output = {}
 
-    results = {
-        "email": email,
-        "district": [],
-        "albany": [],
-        "name": contact_soup.find('span', class_="c-senator-hero--name").find('a').string
-    }
-    for d in district:
-        results['district'].append(extract_contact_info(d))
-    
-    for a in albany:
-        results['albany'].append(extract_contact_info(a))
-    
-    print(results)
+    for contact_url in senator_urls:
+        print(contact_url)
+        contact_page = requests.get(contact_url).text
+        contact_soup = BeautifulSoup(contact_page)
+        district = contact_soup.find_all('a', href=lambda href: href and href.startswith('/district/'))[0]['href'][len('/district/'):]
+        # print(district)
+        address_tags = contact_soup.find_all('div', class_='location vcard')
+        district_tags = [t for t in address_tags if 'district office' in str(t).lower()]
+        albany_tags = [t for t in address_tags if 'albany office' in str(t).lower()]
+
+        email = contact_soup.find('div', class_='c-block--senator-email').find('div', class_='field-content').find('a').string
+
+        results = {
+            "email": email,
+            "district_contact": [],
+            "albany_contact": [],
+            "name": contact_soup.find('span', class_="c-senator-hero--name").find('a').string,
+            "website": contact_url,
+            "district": district
+        }
+        for d in district_tags:
+            results['district_contact'].append(extract_contact_info(d))
+        
+        for a in albany_tags:
+            results['albany_contact'].append(extract_contact_info(a))
+        
+        output[results['district']] = results
+
+    return output
+
+
+def get_assembly_data():
+    assembly_list_html = requests.get('https://www.nyassembly.gov/mem').text
+    # print(assembly_list_html)
+
+    soup = BeautifulSoup(assembly_list_html)
+
+    items = soup.find_all('section', class_='mem-item')
+    print(len(items))
+
+    output = {}
+    for item in items:
+        # print(item)
+        result = {}
+        info = item.find('div', class_='mem-info')
+        result['name'] = next(info.find('h3', class_='mem-name').find('a').strings).strip()
+        email_container = info.find('div', class_='mem-email')
+        result['email'] = email_container and email_container.find('a').string.strip()
+        address = item.find('div', class_='mem-address')
+        addresses = item.find_all('div', class_='full-addr notranslate')
+
+        district_result = re.compile('District (\d+)').search(str(item))
+        result['district'] = district_result and district_result.group(1)
+
+        result['district_contact'] = []
+        result['albany_contact'] = []
+        for address in addresses:
+            lines = list(address.strings)
+            addr = {}
+            for line in lines:
+                phone_re = re.compile('\d{3}-\d{3}-\d{4}')
+                if re_result := phone_re.search(str(line)):
+                    if 'Fax' in line:
+                        addr['fax'] = re_result.group()
+                    else:
+                        addr['phone'] = re_result.group()
+            if 'LOB' in lines[0]:
+                result['albany_contact'].append(addr)
+            else:
+                result['district_contact'].append(addr)
+        
+        output[result['district']] = result
+    return output
+
+data = {'senate': get_senate_data(), 'assembly': get_assembly_data()}
+# print(get_assembly_data())
+
+print("senate\n\n")
+senators = Senator.query.all()
+for senator in senators:
+    matching_item = data['senate'][str(senator.district)]
+    print({
+        "db_name": senator.person.name,
+        "db_district": senator.district,
+        "scrape_name": matching_item['name']
+    })
+
+
+print("assembly\n\n")
+assembly_members = AssemblyMember.query.all()
+for member in assembly_members:
+    matching_item = data['assembly'].get(str(member.district))
+    if not matching_item:
+        print(f"no matching item for {member.person.name}")
+        continue
+    print({
+        "db_name": member.person.name,
+        "db_district": member.district,
+        "scrape_name": matching_item['name']
+    })
