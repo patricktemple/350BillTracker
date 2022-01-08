@@ -20,7 +20,7 @@ class SponsorListSchema(CamelCaseSchema):
 
 class StateBillSponsorshipsSchema(CamelCaseSchema):
     senate_sponsorships = fields.Nested(SponsorListSchema)
-    assembly_sponsors = fields.Nested(SponsorListSchema)
+    assembly_sponsorships = fields.Nested(SponsorListSchema)
 
 
 # As I fix this lead sponsor issue, should really take the time to unify the two representations of sponsorships here too.

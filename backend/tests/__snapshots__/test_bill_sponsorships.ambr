@@ -1,5 +1,45 @@
 # name: test_get_state_bill_sponsorships
   <class 'dict'> {
+    'assemblySponsorships': <class 'dict'> {
+      'cosponsors': <class 'list'> [
+      ],
+      'leadSponsor': <class 'dict'> {
+        'assemblyMember': <class 'dict'> {
+          'district': None,
+          'website': None,
+        },
+        'councilMember': None,
+        'email': None,
+        'id': '00000000-0000-0000-0000-000000000005',
+        'name': 'Assembly lead sponsor',
+        'notes': None,
+        'party': None,
+        'phone': None,
+        'senator': None,
+        'title': None,
+        'twitter': None,
+        'type': 'ASSEMBLY_MEMBER',
+      },
+      'nonSponsors': <class 'list'> [
+        <class 'dict'> {
+          'assemblyMember': <class 'dict'> {
+            'district': None,
+            'website': None,
+          },
+          'councilMember': None,
+          'email': None,
+          'id': '00000000-0000-0000-0000-000000000004',
+          'name': 'Assembly non sponsor',
+          'notes': None,
+          'party': None,
+          'phone': None,
+          'senator': None,
+          'title': None,
+          'twitter': None,
+          'type': 'ASSEMBLY_MEMBER',
+        },
+      ],
+    },
     'senateSponsorships': <class 'dict'> {
       'cosponsors': <class 'list'> [
         <class 'dict'> {

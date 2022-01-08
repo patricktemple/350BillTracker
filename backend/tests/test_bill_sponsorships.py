@@ -81,7 +81,7 @@ def test_get_state_bill_sponsorships(
 
     assembly_sponsor = Person(
         id=get_uuid(),
-        name="Assembly sponsor",
+        name="Assembly lead sponsor",
         type=Person.PersonType.ASSEMBLY_MEMBER,
     )
     assembly_sponsor.assembly_member = AssemblyMember(state_member_id=1)
