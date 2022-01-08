@@ -60,7 +60,7 @@ function ChamberDetails({
                 View on Assembly website
               </a>
               <div className="mt-2">
-              <span style={{fontWeight: 'bold' }}>Lead sponsor</span>: {sponsorships?.leadSponsor && <BillSponsorItem person={sponsorships.leadSponsor} twitterSearchTerms={twitterSearchTerms} />}
+              <span style={{fontWeight: 'bold' }}>Lead sponsor: </span>{sponsorships?.leadSponsor && <BillSponsorItem person={sponsorships.leadSponsor} twitterSearchTerms={twitterSearchTerms} />}
             </div>
             </div>
             <div className={styles.sponsorList}>
