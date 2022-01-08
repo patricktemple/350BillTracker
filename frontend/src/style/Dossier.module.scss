@@ -1,0 +1,153 @@
+$dossier-blue: #0f81e8;
+$dossier-black: #17292e;
+$dossier-green: #9ddf46;
+$dossier-teal: #40d7d4;
+$dossier-light-blue: #e6f0fa;
+$dossier-yellow: #ffc700;
+
+$scale: .03rem;
+
+.root {
+
+}
+
+.card {
+    position: relative;
+    margin-top: 30px;
+    background-color: $dossier-blue;
+    width: 640 * $scale;
+    height: 890 * $scale;
+}
+
+.title {
+    text-align: center;
+    color: white;
+    // border: 1px solid white;
+    margin: 30 * $scale;
+    height: 80 * $scale;
+    font-size: 60 * $scale;
+    font-weight: bold;
+}
+
+.image {
+    // border: (6 * $scale) solid $dossier-yellow;
+    // width: 576 * $scale;
+    height: 653 * $scale;
+    margin-left: 30 * $scale;
+    margin-right: 30 * $scale;
+    // border-radius: 0 (64 * $scale) 0 0;
+}
+
+.districtOverlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 345 * $scale;
+    height: 188 * $scale;
+    border-top: (6 * $scale) solid $dossier-green;
+    border-right: (6 * $scale) solid $dossier-green;
+    border-top-right-radius: 96 * $scale;
+    background-color: white;
+    padding: 24 * $scale;
+}
+
+.districtHeading {
+    color: $dossier-blue;
+    font-size: 40 * $scale;
+    font-weight: bold;
+}
+
+.districtSubheading {
+    font-weight: bold;
+    font-size: 28 * $scale;
+}
+
+.districtNeighborhoods {
+    font-style: italic;
+    font-size: 18 * $scale;
+}
+
+.party {
+    color: $dossier-light-blue;
+    position: absolute;
+    right: 30 * $scale;
+    bottom: 30 * $scale;
+    font-size: 35 * $scale;
+    font-weight: bold;
+}
+
+.backCard {
+    @extend .card;
+
+    padding: 20 * $scale;
+}
+
+.backSection {
+    padding: (8 * $scale) (20 * $scale) (8 * $scale) (20 * $scale);
+    font-size: 20 * $scale;
+}
+
+.infoSection {
+    // background-color: white;
+    // padding: 20px;
+}
+
+.sectionHeading {
+    @extend .backSection;
+
+    border-top-left-radius: 16 * $scale;
+    border-top-right-radius: 16 * $scale;
+    font-weight: bold;
+}
+
+.infoHeading {
+    @extend .sectionHeading;
+
+    background-color: $dossier-yellow;
+}
+
+.sectionBody {
+    @extend .backSection;
+
+    background-color: white;
+
+    > p {
+        margin-bottom: 15 * $scale;
+    }
+}
+
+.sectionBottom {
+    border-bottom-left-radius: 16 * $scale;
+    border-bottom-right-radius: 16 * $scale;
+    margin-bottom: 20 * $scale;
+}
+
+.infoBody {
+    @extend .sectionBody;
+    @extend .sectionBottom;
+}
+
+.bioHeading {
+    @extend .sectionHeading;
+    background-color: $dossier-teal;
+    
+}
+
+.bioBody {
+    @extend .sectionBody;
+    border-radius: 0;
+}
+
+.quote {
+    @extend .sectionBottom;
+
+    background-color: $dossier-green;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 18 * $scale;
+    padding: 20 * $scale;
+}
+
+.email {
+    
+}

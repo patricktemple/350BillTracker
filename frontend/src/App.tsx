@@ -15,6 +15,7 @@ import { useLocation } from 'react-router-dom';
 import LoginFromTokenPage from './LoginFromTokenPage';
 import SettingsPage from './SettingsPage';
 import BillDetailsPage from './BillDetailsPage';
+import Dossier from './Dossier';
 
 function AppContent() {
   const authContext = useContext(AuthContext);
@@ -82,13 +83,14 @@ function AppContent() {
 }
 
 function App() {
-  return (
-    <AuthContextProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </AuthContextProvider>
-  );
+  return <Dossier />;
+  // return (
+  //   <AuthContextProvider>
+  //     <Router>
+  //       <AppContent />
+  //     </Router>
+  //   </AuthContextProvider>
+  // );
 }
 
 export default App;
