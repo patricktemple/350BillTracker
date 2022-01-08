@@ -74,6 +74,9 @@ def state_bill_sponsorships(bill_id):
         .options(joinedload(SenateSponsorship.senator))
         .all()
     )
+    senate_cosponsors = (s.senator.person for s in senate_sponsorships if not s.is_lead_sponsor)
+    senate_lead_sponsor_list = [s.senator.person for s in senate_sponsorships if s.is_lead_sponsor]
+    senate_lead_sponsor = senate_lead_sponsor_list[0] if senate_lead_sponsor_list else None
     senate_non_sponsors = Senator.query.filter(
         Senator.person_id.not_in([s.senator_id for s in senate_sponsorships])
     ).all()
@@ -83,6 +86,9 @@ def state_bill_sponsorships(bill_id):
         .options(joinedload(AssemblySponsorship.assembly_member))
         .all()
     )
+    assembly_cosponsors = (s.assembly_member.person for s in assembly_sponsorships if not s.is_lead_sponsor)
+    assembly_lead_sponsor_list = [s.assembly_member.person for s in assembly_sponsorships if s.is_lead_sponsor]
+    assembly_lead_sponsor = assembly_lead_sponsor_list[0] if assembly_lead_sponsor_list else None
     assembly_non_sponsors = AssemblyMember.query.filter(
         AssemblyMember.person_id.not_in(
             [s.assembly_member_id for s in assembly_sponsorships]
@@ -93,11 +99,13 @@ def state_bill_sponsorships(bill_id):
         {
             "bill_id": bill_id,
             "senate_sponsorships": {
-                "cosponsors": (s.senator.person for s in senate_sponsorships),
+                "lead_sponsor": senate_lead_sponsor,
+                "cosponsors": senate_cosponsors,
                 "non_sponsors": (s.person for s in senate_non_sponsors),
             },
             "assembly_sponsorships": {
-                "cosponsors": (s.assembly_member.person for s in assembly_sponsorships),
+                "lead_sponsor": assembly_lead_sponsor,
+                "cosponsors": assembly_cosponsors,
                 "non_sponsors": (a.person for a in assembly_non_sponsors),
             }
         }

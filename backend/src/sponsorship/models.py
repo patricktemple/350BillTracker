@@ -9,6 +9,7 @@ from sqlalchemy import (
     select,
 )
 from sqlalchemy.orm import column_property, foreign, relationship, remote
+from sqlalchemy.sql.sqltypes import Boolean
 
 from ..bill.models import AssemblyBill, Bill, CityBill, SenateBill
 from ..models import TIMESTAMP, UUID, db
@@ -93,7 +94,7 @@ class SenateSponsorship(db.Model):
     )
     senator = relationship(Senator, back_populates="sponsorships")
 
-    # TODO: Add sponsor_sequence like we have with city, if needed
+    is_lead_sponsor = Column(Boolean, nullable=False)
 
 
 class AssemblySponsorship(db.Model):
@@ -116,7 +117,7 @@ class AssemblySponsorship(db.Model):
         AssemblyMember, back_populates="sponsorships"
     )
 
-    # TODO: Add sponsor_sequence like we have with city, if needed
+    is_lead_sponsor = Column(Boolean, nullable=False)
 
 
 # This may be inefficient because it loads this on every bill even if these fields aren't needed

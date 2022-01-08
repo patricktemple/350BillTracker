@@ -5,6 +5,7 @@ import useApiFetch from './useApiFetch';
 import BillSponsorList from './BillSponsorList';
 import { StateChamberBill } from './types';
 import Accordion from 'react-bootstrap/Accordion';
+import BillSponsorItem from './BillSponsorItem';
 
 import styles from './style/StateBillDetails.module.scss';
 
@@ -58,6 +59,9 @@ function ChamberDetails({
               >
                 View on Assembly website
               </a>
+              <div className="mt-2">
+              <span style={{fontWeight: 'bold' }}>Lead sponsor</span>: {sponsorships?.leadSponsor && <BillSponsorItem person={sponsorships.leadSponsor} twitterSearchTerms={twitterSearchTerms} />}
+            </div>
             </div>
             <div className={styles.sponsorList}>
               <span style={{ fontWeight: 'bold' }}>
