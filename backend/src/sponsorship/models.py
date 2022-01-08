@@ -15,6 +15,10 @@ from ..models import TIMESTAMP, UUID, db
 from ..person.models import AssemblyMember, CouncilMember, Person, Senator
 
 
+# class SponsorshipMixin(db.Model):
+
+
+
 class CitySponsorship(db.Model):
     __tablename__ = "city_sponsorships"
 

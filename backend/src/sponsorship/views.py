@@ -7,7 +7,7 @@ from ..bill.models import CityBill, StateBill
 from ..person.models import AssemblyMember, Person, Senator
 from .models import AssemblySponsorship, CitySponsorship, SenateSponsorship
 from .schema import (
-    CityBillSponsorshipSchema,
+    SponsorListSchema,
     CouncilMemberSponsorshipSchema,
     StateBillSponsorshipsSchema,
 )
@@ -39,10 +39,11 @@ def city_bill_sponsorships(bill_id):
         .order_by(CitySponsorship.sponsor_sequence)
         .all()
     )
-    for sponsorship in sponsorships:
-        # This is not a field on the SQLA object, but we set it so that it gets
-        # serialized into the response.
-        sponsorship.is_sponsor = True
+    if sponsorships and sponsorships[0].sponsor_sequence == 0:
+        lead_sponsor = sponsorships[0].person
+        sponsorships.pop(0)
+    else:
+        lead_sponsor = None
 
     non_sponsors = (
         Person.query.filter(
@@ -52,16 +53,12 @@ def city_bill_sponsorships(bill_id):
         .order_by(Person.name)
         .all()
     )
-    non_sponsorships = [
+    return SponsorListSchema().jsonify(
         {
-            "bill_id": bill_id,
-            "is_sponsor": False,
-            "person": person,
+            "lead_sponsor": lead_sponsor,
+            "cosponsors": [s.person for s in sponsorships],
+            "non_sponsors": non_sponsors,
         }
-        for person in non_sponsors
-    ]
-    return CityBillSponsorshipSchema(many=True).jsonify(
-        sponsorships + non_sponsorships
     )
 
 
@@ -95,11 +92,13 @@ def state_bill_sponsorships(bill_id):
     return StateBillSponsorshipsSchema().jsonify(
         {
             "bill_id": bill_id,
-            "senate_sponsors": (s.senator.person for s in senate_sponsorships),
-            "senate_non_sponsors": (s.person for s in senate_non_sponsors),
-            "assembly_sponsors": (
-                s.assembly_member.person for s in assembly_sponsorships
-            ),
-            "assembly_non_sponsors": (a.person for a in assembly_non_sponsors),
+            "senate_sponsorships": {
+                "cosponsors": (s.senator.person for s in senate_sponsorships),
+                "non_sponsors": (s.person for s in senate_non_sponsors),
+            },
+            "assembly_sponsorships": {
+                "cosponsors": (s.assembly_member.person for s in assembly_sponsorships),
+                "non_sponsors": (a.person for a in assembly_non_sponsors),
+            }
         }
     )

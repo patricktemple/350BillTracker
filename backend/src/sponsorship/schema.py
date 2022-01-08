@@ -10,18 +10,16 @@ class CouncilMemberSponsorshipSchema(CamelCaseSchema):
     bill = fields.Nested(BillSchema)
 
 
-# TODO: Separate out positive and negative sponsors into different types, this gets ugly
-class CityBillSponsorshipSchema(CamelCaseSchema):
-    bill_id = fields.UUID(required=True)
-    person = fields.Nested(PersonSchema)
-    is_sponsor = fields.Boolean()
-    sponsor_sequence = fields.Integer()
-
+class SponsorListSchema(CamelCaseSchema):
+    # i like this because we will likely want to show lead sponsor more prominently in places
+    # so it's nice to have its own field like that
+    lead_sponsor = fields.Nested(PersonSchema)
+    cosponsors = fields.List(fields.Nested(PersonSchema))
+    non_sponsors = fields.List(fields.Nested(PersonSchema))
 
 class StateBillSponsorshipsSchema(CamelCaseSchema):
-    bill_id = fields.UUID(required=True)
-    senate_sponsors = fields.List(fields.Nested(PersonSchema))
-    senate_non_sponsors = fields.List(fields.Nested(PersonSchema))
+    senate_sponsorships = fields.Nested(SponsorListSchema)
+    assembly_sponsors = fields.Nested(SponsorListSchema)
 
-    assembly_sponsors = fields.List(fields.Nested(PersonSchema))
-    assembly_non_sponsors = fields.List(fields.Nested(PersonSchema))
+
+# As I fix this lead sponsor issue, should really take the time to unify the two representations of sponsorships here too.

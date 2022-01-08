@@ -29,12 +29,16 @@ export interface StateBill {
   assemblyBill: StateChamberBill | null;
 }
 
+export interface SponsorList {
+  leadSponsor: Person | null;
+  cosponsors: Person[];
+  nonSponsors: Person[];
+}
+
 export interface StateBillSponsorships {
   billId: string;
-  senateSponsors: Person[];
-  senateNonSponsors: Person[];
-  assemblySponsors: Person[];
-  assemblyNonSponsors: Person[];
+  senateSponsorships: SponsorList;
+  assemblySponsorships: SponsorList;
 }
 
 export interface StateBillSearchResult {
@@ -109,13 +113,6 @@ export interface Person {
 export interface SingleMemberSponsorship {
   bill: Bill;
   personId: string;
-}
-
-export interface CitySponsorship {
-  billId: string;
-  person: Person;
-  isSponsor: boolean;
-  sponsorSequence: number | null;
 }
 
 export interface BillAttachment {

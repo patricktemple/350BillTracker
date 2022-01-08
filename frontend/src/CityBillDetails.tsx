@@ -1,7 +1,7 @@
 import React, { ReactElement, useState, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { Bill, CitySponsorship, BillAttachment, PowerHour } from './types';
+import { Bill, SponsorList, BillAttachment, PowerHour } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import AddAttachmentModal from './AddAttachmentModal';
 import useAutosavingFormData from './utils/useAutosavingFormData';
@@ -15,6 +15,7 @@ import { MdHelpOutline } from 'react-icons/md';
 import styles from './style/BillDetailsPage.module.scss';
 
 import { ReactComponent as TwitterIcon } from './assets/twitter.svg';
+import BillSponsorItem from './BillSponsorItem';
 
 interface Props {
   bill: Bill;
@@ -27,7 +28,7 @@ export default function CityBillSponsorList({
 }: Props) {
   const apiFetch = useApiFetch();
 
-  const [sponsorships, setSponsorships] = useState<CitySponsorship[] | null>(
+  const [sponsorships, setSponsorships] = useState<SponsorList | null>(
     null
   );
 
@@ -37,41 +38,41 @@ export default function CityBillSponsorList({
     });
   });
 
-  const positiveSponsors = sponsorships
-    ?.filter((s: CitySponsorship) => s.isSponsor)
-    .map((s) => s.person);
-  const negativeSponsors = sponsorships
-    ?.filter((s: CitySponsorship) => !s.isSponsor)
-    .map((s) => s.person);
-
   return (
     <>
       <div className={styles.label}>
+        Lead sponsor
+      </div>
+      <div className={styles.content}>
+        {sponsorships == null ? ("Loading...") : sponsorships.leadSponsor && <BillSponsorItem person={sponsorships.leadSponsor} twitterSearchTerms={twitterSearchTerms} />}
+      </div>
+      <div className={styles.label}>
         <div>
-          Sponsors{' '}
-          {positiveSponsors != null && <>({positiveSponsors.length})</>}:
+          Co-sponsors{' '}
+          {sponsorships != null && <>({sponsorships.cosponsors.length})</>}:
         </div>
       </div>
       <div className={styles.sponsorList}>
-        {positiveSponsors == null ? (
+        {sponsorships == null ? (
           'Loading...'
         ) : (
           <BillSponsorList
-            persons={positiveSponsors}
+            
+            persons={sponsorships.cosponsors}
             twitterSearchTerms={twitterSearchTerms}
           />
         )}
       </div>
       <div className={styles.nonSponsorLabel}>
         Non-sponsors{' '}
-        {negativeSponsors != null && <>({negativeSponsors.length})</>}:
+        {sponsorships != null && <>({sponsorships.nonSponsors.length})</>}:
       </div>
       <div className={styles.nonSponsorList}>
-        {negativeSponsors == null ? (
+        {sponsorships == null ? (
           'Loading...'
         ) : (
           <BillSponsorList
-            persons={negativeSponsors}
+            persons={sponsorships.nonSponsors}
             twitterSearchTerms={twitterSearchTerms}
           />
         )}
