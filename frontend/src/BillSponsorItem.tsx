@@ -21,26 +21,21 @@ function getTwitterSearchUrl(searchTerms: string[], twitterHandle: string) {
   );
 }
 
-
 export default function BillSponsorItem({ person, twitterSearchTerms }: Props) {
   return (
-      <span>
-          <Link to={'/people/' + person.id}>{person.name}</Link>
-          {person.twitter && (
-            <span style={{ marginLeft: '0.5rem' }}>
-              <a
-                href={getTwitterSearchUrl(
-                  twitterSearchTerms,
-                  person.twitter
-                )}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <TwitterIcon style={{ width: '1rem' }} />
-              </a>
-            </span>
-          )}
+    <span>
+      <Link to={'/people/' + person.id}>{person.name}</Link>
+      {person.twitter && (
+        <span style={{ marginLeft: '0.5rem' }}>
+          <a
+            href={getTwitterSearchUrl(twitterSearchTerms, person.twitter)}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <TwitterIcon style={{ width: '1rem' }} />
+          </a>
         </span>
-
+      )}
+    </span>
   );
 }

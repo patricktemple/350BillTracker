@@ -60,12 +60,21 @@ function ChamberDetails({
                 View on Assembly website
               </a>
               <div className="mt-2">
-              <span style={{fontWeight: 'bold' }}>Lead sponsor: </span>{sponsorships?.leadSponsor && <BillSponsorItem person={sponsorships.leadSponsor} twitterSearchTerms={twitterSearchTerms} />}
-            </div>
+                <span style={{ fontWeight: 'bold' }}>Lead sponsor: </span>
+                {sponsorships?.leadSponsor && (
+                  <BillSponsorItem
+                    person={sponsorships.leadSponsor}
+                    twitterSearchTerms={twitterSearchTerms}
+                  />
+                )}
+              </div>
             </div>
             <div className={styles.sponsorList}>
               <span style={{ fontWeight: 'bold' }}>
-                Co-sponsors{sponsorships != null && <> ({sponsorships.cosponsors.length})</>}
+                Co-sponsors
+                {sponsorships != null && (
+                  <> ({sponsorships.cosponsors.length})</>
+                )}
               </span>
               {sponsorships != null ? (
                 <BillSponsorList
@@ -79,7 +88,9 @@ function ChamberDetails({
             <div className={styles.nonSponsorList}>
               <span style={{ fontWeight: 'bold' }}>
                 Non-sponsors
-                {sponsorships != null && <> ({sponsorships.nonSponsors.length})</>}
+                {sponsorships != null && (
+                  <> ({sponsorships.nonSponsors.length})</>
+                )}
               </span>
               {sponsorships != null ? (
                 <BillSponsorList

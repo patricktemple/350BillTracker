@@ -28,9 +28,7 @@ export default function CityBillSponsorList({
 }: Props) {
   const apiFetch = useApiFetch();
 
-  const [sponsorships, setSponsorships] = useState<SponsorList | null>(
-    null
-  );
+  const [sponsorships, setSponsorships] = useState<SponsorList | null>(null);
 
   useMountEffect(() => {
     apiFetch(`/api/city-bills/${bill.id}/sponsorships`).then((response) => {
@@ -40,11 +38,16 @@ export default function CityBillSponsorList({
 
   return (
     <>
-      <div className={styles.label}>
-        Lead sponsor
-      </div>
+      <div className={styles.label}>Lead sponsor</div>
       <div className={styles.content}>
-        {sponsorships == null ? ("Loading...") : sponsorships.leadSponsor && <BillSponsorItem person={sponsorships.leadSponsor} twitterSearchTerms={twitterSearchTerms} />}
+        {sponsorships == null
+          ? 'Loading...'
+          : sponsorships.leadSponsor && (
+              <BillSponsorItem
+                person={sponsorships.leadSponsor}
+                twitterSearchTerms={twitterSearchTerms}
+              />
+            )}
       </div>
       <div className={styles.label}>
         <div>
@@ -57,7 +60,6 @@ export default function CityBillSponsorList({
           'Loading...'
         ) : (
           <BillSponsorList
-            
             persons={sponsorships.cosponsors}
             twitterSearchTerms={twitterSearchTerms}
           />
