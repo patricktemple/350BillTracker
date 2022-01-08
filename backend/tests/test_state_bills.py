@@ -15,7 +15,7 @@ from src.models import db
 from src.person.models import AssemblyMember, Person, Senator
 from src.utils import now
 
-from .utils import assert_response
+from .utils import assert_response, get_response_data
 
 
 def test_get_bills(client, state_bill):
@@ -82,6 +82,7 @@ def create_mock_bill_response(
     base_print_no,
     chamber,
     cosponsor_member_id,
+    lead_sponsor_member_id,
     same_as_base_print_no=None,
     same_as_chamber=None,
 ):
@@ -94,6 +95,11 @@ def create_mock_bill_response(
             "billType": {"chamber": chamber},
             "status": {
                 "statusDesc": "In Committee",
+            },
+            "sponsor": {
+                "member": {
+                    "memberId": lead_sponsor_member_id,
+                }
             },
             "amendments": {
                 "items": {
@@ -124,7 +130,7 @@ def create_mock_bill_response(
 
 
 @responses.activate
-def test_track_bill(client):
+def test_track_bill(client, snapshot):
     responses.add(
         responses.GET,
         url="https://legislation.nysenate.gov/api/3/bills/2021/S100?view=no_fulltext&key=fake_key",
@@ -134,13 +140,14 @@ def test_track_bill(client):
             same_as_chamber="ASSEMBLY",
             same_as_base_print_no="A123",
             cosponsor_member_id=2,
+            lead_sponsor_member_id=3,
         ),
     )
     responses.add(
         responses.GET,
         url="https://legislation.nysenate.gov/api/3/bills/2021/A123?view=no_fulltext&key=fake_key",
         json=create_mock_bill_response(
-            base_print_no="A123", chamber="ASSEMBLY", cosponsor_member_id=1
+            base_print_no="A123", chamber="ASSEMBLY", cosponsor_member_id=1, lead_sponsor_member_id=6
         ),
     )
 
@@ -156,6 +163,12 @@ def test_track_bill(client):
     senate_sponsor.senator = Senator(state_member_id=2)
     db.session.add(senate_sponsor)
 
+    senate_lead_sponsor =Person(
+        name="Senate lead sponsor", type=Person.PersonType.SENATOR
+    )
+    senate_lead_sponsor.senator = Senator(state_member_id=3)
+    db.session.add(senate_lead_sponsor)
+
     assembly_non_sponsor = Person(
         name="Assembly non sponsor", type=Person.PersonType.ASSEMBLY_MEMBER
     )
@@ -167,6 +180,10 @@ def test_track_bill(client):
     )
     assembly_sponsor.assembly_member = AssemblyMember(state_member_id=1)
     db.session.add(assembly_sponsor)
+
+    assembly_lead_sponsor = Person(name="Assembly lead sponsor", type=Person.PersonType.ASSEMBLY_MEMBER)
+    assembly_lead_sponsor.assembly_member = AssemblyMember(state_member_id=6)
+    db.session.add(assembly_lead_sponsor)
 
     db.session.commit()
 
@@ -186,19 +203,10 @@ def test_track_bill(client):
     assert bill.state_bill.assembly_bill.status == "In Committee"
     assert bill.state_bill.assembly_bill.active_version == "A"
 
-    assert len(bill.state_bill.senate_bill.sponsorships) == 1
-    assert (
-        bill.state_bill.senate_bill.sponsorships[0].senator.person.name
-        == "Senate sponsor"
-    )
+    assert {("Senate sponsor", False), ("Senate lead sponsor", True)} == {(s.senator.person.name, s.is_lead_sponsor) for s in bill.state_bill.senate_bill.sponsorships}
 
-    assert len(bill.state_bill.assembly_bill.sponsorships) == 1
-    assert (
-        bill.state_bill.assembly_bill.sponsorships[
-            0
-        ].assembly_member.person.name
-        == "Assembly sponsor"
-    )
+    assert {("Assembly sponsor", False), ("Assembly lead sponsor", True)} == {(s.assembly_member.person.name, s.is_lead_sponsor) for s in bill.state_bill.assembly_bill.sponsorships}
+
 
 
 @responses.activate
