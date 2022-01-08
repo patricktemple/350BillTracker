@@ -99,6 +99,7 @@ def create_mock_bill_response(
             "sponsor": {
                 "member": {
                     "memberId": lead_sponsor_member_id,
+                    "fullName": f"Lead sponsor #{lead_sponsor_member_id}",
                 }
             },
             "amendments": {
@@ -147,7 +148,10 @@ def test_track_bill(client, snapshot):
         responses.GET,
         url="https://legislation.nysenate.gov/api/3/bills/2021/A123?view=no_fulltext&key=fake_key",
         json=create_mock_bill_response(
-            base_print_no="A123", chamber="ASSEMBLY", cosponsor_member_id=1, lead_sponsor_member_id=6
+            base_print_no="A123",
+            chamber="ASSEMBLY",
+            cosponsor_member_id=1,
+            lead_sponsor_member_id=6,
         ),
     )
 
@@ -163,7 +167,7 @@ def test_track_bill(client, snapshot):
     senate_sponsor.senator = Senator(state_member_id=2)
     db.session.add(senate_sponsor)
 
-    senate_lead_sponsor =Person(
+    senate_lead_sponsor = Person(
         name="Senate lead sponsor", type=Person.PersonType.SENATOR
     )
     senate_lead_sponsor.senator = Senator(state_member_id=3)
@@ -181,7 +185,9 @@ def test_track_bill(client, snapshot):
     assembly_sponsor.assembly_member = AssemblyMember(state_member_id=1)
     db.session.add(assembly_sponsor)
 
-    assembly_lead_sponsor = Person(name="Assembly lead sponsor", type=Person.PersonType.ASSEMBLY_MEMBER)
+    assembly_lead_sponsor = Person(
+        name="Assembly lead sponsor", type=Person.PersonType.ASSEMBLY_MEMBER
+    )
     assembly_lead_sponsor.assembly_member = AssemblyMember(state_member_id=6)
     db.session.add(assembly_lead_sponsor)
 
@@ -203,10 +209,15 @@ def test_track_bill(client, snapshot):
     assert bill.state_bill.assembly_bill.status == "In Committee"
     assert bill.state_bill.assembly_bill.active_version == "A"
 
-    assert {("Senate sponsor", False), ("Senate lead sponsor", True)} == {(s.senator.person.name, s.is_lead_sponsor) for s in bill.state_bill.senate_bill.sponsorships}
+    assert {("Senate sponsor", False), ("Senate lead sponsor", True)} == {
+        (s.senator.person.name, s.is_lead_sponsor)
+        for s in bill.state_bill.senate_bill.sponsorships
+    }
 
-    assert {("Assembly sponsor", False), ("Assembly lead sponsor", True)} == {(s.assembly_member.person.name, s.is_lead_sponsor) for s in bill.state_bill.assembly_bill.sponsorships}
-
+    assert {("Assembly sponsor", False), ("Assembly lead sponsor", True)} == {
+        (s.assembly_member.person.name, s.is_lead_sponsor)
+        for s in bill.state_bill.assembly_bill.sponsorships
+    }
 
 
 @responses.activate
@@ -215,7 +226,10 @@ def test_track_bill__senate_only(client):
         responses.GET,
         url="https://legislation.nysenate.gov/api/3/bills/2021/S100?view=no_fulltext&key=fake_key",
         json=create_mock_bill_response(
-            base_print_no="S100", chamber="SENATE", cosponsor_member_id=2
+            base_print_no="S100",
+            chamber="SENATE",
+            cosponsor_member_id=2,
+            lead_sponsor_member_id=3,
         ),
     )
 
@@ -242,7 +256,10 @@ def test_track_bill__assembly_only(client):
         responses.GET,
         url="https://legislation.nysenate.gov/api/3/bills/2021/A100?view=no_fulltext&key=fake_key",
         json=create_mock_bill_response(
-            base_print_no="A100", chamber="ASSEMBLY", cosponsor_member_id=2
+            base_print_no="A100",
+            chamber="ASSEMBLY",
+            cosponsor_member_id=2,
+            lead_sponsor_member_id=4,
         ),
     )
 
@@ -269,7 +286,10 @@ def test_track_bill__senate_already_exists(client):
         responses.GET,
         url="https://legislation.nysenate.gov/api/3/bills/2021/S100?view=no_fulltext&key=fake_key",
         json=create_mock_bill_response(
-            base_print_no="S100", chamber="SENATE", cosponsor_member_id=2
+            base_print_no="S100",
+            chamber="SENATE",
+            cosponsor_member_id=2,
+            lead_sponsor_member_id=50,
         ),
     )
 
@@ -302,7 +322,10 @@ def test_track_bill__assembly_already_exists(client):
         responses.GET,
         url="https://legislation.nysenate.gov/api/3/bills/2021/A100?view=no_fulltext&key=fake_key",
         json=create_mock_bill_response(
-            base_print_no="A100", chamber="ASSEMBLY", cosponsor_member_id=2
+            base_print_no="A100",
+            chamber="ASSEMBLY",
+            cosponsor_member_id=2,
+            lead_sponsor_member_id=50,
         ),
     )
 

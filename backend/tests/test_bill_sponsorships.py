@@ -29,7 +29,9 @@ def test_get_city_bill_sponsorships(client, city_bill, snapshot):
     )
     lead_sponsor.council_member = CouncilMember(city_council_person_id=2)
     lead_sponsorship = CitySponsorship(
-        bill_id=city_bill.id, council_member_id=lead_sponsor.id, sponsor_sequence=0
+        bill_id=city_bill.id,
+        council_member_id=lead_sponsor.id,
+        sponsor_sequence=0,
     )
     db.session.add(lead_sponsor)
     db.session.add(lead_sponsorship)
@@ -46,12 +48,12 @@ def test_get_city_bill_sponsorships(client, city_bill, snapshot):
     assert response.status_code == 200
     response_data = get_response_data(response)
 
-    assert response_data['leadSponsor']['name'] == "Lead sponsor"
+    assert response_data["leadSponsor"]["name"] == "Lead sponsor"
 
-    assert len(response_data['cosponsors']) == 1
-    assert len(response_data['nonSponsors']) == 1
-    assert response_data['cosponsors'][0]["name"] == "Sponsor"
-    assert response_data['nonSponsors'][0]["name"] == "Non-sponsor"
+    assert len(response_data["cosponsors"]) == 1
+    assert len(response_data["nonSponsors"]) == 1
+    assert response_data["cosponsors"][0]["name"] == "Sponsor"
+    assert response_data["nonSponsors"][0]["name"] == "Non-sponsor"
 
 
 def test_get_state_bill_sponsorships(
@@ -88,12 +90,16 @@ def test_get_state_bill_sponsorships(
     db.session.add(assembly_sponsor)
 
     senate_sponsorship = SenateSponsorship(
-        senate_bill_id=state_bill.id, senator_id=senate_sponsor.id, is_lead_sponsor=False,
+        senate_bill_id=state_bill.id,
+        senator_id=senate_sponsor.id,
+        is_lead_sponsor=False,
     )
     db.session.add(senate_sponsorship)
 
     assembly_sponsorship = AssemblySponsorship(
-        assembly_bill_id=state_bill.id, assembly_member_id=assembly_sponsor.id, is_lead_sponsor=True,
+        assembly_bill_id=state_bill.id,
+        assembly_member_id=assembly_sponsor.id,
+        is_lead_sponsor=True,
     )
     db.session.add(assembly_sponsorship)
 
