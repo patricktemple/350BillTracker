@@ -5,6 +5,7 @@ import re
 
 from src.app import app
 from src.person.models import Person, Senator, AssemblyMember
+import json
 
 def get_senate_data():
     senator_list_html = requests.get('https://www.nysenate.gov/senators-committees').text
@@ -34,9 +35,11 @@ def get_senate_data():
     def extract_contact_info(address_section):
         phone = address_section.find('span', string="Phone: ")
         fax = address_section.find('span', string="Fax: ")
+        city = address_section.find('span', class_="locality")
         return {
             "phone": phone and phone.next_sibling,
             "fax": fax and fax.next_sibling,
+            "city": re.compile('\w+[\s\w]*').search(city.string).group()
         }
 
     output = {}
@@ -108,6 +111,10 @@ def get_assembly_data():
                         addr['fax'] = re_result.group()
                     else:
                         addr['phone'] = re_result.group()
+                elif match := re.compile('^\s*(\w+[\w\s]*), NY').search(line):
+                    city = match.group(1)
+                    print(city)
+                    addr['city'] = city
             if 'LOB' in lines[0]:
                 result['albany_contact'].append(addr)
             else:
@@ -116,31 +123,44 @@ def get_assembly_data():
         output[result['district']] = result
     return output
 
-print(get_senate_data())
+# print(get_senate_data())
 
-# data = {'senate': get_senate_data(), 'assembly': get_assembly_data()}
-# # print(get_assembly_data())
+data = {'senate': get_senate_data(), 'assembly': get_assembly_data()}
+# print(get_assembly_data())
 
-# print("senate\n\n")
-# senators = Senator.query.all()
-# for senator in senators:
-#     matching_item = data['senate'][str(senator.district)]
-#     print({
-#         "db_name": senator.person.name,
-#         "db_district": senator.district,
-#         "scrape_name": matching_item['name']
-#     })
+# TWO STEPS
+
+senators = Senator.query.all()
+senator_data = {}
+for senator in senators:
+    matching_item = data['senate'][str(senator.district)]
+    senator_data[senator.state_member_id] = {
+        "name": senator.person.name,
+        "district": senator.district,
+        "scrape_name__SANITY_CHECK": matching_item['name'],
+        "district_contact": matching_item['district_contact'],
+        "albany_contact": matching_item['albany_contact']
+    }
+
+print("Senate")
+print(senator_data)
 
 
-# print("assembly\n\n")
-# assembly_members = AssemblyMember.query.all()
-# for member in assembly_members:
-#     matching_item = data['assembly'].get(str(member.district))
-#     if not matching_item:
-#         print(f"no matching item for {member.person.name}")
-#         continue
-#     print({
-#         "db_name": member.person.name,
-#         "db_district": member.district,
-#         "scrape_name": matching_item['name']
-#     })
+assembly_members = AssemblyMember.query.all()
+assembly_data = {}
+for member in assembly_members:
+    matching_item = data['assembly'].get(str(member.district))
+    if not matching_item:
+        print(f"no matching item for {member.person.name}")
+        continue
+
+    assembly_data[member.state_member_id] = {
+        "name": member.person.name,
+        "district": member.district,
+        "scrape_name__SANITY_CHECK": matching_item['name'],
+        "district_contact": matching_item['district_contact'],
+        "albany_contact": matching_item['albany_contact']
+    }
+
+print("Assembly")
+print(assembly_data)

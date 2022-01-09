@@ -13,7 +13,7 @@ from .council_api import (
 from .models import db
 from .person.models import CouncilMember, Person
 from .sponsorship.models import CitySponsorship
-from .static_data import COUNCIL_DATA_BY_LEGISLATOR_ID
+from .static_data.council_data import COUNCIL_DATA_BY_LEGISLATOR_ID
 from .utils import now
 
 
