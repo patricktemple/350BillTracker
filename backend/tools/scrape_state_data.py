@@ -17,7 +17,17 @@ def get_senate_data():
     for link in list_soup.find_all('a'):
         href = link.get('href')
         if href is not None and href.startswith('/senators/'):
-            senator_urls.add(url_root + href + "/contact")
+            party_text = str(link.find('span', class_='nys-senator--party').string)
+            # print(party_text)
+            if re.compile('[\( ]D[,\)]').search(party_text):
+                # print(party_text)
+                party = "D" # THIS IS WRONG, all people are D here?
+            elif re.compile('[\( ]R[,\)]').search(party_text):
+                party = "R"
+            else:
+                party = None
+
+            senator_urls.add((url_root + href + "/contact", party))
 
     # print(senator_urls)
 
@@ -31,8 +41,8 @@ def get_senate_data():
 
     output = {}
 
-    for contact_url in senator_urls:
-        print(contact_url)
+    for contact_url, party in senator_urls:
+        print(contact_url, party)
         contact_page = requests.get(contact_url).text
         contact_soup = BeautifulSoup(contact_page)
         district = contact_soup.find_all('a', href=lambda href: href and href.startswith('/district/'))[0]['href'][len('/district/'):]
@@ -49,7 +59,8 @@ def get_senate_data():
             "albany_contact": [],
             "name": contact_soup.find('span', class_="c-senator-hero--name").find('a').string,
             "website": contact_url,
-            "district": district
+            "district": district,
+            "party": party
         }
         for d in district_tags:
             results['district_contact'].append(extract_contact_info(d))
@@ -105,29 +116,31 @@ def get_assembly_data():
         output[result['district']] = result
     return output
 
-data = {'senate': get_senate_data(), 'assembly': get_assembly_data()}
-# print(get_assembly_data())
+print(get_senate_data())
 
-print("senate\n\n")
-senators = Senator.query.all()
-for senator in senators:
-    matching_item = data['senate'][str(senator.district)]
-    print({
-        "db_name": senator.person.name,
-        "db_district": senator.district,
-        "scrape_name": matching_item['name']
-    })
+# data = {'senate': get_senate_data(), 'assembly': get_assembly_data()}
+# # print(get_assembly_data())
+
+# print("senate\n\n")
+# senators = Senator.query.all()
+# for senator in senators:
+#     matching_item = data['senate'][str(senator.district)]
+#     print({
+#         "db_name": senator.person.name,
+#         "db_district": senator.district,
+#         "scrape_name": matching_item['name']
+#     })
 
 
-print("assembly\n\n")
-assembly_members = AssemblyMember.query.all()
-for member in assembly_members:
-    matching_item = data['assembly'].get(str(member.district))
-    if not matching_item:
-        print(f"no matching item for {member.person.name}")
-        continue
-    print({
-        "db_name": member.person.name,
-        "db_district": member.district,
-        "scrape_name": matching_item['name']
-    })
+# print("assembly\n\n")
+# assembly_members = AssemblyMember.query.all()
+# for member in assembly_members:
+#     matching_item = data['assembly'].get(str(member.district))
+#     if not matching_item:
+#         print(f"no matching item for {member.person.name}")
+#         continue
+#     print({
+#         "db_name": member.person.name,
+#         "db_district": member.district,
+#         "scrape_name": matching_item['name']
+#     })
