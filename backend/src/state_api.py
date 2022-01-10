@@ -168,6 +168,7 @@ def import_bill(session_year, base_print_no):
     return bill
 
 
+# Problem: Look at Cordell Cleare. I'll see that she's represented twice... brian benjamin is in the list too?
 def add_state_representatives(session_year=CURRENT_SESSION_YEAR):
     """Queries the NY State API to retrieve all senators and assembly members
     in the current session year. If they already exist in the DB, updates
