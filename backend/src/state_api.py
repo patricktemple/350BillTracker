@@ -177,6 +177,9 @@ def add_state_representatives(session_year=CURRENT_SESSION_YEAR):
         members = senate_get(f"members/{session_year}?limit=1000&full=true")
 
         for member in members["items"]:
+            if not member["incumbent"]:
+                # TODO: Properly handle removal of old reps
+                continue
             member_id = member["memberId"]
             if member["chamber"] == "ASSEMBLY":
                 person_type = Person.PersonType.ASSEMBLY_MEMBER
