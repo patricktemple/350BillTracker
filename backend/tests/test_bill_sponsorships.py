@@ -90,18 +90,20 @@ def test_get_state_bill_sponsorships(
     db.session.add(assembly_sponsor)
 
     senate_sponsorship = SenateSponsorship(
-        senate_bill_id=state_bill.id,
-        senator_id=senate_sponsor.id,
+        bill_id=state_bill.id,
+        person_id=senate_sponsor.id,
         is_lead_sponsor=False,
     )
     db.session.add(senate_sponsorship)
 
     assembly_sponsorship = AssemblySponsorship(
-        assembly_bill_id=state_bill.id,
-        assembly_member_id=assembly_sponsor.id,
+        bill_id=state_bill.id,
+        person_id=assembly_sponsor.id,
         is_lead_sponsor=True,
     )
     db.session.add(assembly_sponsorship)
+
+    # breakpoint()
 
     db.session.commit()
 

@@ -117,21 +117,16 @@ class CouncilMember(db.Model):
 
 
     
-
 class StateRepresentativeMixin:
 
     # Foreign key to Person parent table
     @declared_attr
     def person_id(self):
-        return Column(UUID, ForeignKey(Person.id), primary_key=True)
+        return  Column(UUID, ForeignKey(Person.id), primary_key=True)
     
-    @declared_attr
-    def district(self):
-        return Column(Integer)
+    district = Column(Integer)
     
-    @declared_attr
-    def state_member_id(self):
-        return Column(Integer, nullable=False, unique=True)
+    state_member_id = Column(Integer, nullable=False, unique=True)
 
 
 class Senator(db.Model, StateRepresentativeMixin):
@@ -145,7 +140,7 @@ class Senator(db.Model, StateRepresentativeMixin):
     # The parent Person object.
     person = relationship("Person", back_populates="senator", lazy="joined")
 
-    sponsorships = relationship("SenateSponsorship", back_populates="senator")
+    sponsorships = relationship("SenateSponsorship", back_populates="representative")
 
     @property
     def website(self):
@@ -171,7 +166,7 @@ class AssemblyMember(db.Model, StateRepresentativeMixin):
     )
 
     sponsorships = relationship(
-        "AssemblySponsorship", back_populates="assembly_member"
+        "AssemblySponsorship", back_populates="representative"
     )
 
     @property

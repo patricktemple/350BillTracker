@@ -8,6 +8,7 @@ from sqlalchemy import (
     func,
     select,
 )
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import column_property, foreign, relationship, remote
 from sqlalchemy.sql.sqltypes import Boolean
 
@@ -72,48 +73,57 @@ CitySponsorship.person = relationship(
 )
 
 
-class SenateSponsorship(db.Model):
+class StateSponsorshipMixin:
+    """TODO comment"""
+    # Set these on the subclass
+    bill_class = None
+    representative_class = None
+
+
+    @declared_attr
+    def id(self):
+        return Column(UUID, primary_key=True, default=uuid4)
+    
+    @declared_attr
+    def person_id(self):
+        return Column(
+        UUID, ForeignKey(self.representative_class.person_id), nullable=False, index=True
+    )
+
+    @declared_attr
+    def representative(self):
+        return relationship(
+            self.representative_class, back_populates="sponsorships"
+        )
+    
+    @declared_attr
+    def bill_id(self):
+        return Column(
+        UUID, ForeignKey(self.bill_class.bill_id), nullable=False, index=True
+    )
+
+    @declared_attr
+    def bill(self):
+        return relationship(
+        self.bill_class,
+        back_populates="sponsorships",
+        )
+
+    is_lead_sponsor = Column(Boolean, nullable=False)
+
+
+class SenateSponsorship(db.Model, StateSponsorshipMixin):
     __tablename__ = "senate_sponsorships"
 
-    id = Column(UUID, primary_key=True, default=uuid4)
-
-    senate_bill_id = Column(
-        UUID, ForeignKey(SenateBill.bill_id), nullable=False, index=True
-    )
-    senate_bill = relationship(
-        SenateBill,
-        back_populates="sponsorships",
-    )
-
-    senator_id = Column(
-        UUID, ForeignKey(Senator.person_id), nullable=False, index=True
-    )
-    senator = relationship(Senator, back_populates="sponsorships")
-
-    is_lead_sponsor = Column(Boolean, nullable=False)
+    bill_class = SenateBill
+    representative_class = Senator
 
 
-class AssemblySponsorship(db.Model):
+class AssemblySponsorship(db.Model, StateSponsorshipMixin):
     __tablename__ = "assembly_sponsorships"
 
-    id = Column(UUID, primary_key=True, default=uuid4)
-
-    assembly_bill_id = Column(
-        UUID, ForeignKey(AssemblyBill.bill_id), nullable=False, index=True
-    )
-    assembly_bill = relationship(
-        AssemblyBill,
-        back_populates="sponsorships",
-    )
-
-    assembly_member_id = Column(
-        UUID, ForeignKey(AssemblyMember.person_id), nullable=False, index=True
-    )
-    assembly_member = relationship(
-        AssemblyMember, back_populates="sponsorships"
-    )
-
-    is_lead_sponsor = Column(Boolean, nullable=False)
+    bill_class = AssemblyBill
+    representative_class = AssemblyMember
 
 
 # This may be inefficient because it loads this on every bill even if these fields aren't needed
@@ -123,15 +133,15 @@ CityBill.sponsor_count = column_property(
     .correlate_except(CitySponsorship)
     .scalar_subquery()
 )
-SenateBill.sponsor_count = column_property(
-    select(func.count(SenateSponsorship.id))
-    .where(SenateSponsorship.senate_bill_id == SenateBill.bill_id)
-    .correlate_except(SenateSponsorship)
-    .scalar_subquery()
-)
-AssemblyBill.sponsor_count = column_property(
-    select(func.count(AssemblySponsorship.id))
-    .where(AssemblySponsorship.assembly_bill_id == AssemblyBill.bill_id)
-    .correlate_except(AssemblySponsorship)
-    .scalar_subquery()
-)
+# SenateBill.sponsor_count = column_property(
+#     select(func.count(SenateSponsorship.id))
+#     .where("SenateSponsorship.senate_bill_id == SenateBill.bill_id")
+#     .correlate_except(SenateSponsorship)
+#     .scalar_subquery()
+# )
+# AssemblyBill.sponsor_count = column_property(
+#     select(func.count(AssemblySponsorship.id))
+#     .where("AssemblySponsorship.assembly_bill_id == AssemblyBill.bill_id")
+#     .correlate_except(AssemblySponsorship)
+#     .scalar_subquery()
+# )

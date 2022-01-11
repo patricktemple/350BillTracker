@@ -69,35 +69,35 @@ def state_bill_sponsorships(bill_id):
         raise exceptions.NotFound()
 
     senate_sponsorships = (
-        SenateSponsorship.query.filter_by(senate_bill_id=bill_id)
-        .options(joinedload(SenateSponsorship.senator))
+        SenateSponsorship.query.filter_by(bill_id=bill_id)
+        .options(joinedload(SenateSponsorship.representative))
         .all()
     )
     senate_cosponsors = (
-        s.senator.person for s in senate_sponsorships if not s.is_lead_sponsor
+        s.representative.person for s in senate_sponsorships if not s.is_lead_sponsor
     )
     senate_lead_sponsor_list = [
-        s.senator.person for s in senate_sponsorships if s.is_lead_sponsor
+        s.representative.person for s in senate_sponsorships if s.is_lead_sponsor
     ]
     senate_lead_sponsor = (
         senate_lead_sponsor_list[0] if senate_lead_sponsor_list else None
     )
     senate_non_sponsors = Senator.query.filter(
-        Senator.person_id.not_in([s.senator_id for s in senate_sponsorships])
+        Senator.person_id.not_in([s.person_id for s in senate_sponsorships])
     ).all()
 
     assembly_sponsorships = (
-        AssemblySponsorship.query.filter_by(assembly_bill_id=bill_id)
-        .options(joinedload(AssemblySponsorship.assembly_member))
+        AssemblySponsorship.query.filter_by(bill_id=bill_id)
+        .options(joinedload(AssemblySponsorship.representative))
         .all()
     )
     assembly_cosponsors = (
-        s.assembly_member.person
+        s.representative.person
         for s in assembly_sponsorships
         if not s.is_lead_sponsor
     )
     assembly_lead_sponsor_list = [
-        s.assembly_member.person
+        s.representative.person
         for s in assembly_sponsorships
         if s.is_lead_sponsor
     ]
@@ -106,7 +106,7 @@ def state_bill_sponsorships(bill_id):
     )
     assembly_non_sponsors = AssemblyMember.query.filter(
         AssemblyMember.person_id.not_in(
-            [s.assembly_member_id for s in assembly_sponsorships]
+            [s.person_id for s in assembly_sponsorships]
         )
     ).all()
 
