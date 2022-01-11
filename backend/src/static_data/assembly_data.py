@@ -85,17 +85,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
         "district_contact": [{"city": "Fulton", "phone": "315-598-5185"}],
         "albany_contact": [{"city": "Albany", "phone": "518-455-3751"}],
     },
-    1119: {
-        "name": "Brian Barnwell",
-        "district": 30,
-        "scrape_name__SANITY_CHECK": "Brian Barnwell",
-        "district_contact": [
-            {"city": "Maspeth", "phone": "718-651-3185", "fax": "718-651-3027"}
-        ],
-        "albany_contact": [
-            {"city": "Albany", "phone": "518-455-4755", "fax": "518-455-5032"}
-        ],
-    },
     625: {
         "name": "Didi Barrett",
         "district": 106,
@@ -226,21 +215,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
             {"city": "Albany", "phone": "518-455-5454", "fax": "518-455-5928"}
         ],
     },
-    1123: {
-        "name": "Kevin M. Byrne",
-        "district": 94,
-        "scrape_name__SANITY_CHECK": "Kevin M. Byrne",
-        "district_contact": [
-            {
-                "city": "Brewster",
-                "phone": "845-278-2923",
-                "fax": "845-278-2926",
-            }
-        ],
-        "albany_contact": [
-            {"city": "Albany", "phone": "518-455-5783", "fax": "518-455-5543"}
-        ],
-    },
     1252: {
         "name": "Marjorie Byrnes",
         "district": 133,
@@ -265,21 +239,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
         ],
         "albany_contact": [
             {"city": "Albany", "phone": "518-455-4436", "fax": "518-455-5576"}
-        ],
-    },
-    1122: {
-        "name": "Robert C. Carroll",
-        "district": 44,
-        "scrape_name__SANITY_CHECK": "Robert C. Carroll",
-        "district_contact": [
-            {
-                "city": "Brooklyn",
-                "phone": "718-788-7221",
-                "fax": "718-965-9378",
-            }
-        ],
-        "albany_contact": [
-            {"city": "Albany", "phone": "518-455-5377", "fax": "518-455-5592"}
         ],
     },
     1460: {
@@ -381,13 +340,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"city": "Albany", "phone": "518-455-4901", "fax": "518-455-5908"}
         ],
-    },
-    1128: {
-        "name": "Inez E. Dickens",
-        "district": 70,
-        "scrape_name__SANITY_CHECK": "Inez E. Dickens",
-        "district_contact": [{"city": "New York", "phone": "212-866-5809"}],
-        "albany_contact": [{"city": "Albany", "phone": "518-455-4793"}],
     },
     900: {
         "name": "Erik Dilan",
@@ -698,17 +650,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
             {"city": "Albany", "phone": "518-455-5811", "fax": "518-455-5558"}
         ],
     },
-    535: {
-        "name": "Carl Heastie",
-        "district": 83,
-        "scrape_name__SANITY_CHECK": "Carl E. Heastie",
-        "district_contact": [
-            {"city": "Bronx", "phone": "718-654-6539", "fax": "718-654-5836"}
-        ],
-        "albany_contact": [
-            {"city": "Albany", "phone": "518-455-3791", "fax": "518-455-5459"}
-        ],
-    },
     488: {
         "name": "Andrew Hevesi",
         "district": 28,
@@ -717,22 +658,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
             {"city": "Forest Hills", "phone": "718-263-5595"}
         ],
         "albany_contact": [{"city": "Albany", "phone": "518-455-4926"}],
-    },
-    1105: {
-        "name": "Pamela J. Hunter",
-        "district": 128,
-        "scrape_name__SANITY_CHECK": "Pamela J. Hunter",
-        "district_contact": [{"city": "Syracuse", "phone": "315-449-9536"}],
-        "albany_contact": [{"city": "Albany", "phone": "518-455-5383"}],
-    },
-    1089: {
-        "name": "Alicia Hyndman",
-        "district": 29,
-        "scrape_name__SANITY_CHECK": "Alicia Hyndman",
-        "district_contact": [
-            {"city": "Springfield Gardens", "phone": "718-723-5412"}
-        ],
-        "albany_contact": [{"city": "Albany", "phone": "518-455-4451"}],
     },
     1476: {
         "name": "Chantel Jackson",
@@ -790,13 +715,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"city": "Albany", "phone": "518-455-4664", "fax": "518-455-3093"}
         ],
-    },
-    1120: {
-        "name": "Billy Jones",
-        "district": 115,
-        "scrape_name__SANITY_CHECK": "Billy Jones",
-        "district_contact": [{"city": "Plattsburgh", "phone": "518-562-1986"}],
-        "albany_contact": [{"city": "Albany", "phone": "518-455-5943"}],
     },
     902: {
         "name": "Latoya Joyner",
@@ -978,22 +896,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
             {"city": "Albany", "phone": "518-455-5341", "fax": "518-455-4346"}
         ],
     },
-    1125: {
-        "name": "Brian D. Miller",
-        "district": 101,
-        "scrape_name__SANITY_CHECK": "Brian D. Miller",
-        "district_contact": [
-            {
-                "city": "New Hartford",
-                "phone": "315-736-3879",
-                "fax": "315-736-3947",
-            },
-            {"city": "Wallkill", "phone": "845-895-1080"},
-        ],
-        "albany_contact": [
-            {"city": "Albany", "phone": "518-455-5334", "fax": "518-455-5391"}
-        ],
-    },
     1115: {
         "name": "Melissa Miller",
         "district": 20,
@@ -1039,34 +941,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
             {"city": "Albany", "phone": "518-455-4684", "fax": "518-455-5477"}
         ],
     },
-    1135: {
-        "name": "Angelo J. Morinello",
-        "district": 145,
-        "scrape_name__SANITY_CHECK": "Angelo J. Morinello",
-        "district_contact": [
-            {
-                "city": "Niagara Falls",
-                "phone": "716-282-6062",
-                "fax": "716-282-4226",
-            }
-        ],
-        "albany_contact": [
-            {"city": "Albany", "phone": "518-455-5284", "fax": "518-455-5694"}
-        ],
-    },
-    1132: {
-        "name": "Yuh-Line Niou",
-        "district": 65,
-        "scrape_name__SANITY_CHECK": "Yuh-Line Niou",
-        "district_contact": [
-            {
-                "city": "New York",
-                "phone": "212-312-1420",
-                "fax": "212-227-8054",
-            }
-        ],
-        "albany_contact": [{"city": "Albany", "phone": "518-455-3640"}],
-    },
     491: {
         "name": "Catherine Nolan",
         "district": 37,
@@ -1079,21 +953,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
             }
         ],
         "albany_contact": [{"city": "Albany", "phone": "518-455-4851"}],
-    },
-    1126: {
-        "name": "Michael J. Norris",
-        "district": 144,
-        "scrape_name__SANITY_CHECK": "Michael J. Norris",
-        "district_contact": [
-            {
-                "city": "Clarence",
-                "phone": "716-839-4691",
-                "fax": "716-839-4693",
-            }
-        ],
-        "albany_contact": [
-            {"city": "Albany", "phone": "518-455-4601", "fax": "518-455-5257"}
-        ],
     },
     522: {
         "name": "Daniel O'Donnell",
@@ -1164,13 +1023,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
             },
         ],
         "albany_contact": [{"city": "Albany", "phone": "518-455-4292"}],
-    },
-    667: {
-        "name": "Victor M. Pichardo",
-        "district": 86,
-        "scrape_name__SANITY_CHECK": "Yudelka Tapia",
-        "district_contact": [{"city": "Bronx", "phone": "718-933-6909"}],
-        "albany_contact": [{"city": "Albany", "phone": "518-455-5511"}],
     },
     539: {
         "name": "J. Gary Pretlow",
@@ -1284,19 +1136,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"city": "Albany", "phone": "518-455-4886", "fax": "518-455-4890"}
         ],
-    },
-    1139: {
-        "name": "Daniel Rosenthal",
-        "district": 27,
-        "scrape_name__SANITY_CHECK": "Daniel Rosenthal",
-        "district_contact": [
-            {
-                "city": "Flushing",
-                "phone": "718-969-1508",
-                "fax": "718-969-8326",
-            }
-        ],
-        "albany_contact": [{"city": "Albany", "phone": "518-455-4404"}],
     },
     520: {
         "name": "Linda Rosenthal",
@@ -1524,13 +1363,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
         "district_contact": [{"city": "Bronx", "phone": "718-933-6909"}],
         "albany_contact": [{"city": "Albany", "phone": "518-455-5511"}],
     },
-    1141: {
-        "name": "Al Taylor",
-        "district": 71,
-        "scrape_name__SANITY_CHECK": "Al Taylor",
-        "district_contact": [{"city": "New York", "phone": "212-234-1430"}],
-        "albany_contact": [{"city": "Albany", "phone": "518-455-5491"}],
-    },
     464: {
         "name": "Fred Thiele",
         "district": 1,
@@ -1544,21 +1376,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
         ],
         "albany_contact": [
             {"city": "Albany", "phone": "518-455-5997", "fax": "518-455-5963"}
-        ],
-    },
-    1118: {
-        "name": "Clyde Vanel",
-        "district": 33,
-        "scrape_name__SANITY_CHECK": "Clyde Vanel",
-        "district_contact": [
-            {
-                "city": "Queens Village",
-                "phone": "718-479-2333",
-                "fax": "718-464-7128",
-            }
-        ],
-        "albany_contact": [
-            {"city": "Albany", "phone": "518-455-4711", "fax": "518-455-3740"}
         ],
     },
     1247: {
@@ -1590,36 +1407,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
         ],
         "albany_contact": [{"city": "Albany", "phone": "518-455-4466"}],
     },
-    1133: {
-        "name": "Monica P. Wallace",
-        "district": 143,
-        "scrape_name__SANITY_CHECK": "Monica P. Wallace",
-        "district_contact": [
-            {
-                "city": "Cheektowaga",
-                "phone": "716-686-0080",
-                "fax": "716-686-3752",
-            }
-        ],
-        "albany_contact": [
-            {"city": "Albany", "phone": "518-455-5921", "fax": "518-455-3962"}
-        ],
-    },
-    1127: {
-        "name": "Mary Beth Walsh",
-        "district": 112,
-        "scrape_name__SANITY_CHECK": "Mary Beth Walsh",
-        "district_contact": [
-            {
-                "city": "Ballston Spa",
-                "phone": "518-884-8010",
-                "fax": "518-884-8041",
-            }
-        ],
-        "albany_contact": [
-            {"city": "Albany", "phone": "518-455-5772", "fax": "518-455-4650"}
-        ],
-    },
     494: {
         "name": "Helene Weinstein",
         "district": 41,
@@ -1646,19 +1433,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"city": "Albany", "phone": "518-455-5806", "fax": "518-455-5977"}
         ],
-    },
-    1116: {
-        "name": "Jaime R. Williams",
-        "district": 59,
-        "scrape_name__SANITY_CHECK": "Jaime R. Williams",
-        "district_contact": [
-            {
-                "city": "Brooklyn",
-                "phone": "718-252-2124",
-                "fax": "718-252-2417",
-            }
-        ],
-        "albany_contact": [{"city": "Albany", "phone": "518-455-5211"}],
     },
     886: {
         "name": "Carrie Woerner",
