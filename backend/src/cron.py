@@ -10,6 +10,7 @@ from . import (
 )
 from .app import app
 from .settings import ENABLE_CRON
+from .static_data import assembly_data, senate_data
 
 
 @app.cli.command("cron")
