@@ -1,11 +1,10 @@
 import enum
+from typing import Union
 from uuid import uuid4
 
 from sqlalchemy import Column, Enum, ForeignKey, Integer, Text
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
-
-from typing import Union
 
 from ..models import TIMESTAMP, UUID, db
 
@@ -116,16 +115,15 @@ class CouncilMember(db.Model):
     website = Column(Text)
 
 
-    
 class StateRepresentativeMixin:
 
     # Foreign key to Person parent table
     @declared_attr
     def person_id(self):
-        return  Column(UUID, ForeignKey(Person.id), primary_key=True)
-    
+        return Column(UUID, ForeignKey(Person.id), primary_key=True)
+
     district = Column(Integer)
-    
+
     state_member_id = Column(Integer, nullable=False, unique=True)
 
 
@@ -140,7 +138,9 @@ class Senator(db.Model, StateRepresentativeMixin):
     # The parent Person object.
     person = relationship("Person", back_populates="senator", lazy="joined")
 
-    sponsorships = relationship("SenateSponsorship", back_populates="representative")
+    sponsorships = relationship(
+        "SenateSponsorship", back_populates="representative"
+    )
 
     @property
     def website(self):
@@ -149,7 +149,6 @@ class Senator(db.Model, StateRepresentativeMixin):
             if self.district
             else None
         )
-
 
 
 class AssemblyMember(db.Model, StateRepresentativeMixin):

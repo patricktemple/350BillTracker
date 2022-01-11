@@ -75,38 +75,44 @@ CitySponsorship.person = relationship(
 
 class StateSponsorshipMixin:
     """TODO comment"""
+
     # Set these on the subclass
     bill_class = None
     representative_class = None
 
-
     @declared_attr
     def id(self):
         return Column(UUID, primary_key=True, default=uuid4)
-    
+
     @declared_attr
     def person_id(self):
         return Column(
-        UUID, ForeignKey(self.representative_class.person_id), nullable=False, index=True
-    )
+            UUID,
+            ForeignKey(self.representative_class.person_id),
+            nullable=False,
+            index=True,
+        )
 
     @declared_attr
     def representative(self):
         return relationship(
             self.representative_class, back_populates="sponsorships"
         )
-    
+
     @declared_attr
     def bill_id(self):
         return Column(
-        UUID, ForeignKey(self.bill_class.bill_id), nullable=False, index=True
-    )
+            UUID,
+            ForeignKey(self.bill_class.bill_id),
+            nullable=False,
+            index=True,
+        )
 
     @declared_attr
     def bill(self):
         return relationship(
-        self.bill_class,
-        back_populates="sponsorships",
+            self.bill_class,
+            back_populates="sponsorships",
         )
 
     is_lead_sponsor = Column(Boolean, nullable=False)

@@ -74,10 +74,14 @@ def state_bill_sponsorships(bill_id):
         .all()
     )
     senate_cosponsors = (
-        s.representative.person for s in senate_sponsorships if not s.is_lead_sponsor
+        s.representative.person
+        for s in senate_sponsorships
+        if not s.is_lead_sponsor
     )
     senate_lead_sponsor_list = [
-        s.representative.person for s in senate_sponsorships if s.is_lead_sponsor
+        s.representative.person
+        for s in senate_sponsorships
+        if s.is_lead_sponsor
     ]
     senate_lead_sponsor = (
         senate_lead_sponsor_list[0] if senate_lead_sponsor_list else None
