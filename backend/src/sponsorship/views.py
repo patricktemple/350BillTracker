@@ -1,3 +1,6 @@
+from typing import List, Tuple, Union
+from uuid import UUID
+
 from sqlalchemy.orm import joinedload
 from werkzeug import exceptions
 
@@ -61,6 +64,32 @@ def city_bill_sponsorships(bill_id):
     )
 
 
+def _get_state_sponsorship_list(
+    sponsorship_model: Union[SenateSponsorship, AssemblySponsorship],
+    representative_model: Union[Senator, AssemblyMember],
+    bill_id: UUID,
+):
+    sponsorships = (
+        sponsorship_model.query.filter_by(bill_id=bill_id)
+        .options(joinedload(sponsorship_model.representative))
+        .all()
+    )
+    cosponsors = (
+        s.representative.person for s in sponsorships if not s.is_lead_sponsor
+    )
+    lead_sponsor_list = [
+        s.representative.person for s in sponsorships if s.is_lead_sponsor
+    ]
+    lead_sponsor = lead_sponsor_list[0] if lead_sponsor_list else None
+    non_sponsors = representative_model.query.filter(
+        representative_model.person_id.not_in(
+            [s.person_id for s in sponsorships]
+        )
+    ).all()
+
+    return lead_sponsor, cosponsors, (r.person for r in non_sponsors)
+
+
 @app.route("/api/state-bills/<uuid:bill_id>/sponsorships", methods=["GET"])
 @auth_required
 def state_bill_sponsorships(bill_id):
@@ -68,47 +97,19 @@ def state_bill_sponsorships(bill_id):
     if not state_bill:
         raise exceptions.NotFound()
 
-    senate_sponsorships = (
-        SenateSponsorship.query.filter_by(senate_bill_id=bill_id)
-        .options(joinedload(SenateSponsorship.senator))
-        .all()
-    )
-    senate_cosponsors = (
-        s.senator.person for s in senate_sponsorships if not s.is_lead_sponsor
-    )
-    senate_lead_sponsor_list = [
-        s.senator.person for s in senate_sponsorships if s.is_lead_sponsor
-    ]
-    senate_lead_sponsor = (
-        senate_lead_sponsor_list[0] if senate_lead_sponsor_list else None
-    )
-    senate_non_sponsors = Senator.query.filter(
-        Senator.person_id.not_in([s.senator_id for s in senate_sponsorships])
-    ).all()
+    (
+        senate_lead_sponsor,
+        senate_cosponsors,
+        senate_non_sponsors,
+    ) = _get_state_sponsorship_list(SenateSponsorship, Senator, bill_id)
 
-    assembly_sponsorships = (
-        AssemblySponsorship.query.filter_by(assembly_bill_id=bill_id)
-        .options(joinedload(AssemblySponsorship.assembly_member))
-        .all()
+    (
+        assembly_lead_sponsor,
+        assembly_cosponsors,
+        assembly_non_sponsors,
+    ) = _get_state_sponsorship_list(
+        AssemblySponsorship, AssemblyMember, bill_id
     )
-    assembly_cosponsors = (
-        s.assembly_member.person
-        for s in assembly_sponsorships
-        if not s.is_lead_sponsor
-    )
-    assembly_lead_sponsor_list = [
-        s.assembly_member.person
-        for s in assembly_sponsorships
-        if s.is_lead_sponsor
-    ]
-    assembly_lead_sponsor = (
-        assembly_lead_sponsor_list[0] if assembly_lead_sponsor_list else None
-    )
-    assembly_non_sponsors = AssemblyMember.query.filter(
-        AssemblyMember.person_id.not_in(
-            [s.assembly_member_id for s in assembly_sponsorships]
-        )
-    ).all()
 
     return StateBillSponsorshipsSchema().jsonify(
         {
@@ -116,12 +117,12 @@ def state_bill_sponsorships(bill_id):
             "senate_sponsorships": {
                 "lead_sponsor": senate_lead_sponsor,
                 "cosponsors": senate_cosponsors,
-                "non_sponsors": (s.person for s in senate_non_sponsors),
+                "non_sponsors": senate_non_sponsors,
             },
             "assembly_sponsorships": {
                 "lead_sponsor": assembly_lead_sponsor,
                 "cosponsors": assembly_cosponsors,
-                "non_sponsors": (a.person for a in assembly_non_sponsors),
+                "non_sponsors": assembly_non_sponsors,
             },
         }
     )

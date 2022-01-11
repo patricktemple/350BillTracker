@@ -210,12 +210,12 @@ def test_track_bill(client, snapshot):
     assert bill.state_bill.assembly_bill.active_version == "A"
 
     assert {("Senate sponsor", False), ("Senate lead sponsor", True)} == {
-        (s.senator.person.name, s.is_lead_sponsor)
+        (s.representative.person.name, s.is_lead_sponsor)
         for s in bill.state_bill.senate_bill.sponsorships
     }
 
     assert {("Assembly sponsor", False), ("Assembly lead sponsor", True)} == {
-        (s.assembly_member.person.name, s.is_lead_sponsor)
+        (s.representative.person.name, s.is_lead_sponsor)
         for s in bill.state_bill.assembly_bill.sponsorships
     }
 
