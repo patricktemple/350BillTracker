@@ -13,6 +13,8 @@ attrs==21.2.0
     #   flake8-bugbear
     #   pytest
     #   syrupy
+beautifulsoup4==4.10.0
+    # via bs4
 black==21.6b0
     # via fourmat
 boto3==1.18.53
@@ -21,6 +23,8 @@ botocore==1.21.53
     # via
     #   boto3
     #   s3transfer
+bs4==0.0.1
+    # via -r requirements.in
 cachetools==4.2.2
     # via google-auth
 certifi==2021.5.30
@@ -181,6 +185,8 @@ six==1.16.0
     #   google-auth-httplib2
     #   python-dateutil
     #   responses
+soupsieve==2.3.1
+    # via beautifulsoup4
 sqlalchemy==1.4.25
     # via
     #   -r requirements.in
