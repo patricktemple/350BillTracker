@@ -1,4 +1,5 @@
 import logging
+from typing import Union
 
 import requests
 
@@ -35,55 +36,59 @@ def senate_get(path: str, **params):
     return response.json()["result"]
 
 
-# TODO: Dedupe these fuctions!
-def _add_senate_sponsorship(bill, sponsor_data, is_lead_sponsor):
+def _add_sponsorship(
+    *,
+    chamber_bill,
+    sponsor_data,
+    sponsorship_model: Union[AssemblySponsorship, SenateSponsorship],
+    representative_model: Union[AssemblyMember, Senator],
+    is_lead_sponsor,
+):
     member_id = sponsor_data["memberId"]
-    senator = Senator.query.filter_by(state_member_id=member_id).one_or_none()
-    if senator:
-        sponsorship = SenateSponsorship(
-            senator_id=senator.person_id, is_lead_sponsor=is_lead_sponsor
-        )
-        bill.state_bill.senate_bill.sponsorships.append(sponsorship)
-        logging.info(
-            f"Added sponsorship for {senator.person.name} to bill {bill.state_bill.senate_bill.base_print_no}"
-        )
-    else:
-        logging.warning(
-            f"Did not find {sponsor_data['fullName']}, member_id: {member_id} for sponsorship on bill {bill.state_bill.senate_bill.base_print_no}"
-        )
-
-
-def _add_assembly_sponsorship(bill, sponsor_data, is_lead_sponsor):
-    member_id = sponsor_data["memberId"]
-    assembly_member = AssemblyMember.query.filter_by(
+    representative = representative_model.query.filter_by(
         state_member_id=member_id
     ).one_or_none()
-    if assembly_member:
-        # TODO: I can rename the field "assembly_member_id" and then this function can work for both chambers, it's simpler
-        # and that can become a mixin.
-        sponsorship = AssemblySponsorship(
-            assembly_member_id=assembly_member.person_id,
+    if representative:
+        sponsorship = sponsorship_model(
+            person_id=representative.person_id,
             is_lead_sponsor=is_lead_sponsor,
         )
-        bill.state_bill.assembly_bill.sponsorships.append(sponsorship)
+        chamber_bill.sponsorships.append(sponsorship)
         logging.info(
-            f"Added sponsorship for {assembly_member.person.name} to bill {bill.state_bill.assembly_bill.base_print_no}"
+            f"Added sponsorship for {representative.person.name} to bill {chamber_bill.base_print_no}"
         )
     else:
         logging.warning(
-            f"Did not find {sponsor_data['fullName']}, member_id: {member_id} for sponsorship on bill {bill.state_bill.assembly_bill.base_print_no}"
+            f"Did not find {sponsor_data['fullName']}, member_id: {member_id} for sponsorship on bill {chamber_bill.base_print_no}"
         )
 
 
-def _add_chamber_sponsorships(bill, chamber_data, add_sponsorship_function):
+def _add_chamber_sponsorships(
+    *,
+    chamber_bill,
+    chamber_data,
+    sponsorship_model: Union[AssemblySponsorship, SenateSponsorship],
+    representative_model: Union[AssemblyMember, Senator],
+):
     active_amendment = chamber_data["amendments"]["items"][
         chamber_data["activeVersion"]
     ]
     lead_sponsor = chamber_data["sponsor"]["member"]
-    add_sponsorship_function(bill, lead_sponsor, True)
+    _add_sponsorship(
+        chamber_bill=chamber_bill,
+        sponsor_data=lead_sponsor,
+        sponsorship_model=sponsorship_model,
+        representative_model=representative_model,
+        is_lead_sponsor=True,
+    )
     for sponsor in active_amendment["coSponsors"]["items"]:
-        # TODO also include lead sponsor, it's its own field on main bill
-        add_sponsorship_function(bill, sponsor, False)
+        _add_sponsorship(
+            chamber_bill=chamber_bill,
+            sponsor_data=sponsor,
+            sponsorship_model=sponsorship_model,
+            representative_model=representative_model,
+            is_lead_sponsor=False,
+        )
 
 
 def _update_bill_sponsorships(bill):
@@ -153,7 +158,10 @@ def import_bill(session_year, base_print_no):
             active_version=assembly_data["activeVersion"],
         )
         _add_chamber_sponsorships(
-            bill, assembly_data, _add_assembly_sponsorship
+            chamber_bill=bill.state_bill.assembly_bill,
+            chamber_data=assembly_data,
+            sponsorship_model=AssemblySponsorship,
+            representative_model=AssemblyMember,
         )
     if senate_data:
         bill.state_bill.senate_bill = SenateBill(
@@ -161,7 +169,12 @@ def import_bill(session_year, base_print_no):
             base_print_no=senate_data["basePrintNo"],
             active_version=senate_data["activeVersion"],
         )
-        _add_chamber_sponsorships(bill, senate_data, _add_senate_sponsorship)
+        _add_chamber_sponsorships(
+            chamber_bill=bill.state_bill.senate_bill,
+            chamber_data=senate_data,
+            sponsorship_model=SenateSponsorship,
+            representative_model=Senator,
+        )
 
     db.session.add(bill)
     db.session.commit()
