@@ -15,7 +15,7 @@ from src.council_sync import (
 from src.models import db
 from src.person.models import CouncilMember, Person
 from src.sponsorship.models import CitySponsorship
-from src.static_data import COUNCIL_DATA_BY_LEGISLATOR_ID
+from src.static_data.council_data import COUNCIL_DATA_BY_LEGISLATOR_ID
 
 
 @responses.activate

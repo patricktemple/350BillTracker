@@ -2,7 +2,10 @@ import enum
 from uuid import uuid4
 
 from sqlalchemy import Column, Enum, ForeignKey, Integer, Text
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
+
+from typing import Union
 
 from ..models import TIMESTAMP, UUID, db
 
@@ -113,7 +116,25 @@ class CouncilMember(db.Model):
     website = Column(Text)
 
 
-class Senator(db.Model):
+    
+
+class StateRepresentativeMixin:
+
+    # Foreign key to Person parent table
+    @declared_attr
+    def person_id(self):
+        return Column(UUID, ForeignKey(Person.id), primary_key=True)
+    
+    @declared_attr
+    def district(self):
+        return Column(Integer)
+    
+    @declared_attr
+    def state_member_id(self):
+        return Column(Integer, nullable=False, unique=True)
+
+
+class Senator(db.Model, StateRepresentativeMixin):
     """
     Data about a specific state senator. For each row in this there must also
     be a Person that has more general info about this person, such as name.
@@ -121,17 +142,10 @@ class Senator(db.Model):
 
     __tablename__ = "senators"
 
-    # Foreign key to Person parent table
-    person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)
-
     # The parent Person object.
     person = relationship("Person", back_populates="senator", lazy="joined")
 
     sponsorships = relationship("SenateSponsorship", back_populates="senator")
-
-    state_member_id = Column(Integer, nullable=False, unique=True)
-
-    district = Column(Integer)
 
     @property
     def website(self):
@@ -142,7 +156,8 @@ class Senator(db.Model):
         )
 
 
-class AssemblyMember(db.Model):
+
+class AssemblyMember(db.Model, StateRepresentativeMixin):
     """
     Data about a specific state assembly member. For each row in this there must
     also be a Person that has more general info about this person, such as name.
@@ -150,21 +165,14 @@ class AssemblyMember(db.Model):
 
     __tablename__ = "assembly_members"
 
-    # Foreign key to Person parent table
-    person_id = Column(UUID, ForeignKey(Person.id), primary_key=True)
-
     # The parent Person object.
     person = relationship(
         "Person", back_populates="assembly_member", lazy="joined"
     )
 
-    state_member_id = Column(Integer, nullable=False, unique=True)
-
     sponsorships = relationship(
         "AssemblySponsorship", back_populates="assembly_member"
     )
-
-    district = Column(Integer)
 
     @property
     def website(self):
@@ -173,6 +181,9 @@ class AssemblyMember(db.Model):
             if self.district
             else None
         )
+
+
+StateRepresentative = Union[Senator, AssemblyMember]
 
 
 # Staffers have a single boss. They're one to many.
