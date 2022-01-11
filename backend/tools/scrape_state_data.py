@@ -7,6 +7,8 @@ from src.app import app
 from src.person.models import Person, Senator, AssemblyMember
 import json
 
+# TODO comment this script
+
 def get_senate_data():
     senator_list_html = requests.get('https://www.nysenate.gov/senators-committees').text
 
@@ -139,7 +141,9 @@ for senator in senators:
         "district": senator.district,
         "scrape_name__SANITY_CHECK": matching_item['name'],
         "district_contact": matching_item['district_contact'],
-        "albany_contact": matching_item['albany_contact']
+        "albany_contact": matching_item['albany_contact'],
+        "party": matching_item['party'],
+        "email": matching_item.get('email')
     }
 
 print("Senate")
@@ -159,7 +163,9 @@ for member in assembly_members:
         "district": member.district,
         "scrape_name__SANITY_CHECK": matching_item['name'],
         "district_contact": matching_item['district_contact'],
-        "albany_contact": matching_item['albany_contact']
+        "albany_contact": matching_item['albany_contact'],
+        "party": matching_item.get('party'),
+        "email": matching_item.get('email')
     }
 
 print("Assembly")

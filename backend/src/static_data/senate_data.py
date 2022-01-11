@@ -1,5 +1,3 @@
-# TODO: Distinguish scraped data from manual data?
-
 SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
     1498: {
         "name": "John Mannion",
@@ -11,6 +9,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-3511", "fax": None, "city": "Albany"}
         ],
+        "party": "D",
+        "email": "mannion@nysenate.gov",
     },
     429: {
         "name": "Timothy M. Kennedy",
@@ -22,6 +22,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2426", "fax": "518-426-6851", "city": "Albany"}
         ],
+        "party": "D",
+        "email": "kennedy@nysenate.gov",
     },
     439: {
         "name": "Simcha Felder",
@@ -46,6 +48,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "D",
+        "email": "felder@nysenate.gov",
     },
     1225: {
         "name": "John Liu",
@@ -57,6 +61,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2210", "fax": None, "city": "Albany"}
         ],
+        "party": "D",
+        "email": "liu@nysenate.gov",
     },
     396: {
         "name": "Andrea Stewart-Cousins",
@@ -81,6 +87,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             },
         ],
+        "party": "D",
+        "email": "scousins@nysenate.gov",
     },
     1230: {
         "name": "Robert Jackson",
@@ -96,6 +104,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2041", "fax": None, "city": "Albany"}
         ],
+        "party": "D",
+        "email": "jackson@nysenate.gov",
     },
     1101: {
         "name": "John E. Brooks",
@@ -111,6 +121,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2765", "fax": "518-426-6925", "city": "Albany"}
         ],
+        "party": "D",
+        "email": "brooks@nysenate.gov",
     },
     416: {
         "name": "Kevin S. Parker",
@@ -130,6 +142,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "D",
+        "email": "parker@nysenate.gov",
     },
     415: {
         "name": "Thomas F. O'Mara",
@@ -141,6 +155,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2091", "fax": "518-426-6976", "city": "Albany"}
         ],
+        "party": "R",
+        "email": "omara@nysenate.gov",
     },
     890: {
         "name": "Susan Serino",
@@ -156,6 +172,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "(518) 455-2945", "fax": None, "city": "Albany"}
         ],
+        "party": "R",
+        "email": "Serino@nysenate.gov",
     },
     1224: {
         "name": "Anna Kaplan",
@@ -175,6 +193,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "D",
+        "email": "kaplan@nysenate.gov",
     },
     1500: {
         "name": "Samra Brouk",
@@ -186,6 +206,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2215", "fax": None, "city": "Albany"}
         ],
+        "party": "D",
+        "email": "brouk@nysenate.gov",
     },
     1490: {
         "name": "Dan Stec",
@@ -197,6 +219,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2811", "fax": None, "city": "Albany "}
         ],
+        "party": "R",
+        "email": "stec@nysenate.gov",
     },
     1233: {
         "name": "Pete Harckham",
@@ -216,6 +240,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "D",
+        "email": "harckham@nysenate.gov",
     },
     885: {
         "name": "Robert Ortt",
@@ -235,6 +261,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "R",
+        "email": "Ortt@nysenate.gov",
     },
     433: {
         "name": "Phil Boyle",
@@ -246,6 +274,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "(518) 455-3411", "fax": None, "city": "Albany"}
         ],
+        "party": "R",
+        "email": "pboyle@nysenate.gov",
     },
     1229: {
         "name": "Andrew Gounardes",
@@ -261,6 +291,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "D",
+        "email": "gounardes@nysenate.gov",
     },
     1222: {
         "name": "Jim Gaughran",
@@ -280,6 +312,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "D",
+        "email": "gaughran@nysenate.gov",
     },
     1497: {
         "name": "Michelle Hinchey",
@@ -295,6 +329,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2350", "fax": None, "city": "Albany"}
         ],
+        "party": "D",
+        "email": "hinchey@nysenate.gov",
     },
     1496: {
         "name": "Mike Martucci",
@@ -314,6 +350,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "R",
+        "email": "martucci@nysenate.gov",
     },
     1237: {
         "name": "Rachel May",
@@ -325,6 +363,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2838", "fax": None, "city": "Albany"}
         ],
+        "party": "D",
+        "email": "may@nysenate.gov",
     },
     1142: {
         "name": "Luis R. Sepúlveda",
@@ -336,6 +376,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2511", "fax": "518-426-6845", "city": "Albany"}
         ],
+        "party": "D",
+        "email": "sepulveda@nysenate.gov",
     },
     1102: {
         "name": "Jamaal Bailey",
@@ -347,6 +389,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2061", "fax": None, "city": "Albany "}
         ],
+        "party": "D",
+        "email": "senatorjbailey@nysenate.gov",
     },
     409: {
         "name": "Andrew J Lanza",
@@ -366,6 +410,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "R",
+        "email": "lanza@nysenate.gov",
     },
     913: {
         "name": "Fredrick J Akshar II",
@@ -381,6 +427,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2677", "fax": "518-426-6720", "city": "Albany"}
         ],
+        "party": "R",
+        "email": "akshar@nysenate.gov",
     },
     1143: {
         "name": "Shelley Mayer",
@@ -396,6 +444,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2031", "fax": "518-426-6860", "city": "Albany"}
         ],
+        "party": "D",
+        "email": "smayer@nysenate.gov",
     },
     888: {
         "name": "Leroy Comrie",
@@ -411,6 +461,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "D",
+        "email": "comrie@nysenate.gov",
     },
     1493: {
         "name": "Alexis Weik",
@@ -422,6 +474,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2950", "fax": None, "city": "Albany"}
         ],
+        "party": "R",
+        "email": "weik@nysenate.gov",
     },
     373: {
         "name": "José M. Serrano",
@@ -441,6 +495,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "D",
+        "email": "serrano@nysenate.gov",
     },
     400: {
         "name": "Toby Ann Stavisky",
@@ -460,6 +516,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "D",
+        "email": "stavisky@nysenate.gov",
     },
     1499: {
         "name": "Peter Oberacker",
@@ -472,6 +530,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-3131", "fax": None, "city": "Albany"}
         ],
+        "party": "R",
+        "email": "oberacker@nysenate.gov",
     },
     1492: {
         "name": "Mario Mattera",
@@ -487,6 +547,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2071", "fax": "518-426-6820", "city": "Albany"}
         ],
+        "party": "R",
+        "email": "mattera@nysenate.gov",
     },
     1494: {
         "name": "Jabari Brisport",
@@ -506,6 +568,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "D",
+        "email": "brisport@nysenate.gov",
     },
     1491: {
         "name": "Sean Ryan",
@@ -517,6 +581,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-3240", "fax": None, "city": "Albany"}
         ],
+        "party": "D",
+        "email": "ryan@nysenate.gov",
     },
     1228: {
         "name": "Zellnor Myrie",
@@ -532,6 +598,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2410", "fax": "518-426-6856", "city": "Albany"}
         ],
+        "party": "D",
+        "email": "myrie@nysenate.gov",
     },
     1504: {
         "name": "Cordell Cleare",
@@ -547,6 +615,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2441", "fax": " 518-426-6809", "city": "Abany"}
         ],
+        "party": "D",
+        "email": "cleare@nysenate.gov",
     },
     914: {
         "name": "Roxanne J Persaud",
@@ -558,6 +628,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2788", "fax": None, "city": "Albany"}
         ],
+        "party": "D",
+        "email": "senatorpersaud@gmail.com",
     },
     1495: {
         "name": "Elijah Reichlin-Melnick",
@@ -574,6 +646,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2991", "fax": None, "city": "Albany"}
         ],
+        "party": "D",
+        "email": "reichlin@nysenate.gov",
     },
     1223: {
         "name": "Kevin Thomas",
@@ -593,6 +667,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "D",
+        "email": "thomas@nysenate.gov",
     },
     1103: {
         "name": "James Tedisco",
@@ -608,6 +684,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2181", "fax": "518-426-6821", "city": "Albany"}
         ],
+        "party": "R",
+        "email": "tedisco@nysenate.gov",
     },
     432: {
         "name": "James Sanders Jr.",
@@ -623,6 +701,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-3531", "fax": "518-426-6859", "city": "Albany"}
         ],
+        "party": "D",
+        "email": "sanders@nysenate.gov",
     },
     1227: {
         "name": "Julia Salazar",
@@ -634,6 +714,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2177", "fax": "518-426-6947", "city": "Albany"}
         ],
+        "party": "D",
+        "email": "salazar@nysenate.gov",
     },
     393: {
         "name": "Joseph A. Griffo",
@@ -653,6 +735,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "R",
+        "email": "griffo@nysenate.gov",
     },
     1226: {
         "name": "Jessica Ramos",
@@ -668,6 +752,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2529", "fax": None, "city": "Albany"}
         ],
+        "party": "D",
+        "email": "ramos@nysenate.gov",
     },
     1235: {
         "name": "Daphne Jordan",
@@ -679,6 +765,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2381", "fax": None, "city": "Albany"}
         ],
+        "party": "R",
+        "email": "jordan@nysenate.gov",
     },
     951: {
         "name": "Pamela Helming",
@@ -690,6 +778,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2366", "fax": None, "city": "Albany"}
         ],
+        "party": "R",
+        "email": "helming@nysenate.gov",
     },
     427: {
         "name": "Patrick M. Gallivan",
@@ -701,6 +791,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-3471", "fax": "518-426-6949", "city": "Albany"}
         ],
+        "party": "R",
+        "email": "gallivan@nysenate.gov",
     },
     1370: {
         "name": "George Borrello",
@@ -716,6 +808,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-3563", "fax": "518-426-6905", "city": "Albany"}
         ],
+        "party": "R",
+        "email": "borrello@nysenate.gov",
     },
     1231: {
         "name": "Alessandra Biaggi",
@@ -727,6 +821,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-3595", "fax": None, "city": "Albany"}
         ],
+        "party": "D",
+        "email": "biaggi@nysenate.gov",
     },
     372: {
         "name": "Neil D. Breslin",
@@ -740,6 +836,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "D",
+        "email": "breslin@nysenate.gov",
     },
     1501: {
         "name": "Jeremy Cooney",
@@ -751,6 +849,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "(518) 455-2909", "fax": None, "city": "Albany"}
         ],
+        "party": "D",
+        "email": "cooney@nysenate.gov",
     },
     403: {
         "name": "Diane J. Savino",
@@ -771,6 +871,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2437", "fax": "518-426-6943", "city": "Albany"}
         ],
+        "party": "D",
+        "email": "Savino@nysenate.gov",
     },
     1140: {
         "name": "Brian Kavanagh",
@@ -780,6 +882,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-2625", "fax": "518-426-6956", "city": "Albany"}
         ],
+        "party": "D",
+        "email": "kavanagh@nysenate.gov",
     },
     377: {
         "name": "Gustavo Rivera",
@@ -791,6 +895,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-3395", "fax": "518-426-6858", "city": "Albany"}
         ],
+        "party": "D",
+        "email": "grivera@nysenate.gov",
     },
     438: {
         "name": "Brad Hoylman",
@@ -810,6 +916,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "D",
+        "email": "hoylman@nysenate.gov",
     },
     1232: {
         "name": "James Skoufis",
@@ -829,6 +937,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "D",
+        "email": "skoufis@nysenate.gov",
     },
     1502: {
         "name": "Edward Rath",
@@ -844,6 +954,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-3161", "fax": None, "city": "Albany"}
         ],
+        "party": "R",
+        "email": "rath@nysenate.gov",
     },
     1489: {
         "name": "Anthony H. Palumbo",
@@ -855,6 +967,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-3121", "fax": None, "city": "Albany"}
         ],
+        "party": "R",
+        "email": "palumbo@nysenate.gov",
     },
     918: {
         "name": "Todd Kaminsky",
@@ -870,6 +984,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
         "albany_contact": [
             {"phone": "518-455-3401", "fax": "518-426-6914", "city": "Albany"}
         ],
+        "party": "D",
+        "email": "kaminsky@nysenate.gov",
     },
     383: {
         "name": "Michael Gianaris",
@@ -889,6 +1005,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "D",
+        "email": "gianaris@nysenate.gov",
     },
     401: {
         "name": "Liz Krueger",
@@ -908,6 +1026,8 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "D",
+        "email": "lkrueger@nysenate.gov",
     },
     423: {
         "name": "Patty Ritchie",
@@ -937,5 +1057,7 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Albany",
             }
         ],
+        "party": "R",
+        "email": "ritchie@nysenate.gov",
     },
 }
