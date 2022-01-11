@@ -41,7 +41,7 @@ def _add_senate_sponsorship(bill, sponsor_data, is_lead_sponsor):
     senator = Senator.query.filter_by(state_member_id=member_id).one_or_none()
     if senator:
         sponsorship = SenateSponsorship(
-            senator_id=senator.person_id, is_lead_sponsor=is_lead_sponsor
+            person_id=senator.person_id, is_lead_sponsor=is_lead_sponsor
         )
         bill.state_bill.senate_bill.sponsorships.append(sponsorship)
         logging.info(
@@ -62,7 +62,7 @@ def _add_assembly_sponsorship(bill, sponsor_data, is_lead_sponsor):
         # TODO: I can rename the field "assembly_member_id" and then this function can work for both chambers, it's simpler
         # and that can become a mixin.
         sponsorship = AssemblySponsorship(
-            assembly_member_id=assembly_member.person_id,
+            person_id=assembly_member.person_id,
             is_lead_sponsor=is_lead_sponsor,
         )
         bill.state_bill.assembly_bill.sponsorships.append(sponsorship)
