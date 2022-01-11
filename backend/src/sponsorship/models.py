@@ -74,7 +74,8 @@ CitySponsorship.person = relationship(
 
 
 class StateSponsorshipMixin:
-    """TODO comment"""
+    """Mixin for sponsorship of Senate or Assembly bills. They have identical
+    structure but have relationships with different sets of tables."""
 
     # Set these on the subclass
     bill_class = None

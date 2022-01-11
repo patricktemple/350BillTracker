@@ -215,6 +215,10 @@ class StateBill(db.Model):
 
 
 class StateChamberMixin:
+    """
+    Mixin for a bill in either the Senate or Assembly chamber. The have
+    identical structure but are kept in separate tables."""
+
     active_version = Column(Text, nullable=False)
     status = Column(Text, nullable=False)
     base_print_no = Column(Text, nullable=False)
