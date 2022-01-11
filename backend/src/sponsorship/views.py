@@ -1,6 +1,8 @@
+from typing import List, Tuple, Union
+from uuid import UUID
+
 from sqlalchemy.orm import joinedload
 from werkzeug import exceptions
-from typing import List, Union, Tuple
 
 from ..app import app
 from ..auth import auth_required
@@ -12,7 +14,6 @@ from .schema import (
     SponsorListSchema,
     StateBillSponsorshipsSchema,
 )
-from uuid import UUID
 
 
 @app.route(
@@ -63,31 +64,30 @@ def city_bill_sponsorships(bill_id):
     )
 
 
-def _get_state_sponsorship_list(sponsorship_model: Union[SenateSponsorship, AssemblySponsorship], representative_model: Union[Senator, AssemblyMember], bill_id: UUID):
+def _get_state_sponsorship_list(
+    sponsorship_model: Union[SenateSponsorship, AssemblySponsorship],
+    representative_model: Union[Senator, AssemblyMember],
+    bill_id: UUID,
+):
     sponsorships = (
         sponsorship_model.query.filter_by(bill_id=bill_id)
         .options(joinedload(sponsorship_model.representative))
         .all()
     )
     cosponsors = (
-        s.representative.person
-        for s in sponsorships
-        if not s.is_lead_sponsor
+        s.representative.person for s in sponsorships if not s.is_lead_sponsor
     )
     lead_sponsor_list = [
-        s.representative.person
-        for s in sponsorships
-        if s.is_lead_sponsor
+        s.representative.person for s in sponsorships if s.is_lead_sponsor
     ]
-    lead_sponsor = (
-        lead_sponsor_list[0] if lead_sponsor_list else None
-    )
+    lead_sponsor = lead_sponsor_list[0] if lead_sponsor_list else None
     non_sponsors = representative_model.query.filter(
-        representative_model.person_id.not_in([s.person_id for s in sponsorships])
+        representative_model.person_id.not_in(
+            [s.person_id for s in sponsorships]
+        )
     ).all()
 
     return lead_sponsor, cosponsors, (r.person for r in non_sponsors)
-
 
 
 @app.route("/api/state-bills/<uuid:bill_id>/sponsorships", methods=["GET"])
@@ -97,9 +97,19 @@ def state_bill_sponsorships(bill_id):
     if not state_bill:
         raise exceptions.NotFound()
 
-    senate_lead_sponsor, senate_cosponsors, senate_non_sponsors = _get_state_sponsorship_list(SenateSponsorship, Senator, bill_id)
+    (
+        senate_lead_sponsor,
+        senate_cosponsors,
+        senate_non_sponsors,
+    ) = _get_state_sponsorship_list(SenateSponsorship, Senator, bill_id)
 
-    assembly_lead_sponsor, assembly_cosponsors, assembly_non_sponsors = _get_state_sponsorship_list(AssemblySponsorship, AssemblyMember, bill_id)
+    (
+        assembly_lead_sponsor,
+        assembly_cosponsors,
+        assembly_non_sponsors,
+    ) = _get_state_sponsorship_list(
+        AssemblySponsorship, AssemblyMember, bill_id
+    )
 
     return StateBillSponsorshipsSchema().jsonify(
         {
