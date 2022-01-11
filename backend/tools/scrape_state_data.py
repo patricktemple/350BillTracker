@@ -137,13 +137,10 @@ senator_data = {}
 for senator in senators:
     matching_item = data['senate'][str(senator.district)]
     senator_data[senator.state_member_id] = {
+        **matching_item,
         "name": senator.person.name,
         "district": senator.district,
         "scrape_name__SANITY_CHECK": matching_item['name'],
-        "district_contact": matching_item['district_contact'],
-        "albany_contact": matching_item['albany_contact'],
-        "party": matching_item['party'],
-        "email": matching_item.get('email')
     }
 
 print("Senate")
@@ -159,13 +156,10 @@ for member in assembly_members:
         continue
 
     assembly_data[member.state_member_id] = {
+        **matching_item,
         "name": member.person.name,
         "district": member.district,
         "scrape_name__SANITY_CHECK": matching_item['name'],
-        "district_contact": matching_item['district_contact'],
-        "albany_contact": matching_item['albany_contact'],
-        "party": matching_item.get('party'),
-        "email": matching_item.get('email')
     }
 
 print("Assembly")
