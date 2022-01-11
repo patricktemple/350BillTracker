@@ -1,7 +1,7 @@
 from werkzeug.datastructures import Authorization
 
 from .models import db
-from .person.models import AssemblyMember, Person, Senator
+from .person.models import AssemblyMember, Person, Senator, OfficeContact
 from .static_data import assembly_data, senate_data
 
 
@@ -14,6 +14,13 @@ def fill_static_state_data():
         if static_data:
             senator.person.party = static_data.get("party")
             senator.person.email = static_data.get("email")
+
+            for office in static_data['district_contact']:
+                senator.person.office_contacts.add(OfficeContact(
+                    city=office.get('city'),
+                    phone=office.get('phone'),
+                    fax=office.get('fax') # And maybe contact type?
+                ))
 
     assembly_members = AssemblyMember.query.all()
     for assembly_member in assembly_members:

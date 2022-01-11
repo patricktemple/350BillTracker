@@ -63,6 +63,8 @@ class Person(db.Model):
         "AssemblyMember", back_populates="person", uselist=False, lazy="joined"
     )
 
+    office_contacts = relationship("OfficeContact", back_populates="person")
+
     # These are added by our static data
     # TODO: Make this an enum?
     party = Column(Text)
@@ -214,3 +216,21 @@ Person.staffer_persons = relationship(
     secondaryjoin=Staffer.person_id == Person.id,
     viewonly=True,
 )
+
+
+class OfficeContact(db.Model):
+    __tablename__ = "office_contacts"
+
+    id = Column(UUID, primary_key=True, default=uuid4)
+
+    person_id = Column(UUID, ForeignKey(Person.id), index=True)
+
+    # address type enum, maybe?
+
+    phone = Column(Text)
+    fax = Column(Text)
+    city = Column(Text)
+
+    person = relationship(
+        "Person", back_populates="office_contacts", lazy="joined"
+    )
