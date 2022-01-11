@@ -133,15 +133,15 @@ CityBill.sponsor_count = column_property(
     .correlate_except(CitySponsorship)
     .scalar_subquery()
 )
-# SenateBill.sponsor_count = column_property(
-#     select(func.count(SenateSponsorship.id))
-#     .where("SenateSponsorship.senate_bill_id == SenateBill.bill_id")
-#     .correlate_except(SenateSponsorship)
-#     .scalar_subquery()
-# )
-# AssemblyBill.sponsor_count = column_property(
-#     select(func.count(AssemblySponsorship.id))
-#     .where("AssemblySponsorship.assembly_bill_id == AssemblyBill.bill_id")
-#     .correlate_except(AssemblySponsorship)
-#     .scalar_subquery()
-# )
+SenateBill.sponsor_count = column_property(
+    select(func.count(SenateSponsorship.id))
+    .where(SenateSponsorship.bill_id == SenateBill.bill_id)
+    .correlate_except(SenateSponsorship)
+    .scalar_subquery()
+)
+AssemblyBill.sponsor_count = column_property(
+    select(func.count(AssemblySponsorship.id))
+    .where(AssemblySponsorship.bill_id == AssemblyBill.bill_id)
+    .correlate_except(AssemblySponsorship)
+    .scalar_subquery()
+)
