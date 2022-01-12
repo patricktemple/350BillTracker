@@ -139,7 +139,9 @@ class Senator(db.Model, StateRepresentativeMixin):
     person = relationship("Person", back_populates="senator", lazy="joined")
 
     sponsorships = relationship(
-        "SenateSponsorship", back_populates="representative", cascade="all, delete-orphan"
+        "SenateSponsorship",
+        back_populates="representative",
+        cascade="all, delete-orphan",
     )
 
     @property
@@ -165,7 +167,9 @@ class AssemblyMember(db.Model, StateRepresentativeMixin):
     )
 
     sponsorships = relationship(
-        "AssemblySponsorship", back_populates="representative", cascade="all, delete-orphan"
+        "AssemblySponsorship",
+        back_populates="representative",
+        cascade="all, delete-orphan",
     )
 
     @property

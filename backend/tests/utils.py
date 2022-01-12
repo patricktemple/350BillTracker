@@ -46,7 +46,7 @@ def create_mock_bill_response(
     same_as_base_print_no=None,
     same_as_chamber=None,
     active_version="A",
-    status="In Committee"
+    status="In Committee",
 ):
     return {
         "result": {

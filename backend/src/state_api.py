@@ -1,5 +1,5 @@
 import logging
-from typing import Union, Optional
+from typing import Optional, Union
 
 import requests
 
@@ -98,9 +98,8 @@ def _extract_alternate_chamber_print_no(chamber_response):
     same_as_versions = active_amendment["sameAs"]["items"]
     if not same_as_versions:
         return None
-    
-    return same_as_versions[0]['basePrintNo']
 
+    return same_as_versions[0]["basePrintNo"]
 
 
 def import_bill(session_year, base_print_no):
@@ -124,7 +123,9 @@ def import_bill(session_year, base_print_no):
     bill.state_bill = StateBill(session_year=session_year)
 
     initial_chamber = initial_chamber_response["billType"]["chamber"]
-    same_as_print_no = _extract_alternate_chamber_print_no(initial_chamber_response)
+    same_as_print_no = _extract_alternate_chamber_print_no(
+        initial_chamber_response
+    )
     alternate_chamber_response = None
     if same_as_print_no:
         alternate_chamber_response = senate_get(
@@ -236,30 +237,48 @@ def sync_state_representatives(session_year=CURRENT_SESSION_YEAR):
         )
 
 
-def _update_state_chamber_bill(chamber_bill: Union[SenateBill, AssemblyBill], sponsorship_model: Union[SenateSponsorship, AssemblySponsorship], representative_model: Union[Senator, AssemblyMember], alternate_chamber_bill: Union[SenateBill, AssemblyBill]):
+def _update_state_chamber_bill(
+    chamber_bill: Union[SenateBill, AssemblyBill],
+    sponsorship_model: Union[SenateSponsorship, AssemblySponsorship],
+    representative_model: Union[Senator, AssemblyMember],
+    alternate_chamber_bill: Union[SenateBill, AssemblyBill],
+):
     chamber_response = senate_get(
-        f"bills/{chamber_bill.state_bill.session_year}/{chamber_bill.base_print_no}", view="no_fulltext"
+        f"bills/{chamber_bill.state_bill.session_year}/{chamber_bill.base_print_no}",
+        view="no_fulltext",
     )
 
-    alternate_print_no = alternate_chamber_bill.base_print_no if alternate_chamber_bill else None
-    new_alternate_print_no = _extract_alternate_chamber_print_no(chamber_response)
+    alternate_print_no = (
+        alternate_chamber_bill.base_print_no
+        if alternate_chamber_bill
+        else None
+    )
+    new_alternate_print_no = _extract_alternate_chamber_print_no(
+        chamber_response
+    )
     if alternate_print_no != new_alternate_print_no:
         # This is severe, but it's unclear what the right automatic fix is. It
         # would be good to get email alerts on it.
-        logging.error(f"When updating bill {chamber_bill.base_print_no}, expected same_as to stay as {alternate_print_no} but it was {new_alternate_print_no}")
+        logging.error(
+            f"When updating bill {chamber_bill.base_print_no}, expected same_as to stay as {alternate_print_no} but it was {new_alternate_print_no}"
+        )
 
     # Note that when there's a senate and assembly chamber both updating,
     # they'll both write these Bill fields, probably to the same values:
     bill = chamber_bill.state_bill.bill
-    bill.name = chamber_response['title']
-    bill.description = chamber_response['summary']
+    bill.name = chamber_response["title"]
+    bill.description = chamber_response["summary"]
 
-    chamber_bill.active_version = chamber_response['activeVersion']
+    chamber_bill.active_version = chamber_response["activeVersion"]
     chamber_bill.status = chamber_response["status"]["statusDesc"]
 
     chamber_bill.sponsorships.clear()
-    _add_chamber_sponsorships(chamber_bill=chamber_bill, chamber_data=chamber_response, sponsorship_model=sponsorship_model, representative_model=representative_model)
-
+    _add_chamber_sponsorships(
+        chamber_bill=chamber_bill,
+        chamber_data=chamber_response,
+        sponsorship_model=sponsorship_model,
+        representative_model=representative_model,
+    )
 
 
 def update_state_bills():
@@ -267,10 +286,20 @@ def update_state_bills():
     for state_bill in state_bills:
         # Question: What to do with same-as?
         if state_bill.senate_bill:
-            _update_state_chamber_bill(state_bill.senate_bill, SenateSponsorship, Senator, state_bill.assembly_bill)
+            _update_state_chamber_bill(
+                state_bill.senate_bill,
+                SenateSponsorship,
+                Senator,
+                state_bill.assembly_bill,
+            )
         if state_bill.assembly_bill:
-            _update_state_chamber_bill(state_bill.assembly_bill, AssemblySponsorship, AssemblyMember, state_bill.senate_bill)
-        
+            _update_state_chamber_bill(
+                state_bill.assembly_bill,
+                AssemblySponsorship,
+                AssemblyMember,
+                state_bill.senate_bill,
+            )
+
         db.session.commit()
 
 

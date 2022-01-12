@@ -15,7 +15,11 @@ from src.models import db
 from src.person.models import AssemblyMember, Person, Senator
 from src.utils import now
 
-from .utils import assert_response, get_response_data, create_mock_bill_response
+from .utils import (
+    assert_response,
+    create_mock_bill_response,
+    get_response_data,
+)
 
 
 def test_get_bills(client, state_bill):
@@ -75,9 +79,6 @@ def test_delete_bill(client, state_bill):
 
     response = client.get("/api/bills")
     assert_response(response, 200, [])
-
-
-
 
 
 @responses.activate
