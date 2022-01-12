@@ -45,16 +45,18 @@ def create_mock_bill_response(
     lead_sponsor_member_id,
     same_as_base_print_no=None,
     same_as_chamber=None,
+    active_version="A",
+    status="In Committee"
 ):
     return {
         "result": {
             "title": f"{base_print_no} bill title",
             "summary": f"{base_print_no} bill summary",
-            "activeVersion": "A",
+            "activeVersion": active_version,
             "basePrintNo": base_print_no,
             "billType": {"chamber": chamber},
             "status": {
-                "statusDesc": "In Committee",
+                "statusDesc": status,
             },
             "sponsor": {
                 "member": {
@@ -64,7 +66,7 @@ def create_mock_bill_response(
             },
             "amendments": {
                 "items": {
-                    "A": {
+                    active_version: {
                         "coSponsors": {
                             "items": [
                                 {
