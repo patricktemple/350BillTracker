@@ -28,10 +28,10 @@ def send_email(email, subject, body_html, body_text):
                     "Charset": CHARSET,
                     "Data": body_html,
                 },
-                # "Text": {
-                #     "Charset": CHARSET,
-                #     "Data": body_text,
-                # },
+                "Text": {
+                    "Charset": CHARSET,
+                    "Data": body_text,
+                },
             },
             "Subject": {
                 "Charset": CHARSET,

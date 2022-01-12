@@ -212,10 +212,9 @@ def _send_bill_update_emails(bill_diffs: FullBillDiffs):
         })
 
     subject = _get_bill_update_subject_line(bill_diffs)
-    body_text = None
-    # body_text = render_template(
-    #     "bill_alerts_email.txt", city_bills=city_bills_for_template, state_bills=state_bills_for_template
-    # )
+    body_text = render_template(
+        "bill_alerts_email.txt", city_bills=city_bills_for_template, state_bills=state_bills_for_template
+    )
     body_html = render_template(
         "bill_alerts_email.html", city_bills=city_bills_for_template, state_bills=state_bills_for_template
     )
