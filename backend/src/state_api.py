@@ -14,6 +14,7 @@ from .models import db
 from .person.models import AssemblyMember, Person, Senator
 from .settings import SENATE_API_TOKEN
 from .sponsorship.models import AssemblySponsorship, SenateSponsorship
+from .utils import cron_function
 
 # API docs: https://legislation.nysenate.gov/static/docs/html/
 # See also https://www.nysenate.gov/how-bill-becomes-law
@@ -178,63 +179,59 @@ def import_bill(session_year, base_print_no):
     return bill
 
 
+@cron_function
 def sync_state_representatives(session_year=CURRENT_SESSION_YEAR):
     """Queries the NY State API to retrieve all senators and assembly members
     in the current session year. If they already exist in the DB, updates
     their contact info."""
 
-    try:
-        members = senate_get(f"members/{session_year}?limit=1000&full=true")
+    members = senate_get(f"members/{session_year}?limit=1000&full=true")
 
-        for member in members["items"]:
-            if not member["incumbent"]:
-                # TODO: Properly handle removal of old reps
-                continue
-            member_id = member["memberId"]
-            if member["chamber"] == "ASSEMBLY":
-                person_type = Person.PersonType.ASSEMBLY_MEMBER
-                existing_member = AssemblyMember.query.filter_by(
-                    state_member_id=member_id
-                ).one_or_none()
-            elif member["chamber"] == "SENATE":
-                person_type = Person.PersonType.SENATOR
-                existing_member = Senator.query.filter_by(
-                    state_member_id=member_id
-                ).one_or_none()
-            else:
-                # ???
-                pass
+    for member in members["items"]:
+        if not member["incumbent"]:
+            # TODO: Properly handle removal of old reps
+            continue
+        member_id = member["memberId"]
+        if member["chamber"] == "ASSEMBLY":
+            person_type = Person.PersonType.ASSEMBLY_MEMBER
+            existing_member = AssemblyMember.query.filter_by(
+                state_member_id=member_id
+            ).one_or_none()
+        elif member["chamber"] == "SENATE":
+            person_type = Person.PersonType.SENATOR
+            existing_member = Senator.query.filter_by(
+                state_member_id=member_id
+            ).one_or_none()
+        else:
+            # ???
+            pass
 
-            if existing_member:
-                existing_member.district = member["districtCode"]
-                logging.info(
-                    f"Person {existing_member.person.name} already in DB, updating"
+        if existing_member:
+            existing_member.district = member["districtCode"]
+            logging.info(
+                f"Person {existing_member.person.name} already in DB, updating"
+            )
+            person = existing_member.person
+        else:
+            logging.info(f"Adding person {member['person']['fullName']}")
+            person = Person(type=person_type)
+            if person_type == Person.PersonType.ASSEMBLY_MEMBER:
+                person.assembly_member = AssemblyMember(
+                    state_member_id=member_id,
+                    district=member["districtCode"],
                 )
-                person = existing_member.person
             else:
-                logging.info(f"Adding person {member['person']['fullName']}")
-                person = Person(type=person_type)
-                if person_type == Person.PersonType.ASSEMBLY_MEMBER:
-                    person.assembly_member = AssemblyMember(
-                        state_member_id=member_id,
-                        district=member["districtCode"],
-                    )
-                else:
-                    person.senator = Senator(
-                        state_member_id=member_id,
-                        district=member["districtCode"],
-                    )
-                db.session.add(person)
+                person.senator = Senator(
+                    state_member_id=member_id,
+                    district=member["districtCode"],
+                )
+            db.session.add(person)
 
-            person.name = member["person"]["fullName"]
-            person.title = member["person"]["prefix"]
-            person.email = member["person"]["email"]
+        person.name = member["person"]["fullName"]
+        person.title = member["person"]["prefix"]
+        person.email = member["person"]["email"]
 
-        db.session.commit()
-    except Exception:
-        logging.exception(
-            "Unhandled exception when adding state representatives"
-        )
+    db.session.commit()
 
 
 def _update_state_chamber_bill(
@@ -281,26 +278,31 @@ def _update_state_chamber_bill(
     )
 
 
+
+@cron_function
 def update_state_bills():
     state_bills = StateBill.query.all()
     for state_bill in state_bills:
-        # Question: What to do with same-as?
-        if state_bill.senate_bill:
-            _update_state_chamber_bill(
-                state_bill.senate_bill,
-                SenateSponsorship,
-                Senator,
-                state_bill.assembly_bill,
-            )
-        if state_bill.assembly_bill:
-            _update_state_chamber_bill(
-                state_bill.assembly_bill,
-                AssemblySponsorship,
-                AssemblyMember,
-                state_bill.senate_bill,
-            )
+        try:
+            if state_bill.senate_bill:
+                _update_state_chamber_bill(
+                    state_bill.senate_bill,
+                    SenateSponsorship,
+                    Senator,
+                    state_bill.assembly_bill,
+                )
+            if state_bill.assembly_bill:
+                _update_state_chamber_bill(
+                    state_bill.assembly_bill,
+                    AssemblySponsorship,
+                    AssemblyMember,
+                    state_bill.senate_bill,
+                )
 
-        db.session.commit()
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            logging.exception(f"Unhandled exception when updating bill {state_bill.bill.code_name}")
 
 
 def _convert_search_results(state_bill):
