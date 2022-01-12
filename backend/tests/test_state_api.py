@@ -93,8 +93,6 @@ def test_import_state_reps(client, senator, assembly_member, snapshot):
 
 @responses.activate
 def test_update_state_bills(state_bill: Bill, senator, assembly_member):
-    # TODO work on this... need to plan it out
-    # maybe have a test for just one chamber, too
     responses.add(
         responses.GET,
         url=f"https://legislation.nysenate.gov/api/3/bills/{state_bill.state_bill.session_year}/{state_bill.state_bill.senate_bill.base_print_no}?view=no_fulltext&key=fake_key",

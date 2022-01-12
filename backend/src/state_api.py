@@ -235,17 +235,17 @@ def _update_state_chamber_bill(chamber_bill: Union[SenateBill, AssemblyBill], sp
     chamber_response = senate_get(
         f"bills/{chamber_bill.state_bill.session_year}/{chamber_bill.base_print_no}", view="no_fulltext"
     )
-    # We only want to update this once, not for both senate and assembly... so prob this needs to go out
+    # Note that when there's a senate and assembly chamber both updating,
+    # they'll both write these Bill fields, probably to the same values:
     bill = chamber_bill.state_bill.bill
     bill.name = chamber_response['title']
     bill.description = chamber_response['summary']
+
     chamber_bill.active_version = chamber_response['activeVersion']
     chamber_bill.status = chamber_response["status"]["statusDesc"]
 
     chamber_bill.sponsorships.clear()
     _add_chamber_sponsorships(chamber_bill=chamber_bill, chamber_data=chamber_response, sponsorship_model=sponsorship_model, representative_model=representative_model)
-
-    db.session.commit()
 
 
 
@@ -254,10 +254,11 @@ def update_state_bills():
     for state_bill in state_bills:
         # Question: What to do with same-as?
         if state_bill.senate_bill:
-            
             _update_state_chamber_bill(state_bill.senate_bill, SenateSponsorship, Senator)
         if state_bill.assembly_bill:
             _update_state_chamber_bill(state_bill.assembly_bill, AssemblySponsorship, AssemblyMember)
+        
+        db.session.commit()
 
 
 def _convert_search_results(state_bill):
