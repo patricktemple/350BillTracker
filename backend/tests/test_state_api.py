@@ -102,7 +102,8 @@ def test_update_state_bills(state_bill: Bill, senator, assembly_member):
             cosponsor_member_id=100,
             lead_sponsor_member_id=4,
             active_version="New senate version",
-            status="New senate status"
+            status="New senate status",
+            same_as_base_print_no=state_bill.state_bill.assembly_bill.base_print_no
         ))
 
     responses.add(
@@ -114,7 +115,8 @@ def test_update_state_bills(state_bill: Bill, senator, assembly_member):
             cosponsor_member_id=50,
             lead_sponsor_member_id=200,
             active_version="New assembly version",
-            status="New assembly status"
+            status="New assembly status",
+            same_as_base_print_no=state_bill.state_bill.senate_bill.base_print_no
         ))
     
     # Start with one sponsors on each chamber, and then expect it to switch to a
