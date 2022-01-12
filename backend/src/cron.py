@@ -15,7 +15,6 @@ from .static_data import assembly_data, senate_data
 
 @app.cli.command("cron")
 def cron_command():
-    # TODO: Refactor to improve error handling
     logging.info("Cron job starting")
     while True:
         if ENABLE_CRON:
@@ -31,15 +30,18 @@ def cron_command():
                 # TODO: This doesn't need to run at cron time though! Just once on startup
                 council_sync.fill_council_person_static_data()
 
-                logging.info("Adding state reps")
-                state_api.add_state_representatives()  # todo exception handling
+                logging.info("Syncing state reps")
+                state_api.sync_state_representatives()
 
                 bill_snapshots = bill_notifications.snapshot_bills()
 
-                logging.info("Syncing all bill updates")
+                logging.info("Syncing state bill updates")
+                state_api.update_state_bills()
+
+                logging.info("Syncing all city bill updates")
                 council_sync.sync_bill_updates()
 
-                logging.info("Syncing all bill sponsorships")
+                logging.info("Syncing all city bill sponsorships")
                 council_sync.update_all_sponsorships()
 
                 state_static_sync.fill_static_state_data(

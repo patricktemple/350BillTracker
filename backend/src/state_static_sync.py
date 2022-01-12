@@ -1,7 +1,6 @@
-from werkzeug.datastructures import Authorization
-
 from .models import db
-from .person.models import AssemblyMember, Person, Senator
+from .person.models import AssemblyMember, Senator
+from .utils import cron_function
 
 
 def _fill_person_static_data(assembly_member_or_senator, static_data_set):
@@ -13,6 +12,7 @@ def _fill_person_static_data(assembly_member_or_senator, static_data_set):
         assembly_member_or_senator.person.email = static_data.get("email")
 
 
+@cron_function
 def fill_static_state_data(
     *, senate_data_by_member_id, assembly_data_by_member_id
 ):
