@@ -1,7 +1,5 @@
-from werkzeug.datastructures import Authorization
-
 from .models import db
-from .person.models import AssemblyMember, Person, Senator
+from .person.models import AssemblyMember, Senator
 from .utils import cron_function
 
 

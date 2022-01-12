@@ -5,7 +5,6 @@ import pytest
 import responses
 
 from src.bill.models import (
-    DEFAULT_TWITTER_SEARCH_TERMS,
     AssemblyBill,
     Bill,
     SenateBill,
@@ -13,12 +12,10 @@ from src.bill.models import (
 )
 from src.models import db
 from src.person.models import AssemblyMember, Person, Senator
-from src.utils import now
 
 from .utils import (
     assert_response,
     create_mock_bill_response,
-    get_response_data,
 )
 
 

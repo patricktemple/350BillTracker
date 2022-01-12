@@ -4,7 +4,7 @@ from uuid import uuid4
 import responses
 from freezegun import freeze_time
 
-from src.bill.models import Bill, CityBill
+from src.bill.models import Bill
 from src.council_sync import (
     add_council_members,
     fill_council_person_data_from_api,

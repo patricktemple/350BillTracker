@@ -221,7 +221,7 @@ def test_email_contents__sponsor_added_and_removed():
 def test_state_bill_ignored(mock_ses_client):
     bill = Bill(
         id=uuid4(),
-        name=f"state bill",
+        name="state bill",
         description="description",
         type=Bill.BillType.STATE,
     )

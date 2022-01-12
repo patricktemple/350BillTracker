@@ -1,6 +1,5 @@
 from uuid import uuid4
 
-from src.bill.models import Bill, CityBill
 from src.models import db
 from src.person.models import AssemblyMember, CouncilMember, Person, Senator
 from src.sponsorship.models import (
@@ -8,8 +7,6 @@ from src.sponsorship.models import (
     CitySponsorship,
     SenateSponsorship,
 )
-from src.utils import now
-
 from .utils import get_response_data
 
 

@@ -1,4 +1,4 @@
-from typing import List, Tuple, Union
+from typing import Union
 from uuid import UUID
 
 from sqlalchemy.orm import joinedload

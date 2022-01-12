@@ -1,9 +1,6 @@
-from unittest.mock import patch
-
 import responses
-from sqlalchemy.sql.expression import update
 
-from src.bill.models import Bill, StateBill
+from src.bill.models import Bill
 from src.models import db
 from src.person.models import AssemblyMember, Person, Senator
 from src.sponsorship.models import AssemblySponsorship, SenateSponsorship
