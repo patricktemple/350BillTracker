@@ -84,8 +84,9 @@ def snapshot_bills() -> SnapshotState:
     bills = Bill.query.all()
     for bill in bills:
         if bill.type == Bill.BillType.CITY:
-            sponsor_ids = set((
-                s.council_member_id for s in bill.city_bill.sponsorships))
+            sponsor_ids = set(
+                (s.council_member_id for s in bill.city_bill.sponsorships)
+            )
             snapshot = BillSnapshot(bill.city_bill.status, sponsor_ids)
             snapshot_state.city_snapshots[bill.id] = snapshot
         else:
@@ -123,7 +124,7 @@ def _get_bill_update_subject_line(bill_diffs: FullBillDiffs):
 
         if state_diff.assembly_diff and state_diff.senate_diff:
             return f"State bill {state_diff.assembly_diff.bill_number}/{state_diff.senate_diff.bill_number} was updated in both chambers"
-        
+
         diff = state_diff.senate_diff or state_diff.assembly_diff
         bill_description = f"State bill {diff.bill_number}"
 
@@ -139,7 +140,6 @@ def _get_bill_update_subject_line(bill_diffs: FullBillDiffs):
         return f"{bill_description} gained and lost sponsors"
 
     return f"{bill_description} was updated"
-
 
 
 def _convert_bill_diff_to_template_variables(diff: BillDiff):
@@ -175,9 +175,7 @@ def _convert_bill_diff_to_template_variables(diff: BillDiff):
 
         sponsor_text = f"{old_sponsor_count} sponsors --> {diff.current_sponsor_count} sponsors ({', '.join(explanations)})"
     else:
-        sponsor_text = (
-            f"{diff.current_sponsor_count} sponsors (unchanged)"
-        )
+        sponsor_text = f"{diff.current_sponsor_count} sponsors (unchanged)"
         sponsor_color = "black"
 
     return {
@@ -193,30 +191,42 @@ def _convert_bill_diff_to_template_variables(diff: BillDiff):
 def _send_bill_update_emails(bill_diffs: FullBillDiffs):
     city_bills_for_template = []
     for city_diff in bill_diffs.city_diffs:
-        city_bills_for_template.append(_convert_bill_diff_to_template_variables(city_diff))
+        city_bills_for_template.append(
+            _convert_bill_diff_to_template_variables(city_diff)
+        )
     state_bills_for_template = []
     for state_diff in bill_diffs.state_diffs:
         chamber_bills = []
         if state_diff.senate_diff:
-            chamber_bills.append({
-            "chamber_name": "Senate",
-            **_convert_bill_diff_to_template_variables(state_diff.senate_diff)
-        })
+            chamber_bills.append(
+                {
+                    "chamber_name": "Senate",
+                    **_convert_bill_diff_to_template_variables(
+                        state_diff.senate_diff
+                    ),
+                }
+            )
         if state_diff.assembly_diff:
-            chamber_bills.append({
-            "chamber_name": "Assembly",
-            **_convert_bill_diff_to_template_variables(state_diff.assembly_diff)
-        })
-        state_bills_for_template.append({
-            "chamber_bills": chamber_bills
-        })
+            chamber_bills.append(
+                {
+                    "chamber_name": "Assembly",
+                    **_convert_bill_diff_to_template_variables(
+                        state_diff.assembly_diff
+                    ),
+                }
+            )
+        state_bills_for_template.append({"chamber_bills": chamber_bills})
 
     subject = _get_bill_update_subject_line(bill_diffs)
     body_text = render_template(
-        "bill_alerts_email.txt", city_bills=city_bills_for_template, state_bills=state_bills_for_template
+        "bill_alerts_email.txt",
+        city_bills=city_bills_for_template,
+        state_bills=state_bills_for_template,
     )
     body_html = render_template(
-        "bill_alerts_email.html", city_bills=city_bills_for_template, state_bills=state_bills_for_template
+        "bill_alerts_email.html",
+        city_bills=city_bills_for_template,
+        state_bills=state_bills_for_template,
     )
 
     users_to_notify = User.query.filter_by(
@@ -232,7 +242,12 @@ def _send_bill_update_emails(bill_diffs: FullBillDiffs):
 
 
 def _calculate_bill_diff(
-    *, snapshot: BillSnapshot, current_sponsor_ids: Set[UUID], new_status, bill_number: str, bill_name: Optional[str]
+    *,
+    snapshot: BillSnapshot,
+    current_sponsor_ids: Set[UUID],
+    new_status,
+    bill_number: str,
+    bill_name: Optional[str],
 ) -> Optional[BillDiff]:
     """Looks at the before and after states of all bills, and collapses this info
     info a form that's useful for further processing when building emails. TODO EXPAND THIS COMMENT, put it in place"""
@@ -261,7 +276,7 @@ def _calculate_bill_diff(
             removed_sponsor_names=removed_sponsor_names,
             current_sponsor_count=len(current_sponsor_ids),
             bill_number=bill_number,
-            bill_name=bill_name
+            bill_name=bill_name,
         )
 
     return None
@@ -285,7 +300,7 @@ def _calculate_all_bill_diffs(snapshot_state: SnapshotState) -> FullBillDiffs:
                 current_sponsor_ids=current_sponsor_ids,
                 new_status=bill.city_bill.status,
                 bill_number=bill.city_bill.file,
-                bill_name=bill.display_name
+                bill_name=bill.display_name,
             )
             if diff:
                 bill_diffs.city_diffs.append(diff)
@@ -301,7 +316,7 @@ def _calculate_all_bill_diffs(snapshot_state: SnapshotState) -> FullBillDiffs:
                 ),
                 new_status=bill.state_bill.senate_bill.status,
                 bill_number=bill.state_bill.senate_bill.base_print_no,
-                bill_name=bill.display_name
+                bill_name=bill.display_name,
             )
             assembly_diff = _calculate_bill_diff(
                 snapshot=snapshot.assembly_snapshot,
@@ -313,7 +328,7 @@ def _calculate_all_bill_diffs(snapshot_state: SnapshotState) -> FullBillDiffs:
                 ),
                 new_status=bill.state_bill.assembly_bill.status,
                 bill_number=bill.state_bill.assembly_bill.base_print_no,
-                bill_name=bill.display_name
+                bill_name=bill.display_name,
             )
             if senate_diff or assembly_diff:
                 bill_diffs.state_diffs.append(
