@@ -278,7 +278,6 @@ def _update_state_chamber_bill(
     )
 
 
-
 @cron_function
 def update_state_bills():
     state_bills = StateBill.query.all()
@@ -302,7 +301,9 @@ def update_state_bills():
             db.session.commit()
         except Exception:
             db.session.rollback()
-            logging.exception(f"Unhandled exception when updating bill {state_bill.bill.code_name}")
+            logging.exception(
+                f"Unhandled exception when updating bill {state_bill.bill.code_name}"
+            )
 
 
 def _convert_search_results(state_bill):

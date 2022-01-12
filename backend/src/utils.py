@@ -1,6 +1,5 @@
-from datetime import datetime, timezone
-
 import logging
+from datetime import datetime, timezone
 
 from src.models import db
 
@@ -16,5 +15,5 @@ def cron_function(func):
         except Exception:
             db.session.rollback()
             logging.exception("Exception thrown during cron function")
-    
+
     return impl

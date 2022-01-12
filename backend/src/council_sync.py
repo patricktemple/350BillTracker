@@ -14,7 +14,7 @@ from .models import db
 from .person.models import CouncilMember, Person
 from .sponsorship.models import CitySponsorship
 from .static_data.council_data import COUNCIL_DATA_BY_LEGISLATOR_ID
-from .utils import now, cron_function
+from .utils import cron_function, now
 
 
 @cron_function
@@ -224,4 +224,6 @@ def update_all_sponsorships():
             db.session.commit()
         except Exception:
             db.session.rollback()
-            logging.exception(f"Exception while updating sponsorships for {bill.city_bill.city_bill_id}")
+            logging.exception(
+                f"Exception while updating sponsorships for {bill.city_bill.city_bill_id}"
+            )
