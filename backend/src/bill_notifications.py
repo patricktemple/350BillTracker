@@ -1,50 +1,104 @@
 import logging
 from dataclasses import dataclass
-from typing import List
+from typing import Dict, List, Optional, Set, Union
+from uuid import UUID
 
 from botocore.exceptions import ClientError
 from flask import render_template
 from sqlalchemy.orm import selectinload
 
-from .bill.views import CityBill
+from .bill.views import AssemblyBill, Bill, CityBill, SenateBill
 from .person.models import Person
 from .ses import send_email
 from .user.models import User
 
+# rename BillDiff and BillSnapshot to Generic-?
+
 
 @dataclass
 class BillDiff:
-    """Utility class to track a bill's state before and after a cron run."""
+    """Utility class to track a bill's state before and after a cron run. Applies to
+    a city bill or a single chamber of a state bill."""
 
-    city_bill: CityBill = None
     old_status: str = None
+    new_status: str = None
+
     added_sponsor_names: List[str] = None
     removed_sponsor_names: List[str] = None
+    current_sponsor_count: int = None
+
+    bill_number: str = None
+    bill_name: str = None
+
+
+@dataclass
+class StateBillDiff:
+    senate_diff: Optional[BillDiff] = None
+    assembly_diff: Optional[BillDiff] = None
+
+
+@dataclass
+class FullBillDiffs:
+    state_diffs: List[StateBillDiff] = None
+    city_diffs: List[BillDiff] = None
 
 
 @dataclass
 class BillSnapshot:
     """Utility class to track the state of a bill before a cron run may have
-    updated it."""
+    updated it. Applies to a city bill or a single chamber of a state bill."""
 
     status: str = None
-    sponsor_ids: List[int] = None
+    sponsor_person_ids: Set[UUID] = None
+    # version: str = None # ???
 
 
-def snapshot_bills():
+@dataclass
+class StateBillSnapshot:
+    senate_snapshot: BillSnapshot = None
+    assembly_snapshot: BillSnapshot = None
+
+
+@dataclass
+class SnapshotState:
+    city_snapshots: Dict[UUID, BillSnapshot] = None
+    state_snapshots: Dict[UUID, StateBillSnapshot] = None
+
+
+def _snapshot_state_bill_chamber(
+    chamber_bill: Union[SenateBill, AssemblyBill]
+) -> BillSnapshot:
+    sponsor_ids = set((s.person_id for s in chamber_bill.sponsorships))
+    status = chamber_bill.status
+
+    return BillSnapshot(status=status, sponsor_person_ids=sponsor_ids)
+
+
+def snapshot_bills() -> SnapshotState:
     """Snapshots the state of all bills. Used to calculate the diff produced by
     a cron job run, so that we can send out email notifications of bill status changes."""
-    city_bills = CityBill.query.options(
-        selectinload(CityBill.sponsorships)
-    ).all()
 
-    snapshots_by_bill_id = {}
-    for city_bill in city_bills:
-        sponsor_ids = [s.council_member_id for s in city_bill.sponsorships]
-        snapshot = BillSnapshot(city_bill.status, sponsor_ids)
-        snapshots_by_bill_id[city_bill.bill_id] = snapshot
+    snapshot_state = SnapshotState(city_snapshots={}, state_snapshots={})
 
-    return snapshots_by_bill_id
+    # FIXME: This is doing a lot of lazy loading of sponsorships
+    bills = Bill.query.all()
+    for bill in bills:
+        if bill.type == Bill.BillType.CITY:
+            sponsor_ids = set((
+                s.council_member_id for s in bill.city_bill.sponsorships))
+            snapshot = BillSnapshot(bill.city_bill.status, sponsor_ids)
+            snapshot_state.city_snapshots[bill.id] = snapshot
+        else:
+            snapshot_state.state_snapshots[bill.id] = StateBillSnapshot(
+                senate_snapshot=_snapshot_state_bill_chamber(
+                    bill.state_bill.senate_bill
+                ),
+                assembly_snapshot=_snapshot_state_bill_chamber(
+                    bill.state_bill.assembly_bill
+                ),
+            )
+
+    return snapshot_state
 
 
 def _get_sponsor_subject_string(sponsors):
@@ -77,22 +131,22 @@ def _get_bill_update_subject_line(bill_diffs: List[BillDiff]):
     return f"{diff.city_bill.file} was updated"
 
 
+
 def _convert_bill_diff_to_template_variables(diff: BillDiff):
     """Converts the intermediate BillDiff into the variables used to render
     the email template."""
-    status_changed = diff.city_bill.status != diff.old_status
+    status_changed = diff.new_status != diff.old_status
     if status_changed:
-        status_text = f"Status: {diff.old_status} --> {diff.city_bill.status}"
+        status_text = f"Status: {diff.old_status} --> {diff.new_status}"
         status_color = "blue"
     else:
-        status_text = f"Status: {diff.city_bill.status} (unchanged)"
+        status_text = f"Status: {diff.new_status} (unchanged)"
         status_color = "black"
 
     sponsors_changed = diff.added_sponsor_names or diff.removed_sponsor_names
     if sponsors_changed:
-        new_sponsor_count = len(diff.city_bill.sponsorships)
         old_sponsor_count = (
-            new_sponsor_count
+            diff.current_sponsor_count
             - len(diff.added_sponsor_names or [])
             + len(diff.removed_sponsor_names or [])
         )
@@ -109,16 +163,16 @@ def _convert_bill_diff_to_template_variables(diff: BillDiff):
                 f"lost {', '.join(diff.removed_sponsor_names)}"
             )
 
-        sponsor_text = f"{old_sponsor_count} sponsors --> {new_sponsor_count} sponsors ({', '.join(explanations)})"
+        sponsor_text = f"{old_sponsor_count} sponsors --> {diff.current_sponsor_count} sponsors ({', '.join(explanations)})"
     else:
         sponsor_text = (
-            f"{len(diff.city_bill.sponsorships)} sponsors (unchanged)"
+            f"{diff.current_sponsor_count} sponsors (unchanged)"
         )
         sponsor_color = "black"
 
     return {
-        "file": diff.city_bill.file,
-        "display_name": diff.city_bill.bill.display_name,
+        "bill_number": diff.bill_number,
+        "bill_name": diff.bill_name,
         "status_text": status_text,
         "status_color": status_color,
         "sponsor_text": sponsor_text,
@@ -126,17 +180,34 @@ def _convert_bill_diff_to_template_variables(diff: BillDiff):
     }
 
 
-def _send_bill_update_emails(bill_diffs):
-    bills_for_template = [
-        _convert_bill_diff_to_template_variables(d) for d in bill_diffs
-    ]
+def _send_bill_update_emails(bill_diffs: FullBillDiffs):
+    city_bills_for_template = []
+    for city_diff in bill_diffs.city_diffs:
+        city_bills_for_template.append(_convert_bill_diff_to_template_variables(city_diff))
+    state_bills_for_template = []
+    for state_diff in bill_diffs.state_diffs:
+        chamber_bills = []
+        if state_diff.senate_diff:
+            chamber_bills.append({
+            "chamber_name": "Senate",
+            **_convert_bill_diff_to_template_variables(state_diff.senate_diff)
+        })
+        if state_diff.assembly_diff:
+            chamber_bills.append({
+            "chamber_name": "Assembly",
+            **_convert_bill_diff_to_template_variables(state_diff.assembly_diff)
+        })
+        state_bills_for_template.append({
+            "chamber_bills": chamber_bills
+        })
 
-    subject = _get_bill_update_subject_line(bill_diffs)
-    body_text = render_template(
-        "bill_alerts_email.txt", bills=bills_for_template
-    )
+    subject = "TODO subject line" # _get_bill_update_subject_line(bill_diffs)
+    body_text = None
+    # body_text = render_template(
+    #     "bill_alerts_email.txt", city_bills=city_bills_for_template, state_bills=state_bills_for_template
+    # )
     body_html = render_template(
-        "bill_alerts_email.html", bills=bills_for_template
+        "bill_alerts_email.html", city_bills=city_bills_for_template, state_bills=state_bills_for_template
     )
 
     users_to_notify = User.query.filter_by(
@@ -151,41 +222,96 @@ def _send_bill_update_emails(bill_diffs):
             logging.exception(f"Faild to send email to {user.email}")
 
 
-def _calculate_bill_diffs(snapshots_by_bill_id):
+def _calculate_bill_diff(
+    *, snapshot: BillSnapshot, current_sponsor_ids: Set[UUID], new_status, bill_number: str, bill_name: Optional[str]
+) -> Optional[BillDiff]:
     """Looks at the before and after states of all bills, and collapses this info
-    info a form that's useful for further processing when building emails."""
-    city_bills = CityBill.query.all()
+    info a form that's useful for further processing when building emails. TODO EXPAND THIS COMMENT, put it in place"""
+    added_sponsor_ids = current_sponsor_ids - snapshot.sponsor_person_ids
+    removed_sponsor_ids = snapshot.sponsor_person_ids - current_sponsor_ids
 
-    bill_diffs = []
-    for city_bill in city_bills:
-        snapshot = snapshots_by_bill_id[city_bill.bill_id]
+    changed_persons = Person.query.filter(
+        Person.id.in_(added_sponsor_ids.union(removed_sponsor_ids))
+    ).all()
+    added_sponsor_names = [
+        p.name for p in changed_persons if p.id in added_sponsor_ids
+    ]
+    removed_sponsor_names = [
+        p.name for p in changed_persons if p.id in removed_sponsor_ids
+    ]
 
-        added_sponsor_names = []
-        prior_sponsor_ids = set(snapshot.sponsor_ids)
-        for sponsorship in city_bill.sponsorships:
-            if sponsorship.council_member_id not in prior_sponsor_ids:
-                added_sponsor_names.append(sponsorship.person.name)
-            else:
-                prior_sponsor_ids.remove(sponsorship.council_member_id)
+    if (
+        removed_sponsor_names
+        or added_sponsor_names
+        or new_status != snapshot.status
+    ):
+        return BillDiff(
+            old_status=snapshot.status,
+            new_status=new_status,
+            added_sponsor_names=added_sponsor_names,
+            removed_sponsor_names=removed_sponsor_names,
+            current_sponsor_count=len(current_sponsor_ids),
+            bill_number=bill_number,
+            bill_name=bill_name
+        )
 
-        if prior_sponsor_ids:
-            removed_sponsors = Person.query.filter(
-                Person.id.in_(prior_sponsor_ids)
-            ).all()
+    return None
+
+
+# TODO: Make sure this all works if only one chamber exists
+
+
+def _calculate_all_bill_diffs(snapshot_state: SnapshotState) -> FullBillDiffs:
+    bills = Bill.query.all()
+
+    bill_diffs = FullBillDiffs(state_diffs=[], city_diffs=[])
+    for bill in bills:
+        if bill.type == Bill.BillType.CITY:
+            snapshot = snapshot_state.city_snapshots[bill.id]
+            current_sponsor_ids = set(
+                (s.council_member_id for s in bill.city_bill.sponsorships)
+            )
+            diff = _calculate_bill_diff(
+                snapshot=snapshot,
+                current_sponsor_ids=current_sponsor_ids,
+                new_status=bill.city_bill.status,
+                bill_number=bill.city_bill.file,
+                bill_name=bill.display_name
+            )
+            if diff:
+                bill_diffs.city_diffs.append(diff)
         else:
-            removed_sponsors = []
-
-        if (
-            removed_sponsors
-            or added_sponsor_names
-            or city_bill.status != snapshot.status
-        ):
-            diff = BillDiff()
-            diff.city_bill = city_bill
-            diff.old_status = snapshot.status
-            diff.added_sponsor_names = added_sponsor_names
-            diff.removed_sponsor_names = [p.name for p in removed_sponsors]
-            bill_diffs.append(diff)
+            snapshot = snapshot_state.state_snapshots[bill.id]
+            senate_diff = _calculate_bill_diff(
+                snapshot=snapshot.senate_snapshot,
+                current_sponsor_ids=set(
+                    (
+                        s.person_id
+                        for s in bill.state_bill.senate_bill.sponsorships
+                    )
+                ),
+                new_status=bill.state_bill.senate_bill.status,
+                bill_number=bill.state_bill.senate_bill.base_print_no,
+                bill_name=bill.display_name
+            )
+            assembly_diff = _calculate_bill_diff(
+                snapshot=snapshot.assembly_snapshot,
+                current_sponsor_ids=set(
+                    (
+                        s.person_id
+                        for s in bill.state_bill.assembly_bill.sponsorships
+                    )
+                ),
+                new_status=bill.state_bill.assembly_bill.status,
+                bill_number=bill.state_bill.assembly_bill.base_print_no,
+                bill_name=bill.display_name
+            )
+            if senate_diff or assembly_diff:
+                bill_diffs.state_diffs.append(
+                    StateBillDiff(
+                        senate_diff=senate_diff, assembly_diff=assembly_diff
+                    )
+                )
 
     return bill_diffs
 
@@ -193,8 +319,8 @@ def _calculate_bill_diffs(snapshots_by_bill_id):
 def send_bill_update_notifications(
     snapshots_by_bill_id,
 ):
-    bill_diffs = _calculate_bill_diffs(snapshots_by_bill_id)
+    bill_diffs = _calculate_all_bill_diffs(snapshots_by_bill_id)
 
-    if bill_diffs:
+    if bill_diffs.city_diffs or bill_diffs.state_diffs:
         logging.info("Bills were changed in this cron run, sending emails")
         _send_bill_update_emails(bill_diffs)
