@@ -15,7 +15,7 @@ from src.models import db
 from src.person.models import AssemblyMember, Person, Senator
 from src.utils import now
 
-from .utils import assert_response, get_response_data
+from .utils import assert_response, get_response_data, create_mock_bill_response
 
 
 def test_get_bills(client, state_bill):
@@ -77,57 +77,7 @@ def test_delete_bill(client, state_bill):
     assert_response(response, 200, [])
 
 
-def create_mock_bill_response(
-    *,
-    base_print_no,
-    chamber,
-    cosponsor_member_id,
-    lead_sponsor_member_id,
-    same_as_base_print_no=None,
-    same_as_chamber=None,
-):
-    return {
-        "result": {
-            "title": f"{base_print_no} bill title",
-            "summary": f"{base_print_no} bill summary",
-            "activeVersion": "A",
-            "basePrintNo": base_print_no,
-            "billType": {"chamber": chamber},
-            "status": {
-                "statusDesc": "In Committee",
-            },
-            "sponsor": {
-                "member": {
-                    "memberId": lead_sponsor_member_id,
-                    "fullName": f"Lead sponsor #{lead_sponsor_member_id}",
-                }
-            },
-            "amendments": {
-                "items": {
-                    "A": {
-                        "coSponsors": {
-                            "items": [
-                                {
-                                    "memberId": cosponsor_member_id,
-                                    "fullName": "Jabari",
-                                }
-                            ]
-                        },
-                        "sameAs": {
-                            "items": None
-                            if not same_as_base_print_no
-                            else [
-                                {
-                                    "basePrintNo": same_as_base_print_no,
-                                    "billType": {"chamber": same_as_chamber},
-                                }
-                            ]
-                        },
-                    }
-                }
-            },
-        }
-    }
+
 
 
 @responses.activate
