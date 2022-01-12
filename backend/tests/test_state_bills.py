@@ -4,19 +4,11 @@ from uuid import uuid4
 import pytest
 import responses
 
-from src.bill.models import (
-    AssemblyBill,
-    Bill,
-    SenateBill,
-    StateBill,
-)
+from src.bill.models import AssemblyBill, Bill, SenateBill, StateBill
 from src.models import db
 from src.person.models import AssemblyMember, Person, Senator
 
-from .utils import (
-    assert_response,
-    create_mock_bill_response,
-)
+from .utils import assert_response, create_mock_bill_response
 
 
 def test_get_bills(client, state_bill):
