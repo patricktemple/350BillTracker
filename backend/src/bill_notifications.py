@@ -108,27 +108,37 @@ def _get_sponsor_subject_string(sponsors):
     return f"sponsor {sponsors[0]}"
 
 
-def _get_bill_update_subject_line(bill_diffs: List[BillDiff]):
+def _get_bill_update_subject_line(bill_diffs: FullBillDiffs):
     """Get a subject line for the email describing the bill updates. Assumes the diff list
     and the diffs themselves are non-empty."""
-    if len(bill_diffs) > 1:
-        return f"{len(bill_diffs)} bills were updated"
+    total_bill_diffs = len(bill_diffs.city_diffs) + len(bill_diffs.state_diffs)
+    if total_bill_diffs > 1:
+        return f"{total_bill_diffs} bills were updated"
 
-    diff = bill_diffs[0]
+    if bill_diffs.city_diffs:
+        diff = bill_diffs.city_diffs[0]
+        bill_description = f"City bill {diff.bill_number}"
+    else:
+        state_diff = bill_diffs.state_diffs[0]
+
+        if state_diff.assembly_diff and state_diff.senate_diff:
+            return f"State bill {state_diff.assembly_diff.bill_number}/{state_diff.senate_diff.bill_number} was updated in both chambers"
+        
+        diff = state_diff.senate_diff or state_diff.assembly_diff
+        bill_description = f"State bill {diff.bill_number}"
 
     # TODO: Update to python 3.10 and use structural pattern matching?
-    file = diff.city_bill.file
     if not diff.added_sponsor_names and not diff.removed_sponsor_names:
-        return f"{file}'s status changed to {diff.city_bill.status}"
+        return f"{bill_description}'s status changed to {diff.new_status}"
 
-    if diff.old_status == diff.city_bill.status:
+    if diff.old_status == diff.new_status:
         if not diff.added_sponsor_names:
-            return f"{file} lost {_get_sponsor_subject_string(diff.removed_sponsor_names)}"
+            return f"{bill_description} lost {_get_sponsor_subject_string(diff.removed_sponsor_names)}"
         if not diff.removed_sponsor_names:
-            return f"{file} gained {_get_sponsor_subject_string(diff.added_sponsor_names)}"
-        return f"{file} gained and lost sponsors"
+            return f"{bill_description} gained {_get_sponsor_subject_string(diff.added_sponsor_names)}"
+        return f"{bill_description} gained and lost sponsors"
 
-    return f"{diff.city_bill.file} was updated"
+    return f"{bill_description} was updated"
 
 
 
@@ -201,7 +211,7 @@ def _send_bill_update_emails(bill_diffs: FullBillDiffs):
             "chamber_bills": chamber_bills
         })
 
-    subject = "TODO subject line" # _get_bill_update_subject_line(bill_diffs)
+    subject = _get_bill_update_subject_line(bill_diffs)
     body_text = None
     # body_text = render_template(
     #     "bill_alerts_email.txt", city_bills=city_bills_for_template, state_bills=state_bills_for_template
