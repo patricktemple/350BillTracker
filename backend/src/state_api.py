@@ -91,15 +91,6 @@ def _add_chamber_sponsorships(
         )
 
 
-def _update_bill_sponsorships(bill):
-    pass
-
-
-def update_all_sponsorships():
-    bills = StateBill.query.all()
-    for bill in bills:
-        _update_bill_sponsorships(bill)
-
 
 def import_bill(session_year, base_print_no):
     """Looks up a bill in the State API and starts tracking it. In the state
@@ -181,7 +172,7 @@ def import_bill(session_year, base_print_no):
     return bill
 
 
-def add_state_representatives(session_year=CURRENT_SESSION_YEAR):
+def sync_state_representatives(session_year=CURRENT_SESSION_YEAR):
     """Queries the NY State API to retrieve all senators and assembly members
     in the current session year. If they already exist in the DB, updates
     their contact info."""
@@ -238,6 +229,35 @@ def add_state_representatives(session_year=CURRENT_SESSION_YEAR):
         logging.exception(
             "Unhandled exception when adding state representatives"
         )
+
+
+def _update_state_chamber_bill(chamber_bill: Union[SenateBill, AssemblyBill], sponsorship_model: Union[SenateSponsorship, AssemblySponsorship], representative_model: Union[Senator, AssemblyMember]):
+    chamber_response = senate_get(
+        f"bills/{chamber_bill.state_bill.session_year}/{chamber_bill.base_print_no}", view="no_fulltext"
+    )
+    # We only want to update this once, not for both senate and assembly... so prob this needs to go out
+    bill = chamber_bill.state_bill.bill
+    bill.name = chamber_response['title']
+    bill.description = chamber_response['summary']
+    chamber_bill.active_version = chamber_response['activeVersion']
+    chamber_bill.status = chamber_response["status"]["statusDesc"]
+
+    chamber_bill.sponsorships.clear()
+    _add_chamber_sponsorships(chamber_bill=chamber_bill, chamber_data=chamber_response, sponsorship_model=sponsorship_model, representative_model=representative_model)
+
+    db.session.commit()
+
+
+
+def update_state_bills():
+    state_bills = StateBill.query.all()
+    for state_bill in state_bills:
+        # Question: What to do with same-as?
+        if state_bill.senate_bill:
+            
+            _update_state_chamber_bill(state_bill.senate_bill, SenateSponsorship, Senator)
+        if state_bill.assembly_bill:
+            _update_state_chamber_bill(state_bill.assembly_bill, AssemblySponsorship, AssemblyMember)
 
 
 def _convert_search_results(state_bill):
