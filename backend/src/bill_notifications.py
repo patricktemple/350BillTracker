@@ -12,11 +12,9 @@ from .person.models import Person
 from .ses import send_email
 from .user.models import User
 
-# rename BillDiff and BillSnapshot to Generic-?
-
 
 @dataclass
-class BillDiff:
+class GenericBillDiff:
     """Utility class to track a bill's state before and after a cron run. Applies to
     a city bill or a single chamber of a state bill."""
 
@@ -33,45 +31,48 @@ class BillDiff:
 
 @dataclass
 class StateBillDiff:
-    senate_diff: Optional[BillDiff] = None
-    assembly_diff: Optional[BillDiff] = None
+    senate_diff: Optional[GenericBillDiff] = None
+    assembly_diff: Optional[GenericBillDiff] = None
 
 
 @dataclass
-class FullBillDiffs:
+class BillDiffSet:
     state_diffs: List[StateBillDiff] = None
-    city_diffs: List[BillDiff] = None
+    city_diffs: List[GenericBillDiff] = None
 
 
 @dataclass
-class BillSnapshot:
+class GenericBillSnapshot:
     """Utility class to track the state of a bill before a cron run may have
     updated it. Applies to a city bill or a single chamber of a state bill."""
 
     status: str = None
     sponsor_person_ids: Set[UUID] = None
-    # version: str = None # ???
 
 
 @dataclass
 class StateBillSnapshot:
-    senate_snapshot: BillSnapshot = None
-    assembly_snapshot: BillSnapshot = None
+    # These are None if the bill does not exist in that chamber
+    senate_snapshot: Optional[GenericBillSnapshot] = None
+    assembly_snapshot: Optional[GenericBillSnapshot] = None
 
 
 @dataclass
 class SnapshotState:
-    city_snapshots: Dict[UUID, BillSnapshot] = None
+    city_snapshots: Dict[UUID, GenericBillSnapshot] = None
     state_snapshots: Dict[UUID, StateBillSnapshot] = None
 
 
 def _snapshot_state_bill_chamber(
-    chamber_bill: Union[SenateBill, AssemblyBill]
-) -> BillSnapshot:
+    chamber_bill: Optional[Union[SenateBill, AssemblyBill]]
+) -> Optional[GenericBillSnapshot]:
+    if not chamber_bill:
+        return None
+
     sponsor_ids = set((s.person_id for s in chamber_bill.sponsorships))
     status = chamber_bill.status
 
-    return BillSnapshot(status=status, sponsor_person_ids=sponsor_ids)
+    return GenericBillSnapshot(status=status, sponsor_person_ids=sponsor_ids)
 
 
 def snapshot_bills() -> SnapshotState:
@@ -87,7 +88,7 @@ def snapshot_bills() -> SnapshotState:
             sponsor_ids = set(
                 (s.council_member_id for s in bill.city_bill.sponsorships)
             )
-            snapshot = BillSnapshot(bill.city_bill.status, sponsor_ids)
+            snapshot = GenericBillSnapshot(bill.city_bill.status, sponsor_ids)
             snapshot_state.city_snapshots[bill.id] = snapshot
         else:
             snapshot_state.state_snapshots[bill.id] = StateBillSnapshot(
@@ -109,7 +110,7 @@ def _get_sponsor_subject_string(sponsors):
     return f"sponsor {sponsors[0]}"
 
 
-def _get_bill_update_subject_line(bill_diffs: FullBillDiffs):
+def _get_bill_update_subject_line(bill_diffs: BillDiffSet):
     """Get a subject line for the email describing the bill updates. Assumes the diff list
     and the diffs themselves are non-empty."""
     total_bill_diffs = len(bill_diffs.city_diffs) + len(bill_diffs.state_diffs)
@@ -142,7 +143,7 @@ def _get_bill_update_subject_line(bill_diffs: FullBillDiffs):
     return f"{bill_description} was updated"
 
 
-def _convert_bill_diff_to_template_variables(diff: BillDiff):
+def _convert_bill_diff_to_template_variables(diff: GenericBillDiff):
     """Converts the intermediate BillDiff into the variables used to render
     the email template."""
     status_changed = diff.new_status != diff.old_status
@@ -188,7 +189,7 @@ def _convert_bill_diff_to_template_variables(diff: BillDiff):
     }
 
 
-def _send_bill_update_emails(bill_diffs: FullBillDiffs):
+def _send_bill_update_emails(bill_diffs: BillDiffSet):
     city_bills_for_template = []
     for city_diff in bill_diffs.city_diffs:
         city_bills_for_template.append(
@@ -243,14 +244,15 @@ def _send_bill_update_emails(bill_diffs: FullBillDiffs):
 
 def _calculate_bill_diff(
     *,
-    snapshot: BillSnapshot,
+    snapshot: GenericBillSnapshot,
     current_sponsor_ids: Set[UUID],
     new_status,
     bill_number: str,
     bill_name: Optional[str],
-) -> Optional[BillDiff]:
-    """Looks at the before and after states of all bills, and collapses this info
-    info a form that's useful for further processing when building emails. TODO EXPAND THIS COMMENT, put it in place"""
+) -> Optional[GenericBillDiff]:
+    """Looks at the before and after states of a single bill and computes a diff
+    that's useful for sending email notifications."""
+
     added_sponsor_ids = current_sponsor_ids - snapshot.sponsor_person_ids
     removed_sponsor_ids = snapshot.sponsor_person_ids - current_sponsor_ids
 
@@ -269,7 +271,7 @@ def _calculate_bill_diff(
         or added_sponsor_names
         or new_status != snapshot.status
     ):
-        return BillDiff(
+        return GenericBillDiff(
             old_status=snapshot.status,
             new_status=new_status,
             added_sponsor_names=added_sponsor_names,
@@ -282,13 +284,15 @@ def _calculate_bill_diff(
     return None
 
 
-# TODO: Make sure this all works if only one chamber exists
-
-
-def _calculate_all_bill_diffs(snapshot_state: SnapshotState) -> FullBillDiffs:
+def _calculate_all_bill_diffs(snapshot_state: SnapshotState) -> BillDiffSet:
+    """
+    Compares the current state of all tracked bills with a snapshot of their recent
+    previous state, and creates a diff that describes the important information needed
+    to send an email notification about any changes.
+    """
     bills = Bill.query.all()
 
-    bill_diffs = FullBillDiffs(state_diffs=[], city_diffs=[])
+    bill_diffs = BillDiffSet(state_diffs=[], city_diffs=[])
     for bill in bills:
         if bill.type == Bill.BillType.CITY:
             snapshot = snapshot_state.city_snapshots[bill.id]
@@ -306,30 +310,36 @@ def _calculate_all_bill_diffs(snapshot_state: SnapshotState) -> FullBillDiffs:
                 bill_diffs.city_diffs.append(diff)
         else:
             snapshot = snapshot_state.state_snapshots[bill.id]
-            senate_diff = _calculate_bill_diff(
-                snapshot=snapshot.senate_snapshot,
-                current_sponsor_ids=set(
-                    (
-                        s.person_id
-                        for s in bill.state_bill.senate_bill.sponsorships
-                    )
-                ),
-                new_status=bill.state_bill.senate_bill.status,
-                bill_number=bill.state_bill.senate_bill.base_print_no,
-                bill_name=bill.display_name,
-            )
-            assembly_diff = _calculate_bill_diff(
-                snapshot=snapshot.assembly_snapshot,
-                current_sponsor_ids=set(
-                    (
-                        s.person_id
-                        for s in bill.state_bill.assembly_bill.sponsorships
-                    )
-                ),
-                new_status=bill.state_bill.assembly_bill.status,
-                bill_number=bill.state_bill.assembly_bill.base_print_no,
-                bill_name=bill.display_name,
-            )
+            if bill.state_bill.senate_bill:
+                senate_diff = _calculate_bill_diff(
+                    snapshot=snapshot.senate_snapshot,
+                    current_sponsor_ids=set(
+                        (
+                            s.person_id
+                            for s in bill.state_bill.senate_bill.sponsorships
+                        )
+                    ),
+                    new_status=bill.state_bill.senate_bill.status,
+                    bill_number=bill.state_bill.senate_bill.base_print_no,
+                    bill_name=bill.display_name,
+                )
+            else:
+                senate_diff = None
+            if bill.state_bill.assembly_bill:
+                assembly_diff = _calculate_bill_diff(
+                    snapshot=snapshot.assembly_snapshot,
+                    current_sponsor_ids=set(
+                        (
+                            s.person_id
+                            for s in bill.state_bill.assembly_bill.sponsorships
+                        )
+                    ),
+                    new_status=bill.state_bill.assembly_bill.status,
+                    bill_number=bill.state_bill.assembly_bill.base_print_no,
+                    bill_name=bill.display_name,
+                )
+            else:
+                assembly_diff = None
             if senate_diff or assembly_diff:
                 bill_diffs.state_diffs.append(
                     StateBillDiff(
