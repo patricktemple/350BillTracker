@@ -14,7 +14,6 @@ def _fill_person_static_data(assembly_member_or_senator, static_data_set):
         assembly_member_or_senator.person.office_contacts.clear()
 
         for office in static_data["district_contact"]:
-            # This just keeps duplicating the info...
             assembly_member_or_senator.person.office_contacts.append(
                 OfficeContact(
                     city=office.get("city"),

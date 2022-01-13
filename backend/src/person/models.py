@@ -239,8 +239,6 @@ class OfficeContact(db.Model):
 
     type = Column(Enum(OfficeContactType))
 
-    # address type enum, maybe?
-
     phone = Column(Text)
     fax = Column(Text)
     city = Column(Text)

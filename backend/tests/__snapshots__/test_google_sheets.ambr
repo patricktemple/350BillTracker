@@ -253,7 +253,7 @@
                     'wrapStrategy': 'WRAP',
                   },
                   'userEnteredValue': <class 'dict'> {
-                    'stringValue': '111-222-3333',
+                    'stringValue': '',
                   },
                 },
                 <class 'dict'> {
@@ -397,7 +397,7 @@
                     'wrapStrategy': 'WRAP',
                   },
                   'userEnteredValue': <class 'dict'> {
-                    'stringValue': '',
+                    'stringValue': '111-222-3333',
                   },
                 },
                 <class 'dict'> {

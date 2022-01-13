@@ -82,8 +82,6 @@ def fill_council_person_data_from_api():
                     )
                 )
 
-            # TODO: Delete specific phone fields
-
             # Borough exists here but we prefer the cleaned static data
             # council_member.borough = data["PersonCity1"]
         except HTTPError:

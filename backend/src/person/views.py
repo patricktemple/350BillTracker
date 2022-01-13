@@ -99,6 +99,3 @@ def get_contacts(person_id):
         .all()
     )
     return OfficeContactSchema(many=True).jsonify(contacts)
-
-
-# TODO test this

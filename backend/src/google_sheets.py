@@ -157,7 +157,7 @@ def _create_legislator_row(
             c.phone
             for c in council_member.person.office_contacts
             if c.phone
-            and c.type == OfficeContact.OfficeContactType.CENTRAL_OFFICE
+            and c.type == OfficeContact.OfficeContactType.DISTRICT_OFFICE
         )
     )
     cells = [

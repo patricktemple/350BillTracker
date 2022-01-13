@@ -157,7 +157,6 @@ def assembly_member(get_uuid):
         name="assemblymember name",
         title="Assemblymember",
         email="me@assembly.com",
-        # phone="1-555-555-5555",
         twitter="theassembly",
         party="D",
     )
