@@ -8,6 +8,8 @@ from src.state_api import sync_state_representatives, update_state_bills
 
 from .utils import create_mock_bill_response, get_response_data
 
+import pytest
+
 
 @responses.activate
 def test_import_state_reps(client, senator, assembly_member, snapshot):
@@ -74,9 +76,93 @@ def test_import_state_reps(client, senator, assembly_member, snapshot):
     for item in response_data:
         del item["id"]
 
-    # THIS IS WRONG -- it should overwrite the assembly member and it is not doing that!
-
     assert response_data == snapshot
+
+
+@responses.activate
+def test_import_state_reps__district_conflict_checks_incumbent(client):
+    responses.add(
+        responses.GET,
+        url="https://legislation.nysenate.gov/api/3/members/2021?limit=1000&full=true&key=fake_key",
+        json={
+            "result": {
+                "items": [
+                    {
+                        "memberId": 1,
+                        "chamber": "SENATE",
+                        "districtCode": 1,
+                        "incumbent": True,
+                        "person": {
+                            "fullName": "Incumbent senator",
+                            "prefix": "Senator",
+                            "email": "a@example.com",
+                        },
+                    },
+                    {
+                        "memberId": 2,
+                        "chamber": "SENATE",
+                        "districtCode": 1,
+                        "incumbent": False,
+                        "person": {
+                            "fullName": "Non-incumbent senator",
+                            "prefix": "Senator",
+                            "email": "b@example.com",
+                        },
+                    },
+                ]
+            }
+        },
+    )
+    sync_state_representatives()
+
+    response = client.get("/api/persons")
+
+    response_data = get_response_data(response)
+
+    assert len(response_data) == 1
+    assert response_data[0]['name'] == "Incumbent senator"
+
+
+@responses.activate
+@pytest.mark.parametrize("incumbent", [False, True])
+def test_import_state_reps__district_no_single_incumbent(client, incumbent):
+    responses.add(
+        responses.GET,
+        url="https://legislation.nysenate.gov/api/3/members/2021?limit=1000&full=true&key=fake_key",
+        json={
+            "result": {
+                "items": [
+                    {
+                        "memberId": 1,
+                        "chamber": "SENATE",
+                        "districtCode": 1,
+                        "incumbent": incumbent,
+                        "person": {
+                            "fullName": "Non-incumbent senator",
+                            "prefix": "Senator",
+                            "email": "a@example.com",
+                        },
+                    },
+                    {
+                        "memberId": 2,
+                        "chamber": "SENATE",
+                        "districtCode": 1,
+                        "incumbent": incumbent,
+                        "person": {
+                            "fullName": "Non-incumbent senator",
+                            "prefix": "Senator",
+                            "email": "b@example.com",
+                        },
+                    },
+                ]
+            }
+        },
+    )
+    sync_state_representatives()
+
+    response = client.get("/api/persons")
+
+    assert not get_response_data(response)
 
 
 @responses.activate
