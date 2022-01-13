@@ -8,6 +8,7 @@ from src.bill.models import AssemblyBill, Bill, CityBill, SenateBill, StateBill
 from src.bill_notifications import (
     GenericBillDiff,
     GenericBillSnapshot,
+    StateBillSnapshot,
     SnapshotState,
     BillDiffSet,
     StateBillDiff,
@@ -18,8 +19,8 @@ from src.bill_notifications import (
     send_bill_update_notifications,
 )
 from src.models import db
-from src.person.models import CouncilMember, Person
-from src.sponsorship.models import CitySponsorship
+from src.person.models import CouncilMember, Person, Senator, AssemblyMember
+from src.sponsorship.models import CitySponsorship, SenateSponsorship, AssemblySponsorship
 from src.user.models import User
 from src.utils import now
 
@@ -37,6 +38,7 @@ BODY TEXT-------------------------------------------
 
 
 # TODO: Switch to Factory
+def add_test_city_bill(city_bill_id, status):
     bill = Bill(
         id=uuid4(),
         name=f"{city_bill_id} name",
@@ -85,6 +87,8 @@ def add_test_sponsorship(*, bill, person):
 
 
 def test_calculate_all_bill_diffs__city():
+    bill_1 = add_test_city_bill(1, "Enacted")
+    bill_2 = add_test_city_bill(2, "Enacted")
     council_member_1 = add_test_council_member(1)
     council_member_2 = add_test_council_member(2)
     council_member_3 = add_test_council_member(3)
@@ -113,11 +117,125 @@ def test_calculate_all_bill_diffs__city():
     assert diff.new_status == "Enacted"
 
 
-def test_calculate_all_bill_diffs__state():
-    pass
+def test_calculate_all_bill_diffs__state_senate(get_uuid, senator):
+    bill = Bill(
+        id=get_uuid(),
+        name="state bill",
+        description="ban oil",
+        type=Bill.BillType.STATE,
+    )
+    bill.state_bill = StateBill(
+        session_year=2021,
+    )
+    bill.state_bill.senate_bill = SenateBill(
+        base_print_no="S1234", active_version="", status="Signed by governor"
+    )
+    db.session.add(bill)
+
+    old_senator = Person(id=get_uuid(), name="removed sponsor", type=Person.PersonType.SENATOR)
+    old_senator.senator = Senator(state_member_id=500)
+    db.session.add(old_senator)
+
+    new_senator = Person(id=get_uuid(), name="added sponsor", type=Person.PersonType.SENATOR)
+    new_senator.senator = Senator(state_member_id=100)
+    new_senator.senator.sponsorships.append(SenateSponsorship(bill_id = bill.id, is_lead_sponsor=False))
+
+    senator.senator.sponsorships.append(SenateSponsorship(bill_id = bill.id, is_lead_sponsor=False))
+    db.session.add(new_senator)
+
+    db.session.commit()
+
+    snapshots = {
+        # This should change status, lose old_senator, and gain new_senator, while keeping senator
+        bill.id: StateBillSnapshot(senate_snapshot=GenericBillSnapshot(
+            status="Committee", sponsor_person_ids={senator.id, old_senator.id}
+        ))
+    }
+    diffs = _calculate_all_bill_diffs(SnapshotState(city_snapshots={}, state_snapshots=snapshots))
+
+    assert len(diffs.state_diffs) == 1
+    assert not diffs.state_diffs[0].assembly_diff
+    diff = diffs.state_diffs[0].senate_diff
+
+    assert diff.added_sponsor_names == [new_senator.name]
+    assert diff.removed_sponsor_names == [old_senator.name]
+    assert diff.old_status == "Committee"
+    assert diff.new_status == "Signed by governor"
 
 
-# TODO: I don't think any of these tests need a DB bill anymore
+def test_calculate_all_bill_diffs__state_assembly(get_uuid, assembly_member):
+    bill = Bill(
+        id=get_uuid(),
+        name="state bill",
+        description="ban oil",
+        type=Bill.BillType.STATE,
+    )
+    bill.state_bill = StateBill(
+        session_year=2021,
+    )
+    bill.state_bill.assembly_bill = AssemblyBill(
+        base_print_no="A1234", active_version="", status="Signed by governor"
+    )
+    db.session.add(bill)
+
+    old_assembly_member = Person(id=get_uuid(), name="removed sponsor", type=Person.PersonType.ASSEMBLY_MEMBER)
+    old_assembly_member.assembly_member = AssemblyMember(state_member_id=500)
+    db.session.add(old_assembly_member)
+
+    new_assembly_member = Person(id=get_uuid(), name="added sponsor", type=Person.PersonType.ASSEMBLY_MEMBER)
+    new_assembly_member.assembly_member = AssemblyMember(state_member_id=100)
+    new_assembly_member.assembly_member.sponsorships.append(AssemblySponsorship(bill_id = bill.id, is_lead_sponsor=False))
+
+    assembly_member.assembly_member.sponsorships.append(AssemblySponsorship(bill_id = bill.id, is_lead_sponsor=False))
+    db.session.add(new_assembly_member)
+
+    db.session.commit()
+
+    snapshots = {
+        # This should change status, lose old_assembly_member, and gain new_assembly_member, while keeping assembly_member
+        bill.id: StateBillSnapshot(assembly_snapshot=GenericBillSnapshot(
+            status="Committee", sponsor_person_ids={assembly_member.id, old_assembly_member.id}
+        ))
+    }
+    diffs = _calculate_all_bill_diffs(SnapshotState(city_snapshots={}, state_snapshots=snapshots))
+
+    assert len(diffs.state_diffs) == 1
+    assert not diffs.state_diffs[0].senate_diff
+    diff = diffs.state_diffs[0].assembly_diff
+
+    assert diff.added_sponsor_names == [new_assembly_member.name]
+    assert diff.removed_sponsor_names == [old_assembly_member.name]
+    assert diff.old_status == "Committee"
+    assert diff.new_status == "Signed by governor"
+
+
+def test_calculate_all_bill_diffs__state_unchanged(get_uuid):
+    bill = Bill(
+        id=get_uuid(),
+        name="state bill",
+        description="ban oil",
+        type=Bill.BillType.STATE,
+    )
+    bill.state_bill = StateBill(
+        session_year=2021,
+    )
+    bill.state_bill.senate_bill = SenateBill(
+        base_print_no="S1234", active_version="", status="Committee"
+    )
+    db.session.add(bill)
+    db.session.commit()
+
+    snapshots = {
+        bill.id: StateBillSnapshot(senate_snapshot=GenericBillSnapshot(
+            status="Committee", sponsor_person_ids=set()
+        ))
+    }
+    diffs = _calculate_all_bill_diffs(SnapshotState(city_snapshots={}, state_snapshots=snapshots))
+
+    assert len(diffs.state_diffs) == 0
+    assert len(diffs.city_diffs) == 0
+
+
 def test_email_contents__city_status_changed(snapshot):
     diff = GenericBillDiff(
         old_status="Committee",
@@ -288,41 +406,9 @@ def test_email_contents__city_sponsor_added_and_removed(snapshot):
     assert snapshot == make_email_snapshot(subject, html, text)
 
 
-# TODO: Test a few state email subject lines stoo!
-
-
 @responses.activate
 @patch("src.ses.client")
-def test_state_bill_ignored(mock_ses_client):
-    bill = Bill(
-        id=uuid4(),
-        name="state bill",
-        description="description",
-        type=Bill.BillType.STATE,
-    )
-    bill.state_bill = StateBill(
-        session_year=2021,
-    )
-    bill.state_bill.senate_bill = SenateBill(
-        base_print_no="S1234", active_version="A", status="Signed by governor"
-    )
-    bill.state_bill.assembly_bill = AssemblyBill(
-        base_print_no="A1234", active_version="", status="Signed by governor"
-    )
-    db.session.add(bill)
-    db.session.commit()
-
-    snapshots = {}
-
-    with app.app_context():
-        send_bill_update_notifications(snapshots)
-
-    mock_ses_client.send_email.assert_not_called()
-
-
-@responses.activate
-@patch("src.ses.client")
-def test_send_email_notification_end_to_end(mock_ses_client):
+def test_send_email_notification_end_to_end(mock_ses_client, city_bill, state_bill, snapshot):
     user_to_notify = User(
         id=uuid4(),
         name="User to notify",
@@ -338,20 +424,21 @@ def test_send_email_notification_end_to_end(mock_ses_client):
 
     db.session.commit()
 
-    snapshots = {
-        bill.id: GenericBillSnapshot("Committee", sponsor_ids=[]),
-    }
+    snapshot_state = SnapshotState(city_snapshots={
+        city_bill.id: GenericBillSnapshot("Not introduced", sponsor_person_ids=set()),
+    }, state_snapshots={
+        state_bill.id: StateBillSnapshot(senate_snapshot=GenericBillSnapshot("Introduced in senate", sponsor_person_ids=set()), assembly_snapshot=GenericBillSnapshot("Introduced in assembly", sponsor_person_ids=set()))
+    })
 
     def side_effect(*, Destination, Message, Source):
         assert Destination["ToAddresses"] == ["user@example.com"]
-        assert "Enacted" in Message["Body"]["Html"]["Data"]
-        assert "Enacted" in Message["Body"]["Text"]["Data"]
-        assert "Enacted" in Message["Subject"]["Data"]
+        assert snapshot == make_email_snapshot(Message["Subject"]["Data"], Message["Body"]["Html"]["Data"], Message["Body"]["Text"]["Data"])
+
         return {"MessageId": 1}
 
     mock_ses_client.send_email.side_effect = side_effect
 
     with app.app_context():
-        send_bill_update_notifications(snapshots)
+        send_bill_update_notifications(snapshot_state)
 
     mock_ses_client.send_email.assert_called_once()

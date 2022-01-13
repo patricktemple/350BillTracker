@@ -374,3 +374,118 @@
   
   '
 ---
+# name: test_email_subject__1_city_sponsor_added
+  '
+  
+  SUBJECT--------------------------------------------
+  City bill Intro 2317 gained sponsor Brad Lander
+  
+  BODY HTML------------------------------------------
+  <html>
+    <head>
+    </head>
+    <body>
+      <p>The following bills were updated by the City Council.</p>
+      
+      <div style="font-size: 1.5rem; font-weight: bold">City bills</div>
+      
+      
+      <div style="padding-bottom: 1rem">
+        <div style="font-size: 1rem; font-weight: bold">Intro 2317 - Gass Free NYC</div>
+        <div style="color: black">Status: Enacted (unchanged)</div>
+        <div style="color: blue">2 sponsors --&gt; 3 sponsors (gained Brad Lander)</div>
+      </div>
+      
+  
+      
+      
+    </body>
+  </html>
+  
+  BODY TEXT-------------------------------------------
+  The following bills were updated by the City Council.
+  
+  
+  CITY BILLS
+  
+  Intro 2317 - Gass Free NYC
+  Status: Enacted (unchanged)
+  2 sponsors --> 3 sponsors (gained Brad Lander)
+  
+  
+  
+  
+  '
+---
+# name: test_send_email_notification_end_to_end
+  '
+  
+  SUBJECT--------------------------------------------
+  2 bills were updated
+  
+  BODY HTML------------------------------------------
+  <html>
+    <head>
+    </head>
+    <body>
+      <p>The following bills were updated by the City Council.</p>
+      
+      <div style="font-size: 1.5rem; font-weight: bold">City bills</div>
+      
+      
+      <div style="padding-bottom: 1rem">
+        <div style="font-size: 1rem; font-weight: bold">file - nickname</div>
+        <div style="color: blue">Status: Not introduced --&gt; Enacted</div>
+        <div style="color: black">0 sponsors (unchanged)</div>
+      </div>
+      
+  
+      
+      <div style="font-size: 1.5rem; font-weight: bold">State bills</div>
+      
+      
+      <div style="padding-bottom: 1rem">
+        <div style="font-size: 1rem; font-weight: bold">nickname</div>
+        
+          <div style="font-weight: bold">S1234 - Senate</div>
+          <div style="color: blue">Status: Introduced in senate --&gt; Committee</div>
+          <div style="color: black">0 sponsors (unchanged)</div>
+        
+          <div style="font-weight: bold">A1234 - Assembly</div>
+          <div style="color: blue">Status: Introduced in assembly --&gt; Voted</div>
+          <div style="color: black">0 sponsors (unchanged)</div>
+        
+      </div>
+      
+    </body>
+  </html>
+  
+  BODY TEXT-------------------------------------------
+  The following bills were updated by the City Council.
+  
+  
+  CITY BILLS
+  
+  file - nickname
+  Status: Not introduced --> Enacted
+  0 sponsors (unchanged)
+  
+  
+  
+  
+  STATE BILLS
+  
+  nickname
+  
+  S1234 - Senate
+  Status: Introduced in senate --> Committee
+  0 sponsors (unchanged)
+  
+  A1234 - Assembly
+  Status: Introduced in assembly --> Voted
+  0 sponsors (unchanged)
+  
+  
+  
+  '
+---
