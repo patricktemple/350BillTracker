@@ -12,7 +12,7 @@ from sqlalchemy.orm import selectinload
 from . import settings, twitter
 from .bill.models import CityBill
 from .models import UUID
-from .person.models import CouncilMember, Person
+from .person.models import CouncilMember, OfficeContact, Person
 from .sponsorship.models import CitySponsorship
 
 SCOPES = [
@@ -116,7 +116,7 @@ def _create_row_data(cells):
 
 
 def _get_staffer_display_string(staffer: Person):
-    contact_methods = [staffer.phone, staffer.email, staffer.display_twitter]
+    contact_methods = [c.phone for c in staffer.office_contacts] + [staffer.email, staffer.display_twitter]
     contact_methods = [c for c in contact_methods if c]
     contact_string = ", ".join(contact_methods)
     if not contact_string:
@@ -141,6 +141,8 @@ def _create_legislator_row(
         city_bill.bill, council_member.person
     )
 
+    legislative_phone = ", ".join((c.phone for c in council_member.person.office_contacts if c.phone and c.type == OfficeContact.OfficeContactType.CENTRAL_OFFICE))
+    district_phone = ", ".join((c.phone for c in council_member.person.office_contacts if c.phone and c.type == OfficeContact.OfficeContactType.CENTRAL_OFFICE))
     cells = [
         Cell(""),
         Cell(
@@ -149,8 +151,8 @@ def _create_legislator_row(
         Cell(council_member.person.email),
         Cell(council_member.person.party),
         Cell(council_member.borough),
-        Cell(council_member.person.phone),
-        Cell(council_member.legislative_phone),
+        Cell(district_phone),
+        Cell(legislative_phone),
         Cell(
             council_member.person.display_twitter or "",
             link_url=council_member.person.twitter_url,
