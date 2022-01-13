@@ -3,7 +3,7 @@ from uuid import uuid4
 from pytest import fixture
 
 from src.models import db
-from src.person.models import CouncilMember, Person, Staffer, OfficeContact
+from src.person.models import CouncilMember, OfficeContact, Person, Staffer
 
 from .utils import assert_response
 
@@ -29,7 +29,11 @@ def staffer_person(council_member_person):
         twitter="TheChief",
         type=Person.PersonType.STAFFER,
     )
-    staffer_person.office_contacts.append(OfficeContact(phone="111-111-1111", type=OfficeContact.OfficeContactType.OTHER))
+    staffer_person.office_contacts.append(
+        OfficeContact(
+            phone="111-111-1111", type=OfficeContact.OfficeContactType.OTHER
+        )
+    )
     staffer_person.staffer = Staffer(boss_id=council_member_person.id)
     db.session.add(staffer_person)
     db.session.commit()
@@ -50,8 +54,14 @@ def test_get_person_staffers(client, council_member_person, staffer_person):
                 "name": "Staffer name",
                 "notes": None,
                 "party": None,
-                "officeContacts": [{"phone": "111-111-1111",
-                   "type": "OTHER", "fax": None, "city": None}],
+                "officeContacts": [
+                    {
+                        "phone": "111-111-1111",
+                        "type": "OTHER",
+                        "fax": None,
+                        "city": None,
+                    }
+                ],
                 "senator": None,
                 "title": "chief of staff",
                 "twitter": "TheChief",

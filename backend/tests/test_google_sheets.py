@@ -6,7 +6,7 @@ from src.google_sheets import (
     create_power_hour,
 )
 from src.models import db
-from src.person.models import CouncilMember, Person, OfficeContact
+from src.person.models import CouncilMember, OfficeContact, Person
 from src.sponsorship.models import CitySponsorship
 
 
@@ -32,12 +32,22 @@ def test_generate_google_sheet__no_import(
         id=uuid4(), name="Non sponsor", type=Person.PersonType.COUNCIL_MEMBER
     )
     non_sponsor.council_member = CouncilMember(city_council_person_id=1)
-    non_sponsor.office_contacts.append(OfficeContact(type=OfficeContact.OfficeContactType.CENTRAL_OFFICE, phone="111-222-3333"))
+    non_sponsor.office_contacts.append(
+        OfficeContact(
+            type=OfficeContact.OfficeContactType.CENTRAL_OFFICE,
+            phone="111-222-3333",
+        )
+    )
 
     sponsor = Person(
         id=uuid4(), name="Sponsor", type=Person.PersonType.COUNCIL_MEMBER
     )
-    sponsor.office_contacts.append(OfficeContact(type=OfficeContact.OfficeContactType.DISTRICT_OFFICE, phone="111-222-3333"))
+    sponsor.office_contacts.append(
+        OfficeContact(
+            type=OfficeContact.OfficeContactType.DISTRICT_OFFICE,
+            phone="111-222-3333",
+        )
+    )
     sponsor.council_member = CouncilMember(city_council_person_id=2)
     db.session.add(sponsor)
     db.session.add(non_sponsor)

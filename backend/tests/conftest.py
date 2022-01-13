@@ -1,6 +1,7 @@
 from uuid import UUID, uuid4
 
 import pytest
+
 from src import app, models
 from src.bill.models import (
     AssemblyBill,
@@ -13,10 +14,10 @@ from src.bill.models import (
 from src.person.models import (
     AssemblyMember,
     CouncilMember,
+    OfficeContact,
     Person,
     Senator,
     Staffer,
-    OfficeContact
 )
 from src.user.models import User
 from src.utils import now
@@ -85,7 +86,12 @@ def council_member(get_uuid):
         twitter="pmtemple",
         party="D",
     )
-    person.office_contacts.append(OfficeContact(phone="111-222-3333", type=OfficeContact.OfficeContactType.CENTRAL_OFFICE))
+    person.office_contacts.append(
+        OfficeContact(
+            phone="111-222-3333",
+            type=OfficeContact.OfficeContactType.CENTRAL_OFFICE,
+        )
+    )
     person.council_member = CouncilMember(
         city_council_person_id=50,
         # legislative_phone="1-222-333-4444",
@@ -109,7 +115,12 @@ def senator(get_uuid):
         twitter="thesenateguy",
         party="D",
     )
-    person.office_contacts.append(OfficeContact(phone="111-222-3333", type=OfficeContact.OfficeContactType.CENTRAL_OFFICE))
+    person.office_contacts.append(
+        OfficeContact(
+            phone="111-222-3333",
+            type=OfficeContact.OfficeContactType.CENTRAL_OFFICE,
+        )
+    )
     person.senator = Senator(state_member_id=50, district=3)
     db.session.add(person)
     db.session.commit()
@@ -128,7 +139,11 @@ def senate_staffer(senator, get_uuid):
         twitter="thestaff",
         party="D",
     )
-    person.office_contacts.append(OfficeContact(phone="111-222-3333", type=OfficeContact.OfficeContactType.OTHER))
+    person.office_contacts.append(
+        OfficeContact(
+            phone="111-222-3333", type=OfficeContact.OfficeContactType.OTHER
+        )
+    )
     person.staffer = Staffer(boss_id=senator.id)
     db.session.add(person)
     db.session.commit()
@@ -147,7 +162,12 @@ def assembly_member(get_uuid):
         twitter="theassembly",
         party="D",
     )
-    person.office_contacts.append(OfficeContact(phone="111-222-3333", type=OfficeContact.OfficeContactType.CENTRAL_OFFICE))
+    person.office_contacts.append(
+        OfficeContact(
+            phone="111-222-3333",
+            type=OfficeContact.OfficeContactType.CENTRAL_OFFICE,
+        )
+    )
     person.assembly_member = AssemblyMember(state_member_id=51, district=5)
     db.session.add(person)
     db.session.commit()
