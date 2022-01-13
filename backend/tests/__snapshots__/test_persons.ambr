@@ -1,3 +1,13 @@
+# name: test_get_contacts
+  <class 'list'> [
+    <class 'dict'> {
+      'city': None,
+      'fax': None,
+      'phone': '111-222-3333',
+      'type': 'CENTRAL_OFFICE',
+    },
+  ]
+---
 # name: test_get_persons
   <class 'list'> [
     <class 'dict'> {
