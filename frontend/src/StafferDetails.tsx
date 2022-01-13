@@ -11,7 +11,7 @@ interface Props {
 export default function StafferDetails(props: Props) {
   const person = props.person;
 
-  const [ contacts , setContacts] = useState<OfficeContact[] | null>(null);
+  const [contacts, setContacts] = useState<OfficeContact[] | null>(null);
 
   const apiFetch = useApiFetch();
 
@@ -32,7 +32,13 @@ export default function StafferDetails(props: Props) {
       <div className={styles.label}>Email</div>
       <div className={styles.content}>{person.email}</div>
       <div className={styles.label}>Phone</div>
-      <div className={styles.content}>{contacts && contacts.map(c => c.phone).filter(Boolean).join(", ")}</div>
+      <div className={styles.content}>
+        {contacts &&
+          contacts
+            .map((c) => c.phone)
+            .filter(Boolean)
+            .join(', ')}
+      </div>
       <div className={styles.label}>Twitter</div>
       <div className={styles.content}>
         {person.twitter && (

@@ -10,7 +10,8 @@ from . import (
 )
 from .app import app
 from .settings import ENABLE_CRON
-from .static_data import senate_data, assembly_data
+from .static_data import assembly_data, senate_data
+
 
 @app.cli.command("cron")
 def cron_command():
@@ -43,7 +44,10 @@ def cron_command():
                 # logging.info("Syncing all city bill sponsorships")
                 # council_sync.update_all_sponsorships()
 
-                state_static_sync.fill_static_state_data(senate_data_by_member_id=senate_data.SCRAPED_SENATE_DATA_BY_MEMBER_ID, assembly_data_by_member_id=assembly_data.SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID)
+                state_static_sync.fill_static_state_data(
+                    senate_data_by_member_id=senate_data.SCRAPED_SENATE_DATA_BY_MEMBER_ID,
+                    assembly_data_by_member_id=assembly_data.SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID,
+                )
 
                 # logging.info(
                 #     "Checking if bills have changed, and sending notifications if so"

@@ -9,14 +9,16 @@ interface Props {
   representativeDetails: StateRepresentative;
 }
 
-function ContactPanel({ contact }: { contact: OfficeContact}) {
+function ContactPanel({ contact }: { contact: OfficeContact }) {
   return (
     <div className="mb-2">
-      {contact.city && <div style={{fontWeight: 'bold'}}>{contact.city} office</div>}
+      {contact.city && (
+        <div style={{ fontWeight: 'bold' }}>{contact.city} office</div>
+      )}
       {contact.phone && <div>Phone: {contact.phone}</div>}
       {contact.fax && <div>Fax: {contact.fax}</div>}
     </div>
-  )
+  );
 }
 
 export default function StateRepDetails(props: Props) {
@@ -24,7 +26,7 @@ export default function StateRepDetails(props: Props) {
 
   const website = props.representativeDetails.website;
 
-  const [ contacts , setContacts] = useState<OfficeContact[] | null>(null);
+  const [contacts, setContacts] = useState<OfficeContact[] | null>(null);
 
   const apiFetch = useApiFetch();
 
@@ -46,9 +48,12 @@ export default function StateRepDetails(props: Props) {
       <div className={styles.label}>Email</div>
       <div className={styles.content}>{person.email}</div>
       <div className={styles.label}>Contact info</div>
-      <div className={styles.content}>{contacts && (
-        contacts.map((contact, index) => <ContactPanel contact={contact} key={index} />
-      ))}</div>
+      <div className={styles.content}>
+        {contacts &&
+          contacts.map((contact, index) => (
+            <ContactPanel contact={contact} key={index} />
+          ))}
+      </div>
       <div className={styles.label}>Party</div>
       <div className={styles.content}>{person.party}</div>
       <div className={styles.label}>District website</div>

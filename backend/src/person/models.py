@@ -64,7 +64,9 @@ class Person(db.Model):
         "AssemblyMember", back_populates="person", uselist=False, lazy="joined"
     )
 
-    office_contacts = relationship("OfficeContact", back_populates="person", cascade="all, delete-orphan")
+    office_contacts = relationship(
+        "OfficeContact", back_populates="person", cascade="all, delete-orphan"
+    )
 
     # These are added by our static data
     # TODO: Make this an enum?

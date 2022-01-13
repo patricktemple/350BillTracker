@@ -2,7 +2,7 @@ from marshmallow import fields
 from marshmallow_enum import EnumField
 
 from ..schema import CamelCaseSchema
-from .models import Person, OfficeContact
+from .models import OfficeContact, Person
 
 
 class OfficeContactSchema(CamelCaseSchema):

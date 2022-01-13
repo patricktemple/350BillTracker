@@ -67,13 +67,23 @@ def fill_council_person_data_from_api():
             council_member.website = data["PersonWWW"]
 
             council_member.person.office_contacts.clear()
-            if legislative_phone := data.get('PersonPhone'):
-                council_member.person.office_contacts.append(OfficeContact(phone=legislative_phone.strip(), type=OfficeContact.OfficeContactType.CENTRAL_OFFICE))
-            if district_phone := data.get('PersonPhone2'):
-                council_member.person.office_contacts.append(OfficeContact(phone=district_phone.strip(), type=OfficeContact.OfficeContactType.DISTRICT_OFFICE))
+            if legislative_phone := data.get("PersonPhone"):
+                council_member.person.office_contacts.append(
+                    OfficeContact(
+                        phone=legislative_phone.strip(),
+                        type=OfficeContact.OfficeContactType.CENTRAL_OFFICE,
+                    )
+                )
+            if district_phone := data.get("PersonPhone2"):
+                council_member.person.office_contacts.append(
+                    OfficeContact(
+                        phone=district_phone.strip(),
+                        type=OfficeContact.OfficeContactType.DISTRICT_OFFICE,
+                    )
+                )
 
             # TODO: Delete specific phone fields
-            
+
             # Borough exists here but we prefer the cleaned static data
             # council_member.borough = data["PersonCity1"]
         except HTTPError:
