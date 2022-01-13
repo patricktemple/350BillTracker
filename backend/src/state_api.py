@@ -193,9 +193,7 @@ def _dedupe_by_district(members_api_items, session_year):
 
     members_by_district = defaultdict(lambda: [])
     for member in members_api_items:
-        district = member["sessionShortNameMap"][str(session_year)][0][
-            "districtCode"
-        ]
+        district = member["districtCode"]
         members_by_district[district].append(member)
 
     output_members = []

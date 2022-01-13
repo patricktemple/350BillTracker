@@ -61,17 +61,6 @@ def test_import_state_reps(client, senator, assembly_member, snapshot):
                             "email": "d@example.com",
                         },
                     },
-                    {
-                        "memberId": 5,
-                        "chamber": "ASSEMBLY",
-                        "districtCode": 5,
-                        "incumbent": False,
-                        "person": {
-                            "fullName": "New member out of office",
-                            "prefix": "Assembly",
-                            "email": "d@example.com",
-                        },
-                    },
                 ]
             }
         },
