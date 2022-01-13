@@ -9,9 +9,7 @@ def test_get_persons(
     assert get_response_data(response) == snapshot
 
 
-def test_get_contacts(
-    client, senator, snapshot
-):
+def test_get_contacts(client, senator, snapshot):
     response = client.get(f"/api/persons/{str(senator.id)}/contacts")
 
     assert get_response_data(response) == snapshot

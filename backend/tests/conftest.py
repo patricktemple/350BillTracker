@@ -94,7 +94,6 @@ def council_member(get_uuid):
     )
     person.council_member = CouncilMember(
         city_council_person_id=50,
-        # legislative_phone="1-222-333-4444",
         borough="Bronx",
         website="http://council.nyc.gov",
     )
@@ -111,7 +110,6 @@ def senator(get_uuid):
         name="senator name",
         title="Senator",
         email="me@senate.com",
-        # phone="1-555-555-5555",
         twitter="thesenateguy",
         party="D",
     )
@@ -137,7 +135,6 @@ def senate_staffer(senator, get_uuid):
         name="staffer name",
         title="Chief of staffer",
         email="me@staff.com",
-        # phone="1-555-555-5555",
         twitter="thestaff",
         party="D",
     )
