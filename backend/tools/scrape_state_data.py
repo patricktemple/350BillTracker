@@ -14,6 +14,7 @@ import re
 from src.app import app
 from src.person.models import Person, Senator, AssemblyMember
 import json
+from pprint import pprint
 
 
 SENATE_URL_ROOT = "https://www.nysenate.gov"
@@ -157,7 +158,7 @@ for senator in senators:
     }
 
 print("Senate\n")
-print(senator_data)
+pprint(senator_data)
 print()
 
 
@@ -177,4 +178,4 @@ for member in assembly_members:
     }
 
 print("Assembly\n")
-print(assembly_data)
+pprint(assembly_data)
