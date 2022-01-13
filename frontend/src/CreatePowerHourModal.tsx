@@ -169,7 +169,7 @@ function PowerHourModalBody(props: BodyProps): ReactElement {
             ))}
           <option value={DO_NOT_IMPORT_VALUE}>
             {oldPowerHours.length > 0
-              ? 'Do not import'
+              ? 'Do not copy'
               : 'This bill has no previous power hours'}
           </option>
         </Form.Select>
