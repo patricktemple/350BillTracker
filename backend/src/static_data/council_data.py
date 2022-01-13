@@ -311,10 +311,11 @@ COUNCIL_DATA_BY_LEGISLATOR_ID = {
         "party": "D",
         "borough": "Bronx",
     },
+
     # New peoople in 2022:
     7804: {
         "name": "Shaun Abreu",
-        "borough": "New York",
+        "borough": "Manhattan",
         "twitter": None,
         "party": "D",
     },
@@ -338,19 +339,19 @@ COUNCIL_DATA_BY_LEGISLATOR_ID = {
     },
     7818: {
         "name": "Lynn C. Schulman",
-        "borough": "Forest Hills",
+        "borough": "Queens",
         "twitter": None,
         "party": "D",
     },
     7819: {
         "name": "Joann Ariola ",
-        "borough": "Ozone Park",
+        "borough": "Queens",
         "twitter": None,
         "party": "R",
     },
     7801: {
         "name": "Christopher Marte",
-        "borough": "New York",
+        "borough": "Manhattan",
         "twitter": None,
         "party": "D",
     },
@@ -362,19 +363,19 @@ COUNCIL_DATA_BY_LEGISLATOR_ID = {
     },
     7820: {
         "name": "Lincoln Restler",
-        "borough": "Brooklyn ",
+        "borough": "Brooklyn",
         "twitter": None,
         "party": "D",
     },
     7814: {
         "name": "Linda Lee",
-        "borough": "Oakland Gardens ",
+        "borough": "Queens",
         "twitter": None,
         "party": "D",
     },
     7811: {
         "name": "Vickie Paladino",
-        "borough": "Bayside",
+        "borough": "Queens",
         "twitter": None,
         "party": "R",
     },
@@ -392,13 +393,13 @@ COUNCIL_DATA_BY_LEGISLATOR_ID = {
     },
     7806: {
         "name": "Carmen N. De La Rosa",
-        "borough": "New York, NY 10033",
+        "borough": "Manhattan",
         "twitter": None,
         "party": "D",
     },
     7812: {
         "name": "Sandra Ung",
-        "borough": "Flushing",
+        "borough": "Queens",
         "twitter": None,
         "party": "D",
     },
@@ -422,13 +423,13 @@ COUNCIL_DATA_BY_LEGISLATOR_ID = {
     },
     7802: {
         "name": "Erik D. Bottcher",
-        "borough": "New York",
+        "borough": "Manhattan",
         "twitter": None,
         "party": "D",
     },
     7805: {
         "name": "Kristin Richardson Jordan",
-        "borough": "",
+        "borough": "Manhattan",
         "twitter": None,
         "party": "D",
     },
@@ -446,19 +447,19 @@ COUNCIL_DATA_BY_LEGISLATOR_ID = {
     },
     7803: {
         "name": "Julie Menin",
-        "borough": "New York",
+        "borough": "Manhattan",
         "twitter": None,
         "party": "D",
     },
     7815: {
         "name": "Shekar Krishnan",
-        "borough": "Jackson Heights",
+        "borough": "Queens",
         "twitter": None,
         "party": "D",
     },
     7817: {
         "name": "Nantasha M. Williams",
-        "borough": "St. Albans",
+        "borough": "Queens",
         "twitter": None,
         "party": "D",
     },
@@ -476,7 +477,7 @@ COUNCIL_DATA_BY_LEGISLATOR_ID = {
     },
     7813: {
         "name": "Tiffany Cabán",
-        "borough": "Astoria",
+        "borough": "Queens",
         "twitter": None,
         "party": "D",
     },
@@ -494,7 +495,7 @@ COUNCIL_DATA_BY_LEGISLATOR_ID = {
     },
     7807: {
         "name": "Marjorie Velázquez",
-        "borough": "",
+        "borough": "Bronx",
         "twitter": None,
         "party": "D",
     },
@@ -512,13 +513,13 @@ COUNCIL_DATA_BY_LEGISLATOR_ID = {
     },
     7816: {
         "name": "Julie Won",
-        "borough": "Sunnyside",
+        "borough": "Queens",
         "twitter": None,
         "party": "D",
     },
     5259: {
         "name": "Gale A. Brewer",
-        "borough": "New York",
+        "borough": "Manhattan",
         "twitter": None,
         "party": "D",
     },
