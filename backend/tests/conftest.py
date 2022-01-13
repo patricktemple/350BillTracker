@@ -118,6 +118,8 @@ def senator(get_uuid):
     person.office_contacts.append(
         OfficeContact(
             phone="111-222-3333",
+            fax="888-888-8888",
+            city="Albany",
             type=OfficeContact.OfficeContactType.CENTRAL_OFFICE,
         )
     )
