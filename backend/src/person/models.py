@@ -38,7 +38,6 @@ class Person(db.Model):
     name = Column(Text, nullable=False)
     title = Column(Text)
     email = Column(Text)
-    phone = Column(Text)
 
     twitter = Column(Text)  # excludes the @ symbol
 
@@ -65,7 +64,7 @@ class Person(db.Model):
         "AssemblyMember", back_populates="person", uselist=False, lazy="joined"
     )
 
-    office_contacts = relationship("OfficeContact", back_populates="person")
+    office_contacts = relationship("OfficeContact", back_populates="person", cascade="all, delete-orphan")
 
     # These are added by our static data
     # TODO: Make this an enum?
@@ -100,9 +99,6 @@ class CouncilMember(db.Model):
 
     term_start = Column(TIMESTAMP)
     term_end = Column(TIMESTAMP)
-
-    # District phone is stored in Person.phone
-    legislative_phone = Column(Text)
 
     sponsorships = relationship(
         "CitySponsorship", back_populates="council_member"
@@ -230,9 +226,16 @@ Person.staffer_persons = relationship(
 class OfficeContact(db.Model):
     __tablename__ = "office_contacts"
 
+    class OfficeContactType(enum.Enum):
+        CENTRAL_OFFICE = 1
+        DISTRICT_OFFICE = 2
+        OTHER = 3
+
     id = Column(UUID, primary_key=True, default=uuid4)
 
-    person_id = Column(UUID, ForeignKey(Person.id), index=True)
+    person_id = Column(UUID, ForeignKey(Person.id), index=True, nullable=False)
+
+    type = Column(Enum(OfficeContactType))
 
     # address type enum, maybe?
 

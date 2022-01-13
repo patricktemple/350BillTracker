@@ -6,8 +6,8 @@ from werkzeug import exceptions
 from ..app import app
 from ..auth import auth_required
 from ..models import db
-from .models import Person, Staffer
-from .schema import CreateStafferSchema, PersonSchema
+from .models import Person, Staffer, OfficeContact
+from .schema import CreateStafferSchema, PersonSchema, OfficeContactSchema
 
 
 @app.route("/api/persons", methods=["GET"])
@@ -34,6 +34,8 @@ def update_legislator(person_id):
 @auth_required
 def person_staffers(person_id):
     person = Person.query.get(person_id)
+
+    # TODO: Return the contacts from here somehow
     return PersonSchema(many=True).jsonify(person.staffer_persons)
 
 
@@ -52,11 +54,11 @@ def add_person_staffer(person_id):
     staffer_person = Person(
         name=data["name"],
         title=data["title"],
-        phone=data["phone"],
         email=data["email"],
         twitter=twitter,
         type=Person.PersonType.STAFFER,
     )
+    staffer_person.office_contacts.append(OfficeContact(type=OfficeContact.OfficeContactType.OTHER, phone=data['phone']))
     staffer_person.staffer = Staffer(
         boss_id=person_id,
     )
@@ -78,3 +80,12 @@ def delete_staffer(staffer_id):
 
     # TODO: Return the object in all Creates, to be consistent
     return jsonify({})
+
+
+@app.route("/api/persons/<uuid:person_id>/contacts", methods=["GET"])
+@auth_required
+def get_contacts(person_id):
+    contacts = OfficeContact.query.filter_by(person_id=person_id).order_by(OfficeContact.type).all()
+    return OfficeContactSchema(many=True).jsonify(contacts)
+
+# TODO test this

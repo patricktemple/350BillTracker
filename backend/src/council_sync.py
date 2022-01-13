@@ -11,7 +11,7 @@ from .council_api import (
     lookup_bill,
 )
 from .models import db
-from .person.models import CouncilMember, Person
+from .person.models import CouncilMember, OfficeContact, Person
 from .sponsorship.models import CitySponsorship
 from .static_data.council_data import COUNCIL_DATA_BY_LEGISLATOR_ID
 from .utils import cron_function, now
@@ -64,9 +64,16 @@ def fill_council_person_data_from_api():
         try:
             data = get_person(council_member.city_council_person_id)
             council_member.person.email = data["PersonEmail"]
-            council_member.person.phone = data["PersonPhone"]
-            council_member.legislative_phone = data["PersonPhone2"]
             council_member.website = data["PersonWWW"]
+
+            council_member.person.office_contacts.clear()
+            if legislative_phone := data.get('PersonPhone'):
+                council_member.person.office_contacts.append(OfficeContact(phone=legislative_phone.strip(), type=OfficeContact.OfficeContactType.CENTRAL_OFFICE))
+            if district_phone := data.get('PersonPhone2'):
+                council_member.person.office_contacts.append(OfficeContact(phone=district_phone.strip(), type=OfficeContact.OfficeContactType.DISTRICT_OFFICE))
+
+            # TODO: Delete specific phone fields
+            
             # Borough exists here but we prefer the cleaned static data
             # council_member.borough = data["PersonCity1"]
         except HTTPError:

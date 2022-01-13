@@ -2,7 +2,7 @@ import React, { useState, ReactElement } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { Person, SingleMemberSponsorship, Staffer, Uuid } from './types';
+import { Person, SingleMemberSponsorship, Staffer, Uuid, OfficeContact } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Stack from 'react-bootstrap/Stack';
 import { Link } from 'react-router-dom';
@@ -23,6 +23,7 @@ export default function CouncilMemberDetails(props: Props) {
 
   const apiFetch = useApiFetch();
 
+  const [contacts, setContacts] = useState<OfficeContact[] | null>(null);
   const [sponsorships, setSponsorships] = useState<
     SingleMemberSponsorship[] | null
   >(null);
@@ -33,8 +34,13 @@ export default function CouncilMemberDetails(props: Props) {
         setSponsorships(response);
       }
     );
+    apiFetch(`/api/persons/${person.id}/contacts`).then((response) => {
+      setContacts(response);
+    });
   });
 
+  const districtPhoneText = contacts && contacts.filter(c => c.type === 'DISTRICT_OFFICE' && c.phone).map(c => c.phone);
+  const legislativePhoneText = contacts && contacts.filter(c => c.type === 'CENTRAL_OFFICE' && c.phone).map(c => c.phone);
   return (
     <>
       <div className={styles.label}>Name</div>
@@ -46,10 +52,10 @@ export default function CouncilMemberDetails(props: Props) {
       <div className={styles.label}>Email</div>
       <div className={styles.content}>{person.email}</div>
       <div className={styles.label}>District phone</div>
-      <div className={styles.content}>{person.phone}</div>
+      <div className={styles.content}>{districtPhoneText}</div>
       <div className={styles.label}>Legislative phone</div>
       <div className={styles.content}>
-        {person.councilMember!.legislativePhone}
+        {legislativePhoneText}
       </div>
       <div className={styles.label}>Party</div>
       <div className={styles.content}>{person.party}</div>

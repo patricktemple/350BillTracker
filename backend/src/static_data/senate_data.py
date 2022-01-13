@@ -88,6 +88,7 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "fax": "(518) 426-6844",
                 "city": "Albany",
             },
+            # Note: this is missing the NYC office: https://www.nysenate.gov/senators/andrea-stewart-cousins/contact
         ],
         "name": "Andrea Stewart-Cousins",
         "website": "https://www.nysenate.gov/senators/andrea-stewart-cousins/contact",
