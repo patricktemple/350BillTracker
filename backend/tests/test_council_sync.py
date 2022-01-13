@@ -13,7 +13,7 @@ from src.council_sync import (
     update_all_sponsorships,
 )
 from src.models import db
-from src.person.models import CouncilMember, Person
+from src.person.models import CouncilMember, Person, OfficeContact
 from src.sponsorship.models import CitySponsorship
 from src.static_data.council_data import COUNCIL_DATA_BY_LEGISLATOR_ID
 
@@ -109,8 +109,8 @@ def test_fill_council_person_data():
 
     corey = CouncilMember.query.filter_by(city_council_person_id=1).one()
     assert corey.person.email == "corey@council.nyc.gov"
-    assert corey.person.phone == "555-111-1111"
-    assert corey.legislative_phone == "888-888-8888"
+    assert len(corey.person.office_contacts) == 2
+    assert {(c.type, c.phone) for c in corey.person.office_contacts} == {(OfficeContact.OfficeContactType.CENTRAL_OFFICE, "555-111-1111"), (OfficeContact.OfficeContactType.DISTRICT_OFFICE, "888-888-8888")}
     assert corey.website == "https://www.example.com/"
 
 
