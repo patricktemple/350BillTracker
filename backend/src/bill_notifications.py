@@ -237,21 +237,6 @@ def _render_email_contents(bill_diffs: BillDiffSet):
     return subject, body_html, body_text
 
 
-def _send_bill_update_emails(bill_diffs: BillDiffSet):
-    subject, body_html, body_text = _render_email_contents(bill_diffs)
-
-    users_to_notify = User.query.filter_by(
-        send_bill_update_notifications=True
-    ).all()
-
-    for user in users_to_notify:
-        logging.info(f"Sending bill update email to {user.email}")
-        try:
-            send_email(user.email, subject, body_html, body_text)
-        except ClientError:
-            logging.exception(f"Faild to send email to {user.email}")
-
-
 def _calculate_bill_diff(
     *,
     snapshot: GenericBillSnapshot,
@@ -367,4 +352,15 @@ def send_bill_update_notifications(
 
     if bill_diffs.city_diffs or bill_diffs.state_diffs:
         logging.info("Bills were changed in this cron run, sending emails")
-        _send_bill_update_emails(bill_diffs)
+
+        subject, body_html, body_text = _render_email_contents(bill_diffs)
+        users_to_notify = User.query.filter_by(
+            send_bill_update_notifications=True
+        ).all()
+
+        for user in users_to_notify:
+            logging.info(f"Sending bill update email to {user.email}")
+            try:
+                send_email(user.email, subject, body_html, body_text)
+            except ClientError:
+                logging.exception(f"Faild to send email to {user.email}")
