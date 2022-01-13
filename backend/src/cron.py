@@ -35,8 +35,6 @@ def cron_command():
 
                 bill_snapshots = bill_notifications.snapshot_bills()
 
-                logging.info(repr(bill_snapshots))
-
                 logging.info("Syncing state bill updates")
                 state_api.update_state_bills()
 

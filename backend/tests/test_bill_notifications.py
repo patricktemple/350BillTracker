@@ -30,6 +30,9 @@ from src.utils import now
 
 
 def make_email_snapshot(subject, body_html, body_text):
+    """Puts all parts of an email into a single string that's convenient
+    for snapshot tests."""
+
     return f"""
 SUBJECT--------------------------------------------
 {subject}
@@ -366,7 +369,7 @@ def test_email_contents__state_gained_senate_sponsor(snapshot):
         new_status="Committee",
         added_sponsor_names=["Jabari Brisport"],
         removed_sponsor_names=[],
-        current_sponsor_count=0,
+        current_sponsor_count=1,
         bill_number="S4264",
         bill_name="CCIA",
     )
@@ -439,7 +442,7 @@ def test_email_subject__1_city_sponsor_added(snapshot):
         removed_sponsor_names=[],
         current_sponsor_count=3,
         bill_number="Intro 2317",
-        bill_name="Gass Free NYC",
+        bill_name="Gas Free NYC",
     )
 
     db.session.commit()

@@ -320,6 +320,7 @@ def _calculate_all_bill_diffs(snapshot_state: SnapshotState) -> BillDiffSet:
                 )
             else:
                 senate_diff = None
+
             if bill.state_bill.assembly_bill:
                 assembly_diff = _calculate_bill_diff(
                     snapshot=snapshot.assembly_snapshot,
@@ -335,6 +336,7 @@ def _calculate_all_bill_diffs(snapshot_state: SnapshotState) -> BillDiffSet:
                 )
             else:
                 assembly_diff = None
+
             if senate_diff or assembly_diff:
                 bill_diffs.state_diffs.append(
                     StateBillDiff(
