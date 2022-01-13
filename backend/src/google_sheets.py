@@ -116,7 +116,10 @@ def _create_row_data(cells):
 
 
 def _get_staffer_display_string(staffer: Person):
-    contact_methods = [c.phone for c in staffer.office_contacts] + [staffer.email, staffer.display_twitter]
+    contact_methods = [c.phone for c in staffer.office_contacts] + [
+        staffer.email,
+        staffer.display_twitter,
+    ]
     contact_methods = [c for c in contact_methods if c]
     contact_string = ", ".join(contact_methods)
     if not contact_string:
@@ -141,8 +144,22 @@ def _create_legislator_row(
         city_bill.bill, council_member.person
     )
 
-    legislative_phone = ", ".join((c.phone for c in council_member.person.office_contacts if c.phone and c.type == OfficeContact.OfficeContactType.CENTRAL_OFFICE))
-    district_phone = ", ".join((c.phone for c in council_member.person.office_contacts if c.phone and c.type == OfficeContact.OfficeContactType.CENTRAL_OFFICE))
+    legislative_phone = ", ".join(
+        (
+            c.phone
+            for c in council_member.person.office_contacts
+            if c.phone
+            and c.type == OfficeContact.OfficeContactType.CENTRAL_OFFICE
+        )
+    )
+    district_phone = ", ".join(
+        (
+            c.phone
+            for c in council_member.person.office_contacts
+            if c.phone
+            and c.type == OfficeContact.OfficeContactType.CENTRAL_OFFICE
+        )
+    )
     cells = [
         Cell(""),
         Cell(
