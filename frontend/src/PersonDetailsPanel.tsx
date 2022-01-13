@@ -26,7 +26,7 @@ interface FormData {
 
 function formatStaffer(staffer: Staffer) {
   const contactElements: (string | ReactElement | null)[] = [
-    ...staffer.officeContacts.map(c => c.phone),
+    ...staffer.officeContacts.map((c) => c.phone),
     staffer.email
   ].filter((item) => !!item);
   if (staffer.twitter) {

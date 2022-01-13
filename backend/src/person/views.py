@@ -7,7 +7,12 @@ from ..app import app
 from ..auth import auth_required
 from ..models import db
 from .models import OfficeContact, Person, Staffer
-from .schema import CreateStafferSchema, OfficeContactSchema, PersonSchema, PersonWithContactsSchema
+from .schema import (
+    CreateStafferSchema,
+    OfficeContactSchema,
+    PersonSchema,
+    PersonWithContactsSchema,
+)
 
 
 @app.route("/api/persons", methods=["GET"])
