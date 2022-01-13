@@ -5,9 +5,8 @@ from uuid import UUID
 
 from botocore.exceptions import ClientError
 from flask import render_template
-from sqlalchemy.orm import selectinload
 
-from .bill.views import AssemblyBill, Bill, CityBill, SenateBill
+from .bill.views import AssemblyBill, Bill, SenateBill
 from .person.models import Person
 from .ses import send_email
 from .user.models import User

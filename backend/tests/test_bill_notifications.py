@@ -13,8 +13,6 @@ from src.bill_notifications import (
     StateBillDiff,
     StateBillSnapshot,
     _calculate_all_bill_diffs,
-    _convert_bill_diff_to_template_variables,
-    _get_bill_update_subject_line,
     _render_email_contents,
     send_bill_update_notifications,
 )
