@@ -74,6 +74,8 @@ def test_import_state_reps(client, senator, assembly_member, snapshot):
     for item in response_data:
         del item["id"]
 
+    # THIS IS WRONG -- it should overwrite the assembly member and it is not doing that!
+
     assert response_data == snapshot
 
 
