@@ -1,3 +1,4 @@
+import pytest
 import responses
 
 from src.bill.models import Bill
@@ -61,17 +62,6 @@ def test_import_state_reps(client, senator, assembly_member, snapshot):
                             "email": "d@example.com",
                         },
                     },
-                    {
-                        "memberId": 5,
-                        "chamber": "ASSEMBLY",
-                        "districtCode": 5,
-                        "incumbent": False,
-                        "person": {
-                            "fullName": "New member out of office",
-                            "prefix": "Assembly",
-                            "email": "d@example.com",
-                        },
-                    },
                 ]
             }
         },
@@ -86,6 +76,92 @@ def test_import_state_reps(client, senator, assembly_member, snapshot):
         del item["id"]
 
     assert response_data == snapshot
+
+
+@responses.activate
+def test_import_state_reps__district_conflict_checks_incumbent(client):
+    responses.add(
+        responses.GET,
+        url="https://legislation.nysenate.gov/api/3/members/2021?limit=1000&full=true&key=fake_key",
+        json={
+            "result": {
+                "items": [
+                    {
+                        "memberId": 1,
+                        "chamber": "SENATE",
+                        "districtCode": 1,
+                        "incumbent": True,
+                        "person": {
+                            "fullName": "Incumbent senator",
+                            "prefix": "Senator",
+                            "email": "a@example.com",
+                        },
+                    },
+                    {
+                        "memberId": 2,
+                        "chamber": "SENATE",
+                        "districtCode": 1,
+                        "incumbent": False,
+                        "person": {
+                            "fullName": "Non-incumbent senator",
+                            "prefix": "Senator",
+                            "email": "b@example.com",
+                        },
+                    },
+                ]
+            }
+        },
+    )
+    sync_state_representatives()
+
+    response = client.get("/api/persons")
+
+    response_data = get_response_data(response)
+
+    assert len(response_data) == 1
+    assert response_data[0]["name"] == "Incumbent senator"
+
+
+@responses.activate
+@pytest.mark.parametrize("incumbent", [False, True])
+def test_import_state_reps__district_no_single_incumbent(client, incumbent):
+    responses.add(
+        responses.GET,
+        url="https://legislation.nysenate.gov/api/3/members/2021?limit=1000&full=true&key=fake_key",
+        json={
+            "result": {
+                "items": [
+                    {
+                        "memberId": 1,
+                        "chamber": "SENATE",
+                        "districtCode": 1,
+                        "incumbent": incumbent,
+                        "person": {
+                            "fullName": "Non-incumbent senator",
+                            "prefix": "Senator",
+                            "email": "a@example.com",
+                        },
+                    },
+                    {
+                        "memberId": 2,
+                        "chamber": "SENATE",
+                        "districtCode": 1,
+                        "incumbent": incumbent,
+                        "person": {
+                            "fullName": "Non-incumbent senator",
+                            "prefix": "Senator",
+                            "email": "b@example.com",
+                        },
+                    },
+                ]
+            }
+        },
+    )
+    sync_state_representatives()
+
+    response = client.get("/api/persons")
+
+    assert not get_response_data(response)
 
 
 @responses.activate
