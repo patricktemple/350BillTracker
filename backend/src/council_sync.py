@@ -67,6 +67,8 @@ def fill_council_person_data_from_api():
             council_member.person.phone = data["PersonPhone"]
             council_member.legislative_phone = data["PersonPhone2"]
             council_member.website = data["PersonWWW"]
+            print(data["PersonCity1"])
+            council_member.borough = data["PersonCity1"]  # TODO remove
             # Borough exists here but we prefer the cleaned static data
         except HTTPError:
             logging.exception(
