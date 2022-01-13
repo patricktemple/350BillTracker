@@ -9,8 +9,15 @@
       'email': 'd@example.com',
       'name': 'Existing assembly member',
       'notes': None,
+      'officeContacts': <class 'list'> [
+        <class 'dict'> {
+          'city': None,
+          'fax': None,
+          'phone': '111-222-3333',
+          'type': 'CENTRAL_OFFICE',
+        },
+      ],
       'party': 'D',
-      'phone': '1-555-555-5555',
       'senator': None,
       'title': 'Assembly',
       'twitter': 'theassembly',
@@ -22,8 +29,15 @@
       'email': 'b@example.com',
       'name': 'Existing senator',
       'notes': None,
+      'officeContacts': <class 'list'> [
+        <class 'dict'> {
+          'city': 'Albany',
+          'fax': '888-888-8888',
+          'phone': '111-222-3333',
+          'type': 'CENTRAL_OFFICE',
+        },
+      ],
       'party': 'D',
-      'phone': '1-555-555-5555',
       'senator': <class 'dict'> {
         'district': 2,
         'website': 'https://www.nysenate.gov/district/2',
@@ -41,8 +55,9 @@
       'email': 'c@example.com',
       'name': 'New assembly member',
       'notes': None,
+      'officeContacts': <class 'list'> [
+      ],
       'party': None,
-      'phone': None,
       'senator': None,
       'title': 'Assembly member',
       'twitter': None,
@@ -54,8 +69,9 @@
       'email': 'a@example.com',
       'name': 'New senator',
       'notes': None,
+      'officeContacts': <class 'list'> [
+      ],
       'party': None,
-      'phone': None,
       'senator': <class 'dict'> {
         'district': 1,
         'website': 'https://www.nysenate.gov/district/1',

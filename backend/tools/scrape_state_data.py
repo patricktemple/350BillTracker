@@ -14,9 +14,18 @@ import re
 from src.app import app
 from src.person.models import Person, Senator, AssemblyMember
 import json
+from pprint import pprint
 
 
 SENATE_URL_ROOT = "https://www.nysenate.gov"
+
+
+
+def convert_city(city):
+    if city == "New York":
+        return "Manhattan"
+    
+    return city
 
 def _extract_senate_contact_info(address_section):
     phone = address_section.find('span', string="Phone: ")
@@ -25,7 +34,7 @@ def _extract_senate_contact_info(address_section):
     return {
         "phone": phone and phone.next_sibling,
         "fax": fax and fax.next_sibling,
-        "city": re.compile('\w+[\s\w]*').search(city.string).group()
+        "city": convert_city(re.compile('\w+[\s\w]*').search(city.string).group())
     }
 
 def get_senate_data():
@@ -83,6 +92,7 @@ def get_senate_data():
     return output
 
 
+
 def get_assembly_data():
     f"Fetching Assembly data"
     assembly_list_html = requests.get('https://www.nyassembly.gov/mem').text
@@ -119,9 +129,9 @@ def get_assembly_data():
                         addr['fax'] = re_result.group()
                     else:
                         addr['phone'] = re_result.group()
-                elif match := re.compile('^\s*(\w+[\w\s]*), NY').search(line):
+                elif match := re.compile('^\s*([^,]+), NY').search(line):
                     city = match.group(1)
-                    addr['city'] = city
+                    addr['city'] = convert_city(city)
             if 'LOB' in lines[0]:
                 result['albany_contact'].append(addr)
             else:
@@ -148,7 +158,7 @@ for senator in senators:
     }
 
 print("Senate\n")
-print(senator_data)
+pprint(senator_data)
 print()
 
 
@@ -168,4 +178,4 @@ for member in assembly_members:
     }
 
 print("Assembly\n")
-print(assembly_data)
+pprint(assembly_data)

@@ -14,7 +14,6 @@
         'name': 'Assembly lead sponsor',
         'notes': None,
         'party': None,
-        'phone': None,
         'senator': None,
         'title': None,
         'twitter': None,
@@ -32,7 +31,6 @@
           'name': 'Assembly non sponsor',
           'notes': None,
           'party': None,
-          'phone': None,
           'senator': None,
           'title': None,
           'twitter': None,
@@ -50,7 +48,6 @@
           'name': 'Senate sponsor',
           'notes': None,
           'party': None,
-          'phone': None,
           'senator': <class 'dict'> {
             'district': None,
             'website': None,
@@ -70,7 +67,6 @@
           'name': 'Senate non sponsor',
           'notes': None,
           'party': None,
-          'phone': None,
           'senator': <class 'dict'> {
             'district': None,
             'website': None,

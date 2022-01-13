@@ -78,7 +78,6 @@ export type PersonType =
   | 'STAFFER';
 
 export interface CouncilMember {
-  legislativePhone: string;
   borough: string;
   website: string;
   // ISO-formatted datetime.
@@ -97,7 +96,6 @@ export interface Person {
   name: string;
   title: string;
   email: string;
-  phone: string;
   twitter: string;
   party: string;
 
@@ -108,6 +106,13 @@ export interface Person {
   councilMember: CouncilMember | null;
   senator: StateRepresentative | null;
   assemblyMember: StateRepresentative | null;
+}
+
+export interface OfficeContact {
+  phone: string | null;
+  fax: string | null;
+  type: 'CENTRAL_OFFICE' | 'DISTRICT_OFFICE' | 'OTHER';
+  city: string | null;
 }
 
 export interface SingleMemberSponsorship {
@@ -149,6 +154,6 @@ export interface Staffer {
   name: string;
   title: string;
   email: string;
-  phone: string;
+  officeContacts: OfficeContact[];
   twitter: string;
 }

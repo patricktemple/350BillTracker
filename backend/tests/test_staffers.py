@@ -3,7 +3,7 @@ from uuid import uuid4
 from pytest import fixture
 
 from src.models import db
-from src.person.models import CouncilMember, Person, Staffer
+from src.person.models import CouncilMember, OfficeContact, Person, Staffer
 
 from .utils import assert_response
 
@@ -27,8 +27,12 @@ def staffer_person(council_member_person):
         title="chief of staff",
         email="test@example.com",
         twitter="TheChief",
-        phone="111-111-1111",
         type=Person.PersonType.STAFFER,
+    )
+    staffer_person.office_contacts.append(
+        OfficeContact(
+            phone="111-111-1111", type=OfficeContact.OfficeContactType.OTHER
+        )
     )
     staffer_person.staffer = Staffer(boss_id=council_member_person.id)
     db.session.add(staffer_person)
@@ -50,7 +54,14 @@ def test_get_person_staffers(client, council_member_person, staffer_person):
                 "name": "Staffer name",
                 "notes": None,
                 "party": None,
-                "phone": "111-111-1111",
+                "officeContacts": [
+                    {
+                        "phone": "111-111-1111",
+                        "type": "OTHER",
+                        "fax": None,
+                        "city": None,
+                    }
+                ],
                 "senator": None,
                 "title": "chief of staff",
                 "twitter": "TheChief",
@@ -60,7 +71,7 @@ def test_get_person_staffers(client, council_member_person, staffer_person):
     )
 
 
-def test_add_legislator_staffer(client, council_member_person):
+def test_add_staffer(client, council_member_person):
     response = client.post(
         f"/api/persons/{council_member_person.id}/staffers",
         data={
@@ -77,12 +88,12 @@ def test_add_legislator_staffer(client, council_member_person):
     assert staffer.person.name == "staffer"
     assert staffer.person.title == "chief of staff"
     assert staffer.person.twitter == "TheChief"
-    assert staffer.person.phone == "111-111-1111"
+    assert staffer.person.office_contacts[0].phone == "111-111-1111"
     assert staffer.person.email == "test@example.com"
     assert staffer.boss_id == council_member_person.id
 
 
-def test_add_legislator_invalid_twitter(client, council_member_person):
+def test_add_staffer_invalid_twitter(client, council_member_person):
     response = client.post(
         f"/api/persons/{council_member_person.id}/staffers",
         data={

@@ -25,8 +25,8 @@ interface FormData {
 }
 
 function formatStaffer(staffer: Staffer) {
-  const contactElements: (string | ReactElement)[] = [
-    staffer.phone,
+  const contactElements: (string | ReactElement | null)[] = [
+    ...staffer.officeContacts.map((c) => c.phone),
     staffer.email
   ].filter((item) => !!item);
   if (staffer.twitter) {
@@ -74,7 +74,9 @@ export default function PersonDetailsPanel(props: Props) {
   }
 
   useMountEffect(() => {
-    loadStaffers();
+    if (person.type !== 'STAFFER') {
+      loadStaffers();
+    }
   });
 
   function handleNotesChanged(event: any) {

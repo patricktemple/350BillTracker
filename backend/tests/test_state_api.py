@@ -1,9 +1,11 @@
 import pytest
 import responses
 
+from src.app import app
 from src.bill.models import Bill
 from src.models import db
 from src.person.models import AssemblyMember, Person, Senator
+from src.person.schema import PersonWithContactsSchema
 from src.sponsorship.models import AssemblySponsorship, SenateSponsorship
 from src.state_api import sync_state_representatives, update_state_bills
 
@@ -68,14 +70,16 @@ def test_import_state_reps(client, senator, assembly_member, snapshot):
     )
     sync_state_representatives()
 
-    response = client.get("/api/persons")
+    persons = Person.query.order_by(Person.name).all()
 
     # Get rid of random UUIDs for snapshot
-    response_data = get_response_data(response)
-    for item in response_data:
+    with app.app_context():
+        # Super lazy way to run a snapshot on the full payload:
+        item_json = PersonWithContactsSchema(many=True).dump(persons)
+    for item in item_json:
         del item["id"]
 
-    assert response_data == snapshot
+    assert item_json == snapshot
 
 
 @responses.activate

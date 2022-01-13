@@ -2,7 +2,14 @@ from marshmallow import fields
 from marshmallow_enum import EnumField
 
 from ..schema import CamelCaseSchema
-from .models import Person
+from .models import OfficeContact, Person
+
+
+class OfficeContactSchema(CamelCaseSchema):
+    phone = fields.String(dump_only=True)
+    fax = fields.String(dump_only=True)
+    city = fields.String(dump_only=True)
+    type = EnumField(OfficeContact.OfficeContactType, dump_only=True)
 
 
 class CouncilMemberSchema(CamelCaseSchema):
@@ -10,7 +17,6 @@ class CouncilMemberSchema(CamelCaseSchema):
     term_end = fields.DateTime(dump_only=True)
     borough = fields.String(dump_only=True)
     website = fields.String(dump_only=True)
-    legislative_phone = fields.String(dump_only=True)
 
 
 class SenatorSchema(CamelCaseSchema):
@@ -37,7 +43,6 @@ class PersonSchema(CamelCaseSchema):
     id = fields.UUID(dump_only=True)
 
     email = fields.String(dump_only=True)
-    phone = fields.String(dump_only=True)
 
     # Static data that we add in
     twitter = fields.String(dump_only=True)
@@ -54,3 +59,7 @@ class PersonSchema(CamelCaseSchema):
     council_member = fields.Nested(CouncilMemberSchema)
     senator = fields.Nested(SenatorSchema)
     assembly_member = fields.Nested(AssemblyMemberSchema)
+
+
+class PersonWithContactsSchema(PersonSchema):
+    office_contacts = fields.List(fields.Nested(OfficeContactSchema))
