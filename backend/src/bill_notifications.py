@@ -217,7 +217,10 @@ def _get_diff_set_template_variables(bill_diffs: BillDiffSet):
                 }
             )
         state_bills_for_template.append({"chamber_bills": chamber_bills})
-    return {"city_bills": city_bills_for_template, "state_bills": state_bills_for_template}
+    return {
+        "city_bills": city_bills_for_template,
+        "state_bills": state_bills_for_template,
+    }
 
 
 def _render_email_contents(bill_diffs: BillDiffSet):

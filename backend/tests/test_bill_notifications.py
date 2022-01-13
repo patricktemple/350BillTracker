@@ -6,21 +6,25 @@ import responses
 from src.app import app
 from src.bill.models import AssemblyBill, Bill, CityBill, SenateBill, StateBill
 from src.bill_notifications import (
+    BillDiffSet,
     GenericBillDiff,
     GenericBillSnapshot,
-    StateBillSnapshot,
     SnapshotState,
-    BillDiffSet,
     StateBillDiff,
-    _render_email_contents,
+    StateBillSnapshot,
     _calculate_all_bill_diffs,
     _convert_bill_diff_to_template_variables,
     _get_bill_update_subject_line,
+    _render_email_contents,
     send_bill_update_notifications,
 )
 from src.models import db
-from src.person.models import CouncilMember, Person, Senator, AssemblyMember
-from src.sponsorship.models import CitySponsorship, SenateSponsorship, AssemblySponsorship
+from src.person.models import AssemblyMember, CouncilMember, Person, Senator
+from src.sponsorship.models import (
+    AssemblySponsorship,
+    CitySponsorship,
+    SenateSponsorship,
+)
 from src.user.models import User
 from src.utils import now
 
@@ -101,12 +105,17 @@ def test_calculate_all_bill_diffs__city():
     snapshots = {
         # This should change status, lose sponsor 2 and gain sponsor 3
         bill_1.id: GenericBillSnapshot(
-            status="Committee", sponsor_person_ids={council_member_1.id, council_member_2.id}
+            status="Committee",
+            sponsor_person_ids={council_member_1.id, council_member_2.id},
         ),
         # This should be unchanged
-        bill_2.id: GenericBillSnapshot(status="Enacted", sponsor_person_ids={council_member_3.id}),
+        bill_2.id: GenericBillSnapshot(
+            status="Enacted", sponsor_person_ids={council_member_3.id}
+        ),
     }
-    diffs = _calculate_all_bill_diffs(SnapshotState(city_snapshots=snapshots, state_snapshots={}))
+    diffs = _calculate_all_bill_diffs(
+        SnapshotState(city_snapshots=snapshots, state_snapshots={})
+    )
 
     assert len(diffs.city_diffs) == 1
     diff = diffs.city_diffs[0]
@@ -132,26 +141,39 @@ def test_calculate_all_bill_diffs__state_senate(get_uuid, senator):
     )
     db.session.add(bill)
 
-    old_senator = Person(id=get_uuid(), name="removed sponsor", type=Person.PersonType.SENATOR)
+    old_senator = Person(
+        id=get_uuid(), name="removed sponsor", type=Person.PersonType.SENATOR
+    )
     old_senator.senator = Senator(state_member_id=500)
     db.session.add(old_senator)
 
-    new_senator = Person(id=get_uuid(), name="added sponsor", type=Person.PersonType.SENATOR)
+    new_senator = Person(
+        id=get_uuid(), name="added sponsor", type=Person.PersonType.SENATOR
+    )
     new_senator.senator = Senator(state_member_id=100)
-    new_senator.senator.sponsorships.append(SenateSponsorship(bill_id = bill.id, is_lead_sponsor=False))
+    new_senator.senator.sponsorships.append(
+        SenateSponsorship(bill_id=bill.id, is_lead_sponsor=False)
+    )
 
-    senator.senator.sponsorships.append(SenateSponsorship(bill_id = bill.id, is_lead_sponsor=False))
+    senator.senator.sponsorships.append(
+        SenateSponsorship(bill_id=bill.id, is_lead_sponsor=False)
+    )
     db.session.add(new_senator)
 
     db.session.commit()
 
     snapshots = {
         # This should change status, lose old_senator, and gain new_senator, while keeping senator
-        bill.id: StateBillSnapshot(senate_snapshot=GenericBillSnapshot(
-            status="Committee", sponsor_person_ids={senator.id, old_senator.id}
-        ))
+        bill.id: StateBillSnapshot(
+            senate_snapshot=GenericBillSnapshot(
+                status="Committee",
+                sponsor_person_ids={senator.id, old_senator.id},
+            )
+        )
     }
-    diffs = _calculate_all_bill_diffs(SnapshotState(city_snapshots={}, state_snapshots=snapshots))
+    diffs = _calculate_all_bill_diffs(
+        SnapshotState(city_snapshots={}, state_snapshots=snapshots)
+    )
 
     assert len(diffs.state_diffs) == 1
     assert not diffs.state_diffs[0].assembly_diff
@@ -178,26 +200,46 @@ def test_calculate_all_bill_diffs__state_assembly(get_uuid, assembly_member):
     )
     db.session.add(bill)
 
-    old_assembly_member = Person(id=get_uuid(), name="removed sponsor", type=Person.PersonType.ASSEMBLY_MEMBER)
+    old_assembly_member = Person(
+        id=get_uuid(),
+        name="removed sponsor",
+        type=Person.PersonType.ASSEMBLY_MEMBER,
+    )
     old_assembly_member.assembly_member = AssemblyMember(state_member_id=500)
     db.session.add(old_assembly_member)
 
-    new_assembly_member = Person(id=get_uuid(), name="added sponsor", type=Person.PersonType.ASSEMBLY_MEMBER)
+    new_assembly_member = Person(
+        id=get_uuid(),
+        name="added sponsor",
+        type=Person.PersonType.ASSEMBLY_MEMBER,
+    )
     new_assembly_member.assembly_member = AssemblyMember(state_member_id=100)
-    new_assembly_member.assembly_member.sponsorships.append(AssemblySponsorship(bill_id = bill.id, is_lead_sponsor=False))
+    new_assembly_member.assembly_member.sponsorships.append(
+        AssemblySponsorship(bill_id=bill.id, is_lead_sponsor=False)
+    )
 
-    assembly_member.assembly_member.sponsorships.append(AssemblySponsorship(bill_id = bill.id, is_lead_sponsor=False))
+    assembly_member.assembly_member.sponsorships.append(
+        AssemblySponsorship(bill_id=bill.id, is_lead_sponsor=False)
+    )
     db.session.add(new_assembly_member)
 
     db.session.commit()
 
     snapshots = {
         # This should change status, lose old_assembly_member, and gain new_assembly_member, while keeping assembly_member
-        bill.id: StateBillSnapshot(assembly_snapshot=GenericBillSnapshot(
-            status="Committee", sponsor_person_ids={assembly_member.id, old_assembly_member.id}
-        ))
+        bill.id: StateBillSnapshot(
+            assembly_snapshot=GenericBillSnapshot(
+                status="Committee",
+                sponsor_person_ids={
+                    assembly_member.id,
+                    old_assembly_member.id,
+                },
+            )
+        )
     }
-    diffs = _calculate_all_bill_diffs(SnapshotState(city_snapshots={}, state_snapshots=snapshots))
+    diffs = _calculate_all_bill_diffs(
+        SnapshotState(city_snapshots={}, state_snapshots=snapshots)
+    )
 
     assert len(diffs.state_diffs) == 1
     assert not diffs.state_diffs[0].senate_diff
@@ -226,11 +268,15 @@ def test_calculate_all_bill_diffs__state_unchanged(get_uuid):
     db.session.commit()
 
     snapshots = {
-        bill.id: StateBillSnapshot(senate_snapshot=GenericBillSnapshot(
-            status="Committee", sponsor_person_ids=set()
-        ))
+        bill.id: StateBillSnapshot(
+            senate_snapshot=GenericBillSnapshot(
+                status="Committee", sponsor_person_ids=set()
+            )
+        )
     }
-    diffs = _calculate_all_bill_diffs(SnapshotState(city_snapshots={}, state_snapshots=snapshots))
+    diffs = _calculate_all_bill_diffs(
+        SnapshotState(city_snapshots={}, state_snapshots=snapshots)
+    )
 
     assert len(diffs.state_diffs) == 0
     assert len(diffs.city_diffs) == 0
@@ -244,11 +290,13 @@ def test_email_contents__city_status_changed(snapshot):
         removed_sponsor_names=[],
         current_sponsor_count=0,
         bill_number="Intro 2317",
-        bill_name="Gas Free NYC"
+        bill_name="Gas Free NYC",
     )
 
     with app.app_context():
-        subject, html, text = _render_email_contents(BillDiffSet(state_diffs=[], city_diffs=[diff]))
+        subject, html, text = _render_email_contents(
+            BillDiffSet(state_diffs=[], city_diffs=[diff])
+        )
 
     assert snapshot == make_email_snapshot(subject, html, text)
 
@@ -265,7 +313,14 @@ def test_email_contents__state_status_changed(snapshot):
     )
 
     with app.app_context():
-        subject, html, text = _render_email_contents(BillDiffSet(state_diffs=[StateBillDiff(senate_diff=senate_diff, assembly_diff=None)], city_diffs=[]))
+        subject, html, text = _render_email_contents(
+            BillDiffSet(
+                state_diffs=[
+                    StateBillDiff(senate_diff=senate_diff, assembly_diff=None)
+                ],
+                city_diffs=[],
+            )
+        )
 
     assert snapshot == make_email_snapshot(subject, html, text)
 
@@ -291,7 +346,16 @@ def test_email_contents__state_both_status_changed(snapshot):
     )
 
     with app.app_context():
-        subject, html, text = _render_email_contents(BillDiffSet(state_diffs=[StateBillDiff(senate_diff=senate_diff, assembly_diff=assembly_diff)], city_diffs=[]))
+        subject, html, text = _render_email_contents(
+            BillDiffSet(
+                state_diffs=[
+                    StateBillDiff(
+                        senate_diff=senate_diff, assembly_diff=assembly_diff
+                    )
+                ],
+                city_diffs=[],
+            )
+        )
 
     assert snapshot == make_email_snapshot(subject, html, text)
 
@@ -308,7 +372,14 @@ def test_email_contents__state_gained_senate_sponsor(snapshot):
     )
 
     with app.app_context():
-        subject, html, text = _render_email_contents(BillDiffSet(state_diffs=[StateBillDiff(senate_diff=senate_diff, assembly_diff=None)], city_diffs=[]))
+        subject, html, text = _render_email_contents(
+            BillDiffSet(
+                state_diffs=[
+                    StateBillDiff(senate_diff=senate_diff, assembly_diff=None)
+                ],
+                city_diffs=[],
+            )
+        )
 
     assert snapshot == make_email_snapshot(subject, html, text)
 
@@ -325,10 +396,18 @@ def test_email_contents__state_lost_assembly_sponsor(snapshot):
     )
 
     with app.app_context():
-        subject, html, text = _render_email_contents(BillDiffSet(state_diffs=[StateBillDiff(senate_diff=None, assembly_diff=assembly_diff)], city_diffs=[]))
+        subject, html, text = _render_email_contents(
+            BillDiffSet(
+                state_diffs=[
+                    StateBillDiff(
+                        senate_diff=None, assembly_diff=assembly_diff
+                    )
+                ],
+                city_diffs=[],
+            )
+        )
 
     assert snapshot == make_email_snapshot(subject, html, text)
-
 
 
 def test_email_contents__city_sponsors_added(snapshot):
@@ -339,14 +418,15 @@ def test_email_contents__city_sponsors_added(snapshot):
         removed_sponsor_names=[],
         current_sponsor_count=3,
         bill_number="Intro 2317",
-        bill_name="Gass Free NYC"
+        bill_name="Gass Free NYC",
     )
 
     db.session.commit()
 
-
     with app.app_context():
-        subject, html, text = _render_email_contents(BillDiffSet(state_diffs=[], city_diffs=[diff]))
+        subject, html, text = _render_email_contents(
+            BillDiffSet(state_diffs=[], city_diffs=[diff])
+        )
 
     assert snapshot == make_email_snapshot(subject, html, text)
 
@@ -359,13 +439,15 @@ def test_email_subject__1_city_sponsor_added(snapshot):
         removed_sponsor_names=[],
         current_sponsor_count=3,
         bill_number="Intro 2317",
-        bill_name="Gass Free NYC"
+        bill_name="Gass Free NYC",
     )
 
     db.session.commit()
 
     with app.app_context():
-        subject, html, text = _render_email_contents(BillDiffSet(state_diffs=[], city_diffs=[diff]))
+        subject, html, text = _render_email_contents(
+            BillDiffSet(state_diffs=[], city_diffs=[diff])
+        )
 
     assert snapshot == make_email_snapshot(subject, html, text)
 
@@ -378,11 +460,13 @@ def test_email_contents__city_sponsor_removed(snapshot):
         added_sponsor_names=[],
         current_sponsor_count=0,
         bill_number="Intro 2317",
-        bill_name="Gas Free NYC"
+        bill_name="Gas Free NYC",
     )
 
     with app.app_context():
-        subject, html, text = _render_email_contents(BillDiffSet(state_diffs=[], city_diffs=[diff]))
+        subject, html, text = _render_email_contents(
+            BillDiffSet(state_diffs=[], city_diffs=[diff])
+        )
 
     assert snapshot == make_email_snapshot(subject, html, text)
 
@@ -395,20 +479,24 @@ def test_email_contents__city_sponsor_added_and_removed(snapshot):
         added_sponsor_names=["Jamaal Bowman"],
         current_sponsor_count=1,
         bill_number="Intro 2317",
-        bill_name="Gass Free NYC"
+        bill_name="Gass Free NYC",
     )
 
     db.session.commit()
 
     with app.app_context():
-        subject, html, text = _render_email_contents(BillDiffSet(state_diffs=[], city_diffs=[diff]))
+        subject, html, text = _render_email_contents(
+            BillDiffSet(state_diffs=[], city_diffs=[diff])
+        )
 
     assert snapshot == make_email_snapshot(subject, html, text)
 
 
 @responses.activate
 @patch("src.ses.client")
-def test_send_email_notification_end_to_end(mock_ses_client, city_bill, state_bill, snapshot):
+def test_send_email_notification_end_to_end(
+    mock_ses_client, city_bill, state_bill, snapshot
+):
     user_to_notify = User(
         id=uuid4(),
         name="User to notify",
@@ -421,18 +509,33 @@ def test_send_email_notification_end_to_end(mock_ses_client, city_bill, state_bi
     )
     db.session.add(other_user)
 
-
     db.session.commit()
 
-    snapshot_state = SnapshotState(city_snapshots={
-        city_bill.id: GenericBillSnapshot("Not introduced", sponsor_person_ids=set()),
-    }, state_snapshots={
-        state_bill.id: StateBillSnapshot(senate_snapshot=GenericBillSnapshot("Introduced in senate", sponsor_person_ids=set()), assembly_snapshot=GenericBillSnapshot("Introduced in assembly", sponsor_person_ids=set()))
-    })
+    snapshot_state = SnapshotState(
+        city_snapshots={
+            city_bill.id: GenericBillSnapshot(
+                "Not introduced", sponsor_person_ids=set()
+            ),
+        },
+        state_snapshots={
+            state_bill.id: StateBillSnapshot(
+                senate_snapshot=GenericBillSnapshot(
+                    "Introduced in senate", sponsor_person_ids=set()
+                ),
+                assembly_snapshot=GenericBillSnapshot(
+                    "Introduced in assembly", sponsor_person_ids=set()
+                ),
+            )
+        },
+    )
 
     def side_effect(*, Destination, Message, Source):
         assert Destination["ToAddresses"] == ["user@example.com"]
-        assert snapshot == make_email_snapshot(Message["Subject"]["Data"], Message["Body"]["Html"]["Data"], Message["Body"]["Text"]["Data"])
+        assert snapshot == make_email_snapshot(
+            Message["Subject"]["Data"],
+            Message["Body"]["Html"]["Data"],
+            Message["Body"]["Text"]["Data"],
+        )
 
         return {"MessageId": 1}
 
