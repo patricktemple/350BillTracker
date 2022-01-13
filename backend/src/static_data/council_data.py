@@ -311,7 +311,6 @@ COUNCIL_DATA_BY_LEGISLATOR_ID = {
         "party": "D",
         "borough": "Bronx",
     },
-
     # New peoople in 2022:
     7804: {
         "name": "Shaun Abreu",
