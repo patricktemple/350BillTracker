@@ -11,6 +11,7 @@ from src.bill_notifications import (
     SnapshotState,
     BillDiffSet,
     StateBillDiff,
+    _render_email_contents,
     _calculate_all_bill_diffs,
     _convert_bill_diff_to_template_variables,
     _get_bill_update_subject_line,
@@ -23,8 +24,19 @@ from src.user.models import User
 from src.utils import now
 
 
+def make_email_snapshot(subject, body_html, body_text):
+    return f"""
+SUBJECT--------------------------------------------
+{subject}
+
+BODY HTML------------------------------------------
+{body_html}
+
+BODY TEXT-------------------------------------------
+{body_text}"""
+
+
 # TODO: Switch to Factory
-def add_test_city_bill(city_bill_id, status) -> Bill:
     bill = Bill(
         id=uuid4(),
         name=f"{city_bill_id} name",
@@ -73,8 +85,6 @@ def add_test_sponsorship(*, bill, person):
 
 
 def test_calculate_all_bill_diffs__city():
-    bill_1 = add_test_city_bill(1, "Enacted")
-    bill_2 = add_test_city_bill(2, "Enacted")
     council_member_1 = add_test_council_member(1)
     council_member_2 = add_test_council_member(2)
     council_member_3 = add_test_council_member(3)
@@ -108,48 +118,24 @@ def test_calculate_all_bill_diffs__state():
 
 
 # TODO: I don't think any of these tests need a DB bill anymore
-def test_email_contents__city_status_changed():
-    bill = add_test_city_bill(1, "Enacted")
+def test_email_contents__city_status_changed(snapshot):
     diff = GenericBillDiff(
         old_status="Committee",
         new_status="Enacted",
         added_sponsor_names=[],
         removed_sponsor_names=[],
         current_sponsor_count=0,
-        bill_number=bill.code_name,
-        bill_name=bill.display_name
+        bill_number="Intro 2317",
+        bill_name="Gas Free NYC"
     )
 
-    subject = _get_bill_update_subject_line(BillDiffSet(state_diffs=[], city_diffs=[diff]))
-    assert subject == f"City bill {bill.code_name}'s status changed to Enacted"
+    with app.app_context():
+        subject, html, text = _render_email_contents(BillDiffSet(state_diffs=[], city_diffs=[diff]))
 
-    variables = _convert_bill_diff_to_template_variables(diff)
-    assert variables == {
-        "bill_number": bill.code_name,
-        "bill_name": bill.display_name,
-        "status_text": "Status: Committee --> Enacted",
-        "status_color": "blue",
-        "sponsor_text": "0 sponsors (unchanged)",
-        "sponsor_color": "black",
-    }
+    assert snapshot == make_email_snapshot(subject, html, text)
 
 
-def test_email_contents__state_status_changed():
-    # bill = Bill(
-    #     id=uuid4(),
-    #     name=f"State bill name",
-    #     description="description",
-    #     type=Bill.BillType.STATE,
-    # )
-    # bill.state_bill = StateBill(
-    #     session_year=2021
-
-    # )
-    # bill.state_bill.senate_bill = SenateBill(
-    #     base_print_no="S1234", active_version="A", status="Committee"
-    # )
-    # db.session.add(bill)
-    # bill = add_test_bill(1, "Enacted")
+def test_email_contents__state_status_changed(snapshot):
     senate_diff = GenericBillDiff(
         old_status="Committee",
         new_status="Signed by governor",
@@ -160,132 +146,146 @@ def test_email_contents__state_status_changed():
         bill_name="CCIA",
     )
 
-    subject = _get_bill_update_subject_line(BillDiffSet(state_diffs=[StateBillDiff(senate_diff=senate_diff, assembly_diff=None)], city_diffs=[]))
-    assert subject == f"State bill S4264's status changed to Signed by governor"
+    with app.app_context():
+        subject, html, text = _render_email_contents(BillDiffSet(state_diffs=[StateBillDiff(senate_diff=senate_diff, assembly_diff=None)], city_diffs=[]))
 
-    variables = _convert_bill_diff_to_template_variables(diff)
-    # assert variables == {
-    #     "bill_number": bill.code_name,
-    #     "bill_name": bill.display_name,
-    #     "status_text": "Status: Committee --> Enacted",
-    #     "status_color": "blue",
-    #     "sponsor_text": "0 sponsors (unchanged)",
-    #     "sponsor_color": "black",
-    # }
+    assert snapshot == make_email_snapshot(subject, html, text)
 
 
+def test_email_contents__state_both_status_changed(snapshot):
+    senate_diff = GenericBillDiff(
+        old_status="Committee",
+        new_status="Signed by governor",
+        added_sponsor_names=[],
+        removed_sponsor_names=[],
+        current_sponsor_count=0,
+        bill_number="S4264",
+        bill_name="CCIA",
+    )
+    assembly_diff = GenericBillDiff(
+        old_status="Committee",
+        new_status="Signed by governor",
+        added_sponsor_names=[],
+        removed_sponsor_names=[],
+        current_sponsor_count=0,
+        bill_number="A4264",
+        bill_name="CCIA",
+    )
 
-def test_email_contents__city_sponsors_added():
-    bill = add_test_city_bill(1, "Enacted")
+    with app.app_context():
+        subject, html, text = _render_email_contents(BillDiffSet(state_diffs=[StateBillDiff(senate_diff=senate_diff, assembly_diff=assembly_diff)], city_diffs=[]))
+
+    assert snapshot == make_email_snapshot(subject, html, text)
+
+
+def test_email_contents__state_gained_senate_sponsor(snapshot):
+    senate_diff = GenericBillDiff(
+        old_status="Committee",
+        new_status="Committee",
+        added_sponsor_names=["Jabari Brisport"],
+        removed_sponsor_names=[],
+        current_sponsor_count=0,
+        bill_number="S4264",
+        bill_name="CCIA",
+    )
+
+    with app.app_context():
+        subject, html, text = _render_email_contents(BillDiffSet(state_diffs=[StateBillDiff(senate_diff=senate_diff, assembly_diff=None)], city_diffs=[]))
+
+    assert snapshot == make_email_snapshot(subject, html, text)
+
+
+def test_email_contents__state_lost_assembly_sponsor(snapshot):
+    assembly_diff = GenericBillDiff(
+        old_status="Committee",
+        new_status="Committee",
+        added_sponsor_names=[],
+        removed_sponsor_names=["Emily Gallagher"],
+        current_sponsor_count=0,
+        bill_number="A234",
+        bill_name="CCIA",
+    )
+
+    with app.app_context():
+        subject, html, text = _render_email_contents(BillDiffSet(state_diffs=[StateBillDiff(senate_diff=None, assembly_diff=assembly_diff)], city_diffs=[]))
+
+    assert snapshot == make_email_snapshot(subject, html, text)
+
+
+
+def test_email_contents__city_sponsors_added(snapshot):
     diff = GenericBillDiff(
         old_status="Enacted",
         new_status="Enacted",
         added_sponsor_names=["Brad Lander", "Jamaal Bowman"],
         removed_sponsor_names=[],
         current_sponsor_count=3,
-        bill_number=bill.code_name,
-        bill_name=bill.display_name
+        bill_number="Intro 2317",
+        bill_name="Gass Free NYC"
     )
-
-    # It uses the current sponsor count to figure out the previous, so
-    # add some sponsors in the DB so it doesn't report a negative number
-    for i in range(3):
-        person = add_test_council_member(i)
-        add_test_sponsorship(bill=bill, person=person)
 
     db.session.commit()
 
-    subject = _get_bill_update_subject_line(BillDiffSet(state_diffs=[], city_diffs=[diff]))
-    assert subject == f"City bill {bill.code_name} gained 2 sponsors"
 
-    variables = _convert_bill_diff_to_template_variables(diff)
-    assert variables == {
-        "bill_number": bill.code_name,
-        "bill_name": bill.display_name,
-        "status_text": "Status: Enacted (unchanged)",
-        "status_color": "black",
-        "sponsor_text": "1 sponsors --> 3 sponsors (gained Brad Lander, Jamaal Bowman)",
-        "sponsor_color": "blue",
-    }
+    with app.app_context():
+        subject, html, text = _render_email_contents(BillDiffSet(state_diffs=[], city_diffs=[diff]))
+
+    assert snapshot == make_email_snapshot(subject, html, text)
 
 
-def test_email_subject__1_city_sponsor_added():
-    bill = add_test_city_bill(1, "Enacted")
+def test_email_subject__1_city_sponsor_added(snapshot):
     diff = GenericBillDiff(
         old_status="Enacted",
         new_status="Enacted",
         added_sponsor_names=["Brad Lander"],
         removed_sponsor_names=[],
         current_sponsor_count=3,
-        bill_number=bill.code_name,
-        bill_name=bill.display_name
+        bill_number="Intro 2317",
+        bill_name="Gass Free NYC"
     )
-
-    for i in range(3):
-        person = add_test_council_member(i)
-        add_test_sponsorship(bill=bill, person=person)
 
     db.session.commit()
 
-    subject = _get_bill_update_subject_line(BillDiffSet(state_diffs=[], city_diffs=[diff]))
-    assert subject == f"City bill {bill.code_name} gained sponsor Brad Lander"
+    with app.app_context():
+        subject, html, text = _render_email_contents(BillDiffSet(state_diffs=[], city_diffs=[diff]))
+
+    assert snapshot == make_email_snapshot(subject, html, text)
 
 
-def test_email_contents__city_sponsor_removed():
-    bill = add_test_city_bill(1, "Enacted")
+def test_email_contents__city_sponsor_removed(snapshot):
     diff = GenericBillDiff(
         old_status="Enacted",
         new_status="Enacted",
         removed_sponsor_names=["Brad Lander"],
         added_sponsor_names=[],
         current_sponsor_count=0,
-        bill_number=bill.code_name,
-        bill_name=bill.display_name
+        bill_number="Intro 2317",
+        bill_name="Gas Free NYC"
     )
 
-    subject = _get_bill_update_subject_line(BillDiffSet(state_diffs=[], city_diffs=[diff]))
-    assert subject == f"City bill {bill.code_name} lost sponsor Brad Lander"
+    with app.app_context():
+        subject, html, text = _render_email_contents(BillDiffSet(state_diffs=[], city_diffs=[diff]))
 
-    variables = _convert_bill_diff_to_template_variables(diff)
-    assert variables == {
-        "bill_number": bill.code_name,
-        "bill_name": bill.display_name,
-        "status_text": "Status: Enacted (unchanged)",
-        "status_color": "black",
-        "sponsor_text": "1 sponsors --> 0 sponsors (lost Brad Lander)",
-        "sponsor_color": "blue",
-    }
+    assert snapshot == make_email_snapshot(subject, html, text)
 
 
-def test_email_contents__city_sponsor_added_and_removed():
-    bill = add_test_city_bill(1, "Enacted")
+def test_email_contents__city_sponsor_added_and_removed(snapshot):
     diff = GenericBillDiff(
         old_status="Enacted",
         new_status="Enacted",
         removed_sponsor_names=["Brad Lander"],
         added_sponsor_names=["Jamaal Bowman"],
         current_sponsor_count=1,
-        bill_number=bill.code_name,
-        bill_name=bill.display_name
+        bill_number="Intro 2317",
+        bill_name="Gass Free NYC"
     )
-
-    person = add_test_council_member(1)
-    add_test_sponsorship(bill=bill, person=person)
 
     db.session.commit()
 
-    subject = _get_bill_update_subject_line(BillDiffSet(state_diffs=[], city_diffs=[diff]))
-    assert subject == f"City bill {bill.code_name} gained and lost sponsors"
+    with app.app_context():
+        subject, html, text = _render_email_contents(BillDiffSet(state_diffs=[], city_diffs=[diff]))
 
-    variables = _convert_bill_diff_to_template_variables(diff)
-    assert variables == {
-        "bill_number": bill.code_name,
-        "bill_name": bill.display_name,
-        "status_text": "Status: Enacted (unchanged)",
-        "status_color": "black",
-        "sponsor_text": "1 sponsors --> 1 sponsors (gained Jamaal Bowman, lost Brad Lander)",
-        "sponsor_color": "blue",
-    }
+    assert snapshot == make_email_snapshot(subject, html, text)
 
 
 # TODO: Test a few state email subject lines stoo!
@@ -335,7 +335,6 @@ def test_send_email_notification_end_to_end(mock_ses_client):
     )
     db.session.add(other_user)
 
-    bill = add_test_city_bill(1, "Enacted")
 
     db.session.commit()
 

@@ -1,0 +1,376 @@
+# name: test_email_contents__city_sponsor_added_and_removed
+  '
+  
+  SUBJECT--------------------------------------------
+  City bill Intro 2317 gained and lost sponsors
+  
+  BODY HTML------------------------------------------
+  <html>
+    <head>
+    </head>
+    <body>
+      <p>The following bills were updated by the City Council.</p>
+      
+      <div style="font-size: 1.5rem; font-weight: bold">City bills</div>
+      
+      
+      <div style="padding-bottom: 1rem">
+        <div style="font-size: 1rem; font-weight: bold">Intro 2317 - Gass Free NYC</div>
+        <div style="color: black">Status: Enacted (unchanged)</div>
+        <div style="color: blue">1 sponsors --&gt; 1 sponsors (gained Jamaal Bowman, lost Brad Lander)</div>
+      </div>
+      
+  
+      
+      
+    </body>
+  </html>
+  
+  BODY TEXT-------------------------------------------
+  The following bills were updated by the City Council.
+  
+  
+  CITY BILLS
+  
+  Intro 2317 - Gass Free NYC
+  Status: Enacted (unchanged)
+  1 sponsors --> 1 sponsors (gained Jamaal Bowman, lost Brad Lander)
+  
+  
+  
+  
+  '
+---
+# name: test_email_contents__city_sponsor_removed
+  '
+  
+  SUBJECT--------------------------------------------
+  City bill Intro 2317 lost sponsor Brad Lander
+  
+  BODY HTML------------------------------------------
+  <html>
+    <head>
+    </head>
+    <body>
+      <p>The following bills were updated by the City Council.</p>
+      
+      <div style="font-size: 1.5rem; font-weight: bold">City bills</div>
+      
+      
+      <div style="padding-bottom: 1rem">
+        <div style="font-size: 1rem; font-weight: bold">Intro 2317 - Gas Free NYC</div>
+        <div style="color: black">Status: Enacted (unchanged)</div>
+        <div style="color: blue">1 sponsors --&gt; 0 sponsors (lost Brad Lander)</div>
+      </div>
+      
+  
+      
+      
+    </body>
+  </html>
+  
+  BODY TEXT-------------------------------------------
+  The following bills were updated by the City Council.
+  
+  
+  CITY BILLS
+  
+  Intro 2317 - Gas Free NYC
+  Status: Enacted (unchanged)
+  1 sponsors --> 0 sponsors (lost Brad Lander)
+  
+  
+  
+  
+  '
+---
+# name: test_email_contents__city_sponsors_added
+  '
+  
+  SUBJECT--------------------------------------------
+  City bill Intro 2317 gained 2 sponsors
+  
+  BODY HTML------------------------------------------
+  <html>
+    <head>
+    </head>
+    <body>
+      <p>The following bills were updated by the City Council.</p>
+      
+      <div style="font-size: 1.5rem; font-weight: bold">City bills</div>
+      
+      
+      <div style="padding-bottom: 1rem">
+        <div style="font-size: 1rem; font-weight: bold">Intro 2317 - Gass Free NYC</div>
+        <div style="color: black">Status: Enacted (unchanged)</div>
+        <div style="color: blue">1 sponsors --&gt; 3 sponsors (gained Brad Lander, Jamaal Bowman)</div>
+      </div>
+      
+  
+      
+      
+    </body>
+  </html>
+  
+  BODY TEXT-------------------------------------------
+  The following bills were updated by the City Council.
+  
+  
+  CITY BILLS
+  
+  Intro 2317 - Gass Free NYC
+  Status: Enacted (unchanged)
+  1 sponsors --> 3 sponsors (gained Brad Lander, Jamaal Bowman)
+  
+  
+  
+  
+  '
+---
+# name: test_email_contents__city_status_changed
+  '
+  
+  SUBJECT--------------------------------------------
+  City bill Intro 2317's status changed to Enacted
+  
+  BODY HTML------------------------------------------
+  <html>
+    <head>
+    </head>
+    <body>
+      <p>The following bills were updated by the City Council.</p>
+      
+      <div style="font-size: 1.5rem; font-weight: bold">City bills</div>
+      
+      
+      <div style="padding-bottom: 1rem">
+        <div style="font-size: 1rem; font-weight: bold">Intro 2317 - Gas Free NYC</div>
+        <div style="color: blue">Status: Committee --&gt; Enacted</div>
+        <div style="color: black">0 sponsors (unchanged)</div>
+      </div>
+      
+  
+      
+      
+    </body>
+  </html>
+  
+  BODY TEXT-------------------------------------------
+  The following bills were updated by the City Council.
+  
+  
+  CITY BILLS
+  
+  Intro 2317 - Gas Free NYC
+  Status: Committee --> Enacted
+  0 sponsors (unchanged)
+  
+  
+  
+  
+  '
+---
+# name: test_email_contents__state_both_status_changed
+  '
+  
+  SUBJECT--------------------------------------------
+  State bill A4264/S4264 was updated in both chambers
+  
+  BODY HTML------------------------------------------
+  <html>
+    <head>
+    </head>
+    <body>
+      <p>The following bills were updated by the City Council.</p>
+      
+      
+  
+      
+      <div style="font-size: 1.5rem; font-weight: bold">State bills</div>
+      
+      
+      <div style="padding-bottom: 1rem">
+        <div style="font-size: 1rem; font-weight: bold">CCIA</div>
+        
+          <div style="font-weight: bold">S4264 - Senate</div>
+          <div style="color: blue">Status: Committee --&gt; Signed by governor</div>
+          <div style="color: black">0 sponsors (unchanged)</div>
+        
+          <div style="font-weight: bold">A4264 - Assembly</div>
+          <div style="color: blue">Status: Committee --&gt; Signed by governor</div>
+          <div style="color: black">0 sponsors (unchanged)</div>
+        
+      </div>
+      
+    </body>
+  </html>
+  
+  BODY TEXT-------------------------------------------
+  The following bills were updated by the City Council.
+  
+  
+  
+  
+  STATE BILLS
+  
+  CCIA
+  
+  S4264 - Senate
+  Status: Committee --> Signed by governor
+  0 sponsors (unchanged)
+  
+  A4264 - Assembly
+  Status: Committee --> Signed by governor
+  0 sponsors (unchanged)
+  
+  
+  
+  '
+---
+# name: test_email_contents__state_gained_senate_sponsor
+  '
+  
+  SUBJECT--------------------------------------------
+  State bill S4264 gained sponsor Jabari Brisport
+  
+  BODY HTML------------------------------------------
+  <html>
+    <head>
+    </head>
+    <body>
+      <p>The following bills were updated by the City Council.</p>
+      
+      
+  
+      
+      <div style="font-size: 1.5rem; font-weight: bold">State bills</div>
+      
+      
+      <div style="padding-bottom: 1rem">
+        <div style="font-size: 1rem; font-weight: bold">CCIA</div>
+        
+          <div style="font-weight: bold">S4264 - Senate</div>
+          <div style="color: black">Status: Committee (unchanged)</div>
+          <div style="color: blue">-1 sponsors --&gt; 0 sponsors (gained Jabari Brisport)</div>
+        
+      </div>
+      
+    </body>
+  </html>
+  
+  BODY TEXT-------------------------------------------
+  The following bills were updated by the City Council.
+  
+  
+  
+  
+  STATE BILLS
+  
+  CCIA
+  
+  S4264 - Senate
+  Status: Committee (unchanged)
+  -1 sponsors --> 0 sponsors (gained Jabari Brisport)
+  
+  
+  
+  '
+---
+# name: test_email_contents__state_lost_assembly_sponsor
+  '
+  
+  SUBJECT--------------------------------------------
+  State bill A234 lost sponsor Emily Gallagher
+  
+  BODY HTML------------------------------------------
+  <html>
+    <head>
+    </head>
+    <body>
+      <p>The following bills were updated by the City Council.</p>
+      
+      
+  
+      
+      <div style="font-size: 1.5rem; font-weight: bold">State bills</div>
+      
+      
+      <div style="padding-bottom: 1rem">
+        <div style="font-size: 1rem; font-weight: bold">CCIA</div>
+        
+          <div style="font-weight: bold">A234 - Assembly</div>
+          <div style="color: black">Status: Committee (unchanged)</div>
+          <div style="color: blue">1 sponsors --&gt; 0 sponsors (lost Emily Gallagher)</div>
+        
+      </div>
+      
+    </body>
+  </html>
+  
+  BODY TEXT-------------------------------------------
+  The following bills were updated by the City Council.
+  
+  
+  
+  
+  STATE BILLS
+  
+  CCIA
+  
+  A234 - Assembly
+  Status: Committee (unchanged)
+  1 sponsors --> 0 sponsors (lost Emily Gallagher)
+  
+  
+  
+  '
+---
+# name: test_email_contents__state_status_changed
+  '
+  
+  SUBJECT--------------------------------------------
+  State bill S4264's status changed to Signed by governor
+  
+  BODY HTML------------------------------------------
+  <html>
+    <head>
+    </head>
+    <body>
+      <p>The following bills were updated by the City Council.</p>
+      
+      
+  
+      
+      <div style="font-size: 1.5rem; font-weight: bold">State bills</div>
+      
+      
+      <div style="padding-bottom: 1rem">
+        <div style="font-size: 1rem; font-weight: bold">CCIA</div>
+        
+          <div style="font-weight: bold">S4264 - Senate</div>
+          <div style="color: blue">Status: Committee --&gt; Signed by governor</div>
+          <div style="color: black">0 sponsors (unchanged)</div>
+        
+      </div>
+      
+    </body>
+  </html>
+  
+  BODY TEXT-------------------------------------------
+  The following bills were updated by the City Council.
+  
+  
+  
+  
+  STATE BILLS
+  
+  CCIA
+  
+  S4264 - Senate
+  Status: Committee --> Signed by governor
+  0 sponsors (unchanged)
+  
+  
+  
+  '
+---
