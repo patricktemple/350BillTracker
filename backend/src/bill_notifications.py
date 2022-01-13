@@ -189,7 +189,7 @@ def _convert_bill_diff_to_template_variables(diff: GenericBillDiff):
     }
 
 
-def _send_bill_update_emails(bill_diffs: BillDiffSet):
+def _get_diff_set_template_variables(bill_diffs: BillDiffSet):
     city_bills_for_template = []
     for city_diff in bill_diffs.city_diffs:
         city_bills_for_template.append(
@@ -217,18 +217,25 @@ def _send_bill_update_emails(bill_diffs: BillDiffSet):
                 }
             )
         state_bills_for_template.append({"chamber_bills": chamber_bills})
+    return {"city_bills": city_bills_for_template, "state_bills": state_bills_for_template}
 
+
+def _render_email_contents(bill_diffs: BillDiffSet):
+    template_variables = _get_diff_set_template_variables(bill_diffs)
     subject = _get_bill_update_subject_line(bill_diffs)
     body_text = render_template(
         "bill_alerts_email.txt",
-        city_bills=city_bills_for_template,
-        state_bills=state_bills_for_template,
+        **template_variables,
     )
     body_html = render_template(
         "bill_alerts_email.html",
-        city_bills=city_bills_for_template,
-        state_bills=state_bills_for_template,
+        **template_variables,
     )
+    return subject, body_html, body_text
+
+
+def _send_bill_update_emails(bill_diffs: BillDiffSet):
+    subject, body_html, body_text = _render_email_contents(bill_diffs)
 
     users_to_notify = User.query.filter_by(
         send_bill_update_notifications=True

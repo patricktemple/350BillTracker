@@ -10,6 +10,7 @@ from src.bill_notifications import (
     GenericBillSnapshot,
     SnapshotState,
     BillDiffSet,
+    StateBillDiff,
     _calculate_all_bill_diffs,
     _convert_bill_diff_to_template_variables,
     _get_bill_update_subject_line,
@@ -23,7 +24,7 @@ from src.utils import now
 
 
 # TODO: Switch to Factory
-def add_test_bill(city_bill_id, status) -> Bill:
+def add_test_city_bill(city_bill_id, status) -> Bill:
     bill = Bill(
         id=uuid4(),
         name=f"{city_bill_id} name",
@@ -72,8 +73,8 @@ def add_test_sponsorship(*, bill, person):
 
 
 def test_calculate_all_bill_diffs__city():
-    bill_1 = add_test_bill(1, "Enacted")
-    bill_2 = add_test_bill(2, "Enacted")
+    bill_1 = add_test_city_bill(1, "Enacted")
+    bill_2 = add_test_city_bill(2, "Enacted")
     council_member_1 = add_test_council_member(1)
     council_member_2 = add_test_council_member(2)
     council_member_3 = add_test_council_member(3)
@@ -106,8 +107,9 @@ def test_calculate_all_bill_diffs__state():
     pass
 
 
-def test_email_contents__status_changed():
-    bill = add_test_bill(1, "Enacted")
+# TODO: I don't think any of these tests need a DB bill anymore
+def test_email_contents__city_status_changed():
+    bill = add_test_city_bill(1, "Enacted")
     diff = GenericBillDiff(
         old_status="Committee",
         new_status="Enacted",
@@ -132,8 +134,49 @@ def test_email_contents__status_changed():
     }
 
 
-def test_email_contents__sponsors_added():
-    bill = add_test_bill(1, "Enacted")
+def test_email_contents__state_status_changed():
+    # bill = Bill(
+    #     id=uuid4(),
+    #     name=f"State bill name",
+    #     description="description",
+    #     type=Bill.BillType.STATE,
+    # )
+    # bill.state_bill = StateBill(
+    #     session_year=2021
+
+    # )
+    # bill.state_bill.senate_bill = SenateBill(
+    #     base_print_no="S1234", active_version="A", status="Committee"
+    # )
+    # db.session.add(bill)
+    # bill = add_test_bill(1, "Enacted")
+    senate_diff = GenericBillDiff(
+        old_status="Committee",
+        new_status="Signed by governor",
+        added_sponsor_names=[],
+        removed_sponsor_names=[],
+        current_sponsor_count=0,
+        bill_number="S4264",
+        bill_name="CCIA",
+    )
+
+    subject = _get_bill_update_subject_line(BillDiffSet(state_diffs=[StateBillDiff(senate_diff=senate_diff, assembly_diff=None)], city_diffs=[]))
+    assert subject == f"State bill S4264's status changed to Signed by governor"
+
+    variables = _convert_bill_diff_to_template_variables(diff)
+    # assert variables == {
+    #     "bill_number": bill.code_name,
+    #     "bill_name": bill.display_name,
+    #     "status_text": "Status: Committee --> Enacted",
+    #     "status_color": "blue",
+    #     "sponsor_text": "0 sponsors (unchanged)",
+    #     "sponsor_color": "black",
+    # }
+
+
+
+def test_email_contents__city_sponsors_added():
+    bill = add_test_city_bill(1, "Enacted")
     diff = GenericBillDiff(
         old_status="Enacted",
         new_status="Enacted",
@@ -166,8 +209,8 @@ def test_email_contents__sponsors_added():
     }
 
 
-def test_email_subject__1_sponsor_added():
-    bill = add_test_bill(1, "Enacted")
+def test_email_subject__1_city_sponsor_added():
+    bill = add_test_city_bill(1, "Enacted")
     diff = GenericBillDiff(
         old_status="Enacted",
         new_status="Enacted",
@@ -188,8 +231,8 @@ def test_email_subject__1_sponsor_added():
     assert subject == f"City bill {bill.code_name} gained sponsor Brad Lander"
 
 
-def test_email_contents__sponsor_removed():
-    bill = add_test_bill(1, "Enacted")
+def test_email_contents__city_sponsor_removed():
+    bill = add_test_city_bill(1, "Enacted")
     diff = GenericBillDiff(
         old_status="Enacted",
         new_status="Enacted",
@@ -214,8 +257,8 @@ def test_email_contents__sponsor_removed():
     }
 
 
-def test_email_contents__sponsor_added_and_removed():
-    bill = add_test_bill(1, "Enacted")
+def test_email_contents__city_sponsor_added_and_removed():
+    bill = add_test_city_bill(1, "Enacted")
     diff = GenericBillDiff(
         old_status="Enacted",
         new_status="Enacted",
@@ -292,7 +335,7 @@ def test_send_email_notification_end_to_end(mock_ses_client):
     )
     db.session.add(other_user)
 
-    bill = add_test_bill(1, "Enacted")
+    bill = add_test_city_bill(1, "Enacted")
 
     db.session.commit()
 
