@@ -1,4 +1,5 @@
 import logging
+from collections import defaultdict
 from typing import Union
 
 import requests
@@ -179,6 +180,52 @@ def import_bill(session_year, base_print_no):
     return bill
 
 
+def _dedupe_by_district(members_api_items, session_year):
+    """
+    If someone leaves office mid-term, multiple people will appear for their
+    district. We only want the current person. Ideally the 'incumbent' field would
+    tell us this, but it seems error prone, as many valid members have incumbent=False
+    and would be incorrectly excluded.
+
+    So instead, we only check the incumbent field if there are multliple people for
+    the same district. This is probably error prone, but the best idea for now.
+    """
+
+    members_by_district = defaultdict(lambda: [])
+    for member in members_api_items:
+        district = member["sessionShortNameMap"][str(session_year)][0][
+            "districtCode"
+        ]
+        members_by_district[district].append(member)
+
+    output_members = []
+    for district, members in members_by_district.items():
+        if len(members) == 1:
+            output_members.append(members[0])
+        else:
+            incumbents = [m for m in members if m["incumbent"]]
+            if len(incumbents) == 1:
+                member_names = ", ".join(
+                    (member["person"]["fullName"] for member in members)
+                )
+                logging.warning(
+                    f"District {district} has multiple members ({member_names}), dropping all except incumbent {incumbents[0]['person']['fullName']}"
+                )
+                output_members.append(incumbents[0])
+            else:
+                logging.error(
+                    f"District {district} has {len(members)} members and {len(incumbents)} incumbents, cannot resolve current member! Ignoring all"
+                )
+
+    return output_members
+
+
+def _fill_person_member_data(person, member_data):
+    person.name = member_data["person"]["fullName"]
+    person.title = member_data["person"]["prefix"]
+    person.email = member_data["person"]["email"]
+
+
 @cron_function
 def sync_state_representatives(session_year=CURRENT_SESSION_YEAR):
     """Queries the NY State API to retrieve all senators and assembly members
@@ -187,49 +234,59 @@ def sync_state_representatives(session_year=CURRENT_SESSION_YEAR):
 
     members = senate_get(f"members/{session_year}?limit=1000&full=true")
 
-    for member in members["items"]:
-        if not member["incumbent"]:
-            # TODO: Properly handle removal of old reps
-            continue
+    assembly_member_items = _dedupe_by_district(
+        [m for m in members["items"] if m["chamber"] == "ASSEMBLY"],
+        session_year,
+    )
+    for member in assembly_member_items:
         member_id = member["memberId"]
-        if member["chamber"] == "ASSEMBLY":
-            person_type = Person.PersonType.ASSEMBLY_MEMBER
-            existing_member = AssemblyMember.query.filter_by(
-                state_member_id=member_id
-            ).one_or_none()
-        elif member["chamber"] == "SENATE":
-            person_type = Person.PersonType.SENATOR
-            existing_member = Senator.query.filter_by(
-                state_member_id=member_id
-            ).one_or_none()
-        else:
-            # ???
-            pass
+        existing_member = AssemblyMember.query.filter_by(
+            state_member_id=member_id
+        ).one_or_none()
 
         if existing_member:
             existing_member.district = member["districtCode"]
             logging.info(
-                f"Person {existing_member.person.name} already in DB, updating"
+                f"Assembly member {existing_member.person.name} already in DB, updating"
             )
             person = existing_member.person
         else:
-            logging.info(f"Adding person {member['person']['fullName']}")
-            person = Person(type=person_type)
-            if person_type == Person.PersonType.ASSEMBLY_MEMBER:
-                person.assembly_member = AssemblyMember(
-                    state_member_id=member_id,
-                    district=member["districtCode"],
-                )
-            else:
-                person.senator = Senator(
-                    state_member_id=member_id,
-                    district=member["districtCode"],
-                )
+            logging.info(
+                f"Adding assembly member {member['person']['fullName']}"
+            )
+            person = Person(type=Person.PersonType.ASSEMBLY_MEMBER)
+            person.assembly_member = AssemblyMember(
+                state_member_id=member_id,
+                district=member["districtCode"],
+            )
+            _fill_person_member_data(person, member)
             db.session.add(person)
 
-        person.name = member["person"]["fullName"]
-        person.title = member["person"]["prefix"]
-        person.email = member["person"]["email"]
+    senate_member_items = _dedupe_by_district(
+        [m for m in members["items"] if m["chamber"] == "SENATE"], session_year
+    )
+    for member in senate_member_items:
+        member_id = member["memberId"]
+        existing_member = Senator.query.filter_by(
+            state_member_id=member_id
+        ).one_or_none()
+
+        if existing_member:
+            existing_member.district = member["districtCode"]
+            logging.info(
+                f"Senator {existing_member.person.name} already in DB, updating"
+            )
+            person = existing_member.person
+        else:
+            logging.info(f"Adding senator {member['person']['fullName']}")
+            person = Person(type=Person.PersonType.SENATOR)
+            person.senator = Senator(
+                state_member_id=member_id,
+                district=member["districtCode"],
+            )
+
+            _fill_person_member_data(person, member)
+            db.session.add(person)
 
     db.session.commit()
 
