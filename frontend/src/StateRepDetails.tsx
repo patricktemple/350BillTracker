@@ -37,8 +37,6 @@ export default function StateRepDetails(props: Props) {
   });
 
   // TODO: Display their sponsorships here, too (can do in later PR from State impl)
-
-  // This is kind of a weird format? Seems like I can do better if I think more about it
   return (
     <>
       <div className={styles.label}>Name</div>
