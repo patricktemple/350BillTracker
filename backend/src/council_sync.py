@@ -68,6 +68,7 @@ def fill_council_person_data_from_api():
             council_member.legislative_phone = data["PersonPhone2"]
             council_member.website = data["PersonWWW"]
             # Borough exists here but we prefer the cleaned static data
+            # council_member.borough = data["PersonCity1"]
         except HTTPError:
             logging.exception(
                 f"Could not get Person {council_member.city_council_person_id} from API"
