@@ -14,9 +14,10 @@ from .models import db
 from .person.models import CouncilMember, Person
 from .sponsorship.models import CitySponsorship
 from .static_data.council_data import COUNCIL_DATA_BY_LEGISLATOR_ID
-from .utils import now
+from .utils import cron_function, now
 
 
+@cron_function
 def add_council_members():
     """Adds basic information about each current council member based on their
     OfficeRecord object in the API. This is missing key fields that need
@@ -52,6 +53,7 @@ def add_council_members():
     db.session.commit()
 
 
+@cron_function
 def fill_council_person_data_from_api():
     """For all council members in the DB, updates their contact info and other details
     based on the Person API and our own static data.
@@ -66,6 +68,7 @@ def fill_council_person_data_from_api():
             council_member.legislative_phone = data["PersonPhone2"]
             council_member.website = data["PersonWWW"]
             # Borough exists here but we prefer the cleaned static data
+            # council_member.borough = data["PersonCity1"]
         except HTTPError:
             logging.exception(
                 f"Could not get Person {council_member.city_council_person_id} from API"
@@ -75,6 +78,7 @@ def fill_council_person_data_from_api():
     db.session.commit()
 
 
+@cron_function
 def fill_council_person_static_data():
     council_members = CouncilMember.query.all()
 
@@ -211,9 +215,16 @@ def update_bill_sponsorships(city_bill, set_added_at=False):
         db.session.delete(lost_sponsor)
 
 
+@cron_function
 def update_all_sponsorships():
     bills = Bill.query.filter_by(type=Bill.BillType.CITY).all()
     for bill in bills:
         logging.info(f"Updating sponsorships for bill {bill.id} {bill.name}")
-        update_bill_sponsorships(bill.city_bill, set_added_at=True)
-        db.session.commit()
+        try:
+            update_bill_sponsorships(bill.city_bill, set_added_at=True)
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            logging.exception(
+                f"Exception while updating sponsorships for {bill.city_bill.city_bill_id}"
+            )

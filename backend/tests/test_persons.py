@@ -1,12 +1,3 @@
-from src.models import db
-from src.person.models import (
-    AssemblyMember,
-    CouncilMember,
-    Person,
-    Senator,
-    Staffer,
-)
-
 from .utils import get_response_data
 
 

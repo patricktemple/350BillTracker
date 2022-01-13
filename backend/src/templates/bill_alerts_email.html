@@ -3,11 +3,28 @@
   </head>
   <body>
     <p>The following bills were updated by the City Council.</p>
-    {% for bill in bills %}
+    {% if city_bills %}
+    <div style="font-size: 1.5rem; font-weight: bold">City bills</div>
+    {% endif %}
+    {% for bill in city_bills %}
     <div style="padding-bottom: 1rem">
-      <div style="font-size: 1rem; font-weight: bold">{{ bill.file }} - {{ bill.display_name }}</div>
+      <div style="font-size: 1rem; font-weight: bold">{{ bill.bill_number }} - {{ bill.bill_name }}</div>
       <div style="color: {{ bill.status_color }}">{{ bill.status_text }}</div>
       <div style="color: {{ bill.sponsor_color }}">{{ bill.sponsor_text }}</div>
+    </div>
+    {% endfor %}
+
+    {% if state_bills %}
+    <div style="font-size: 1.5rem; font-weight: bold">State bills</div>
+    {% endif %}
+    {% for bill in state_bills %}
+    <div style="padding-bottom: 1rem">
+      <div style="font-size: 1rem; font-weight: bold">{{ bill.chamber_bills[0].bill_name }}</div>
+      {% for chamber_bill in bill.chamber_bills %}
+        <div style="font-weight: bold">{{ chamber_bill.bill_number }} - {{ chamber_bill.chamber_name }}</div>
+        <div style="color: {{ chamber_bill.status_color }}">{{ chamber_bill.status_text }}</div>
+        <div style="color: {{ chamber_bill.sponsor_color }}">{{ chamber_bill.sponsor_text }}</div>
+      {% endfor %}
     </div>
     {% endfor %}
   </body>

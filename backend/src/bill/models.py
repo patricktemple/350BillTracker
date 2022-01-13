@@ -247,7 +247,7 @@ class SenateBill(db.Model, StateChamberMixin):
     sponsorships = relationship(
         "SenateSponsorship",
         back_populates="bill",
-        cascade="all, delete",
+        cascade="all, delete-orphan",
     )
 
 
@@ -258,5 +258,5 @@ class AssemblyBill(db.Model, StateChamberMixin):
     sponsorships = relationship(
         "AssemblySponsorship",
         back_populates="bill",
-        cascade="all, delete",
+        cascade="all, delete-orphan",
     )

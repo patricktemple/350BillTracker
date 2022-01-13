@@ -1,8 +1,22 @@
 The following bills were updated by the City Council.
 
-{% for bill in bills %}
-  {{ bill.file }} - {{ bill.display_name }}
-  {{ bill.status_text }}
-  {{ bill.sponsor_text }}
-
+{% if city_bills %}
+CITY BILLS
+{% for bill in city_bills %}
+{{ bill.bill_number }} - {{ bill.bill_name }}
+{{ bill.status_text }}
+{{ bill.sponsor_text }}
 {% endfor %}
+{% endif %}
+
+{% if state_bills %}
+STATE BILLS
+{% for bill in state_bills %}
+{{ bill.chamber_bills[0].bill_name }}
+{% for chamber_bill in bill.chamber_bills %}
+{{ chamber_bill.bill_number }} - {{ chamber_bill.chamber_name }}
+{{ chamber_bill.status_text }}
+{{ chamber_bill.sponsor_text }}
+{% endfor %}
+{% endfor %}
+{% endif %}

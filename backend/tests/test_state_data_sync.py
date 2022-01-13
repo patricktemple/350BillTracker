@@ -18,9 +18,8 @@ def test_state_data_sync(senator, assembly_member):
         },
     )
 
-    # Test that it commits
-    db.session.expire(senator)
-    db.session.expire(assembly_member)
+    # Test that it commits by rolling back uncommitted changes
+    db.session.rollback()
 
     assert senator.party == "Senate fake party"
     assert senator.email == "newemail@senate.gov"
@@ -43,9 +42,8 @@ def test_state_data_sync__not_found(senator, assembly_member):
         },
     )
 
-    # Test that it commits
-    db.session.expire(senator)
-    db.session.expire(assembly_member)
+    # Test that it commits by rolling back uncommitted changes
+    db.session.rollback()
 
     assert senator.email == original_senator_email
     assert assembly_member.email == original_assembly_email

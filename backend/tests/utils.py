@@ -1,5 +1,4 @@
 import json
-from uuid import UUID
 
 from flask.testing import FlaskClient
 
@@ -35,3 +34,58 @@ def assert_response(response, status_code, data):
 
 def get_response_data(response):
     return json.loads(response.data)
+
+
+def create_mock_bill_response(
+    *,
+    base_print_no,
+    chamber,
+    cosponsor_member_id,
+    lead_sponsor_member_id,
+    same_as_base_print_no=None,
+    same_as_chamber=None,
+    active_version="A",
+    status="In Committee",
+):
+    return {
+        "result": {
+            "title": f"{base_print_no} bill title",
+            "summary": f"{base_print_no} bill summary",
+            "activeVersion": active_version,
+            "basePrintNo": base_print_no,
+            "billType": {"chamber": chamber},
+            "status": {
+                "statusDesc": status,
+            },
+            "sponsor": {
+                "member": {
+                    "memberId": lead_sponsor_member_id,
+                    "fullName": f"Lead sponsor #{lead_sponsor_member_id}",
+                }
+            },
+            "amendments": {
+                "items": {
+                    active_version: {
+                        "coSponsors": {
+                            "items": [
+                                {
+                                    "memberId": cosponsor_member_id,
+                                    "fullName": "Jabari",
+                                }
+                            ]
+                        },
+                        "sameAs": {
+                            "items": None
+                            if not same_as_base_print_no
+                            else [
+                                {
+                                    "basePrintNo": same_as_base_print_no,
+                                    "billType": {"chamber": same_as_chamber},
+                                }
+                            ]
+                        },
+                    }
+                }
+            },
+        }
+    }
