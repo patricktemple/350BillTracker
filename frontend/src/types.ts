@@ -154,6 +154,6 @@ export interface Staffer {
   name: string;
   title: string;
   email: string;
-  phone: string;
+  officeContacts: OfficeContact[];
   twitter: string;
 }

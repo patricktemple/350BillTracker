@@ -59,3 +59,7 @@ class PersonSchema(CamelCaseSchema):
     council_member = fields.Nested(CouncilMemberSchema)
     senator = fields.Nested(SenatorSchema)
     assembly_member = fields.Nested(AssemblyMemberSchema)
+
+
+class PersonWithContactsSchema(PersonSchema):
+    office_contacts = fields.List(fields.Nested(OfficeContactSchema))

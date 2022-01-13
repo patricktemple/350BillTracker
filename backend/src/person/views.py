@@ -7,7 +7,7 @@ from ..app import app
 from ..auth import auth_required
 from ..models import db
 from .models import OfficeContact, Person, Staffer
-from .schema import CreateStafferSchema, OfficeContactSchema, PersonSchema
+from .schema import CreateStafferSchema, OfficeContactSchema, PersonSchema, PersonWithContactsSchema
 
 
 @app.route("/api/persons", methods=["GET"])
@@ -35,8 +35,7 @@ def update_legislator(person_id):
 def person_staffers(person_id):
     person = Person.query.get(person_id)
 
-    # TODO: Return the contacts from here somehow
-    return PersonSchema(many=True).jsonify(person.staffer_persons)
+    return PersonWithContactsSchema(many=True).jsonify(person.staffer_persons)
 
 
 @app.route("/api/persons/<uuid:person_id>/staffers", methods=["POST"])
