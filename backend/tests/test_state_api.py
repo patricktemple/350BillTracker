@@ -1,3 +1,4 @@
+import pytest
 import responses
 
 from src.bill.models import Bill
@@ -7,8 +8,6 @@ from src.sponsorship.models import AssemblySponsorship, SenateSponsorship
 from src.state_api import sync_state_representatives, update_state_bills
 
 from .utils import create_mock_bill_response, get_response_data
-
-import pytest
 
 
 @responses.activate
@@ -120,7 +119,7 @@ def test_import_state_reps__district_conflict_checks_incumbent(client):
     response_data = get_response_data(response)
 
     assert len(response_data) == 1
-    assert response_data[0]['name'] == "Incumbent senator"
+    assert response_data[0]["name"] == "Incumbent senator"
 
 
 @responses.activate

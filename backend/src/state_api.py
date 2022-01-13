@@ -258,7 +258,7 @@ def sync_state_representatives(session_year=CURRENT_SESSION_YEAR):
                 district=member["districtCode"],
             )
             db.session.add(person)
-        
+
         _fill_person_member_data(person, member)
 
     senate_member_items = _dedupe_by_district(
@@ -284,7 +284,7 @@ def sync_state_representatives(session_year=CURRENT_SESSION_YEAR):
                 district=member["districtCode"],
             )
             db.session.add(person)
-        
+
         _fill_person_member_data(person, member)
 
     db.session.commit()
