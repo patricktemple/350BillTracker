@@ -70,7 +70,7 @@ def test_import_state_reps(client, senator, assembly_member, snapshot):
     )
     sync_state_representatives()
 
-    persons = Person.query.all()
+    persons = Person.query.order_by(Person.name).all()
     
 
     # Get rid of random UUIDs for snapshot

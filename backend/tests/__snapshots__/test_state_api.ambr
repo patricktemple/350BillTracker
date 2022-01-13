@@ -1,21 +1,27 @@
 # name: test_import_state_reps
   <class 'list'> [
     <class 'dict'> {
-      'assemblyMember': None,
+      'assemblyMember': <class 'dict'> {
+        'district': 4,
+        'website': 'https://nyassembly.gov/mem/?ad=4',
+      },
       'councilMember': None,
-      'email': 'a@example.com',
-      'name': 'New senator',
+      'email': 'd@example.com',
+      'name': 'Existing assembly member',
       'notes': None,
       'officeContacts': <class 'list'> [
+        <class 'dict'> {
+          'city': None,
+          'fax': None,
+          'phone': '111-222-3333',
+          'type': 'CENTRAL_OFFICE',
+        },
       ],
-      'party': None,
-      'senator': <class 'dict'> {
-        'district': 1,
-        'website': 'https://www.nysenate.gov/district/1',
-      },
-      'title': 'Senator',
-      'twitter': None,
-      'type': 'SENATOR',
+      'party': 'D',
+      'senator': None,
+      'title': 'Assembly',
+      'twitter': 'theassembly',
+      'type': 'ASSEMBLY_MEMBER',
     },
     <class 'dict'> {
       'assemblyMember': None,
@@ -58,27 +64,21 @@
       'type': 'ASSEMBLY_MEMBER',
     },
     <class 'dict'> {
-      'assemblyMember': <class 'dict'> {
-        'district': 4,
-        'website': 'https://nyassembly.gov/mem/?ad=4',
-      },
+      'assemblyMember': None,
       'councilMember': None,
-      'email': 'd@example.com',
-      'name': 'Existing assembly member',
+      'email': 'a@example.com',
+      'name': 'New senator',
       'notes': None,
       'officeContacts': <class 'list'> [
-        <class 'dict'> {
-          'city': None,
-          'fax': None,
-          'phone': '111-222-3333',
-          'type': 'CENTRAL_OFFICE',
-        },
       ],
-      'party': 'D',
-      'senator': None,
-      'title': 'Assembly',
-      'twitter': 'theassembly',
-      'type': 'ASSEMBLY_MEMBER',
+      'party': None,
+      'senator': <class 'dict'> {
+        'district': 1,
+        'website': 'https://www.nysenate.gov/district/1',
+      },
+      'title': 'Senator',
+      'twitter': None,
+      'type': 'SENATOR',
     },
   ]
 ---
