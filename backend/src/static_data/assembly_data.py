@@ -306,7 +306,13 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
             {"city": "Albany", "fax": "518-455-5447", "phone": "518-455-5291"}
         ],
         "district": 89,
-        "district_contact": [{"fax": "914-667-0209", "phone": "914-667-0127"}],
+        "district_contact": [
+            {
+                "city": "Mt. Vernon",
+                "fax": "914-667-0209",
+                "phone": "914-667-0127",
+            }
+        ],
         "email": "PretloJ@nyassembly.gov",
         "name": "J. Gary Pretlow",
         "scrape_name__SANITY_CHECK": "J. Gary Pretlow",
@@ -365,7 +371,7 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
     571: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4505"}],
         "district": 127,
-        "district_contact": [{"phone": "315-452-1115"}],
+        "district_contact": [{"city": "N. Syracuse", "phone": "315-452-1115"}],
         "email": "StirpeA@nyassembly.gov",
         "name": "Albert A. Stirpe",
         "scrape_name__SANITY_CHECK": "Al Stirpe",
@@ -597,7 +603,13 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
             {"city": "Albany", "fax": "518-455-5691", "phone": "518-455-5314"}
         ],
         "district": 147,
-        "district_contact": [{"fax": "716-655-0970", "phone": "716-655-0951"}],
+        "district_contact": [
+            {
+                "city": "E. Aurora",
+                "fax": "716-655-0970",
+                "phone": "716-655-0951",
+            }
+        ],
         "email": "DiPietroD@nyassembly.gov",
         "name": "David DiPietro",
         "scrape_name__SANITY_CHECK": "David DiPietro",

@@ -129,7 +129,7 @@ def get_assembly_data():
                         addr['fax'] = re_result.group()
                     else:
                         addr['phone'] = re_result.group()
-                elif match := re.compile('^\s*(\w+[\w\s]*), NY').search(line):
+                elif match := re.compile('^\s*([^,]+), NY').search(line):
                     city = match.group(1)
                     addr['city'] = convert_city(city)
             if 'LOB' in lines[0]:
