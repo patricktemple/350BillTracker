@@ -12,3 +12,11 @@
 .content {
   padding: 20px;
 }
+
+.searchBox {
+  margin-bottom: 1rem;
+
+  ::placeholder {
+    font-style: italic;
+  }
+}
