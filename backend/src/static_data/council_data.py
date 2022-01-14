@@ -48,7 +48,7 @@ COUNCIL_DATA_BY_LEGISLATOR_ID = {
         "borough": "Brooklyn",
     },
     7561: {
-        "name": "Fernando Cabrera ",
+        "name": "Fernando Cabrera",
         "twitter": "FCabreraNY",
         "party": "D",
         "borough": "Bronx",
@@ -96,7 +96,7 @@ COUNCIL_DATA_BY_LEGISLATOR_ID = {
         "borough": "Bronx",
     },
     7743: {
-        "name": "Mark Gjonaj ",
+        "name": "Mark Gjonaj",
         "twitter": "MarkGjonajNY",
         "party": "D",
         "borough": "Bronx",
@@ -204,7 +204,7 @@ COUNCIL_DATA_BY_LEGISLATOR_ID = {
         "borough": "Brooklyn",
     },
     7740: {
-        "name": "Carlina Rivera ",
+        "name": "Carlina Rivera",
         "twitter": "CarlinaRivera",
         "party": "D",
         "borough": "Manhattan",
@@ -315,7 +315,7 @@ COUNCIL_DATA_BY_LEGISLATOR_ID = {
     7804: {
         "name": "Shaun Abreu",
         "borough": "Manhattan",
-        "twitter": "shaunabreu",
+        "twitter": "CMShaunAbreu",
         "party": "D",
     },
     6272: {
@@ -343,7 +343,7 @@ COUNCIL_DATA_BY_LEGISLATOR_ID = {
         "party": "D",
     },
     7819: {
-        "name": "Joann Ariola ",
+        "name": "Joann Ariola",
         "borough": "Queens",
         "twitter": "JoannAriola32",
         "party": "R",
@@ -379,7 +379,7 @@ COUNCIL_DATA_BY_LEGISLATOR_ID = {
         "party": "R",
     },
     7810: {
-        "name": "Amanda Farías ",
+        "name": "Amanda Farías",
         "borough": "Bronx",
         "twitter": "AmandaFariasNYC",
         "party": "D",
@@ -439,7 +439,7 @@ COUNCIL_DATA_BY_LEGISLATOR_ID = {
         "party": "D",
     },
     7825: {
-        "name": "Alexa Avilés ",
+        "name": "Alexa Avilés",
         "borough": "Brooklyn",
         "twitter": "alexaforcouncil",
         "party": "D",
