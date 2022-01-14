@@ -519,7 +519,7 @@ COUNCIL_DATA_BY_LEGISLATOR_ID = {
     5259: {
         "name": "Gale A. Brewer",
         "borough": "Manhattan",
-        "twitter": None,
+        "twitter": "GaleABrewer",
         "party": "D",
     },
 }
