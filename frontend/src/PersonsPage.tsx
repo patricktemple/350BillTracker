@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-import useMountEffect from '@restart/hooks/useMountEffect';
-import { Person } from './types';
-import LazyAccordionBody from './LazyAccordionBody';
-import useApiFetch from './useApiFetch';
-import styles from './style/LegislatorsPage.module.scss';
+import styles from './style/PersonsPage.module.scss';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import PersonsList from './PersonsList';
@@ -31,11 +27,11 @@ export default function PersonsPage({
           type="text"
           placeholder="Type name to search"
           value={filterText}
-          className="mb-2"
+          className={styles.searchBox}
           size={30}
           onChange={handleFilterTextChanged}
         />
-        <Tabs className="mb-4" unmountOnExit={true}>
+        <Tabs className="mt-2" unmountOnExit={true}>
           <Tab eventKey="all" title="All">
             <PersonsList filterText={filterText} selectedPersonId={personId} />
           </Tab>

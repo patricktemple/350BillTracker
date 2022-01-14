@@ -1,6 +1,5 @@
 from .models import db
-from .person.models import AssemblyMember, OfficeContact, Person, Senator
-from .static_data import assembly_data, senate_data
+from .person.models import AssemblyMember, OfficeContact, Senator
 from .utils import cron_function
 
 
