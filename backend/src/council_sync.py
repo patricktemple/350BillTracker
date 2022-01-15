@@ -9,9 +9,10 @@ from .council_api import (
     get_current_council_members,
     get_person,
     lookup_bill,
+    get_committees
 )
 from .models import db
-from .person.models import CouncilMember, OfficeContact, Person
+from .person.models import CouncilMember, OfficeContact, Person, CouncilBody
 from .sponsorship.models import CitySponsorship
 from .static_data.council_data import COUNCIL_DATA_BY_LEGISLATOR_ID
 from .utils import cron_function, now
@@ -228,6 +229,28 @@ def update_bill_sponsorships(city_bill, set_added_at=False):
 
     for lost_sponsor in previous_bill_sponsorships_by_id.values():
         db.session.delete(lost_sponsor)
+
+
+@cron_function
+def sync_council_committees():
+    # TODO handle duplicates
+    # TODO decice naming committee vs body
+    # Sync committee contact info? Figure out who is chair of which committee
+    committees = get_committees()
+    for committee in committees:
+        council_body = CouncilBody(
+            council_body_id=committee['BodyId'],
+            name=committee['BodyName'],
+            body_type=committee['BodyTypeName']
+        )
+        db.session.add(council_body)
+    
+    db.session.commit()
+
+
+@cron_function
+def sync_committee_memberships():
+    pass
 
 
 @cron_function

@@ -99,3 +99,26 @@ def get_current_council_members():
             date_filter("OfficeRecordEndDate", "ge", now().date()),
         ),
     )
+
+
+# Unify office records
+def get_current_committee_memberships():
+    # What's the best way to filter to committee memberships? OfficeRecordTitle == 'CHAIRPERSON' or OfficeRecordTitle == 'Committee Member'?
+    return council_get(
+        "officerecords",
+        params=make_filter_param(
+            # eq_filter("OfficeRecordBodyName", "City Council"),
+            date_filter("OfficeRecordStartDate", "le", now().date()),
+            date_filter("OfficeRecordEndDate", "ge", now().date()),
+        ),
+    )
+
+
+def get_committees():
+    bodies = council_get(
+        "bodies",
+    )
+    committee_types = { "Committee", "Subcommittee" }
+
+    # Todo look at other body types
+    return [b for b in bodies if b['BodyActiveFlag'] and b['BodyTypeName'] in committee_types]

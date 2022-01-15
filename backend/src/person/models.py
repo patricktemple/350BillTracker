@@ -2,7 +2,7 @@ import enum
 from typing import Union
 from uuid import uuid4
 
-from sqlalchemy import Column, Enum, ForeignKey, Integer, Text
+from sqlalchemy import Column, Enum, ForeignKey, Integer, Text, Boolean
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 
@@ -246,3 +246,23 @@ class OfficeContact(db.Model):
     person = relationship(
         "Person", back_populates="office_contacts", lazy="joined"
     )
+
+
+class CouncilBody(db.Model):
+    __tablename__ = "council_bodies"
+
+    id = Column(UUID, primary_key=True, default=uuid4)
+
+    council_body_id = Column(Integer, nullable=False, index=True, unique=True)
+    body_type = Column(Text, nullable=False) # or enum?
+    name = Column(Text, nullable=False)
+
+
+class CouncilBodyMembership(db.Model):
+    __tablename__ = "council_body_memberships"
+
+    id = Column(UUID, primary_key=True, default=uuid4)
+
+    council_body_id = Column(UUID) # ?? FK to that field?
+    person_id = Column(UUID) # FK to CouncilMember
+    is_chair = Column(Boolean, nullable=False)
