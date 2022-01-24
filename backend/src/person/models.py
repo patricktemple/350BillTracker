@@ -268,7 +268,7 @@ class CouncilCommitteeMembership(db.Model):
     council_committee_id = Column(UUID, ForeignKey(CouncilCommittee.id), nullable=False, index=True)
 
     person_id = Column(UUID, ForeignKey(CouncilMember.person_id), nullable=False, index=True)
-    is_chair = Column(Boolean, nullable=False) # or just a string title?
+    is_chair = Column(Boolean, nullable=False, default=False)
 
     # Really, should this just be a primary key then?
     __table_args__ = (
