@@ -7,6 +7,9 @@ from src.settings import CITY_COUNCIL_API_TOKEN
 from .bill.models import Bill
 from .utils import now
 
+from typing import List
+import logging
+
 # See http://webapi.legistar.com/Help for an overview of resources.
 
 
@@ -102,9 +105,11 @@ def get_current_council_members():
 
 
 # Unify office records
-def get_current_committee_memberships():
-    # What's the best way to filter to committee memberships? OfficeRecordTitle == 'CHAIRPERSON' or OfficeRecordTitle == 'Committee Member'?
-    return council_get(
+def get_current_committee_memberships(committee_body_ids: List[int]):
+    # An alternate way to filter is to check that OfficeRecordTitle is either 'CHAIRPERSON' or 'Committee Member'.
+    # However, this way lets us restrict to the committees that exist in the DB, and could flexibly include new
+    # titles in the future.
+    records = council_get(
         "officerecords",
         params=make_filter_param(
             # eq_filter("OfficeRecordBodyName", "City Council"),
@@ -112,13 +117,26 @@ def get_current_committee_memberships():
             date_filter("OfficeRecordEndDate", "ge", now().date()),
         ),
     )
+    if len(records) >= 1000:
+        logging.error(">=1000 office records returned. This may be getting truncated by lack of pagination")
 
 
 def get_committees():
     bodies = council_get(
         "bodies",
     )
-    committee_types = { "Committee", "Subcommittee" }
 
-    # Todo look at other body types
-    return [b for b in bodies if b['BodyActiveFlag'] and b['BodyTypeName'] in committee_types]
+    # It's weird that Committee on Land Use has a type of Land Use instead of committee
+    committee_types = { "Committee", "Subcommittee", "Land Use" }
+
+    # For reference, the other active body types in 2022 were:
+    # Primary Legislative Body
+    # Charter Revision Commission 2019
+    # New York City Advisory Commission on Property Tax Reform
+    # Democratic Conference of the Council of the City of New York 
+    # Manhattan Borough Board 
+    # Minority (Republican) Conference of the Council of the City of New York 
+    # Withdrawn
+    # Special Committee
+
+    return [b for b in bodies if b['BodyActiveFlag'] and b['BodyTypeName'] in committee_types], bodies

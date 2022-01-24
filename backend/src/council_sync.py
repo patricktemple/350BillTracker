@@ -12,7 +12,7 @@ from .council_api import (
     get_committees
 )
 from .models import db
-from .person.models import CouncilMember, OfficeContact, Person, CouncilBody
+from .person.models import CouncilMember, OfficeContact, Person, CouncilCommittee
 from .sponsorship.models import CitySponsorship
 from .static_data.council_data import COUNCIL_DATA_BY_LEGISLATOR_ID
 from .utils import cron_function, now
@@ -238,7 +238,7 @@ def sync_council_committees():
     # Sync committee contact info? Figure out who is chair of which committee
     committees = get_committees()
     for committee in committees:
-        council_body = CouncilBody(
+        council_body = CouncilCommittee(
             council_body_id=committee['BodyId'],
             name=committee['BodyName'],
             body_type=committee['BodyTypeName']

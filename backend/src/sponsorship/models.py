@@ -118,6 +118,8 @@ class StateSponsorshipMixin:
 
     is_lead_sponsor = Column(Boolean, nullable=False)
 
+    # TODO: Add state sponsorship unique constraints
+
 
 class SenateSponsorship(db.Model, StateSponsorshipMixin):
     __tablename__ = "senate_sponsorships"

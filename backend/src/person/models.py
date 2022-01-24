@@ -2,7 +2,7 @@ import enum
 from typing import Union
 from uuid import uuid4
 
-from sqlalchemy import Column, Enum, ForeignKey, Integer, Text, Boolean
+from sqlalchemy import Column, Enum, ForeignKey, Integer, Text, Boolean, UniqueConstraint
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 
@@ -248,21 +248,31 @@ class OfficeContact(db.Model):
     )
 
 
-class CouncilBody(db.Model):
-    __tablename__ = "council_bodies"
+class CouncilCommittee(db.Model):
+    __tablename__ = "council_committees"
 
     id = Column(UUID, primary_key=True, default=uuid4)
 
     council_body_id = Column(Integer, nullable=False, index=True, unique=True)
-    body_type = Column(Text, nullable=False) # or enum?
+    body_type = Column(Text, nullable=False)
     name = Column(Text, nullable=False)
 
 
-class CouncilBodyMembership(db.Model):
-    __tablename__ = "council_body_memberships"
+class CouncilCommitteeMembership(db.Model):
+    __tablename__ = "council_committee_memberships"
 
     id = Column(UUID, primary_key=True, default=uuid4)
 
-    council_body_id = Column(UUID) # ?? FK to that field?
-    person_id = Column(UUID) # FK to CouncilMember
-    is_chair = Column(Boolean, nullable=False)
+    # Note this is the internal CouncilCommittee.id, not the city API's body ID
+    # (which is CouncilCommittee.council_body_id).
+    council_committee_id = Column(UUID, ForeignKey(CouncilCommittee.id), nullable=False, index=True)
+
+    person_id = Column(UUID, ForeignKey(CouncilMember.person_id), nullable=False, index=True)
+    is_chair = Column(Boolean, nullable=False) # or just a string title?
+
+    # Really, should this just be a primary key then?
+    __table_args__ = (
+        UniqueConstraint(
+            "council_committee_id", "person_id", name="_council_committee_member_unique"
+        ),
+    )
