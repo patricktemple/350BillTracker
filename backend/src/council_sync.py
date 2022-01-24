@@ -9,10 +9,11 @@ from .council_api import (
     get_current_council_members,
     get_person,
     lookup_bill,
-    get_committees
+    get_committees,
+    get_committee_memberships
 )
 from .models import db
-from .person.models import CouncilMember, OfficeContact, Person, CouncilCommittee
+from .person.models import CouncilMember, OfficeContact, Person, CouncilCommittee, CouncilCommitteeMembership
 from .sponsorship.models import CitySponsorship
 from .static_data.council_data import COUNCIL_DATA_BY_LEGISLATOR_ID
 from .utils import cron_function, now
@@ -250,7 +251,40 @@ def sync_council_committees():
 
 @cron_function
 def sync_committee_memberships():
-    pass
+    committees = CouncilCommittee.query.all()
+
+    # todo handle duplicates. clear all memberships?
+    committees_by_body_id = {c.council_body_id: c for c in committees}
+
+    memberships = get_committee_memberships(committees_by_body_id.keys())
+
+    council_members_in_committees = CouncilMember.query.filter(CouncilMember.city_council_person_id.in_((
+        m['OfficeRecordPersonId'] for m in memberships
+    ))).all()
+    council_members_by_council_id = {c.city_council_person_id: c for c in council_members_in_committees}
+
+    for membership in memberships:
+        membership_body_id = membership['OfficeRecordBodyId']
+        committee = committees_by_body_id.get(membership_body_id)
+        if not committee:
+            # Should not be possible?
+            logging.warning("TODO")
+            continue
+
+        person_id = council_members_by_council_id.get(membership['OfficeRecordPersonId']).person_id
+        is_chair = membership['OfficeRecordTitle'] == 'CHAIRPERSON'
+        if not person_id:
+            logging.warning("TODO")
+            continue
+
+        # # Problem: this is violating a unique constraint. Could the API be giving back duplicates
+        # Julie Menin is a pure duplicate, body ID 4 and person ID 7803
+        committee.memberships.append(CouncilCommitteeMembership(person_id=person_id, is_chair=is_chair))
+
+    # db.session.commit()
+        
+
+
 
 
 @cron_function

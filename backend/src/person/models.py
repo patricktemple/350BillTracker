@@ -256,6 +256,7 @@ class CouncilCommittee(db.Model):
     council_body_id = Column(Integer, nullable=False, index=True, unique=True)
     body_type = Column(Text, nullable=False)
     name = Column(Text, nullable=False)
+    memberships = relationship("CouncilCommitteeMembership", back_populates="committee")
 
 
 class CouncilCommitteeMembership(db.Model):
@@ -269,6 +270,8 @@ class CouncilCommitteeMembership(db.Model):
 
     person_id = Column(UUID, ForeignKey(CouncilMember.person_id), nullable=False, index=True)
     is_chair = Column(Boolean, nullable=False, default=False)
+
+    committee = relationship(CouncilCommittee, back_populates="memberships", lazy="joined")
 
     # Really, should this just be a primary key then?
     __table_args__ = (

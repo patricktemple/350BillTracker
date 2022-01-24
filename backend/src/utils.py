@@ -14,7 +14,7 @@ def cron_function(func):
 
     def impl(*args, **kwargs):
         try:
-            func(*args, **kwargs)
+            return func(*args, **kwargs)
         except Exception:
             db.session.rollback()
             logging.exception("Exception thrown during cron function")

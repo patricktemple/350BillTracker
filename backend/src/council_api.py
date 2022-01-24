@@ -7,7 +7,7 @@ from src.settings import CITY_COUNCIL_API_TOKEN
 from .bill.models import Bill
 from .utils import now
 
-from typing import List
+from typing import Set
 import logging
 
 # See http://webapi.legistar.com/Help for an overview of resources.
@@ -105,23 +105,36 @@ def get_current_council_members():
 
 
 # Unify office records
-def get_current_committee_memberships(committee_body_ids: List[int]):
+def get_committee_memberships(committee_body_ids: Set[int]):
     # An alternate way to filter is to check that OfficeRecordTitle is either 'CHAIRPERSON' or 'Committee Member'.
     # However, this way lets us restrict to the committees that exist in the DB, and could flexibly include new
     # titles in the future.
     records = council_get(
         "officerecords",
         params=make_filter_param(
-            # eq_filter("OfficeRecordBodyName", "City Council"),
             date_filter("OfficeRecordStartDate", "le", now().date()),
             date_filter("OfficeRecordEndDate", "ge", now().date()),
         ),
     )
     if len(records) >= 1000:
         logging.error(">=1000 office records returned. This may be getting truncated by lack of pagination")
+    
+    # TODO: Filter this in the query instead?
+    # This API problematically returns duplicates for the same record, so we dedupe them
+
+    output = []
+    seen = set()
+    for record in records:
+        body_id = record['OfficeRecordBodyId']
+        key = body_id, record['OfficeRecordPersonId']
+        if key not in seen and body_id in committee_body_ids:
+            seen.add(key)
+            output.append(record)
+    return output
 
 
 def get_committees():
+    # TODO: Filter this in the query! Can do that at end of the PR
     bodies = council_get(
         "bodies",
     )
@@ -139,4 +152,4 @@ def get_committees():
     # Withdrawn
     # Special Committee
 
-    return [b for b in bodies if b['BodyActiveFlag'] and b['BodyTypeName'] in committee_types], bodies
+    return [b for b in bodies if b['BodyActiveFlag'] and b['BodyTypeName'] in committee_types]
