@@ -157,3 +157,13 @@ export interface Staffer {
   officeContacts: OfficeContact[];
   twitter: string;
 }
+
+export interface CouncilCommittee {
+  name: string;
+  id: Uuid;
+}
+
+export interface CouncilMemberCommitteeMembership {
+  isChair: boolean;
+  committee: CouncilCommittee;
+}

@@ -30,10 +30,14 @@ def cron_command():
                 # TODO: This doesn't need to run at cron time though! Just once on startup
                 council_sync.fill_council_person_static_data()
 
+                logging.info("Syncing council committees")
+                council_sync.sync_council_committees()
+
+                logging.info("Syncing council committee memberships")
+                council_sync.sync_committee_memberships()
+
                 logging.info("Syncing state reps")
                 state_api.sync_state_representatives()
-
-                # TODO: Sync committee info
 
                 bill_snapshots = bill_notifications.snapshot_bills()
 

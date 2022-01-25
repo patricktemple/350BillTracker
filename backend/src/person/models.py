@@ -114,7 +114,7 @@ class CouncilMember(db.Model):
     borough = Column(Text)
     website = Column(Text)
 
-    committee_memberships = relationship("CouncilCommitteeMembership", back_populates="council_member", cascade="all, delete-orphan",)
+    committee_memberships = relationship("CouncilCommitteeMembership", back_populates="council_member", cascade="all, delete-orphan")
 
 
 class StateRepresentativeMixin:
