@@ -232,19 +232,39 @@ def update_bill_sponsorships(city_bill, set_added_at=False):
         db.session.delete(lost_sponsor)
 
 
+
+COMMITTEE_PREFIXES = ["Committee on ", "Subcommittee on "]
+def _clean_committee_name(name: str) -> str:
+    for prefix in COMMITTEE_PREFIXES:
+        if name.startswith(prefix):
+            return name[len(prefix):]
+    
+    return name
+
+
 @cron_function
 def sync_council_committees():
-    # TODO handle duplicates
-    # TODO decice naming committee vs body
-    # Sync committee contact info? Figure out who is chair of which committee
-    committees = get_committees()
-    for committee in committees:
-        council_body = CouncilCommittee(
-            council_body_id=committee['BodyId'],
-            name=committee['BodyName'],
-            body_type=committee['BodyTypeName']
-        )
-        db.session.add(council_body)
+    committees_from_api = get_committees()
+
+    existing_committees = CouncilCommittee.query.all()
+    existing_committees_by_body_id = {c.council_body_id: c for c in existing_committees}
+    for committee_data in committees_from_api:
+        body_id = committee_data['BodyId']
+        committee_name = _clean_committee_name(committee_data['BodyName'])
+        committee = existing_committees_by_body_id.get(body_id)
+        if committee:
+            logging.info(f"Council committee {committee_name} already found in DB, updating")
+        else:
+            logging.info(f"Adding new council committee {committee_name}")
+            committee = CouncilCommittee(
+                council_body_id=body_id,
+            )
+            db.session.add(committee)
+        
+        committee.name = committee_name
+        committee.body_type = committee_data['BodyTypeName']
+
+        # TODO: Handle removal of old committees?
     
     db.session.commit()
 
@@ -252,6 +272,10 @@ def sync_council_committees():
 @cron_function
 def sync_committee_memberships():
     committees = CouncilCommittee.query.all()
+
+    for committee in committees:
+        # Just delete and re-add all the memberships each time
+        committee.memberships = []
 
     # todo handle duplicates. clear all memberships?
     committees_by_body_id = {c.council_body_id: c for c in committees}
@@ -281,11 +305,7 @@ def sync_committee_memberships():
         # Julie Menin is a pure duplicate, body ID 4 and person ID 7803
         committee.memberships.append(CouncilCommitteeMembership(person_id=person_id, is_chair=is_chair))
 
-    # db.session.commit()
-        
-
-
-
+    db.session.commit()
 
 @cron_function
 def update_all_sponsorships():

@@ -114,6 +114,8 @@ class CouncilMember(db.Model):
     borough = Column(Text)
     website = Column(Text)
 
+    committee_memberships = relationship("CouncilCommitteeMembership", back_populates="council_member", cascade="all, delete-orphan",)
+
 
 class StateRepresentativeMixin:
 
@@ -256,7 +258,7 @@ class CouncilCommittee(db.Model):
     council_body_id = Column(Integer, nullable=False, index=True, unique=True)
     body_type = Column(Text, nullable=False)
     name = Column(Text, nullable=False)
-    memberships = relationship("CouncilCommitteeMembership", back_populates="committee")
+    memberships = relationship("CouncilCommitteeMembership", back_populates="committee", cascade="all, delete-orphan",)
 
 
 class CouncilCommitteeMembership(db.Model):
@@ -272,6 +274,7 @@ class CouncilCommitteeMembership(db.Model):
     is_chair = Column(Boolean, nullable=False, default=False)
 
     committee = relationship(CouncilCommittee, back_populates="memberships", lazy="joined")
+    council_member = relationship(CouncilMember, back_populates="committee_memberships", lazy="joined")
 
     # Really, should this just be a primary key then?
     __table_args__ = (

@@ -29,8 +29,9 @@ COLUMN_TITLES = [
     "District Phone",
     "Legislative Phone",
     "Twitter",
-    "Twitter search\nNote: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.",
+    "Committees",
     "Staffers",
+    "Twitter search\nNote: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.",
 ]
 COLUMN_TITLE_SET = set(COLUMN_TITLES)
 
@@ -57,6 +58,7 @@ COLUMN_WIDTHS = [
     200,
     250,
     250,
+    250
 ]
 
 
@@ -160,6 +162,9 @@ def _create_legislator_row(
             and c.type == OfficeContact.OfficeContactType.DISTRICT_OFFICE
         )
     )
+    committees = "\n".join(
+        sorted([f"{m.committee.name}{' (chair)' if m.is_chair else ''}" for m in council_member.committee_memberships])
+    )
     cells = [
         Cell(""),
         Cell(
@@ -174,11 +179,12 @@ def _create_legislator_row(
             council_member.person.display_twitter or "",
             link_url=council_member.person.twitter_url,
         ),
+        Cell(committees),
+        Cell(staffer_text),
         Cell(
             "Relevant tweets" if twitter_search_url else "",
             link_url=twitter_search_url,
         ),
-        Cell(staffer_text),
     ]
     if import_data:
         legislator_data = import_data.column_data_by_legislator_id.get(

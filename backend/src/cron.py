@@ -33,6 +33,8 @@ def cron_command():
                 logging.info("Syncing state reps")
                 state_api.sync_state_representatives()
 
+                # TODO: Sync committee info
+
                 bill_snapshots = bill_notifications.snapshot_bills()
 
                 logging.info("Syncing state bill updates")
