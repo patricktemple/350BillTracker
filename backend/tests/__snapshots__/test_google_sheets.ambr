@@ -37,6 +37,9 @@
             <class 'dict'> {
               'pixelSize': 250,
             },
+            <class 'dict'> {
+              'pixelSize': 250,
+            },
           ],
           'rowData': <class 'list'> [
             <class 'dict'> {
@@ -146,10 +149,7 @@
                     'wrapStrategy': 'WRAP',
                   },
                   'userEnteredValue': <class 'dict'> {
-                    'stringValue': '
-                      Twitter search
-                      Note: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.
-                    ',
+                    'stringValue': 'Committees',
                   },
                 },
                 <class 'dict'> {
@@ -162,6 +162,21 @@
                   },
                   'userEnteredValue': <class 'dict'> {
                     'stringValue': 'Staffers',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '
+                      Twitter search
+                      Note: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.
+                    ',
                   },
                 },
               ],
@@ -266,6 +281,18 @@
                   },
                   'userEnteredValue': <class 'dict'> {
                     'stringValue': '111-222-3333',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
                   },
                 },
                 <class 'dict'> {
@@ -448,6 +475,18 @@
                     'stringValue': '',
                   },
                 },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
               ],
             },
           ],
@@ -493,6 +532,9 @@
             },
             <class 'dict'> {
               'pixelSize': 200,
+            },
+            <class 'dict'> {
+              'pixelSize': 250,
             },
             <class 'dict'> {
               'pixelSize': 250,
@@ -609,10 +651,7 @@
                     'wrapStrategy': 'WRAP',
                   },
                   'userEnteredValue': <class 'dict'> {
-                    'stringValue': '
-                      Twitter search
-                      Note: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.
-                    ',
+                    'stringValue': 'Committees',
                   },
                 },
                 <class 'dict'> {
@@ -625,6 +664,21 @@
                   },
                   'userEnteredValue': <class 'dict'> {
                     'stringValue': 'Staffers',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '
+                      Twitter search
+                      Note: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.
+                    ',
                   },
                 },
                 <class 'dict'> {
@@ -779,6 +833,18 @@
                     'stringValue': '',
                   },
                 },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
               ],
             },
             <class 'dict'> {
@@ -861,6 +927,18 @@
                   },
                   'userEnteredValue': <class 'dict'> {
                     'stringValue': 'None',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
                   },
                 },
                 <class 'dict'> {
