@@ -1,9 +1,8 @@
 import logging
 from datetime import datetime, timezone
+from functools import wraps
 
 from src.models import db
-
-from functools import wraps
 
 
 def now():

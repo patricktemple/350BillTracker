@@ -1,21 +1,27 @@
 import re
 
 from flask import jsonify, request
+from sqlalchemy.orm import joinedload
 from werkzeug import exceptions
 
 from ..app import app
 from ..auth import auth_required
 from ..models import db
-from .models import CouncilCommitteeMembership, OfficeContact, Person, Staffer, CouncilCommittee
+from .models import (
+    CouncilCommittee,
+    CouncilCommitteeMembership,
+    OfficeContact,
+    Person,
+    Staffer,
+)
 from .schema import (
+    CouncilCommitteeSchema,
+    CouncilMemberCommitteeMembershipSchema,
     CreateStafferSchema,
     OfficeContactSchema,
     PersonSchema,
     PersonWithContactsSchema,
-    CouncilCommitteeSchema,
-    CouncilMemberCommitteeMembershipSchema
 )
-from sqlalchemy.orm import joinedload
 
 
 @app.route("/api/persons", methods=["GET"])
@@ -113,6 +119,9 @@ def get_council_member_committees(person_id):
         .order_by(CouncilCommittee.name)
         .all()
     )
-    return CouncilMemberCommitteeMembershipSchema(many=True).jsonify(committee_memberships)
+    return CouncilMemberCommitteeMembershipSchema(many=True).jsonify(
+        committee_memberships
+    )
+
 
 # TODO test this

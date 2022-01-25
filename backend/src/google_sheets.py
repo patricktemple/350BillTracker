@@ -47,19 +47,7 @@ BOROUGH_DEFAULT_SORT = 6
 
 # Width in pixels for each column. We can't dynamically set it to match the,
 # contents via the API, so instead we just hardcode them as best we can.
-COLUMN_WIDTHS = [
-    150,
-    150,
-    200,
-    50,
-    100,
-    100,
-    150,
-    200,
-    250,
-    250,
-    250
-]
+COLUMN_WIDTHS = [150, 150, 200, 50, 100, 100, 150, 200, 250, 250, 250]
 
 
 # TODO: Make this a dataclass
@@ -163,7 +151,12 @@ def _create_legislator_row(
         )
     )
     committees = "\n".join(
-        sorted([f"{m.committee.name}{' (chair)' if m.is_chair else ''}" for m in council_member.committee_memberships])
+        sorted(
+            [
+                f"{m.committee.name}{' (chair)' if m.is_chair else ''}"
+                for m in council_member.committee_memberships
+            ]
+        )
     )
     cells = [
         Cell(""),
