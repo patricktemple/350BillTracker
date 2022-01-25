@@ -114,3 +114,5 @@ def get_council_member_committees(person_id):
         .all()
     )
     return CouncilMemberCommitteeMembershipSchema(many=True).jsonify(committee_memberships)
+
+# TODO test this

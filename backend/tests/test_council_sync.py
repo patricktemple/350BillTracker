@@ -11,9 +11,10 @@ from src.council_sync import (
     fill_council_person_static_data,
     sync_bill_updates,
     update_all_sponsorships,
+    sync_council_committees
 )
 from src.models import db
-from src.person.models import CouncilMember, OfficeContact, Person
+from src.person.models import CouncilMember, OfficeContact, Person, CouncilCommittee, CouncilCommitteeMembership
 from src.sponsorship.models import CitySponsorship
 from src.static_data.council_data import COUNCIL_DATA_BY_LEGISLATOR_ID
 
@@ -147,6 +148,60 @@ def test_fill_council_person_static_data():
     assert corey.person.party == corey_static["party"]
     assert corey.borough == corey_static["borough"]
     assert corey.person.email == "existing-email@council.nyc.gov"
+
+
+@responses.activate
+def test_add_council_committees(snapshot):
+    existing_committee = CouncilCommittee(council_body_id=1, name="Environment", body_type="Committee")
+    db.session.add(existing_committee)
+
+    responses.add(
+        responses.GET,
+        url="https://webapi.legistar.com/v1/nyc/bodies",
+        json=[
+            {
+                "BodyActiveFlag": 0,
+                "BodyTypeName": "Committee",
+                "BodyName": "Old committee that's expired",
+            },
+            {
+                "BodyActiveFlag": 1,
+                "BodyTypeName": "Club",
+                "BodyName": "Not a committee",
+            },
+            {
+                "BodyActiveFlag": 1,
+                "BodyTypeName": "Committee",
+                "BodyId": 1,
+                "BodyName": "Existing committee",
+            },
+            {
+                "BodyActiveFlag": 1,
+                "BodyTypeName": "Committee",
+                "BodyId": 2,
+                "BodyName": "New valid committee",
+            },
+            {
+                "BodyActiveFlag": 1,
+                "BodyTypeName": "Subcommittee",
+                "BodyId": 3,
+                "BodyName": "Valid subcommittee",
+            },
+            {
+                "BodyActiveFlag": 1,
+                "BodyTypeName": "Land Use",
+                "BodyId": 4,
+                "BodyName": "Land Use committee",
+            },
+        ],
+    )
+
+    sync_council_committees()
+
+    db.session.rollback() # ensure a commit
+
+    result = CouncilCommittee.query.all()
+    assert [(r.name, r.council_body_id, r.body_type) for r in result] == snapshot
 
 
 @responses.activate
