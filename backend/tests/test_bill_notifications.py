@@ -2,9 +2,17 @@ from unittest.mock import patch
 from uuid import uuid4
 
 import responses
+import pytest
 
 from src.app import app
-from src.bill.models import AssemblyBill, Bill, CityBill, SenateBill, StateBill
+from src.bill.models import (
+    AssemblyBill,
+    Bill,
+    CityBill,
+    SenateBill,
+    StateBill,
+    UserBillSettings,
+)
 from src.bill_notifications import (
     BillDiffSet,
     GenericBillDiff,
@@ -15,6 +23,7 @@ from src.bill_notifications import (
     _calculate_all_bill_diffs,
     _render_email_contents,
     send_bill_update_notifications,
+    _filter_diffs_for_user
 )
 from src.models import db
 from src.person.models import AssemblyMember, CouncilMember, Person, Senator
@@ -493,6 +502,44 @@ def test_email_contents__city_sponsor_added_and_removed(snapshot):
     assert snapshot == make_email_snapshot(subject, html, text)
 
 
+
+@pytest.mark.parametrize(("notify", "expected_diff_count"), [(False, 0), (True, 1)])
+def test_filter_diffs_for_user(user, state_bill, city_bill, notify, expected_diff_count):
+    user.bill_settings.append(UserBillSettings(bill_id=state_bill.id, send_bill_update_notifications=notify))
+    user.bill_settings.append(UserBillSettings(bill_id=city_bill.id, send_bill_update_notifications=notify))
+    db.session.commit()
+
+    city_diff = GenericBillDiff(
+        old_status="Enacted",
+        new_status="Enacted",
+        removed_sponsor_names=["Brad Lander"],
+        added_sponsor_names=["Jamaal Bowman"],
+        current_sponsor_count=1,
+        bill_number="Intro 2317",
+        bill_name="Gas Free NYC",
+        bill_id=city_bill.id,
+    )
+
+    state_diff = StateBillDiff(
+        bill_id=state_bill.id,
+        senate_diff=GenericBillDiff(
+            old_status="Signed by Governor",
+            new_status="Unknown",
+            removed_sponsor_names=[],
+            added_sponsor_names=[],
+            current_sponsor_count=1,
+            bill_number="S123",
+            bill_name="Bill to include",
+            bill_id=state_bill.id,
+        ),
+    )
+    diff_set = BillDiffSet(state_diffs=[state_diff], city_diffs=[city_diff])
+
+    filtered_diff_set = _filter_diffs_for_user(user, diff_set)
+    assert len(filtered_diff_set.city_diffs) == expected_diff_count
+    assert len(filtered_diff_set.state_diffs) == expected_diff_count
+
+
 @responses.activate
 @patch("src.ses.client")
 def test_send_email_notification_end_to_end(
@@ -502,8 +549,9 @@ def test_send_email_notification_end_to_end(
         id=uuid4(),
         name="User to notify",
         email="user@example.com",
-        send_bill_update_notifications=True,
     )
+    user_to_notify.bill_settings.append(UserBillSettings(bill_id=city_bill.id, send_bill_update_notifications=True))
+    user_to_notify.bill_settings.append(UserBillSettings(bill_id=state_bill.id, send_bill_update_notifications=True))
     db.session.add(user_to_notify)
     other_user = User(
         id=uuid4(), name="Someone else", email="wrong@example.com"

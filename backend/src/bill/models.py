@@ -1,7 +1,7 @@
 import enum
 from uuid import uuid4
 
-from sqlalchemy import Column, Enum, ForeignKey, Integer, Text, Boolean, sql
+from sqlalchemy import Boolean, Column, Enum, ForeignKey, Integer, Text, sql
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
@@ -269,6 +269,8 @@ class UserBillSettings(db.Model):
     bill_id = Column(UUID, ForeignKey(Bill.id), primary_key=True)
     user_id = Column(UUID, ForeignKey(User.id), primary_key=True)
 
-    send_bill_update_notifications = Column(Boolean, nullable=False, server_default=sql.false())
+    send_bill_update_notifications = Column(
+        Boolean, nullable=False, server_default=sql.false()
+    )
 
     user = relationship(User, lazy="joined", back_populates="bill_settings")

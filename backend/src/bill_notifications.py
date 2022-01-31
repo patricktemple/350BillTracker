@@ -1,8 +1,8 @@
 import logging
+from collections import defaultdict
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Set, Union
 from uuid import UUID
-from collections import defaultdict
 
 from botocore.exceptions import ClientError
 from flask import render_template
@@ -27,12 +27,12 @@ class GenericBillDiff:
 
     bill_number: str = None
     bill_name: str = None
-    bill_id: UUID = None # need to fill this
+    bill_id: UUID = None  # need to fill this
 
 
 @dataclass
 class StateBillDiff:
-    bill_id: UUID = None # need to fill
+    bill_id: UUID = None  # need to fill
     senate_diff: Optional[GenericBillDiff] = None
     assembly_diff: Optional[GenericBillDiff] = None
 
@@ -244,6 +244,7 @@ def _calculate_bill_diff(
     snapshot: GenericBillSnapshot,
     current_sponsor_ids: Set[UUID],
     new_status,
+    bill_id: UUID,
     bill_number: str,
     bill_name: Optional[str],
 ) -> Optional[GenericBillDiff]:
@@ -276,6 +277,7 @@ def _calculate_bill_diff(
             current_sponsor_count=len(current_sponsor_ids),
             bill_number=bill_number,
             bill_name=bill_name,
+            bill_id=bill_id,
         )
 
     return None
@@ -300,6 +302,7 @@ def _calculate_all_bill_diffs(snapshot_state: SnapshotState) -> BillDiffSet:
                 snapshot=snapshot,
                 current_sponsor_ids=current_sponsor_ids,
                 new_status=bill.city_bill.status,
+                bill_id=bill.id,
                 bill_number=bill.city_bill.file,
                 bill_name=bill.display_name,
             )
@@ -317,6 +320,7 @@ def _calculate_all_bill_diffs(snapshot_state: SnapshotState) -> BillDiffSet:
                         )
                     ),
                     new_status=bill.state_bill.senate_bill.status,
+                    bill_id=bill.id,
                     bill_number=bill.state_bill.senate_bill.base_print_no,
                     bill_name=bill.display_name,
                 )
@@ -335,6 +339,7 @@ def _calculate_all_bill_diffs(snapshot_state: SnapshotState) -> BillDiffSet:
                     new_status=bill.state_bill.assembly_bill.status,
                     bill_number=bill.state_bill.assembly_bill.base_print_no,
                     bill_name=bill.display_name,
+                    bill_id=bill.id,
                 )
             else:
                 assembly_diff = None
@@ -342,25 +347,41 @@ def _calculate_all_bill_diffs(snapshot_state: SnapshotState) -> BillDiffSet:
             if senate_diff or assembly_diff:
                 bill_diffs.state_diffs.append(
                     StateBillDiff(
-                        senate_diff=senate_diff, assembly_diff=assembly_diff
+                        senate_diff=senate_diff,
+                        assembly_diff=assembly_diff,
+                        bill_id=bill.id,
                     )
                 )
 
     return bill_diffs
 
 
-
-def _send_user_notifications(user: User, full_bill_diffs: BillDiffSet):
+def _filter_diffs_for_user(user: User, full_bill_diffs: BillDiffSet):
     # Could slightly optimize this by having a better relationship that just loads
     # bills requesting update
-    requested_bill_ids = {s.bill_id for s in user.bill_settings if s.send_bill_update_notifications}
+    requested_bill_ids = {
+        s.bill_id
+        for s in user.bill_settings
+        if s.send_bill_update_notifications
+    }
 
     filtered_diffs = BillDiffSet()
-    filtered_diffs.state_diffs = [d for d in full_bill_diffs.state_diffs if d.bill_id in requested_bill_ids]
-    filtered_diffs.city_diffs = [d for d in full_bill_diffs.city_diffs if d.bill_id in requested_bill_ids]
-        
-    if filtered_diffs.state_diffs or filtered_diffs.city_diffs:
-        subject, body_html, body_text = _render_email_contents(filtered_diffs)
+    filtered_diffs.state_diffs = [
+        d
+        for d in full_bill_diffs.state_diffs
+        if d.bill_id in requested_bill_ids
+    ]
+    filtered_diffs.city_diffs = [
+        d
+        for d in full_bill_diffs.city_diffs
+        if d.bill_id in requested_bill_ids
+    ]
+    return filtered_diffs
+
+
+def _send_user_notifications(user: User, bill_diffs: BillDiffSet):
+    if bill_diffs.state_diffs or bill_diffs.city_diffs:
+        subject, body_html, body_text = _render_email_contents(bill_diffs)
 
         logging.info(f"Sending bill update email to {user.email}")
         try:
@@ -378,6 +399,5 @@ def send_bill_update_notifications(
 
         users = User.query.all()
         for user in users:
-            _send_user_notifications(user, bill_diffs)
-
-        
+            filtered_diffs = _filter_diffs_for_user(user, bill_diffs)
+            _send_user_notifications(user, filtered_diffs)

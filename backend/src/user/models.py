@@ -23,7 +23,9 @@ class User(db.Model):
     # The "root" user can never be deleted.
     can_be_deleted = Column(Boolean, nullable=False, server_default=sql.true())
 
-    bill_settings = relationship("UserBillSettings", back_populates="user", cascade="all, delete-orphan")
+    bill_settings = relationship(
+        "UserBillSettings", back_populates="user", cascade="all, delete-orphan"
+    )
 
     __table_args__ = (
         CheckConstraint(
