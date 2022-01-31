@@ -271,4 +271,4 @@ class UserBillSettings(db.Model):
 
     send_bill_update_notifications = Column(Boolean, nullable=False, server_default=sql.false())
 
-    user = relationship(User, lazy="joined")
+    user = relationship(User, lazy="joined", back_populates="bill_settings")
