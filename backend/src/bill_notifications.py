@@ -2,11 +2,12 @@ import logging
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Set, Union
 from uuid import UUID
+from collections import defaultdict
 
 from botocore.exceptions import ClientError
 from flask import render_template
 
-from .bill.views import AssemblyBill, Bill, SenateBill
+from .bill.models import AssemblyBill, Bill, SenateBill, UserBillSettings
 from .person.models import Person
 from .ses import send_email
 from .user.models import User
@@ -26,10 +27,12 @@ class GenericBillDiff:
 
     bill_number: str = None
     bill_name: str = None
+    bill_id: UUID = None # need to fill this
 
 
 @dataclass
 class StateBillDiff:
+    bill_id: UUID = None # need to fill
     senate_diff: Optional[GenericBillDiff] = None
     assembly_diff: Optional[GenericBillDiff] = None
 
@@ -346,6 +349,13 @@ def _calculate_all_bill_diffs(snapshot_state: SnapshotState) -> BillDiffSet:
     return bill_diffs
 
 
+def _create_filtered_bill_diffs(full_diffs: BillDiffSet, bill_ids: Set[UUID]) -> BillDiffSet:
+    filtered_diffs = BillDiffSet()
+    filtered_diffs.state_diffs = [d for d in full_diffs.state_diffs if d.bill_id in bill_ids]
+    filtered_diffs.city_diffs = [d for d in full_diffs.city_diffs if d.bill_id in bill_ids]
+    return filtered_diffs
+
+
 def send_bill_update_notifications(
     snapshots_by_bill_id,
 ):
@@ -354,14 +364,26 @@ def send_bill_update_notifications(
     if bill_diffs.city_diffs or bill_diffs.state_diffs:
         logging.info("Bills were changed in this cron run, sending emails")
 
-        subject, body_html, body_text = _render_email_contents(bill_diffs)
-        users_to_notify = User.query.filter_by(
-            send_bill_update_notifications=True
+        changed_bill_ids = [d.bill_id for d in bill_diffs.city_diffs] + [d.bill_id for d in bill_diffs.state_diffs]
+        relevant_notification_settings = UserBillSettings.query.filter(
+            UserBillSettings.send_bill_update_notifications==True,
+            UserBillSettings.bill_id.in_(changed_bill_ids)
         ).all()
 
-        for user in users_to_notify:
+        bill_settings_by_user_id = defaultdict(lambda: set())
+        for setting in relevant_notification_settings:
+            bill_settings_by_user_id[setting.user_id].add(setting)
+
+        # Maybe split out separate function?
+        for bill_settings in bill_settings_by_user_id.values():
+            requested_bill_ids = [s.bill_id for s in bill_settings]
+            filtered_diffs_for_user = _create_filtered_bill_diffs(bill_diffs, requested_bill_ids)
+            user = bill_settings[0].user
+
+            subject, body_html, body_text = _render_email_contents(filtered_diffs_for_user)
+
             logging.info(f"Sending bill update email to {user.email}")
             try:
                 send_email(user.email, subject, body_html, body_text)
             except ClientError:
-                logging.exception(f"Faild to send email to {user.email}")
+                logging.exception(f"Failed to send email to {user.email}")

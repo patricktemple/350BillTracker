@@ -1,12 +1,13 @@
 import enum
 from uuid import uuid4
 
-from sqlalchemy import Column, Enum, ForeignKey, Integer, Text
+from sqlalchemy import Column, Enum, ForeignKey, Integer, Text, Boolean, sql
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 
 from ..models import TIMESTAMP, UUID, db
+from ..user.models import User
 from ..utils import now
 
 DEFAULT_TWITTER_SEARCH_TERMS = [
@@ -260,3 +261,14 @@ class AssemblyBill(db.Model, StateChamberMixin):
         back_populates="bill",
         cascade="all, delete-orphan",
     )
+
+
+class UserBillSettings(db.Model):
+    __tablename__ = "user_bill_settings"
+
+    bill_id = Column(UUID, ForeignKey(Bill.id), primary_key=True)
+    user_id = Column(UUID, ForeignKey(User.id), primary_key=True)
+
+    send_bill_update_notifications = Column(Boolean, nullable=False, server_default=sql.false())
+
+    user = relationship(User, lazy="joined")
