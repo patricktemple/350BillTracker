@@ -2,6 +2,7 @@ import logging
 from uuid import uuid4
 
 from flask import jsonify, request
+import flask
 from werkzeug import exceptions
 
 from .. import state_api
@@ -18,6 +19,7 @@ from .models import (
     CityBill,
     PowerHour,
     SenateBill,
+    UserBillSettings
 )
 from .schema import (
     BillAttachmentSchema,
@@ -27,6 +29,7 @@ from .schema import (
     StateBillSearchResultSchema,
     TrackCityBillSchema,
     TrackStateBillSchema,
+    BillSettingsSchema
 )
 
 # Views ----------------------------------------------------------------------
@@ -82,7 +85,7 @@ def track_city_bill():
 def update_bill(bill_id):
     data = BillSchema().load(request.json)
 
-    bill = Bill.query.get(bill_id)
+    bill = Bill.query.with_for_update().get(bill_id)
     bill.notes = data["notes"]
     bill.nickname = data["nickname"]
 
@@ -259,3 +262,17 @@ def delete_bill_attachment(attachment_id):
     db.session.commit()
 
     return jsonify({})
+
+
+@app.route("/api/bills/<uuid:bill_id>/viewer-settings", methods=["PUT"])
+@auth_required
+def update_viewer_bill_settings(bill_id):
+    data = BillSettingsSchema.load(request.json)
+    bill_settings = UserBillSettings.query.with_for_update().filter_by(bill_id=bill_id, user_id=flask.g.request_user_id)
+    bill_settings.send_bill_update_notifications = data['send_bill_update_notifications']
+    db.session.commit()
+# TODO: Write a test for that
+
+
+# Now, how to get the data? Are we fetching all bill settings for a particular user? Or are we putting
+# the settings on each bill?

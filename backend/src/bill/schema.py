@@ -1,6 +1,8 @@
 from marshmallow import fields
 from marshmallow_enum import EnumField
 
+from backend.src.bill_notifications import send_bill_update_notifications
+
 from ..schema import CamelCaseSchema
 from .models import Bill, StateChamber
 
@@ -88,3 +90,7 @@ class PowerHourSchema(CamelCaseSchema):
 class CreatePowerHourSchema(CamelCaseSchema):
     power_hour = fields.Nested(PowerHourSchema)
     messages = fields.List(fields.String())
+
+
+class BillSettingsSchema(CamelCaseSchema):
+    send_bill_update_notifications = fields.Boolean()
