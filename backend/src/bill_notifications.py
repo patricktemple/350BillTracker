@@ -27,12 +27,12 @@ class GenericBillDiff:
 
     bill_number: str = None
     bill_name: str = None
-    bill_id: UUID = None  # need to fill this
+    bill_id: UUID = None
 
 
 @dataclass
 class StateBillDiff:
-    bill_id: UUID = None  # need to fill
+    bill_id: UUID = None
     senate_diff: Optional[GenericBillDiff] = None
     assembly_diff: Optional[GenericBillDiff] = None
 
@@ -357,12 +357,9 @@ def _calculate_all_bill_diffs(snapshot_state: SnapshotState) -> BillDiffSet:
 
 
 def _filter_diffs_for_user(user: User, full_bill_diffs: BillDiffSet):
-    # Could slightly optimize this by having a better relationship that just loads
-    # bills requesting update
     requested_bill_ids = {
-        s.bill_id
-        for s in user.bill_settings
-        if s.send_bill_update_notifications
+        bill.id
+        for bill in user.bills_with_notifications
     }
 
     filtered_diffs = BillDiffSet()
