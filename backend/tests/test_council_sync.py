@@ -169,16 +169,6 @@ def test_add_council_committees(snapshot):
         url="https://webapi.legistar.com/v1/nyc/bodies",
         json=[
             {
-                "BodyActiveFlag": 0,
-                "BodyTypeName": "Committee",
-                "BodyName": "Old committee that's expired",
-            },
-            {
-                "BodyActiveFlag": 1,
-                "BodyTypeName": "Club",
-                "BodyName": "Not a committee",
-            },
-            {
                 "BodyActiveFlag": 1,
                 "BodyTypeName": "Committee",
                 "BodyId": 1,
