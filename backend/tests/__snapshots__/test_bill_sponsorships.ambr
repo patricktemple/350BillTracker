@@ -1,3 +1,91 @@
+# name: test_get_assembly_member_sponsorships
+  <class 'list'> [
+    <class 'dict'> {
+      'bill': <class 'dict'> {
+        'cityBill': None,
+        'codeName': 'S1234 / A1234 from 2021 session',
+        'description': 'description',
+        'id': '00000000-0000-0000-0000-000000000001',
+        'name': 'state bill',
+        'nickname': 'nickname',
+        'notes': '',
+        'stateBill': <class 'dict'> {
+          'assemblyBill': <class 'dict'> {
+            'activeVersion': 'A',
+            'assemblyWebsite': 'https://nyassembly.gov/leg/?term=2021&bn=A1234',
+            'basePrintNo': 'A1234',
+            'senateWebsite': 'https://www.nysenate.gov/legislation/bills/2021/A1234',
+            'sponsorCount': 2,
+            'status': 'Voted',
+          },
+          'senateBill': <class 'dict'> {
+            'activeVersion': '',
+            'assemblyWebsite': 'https://nyassembly.gov/leg/?term=2021&bn=S1234',
+            'basePrintNo': 'S1234',
+            'senateWebsite': 'https://www.nysenate.gov/legislation/bills/2021/S1234',
+            'sponsorCount': 0,
+            'status': 'Committee',
+          },
+        },
+        'status': 'Committee / Voted',
+        'tracked': True,
+        'twitterSearchTerms': <class 'list'> [
+          'solar',
+          'climate',
+          'wind power',
+          'renewable',
+          'fossil fuel',
+        ],
+        'type': 'STATE',
+      },
+      'personId': '00000000-0000-0000-0000-000000000002',
+    },
+  ]
+---
+# name: test_get_senator_sponsorships
+  <class 'list'> [
+    <class 'dict'> {
+      'bill': <class 'dict'> {
+        'cityBill': None,
+        'codeName': 'S1234 / A1234 from 2021 session',
+        'description': 'description',
+        'id': '00000000-0000-0000-0000-000000000001',
+        'name': 'state bill',
+        'nickname': 'nickname',
+        'notes': '',
+        'stateBill': <class 'dict'> {
+          'assemblyBill': <class 'dict'> {
+            'activeVersion': 'A',
+            'assemblyWebsite': 'https://nyassembly.gov/leg/?term=2021&bn=A1234',
+            'basePrintNo': 'A1234',
+            'senateWebsite': 'https://www.nysenate.gov/legislation/bills/2021/A1234',
+            'sponsorCount': 0,
+            'status': 'Voted',
+          },
+          'senateBill': <class 'dict'> {
+            'activeVersion': '',
+            'assemblyWebsite': 'https://nyassembly.gov/leg/?term=2021&bn=S1234',
+            'basePrintNo': 'S1234',
+            'senateWebsite': 'https://www.nysenate.gov/legislation/bills/2021/S1234',
+            'sponsorCount': 2,
+            'status': 'Committee',
+          },
+        },
+        'status': 'Committee / Voted',
+        'tracked': True,
+        'twitterSearchTerms': <class 'list'> [
+          'solar',
+          'climate',
+          'wind power',
+          'renewable',
+          'fossil fuel',
+        ],
+        'type': 'STATE',
+      },
+      'personId': '00000000-0000-0000-0000-000000000002',
+    },
+  ]
+---
 # name: test_get_state_bill_sponsorships
   <class 'dict'> {
     'assemblySponsorships': <class 'dict'> {

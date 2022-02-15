@@ -146,6 +146,3 @@ def assembly_member_sponsorships(person_id):
     sponsorships = AssemblySponsorship.query.filter_by(person_id=person_id).options(joinedload(AssemblySponsorship.bill)).all()
 
     return StateRepresenativeSponsorshipSchema(many=True).jsonify(sponsorships)
-
-
-# TODO test these
