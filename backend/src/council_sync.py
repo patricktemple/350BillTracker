@@ -318,8 +318,6 @@ def sync_committee_memberships():
             logging.warning("TODO")
             continue
 
-        # # Problem: this is violating a unique constraint. Could the API be giving back duplicates
-        # Julie Menin is a pure duplicate, body ID 4 and person ID 7803
         committee.memberships.append(
             CouncilCommitteeMembership(person_id=person_id, is_chair=is_chair)
         )

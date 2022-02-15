@@ -39,7 +39,7 @@ def test_add_council_members():
 
     responses.add(
         responses.GET,
-        url="https://webapi.legistar.com/v1/nyc/officerecords?token=fake_token&%24filter=OfficeRecordBodyName+eq+%27City+Council%27+and+OfficeRecordStartDate+le+datetime%272021-10-12%27+and+OfficeRecordEndDate+ge+datetime%272021-10-12%27",
+        url="https://webapi.legistar.com/v1/nyc/officerecords?token=fake_token&%24filter=%28OfficeRecordBodyName+eq+%27City+Council%27%29+and+%28OfficeRecordStartDate+le+datetime%272021-10-12%27%29+and+%28OfficeRecordEndDate+ge+datetime%272021-10-12%27%29",
         json=[
             {
                 "OfficeRecordFullName": "Corey Johnson the 2nd",
@@ -236,7 +236,7 @@ def test_sync_committee_memberships(snapshot, council_member):
     )
     second_person.council_member = CouncilMember(city_council_person_id=13)
     second_person.council_member.committee_memberships.append(
-        CouncilCommitteeMembership(council_committee_id=existing_committee.id)
+        CouncilCommitteeMembership(committee_id=existing_committee.id)
     )
     db.session.add(second_person)
 
@@ -246,7 +246,7 @@ def test_sync_committee_memberships(snapshot, council_member):
     )
     third_person.council_member = CouncilMember(city_council_person_id=899)
     third_person.council_member.committee_memberships.append(
-        CouncilCommitteeMembership(council_committee_id=existing_committee.id)
+        CouncilCommitteeMembership(committee_id=existing_committee.id)
     )
     db.session.add(third_person)
 

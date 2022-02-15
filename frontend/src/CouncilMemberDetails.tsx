@@ -34,7 +34,9 @@ export default function CouncilMemberDetails(props: Props) {
   const [sponsorships, setSponsorships] = useState<
     SingleMemberSponsorship[] | null
   >(null);
-  const [committeeMemberships, setCommitteeMemberships] = useState<CouncilMemberCommitteeMembership[] | null>(null);
+  const [committeeMemberships, setCommitteeMemberships] = useState<
+    CouncilMemberCommitteeMembership[] | null
+  >(null);
 
   useMountEffect(() => {
     apiFetch(`/api/council-members/${person.id}/sponsorships`).then(
@@ -45,9 +47,11 @@ export default function CouncilMemberDetails(props: Props) {
     apiFetch(`/api/persons/${person.id}/contacts`).then((response) => {
       setContacts(response);
     });
-    apiFetch(`/api/council-members/${person.id}/committees`).then((response) => {
-      setCommitteeMemberships(response);
-    });
+    apiFetch(`/api/council-members/${person.id}/committees`).then(
+      (response) => {
+        setCommitteeMemberships(response);
+      }
+    );
   });
 
   const districtPhoneText =
@@ -77,9 +81,16 @@ export default function CouncilMemberDetails(props: Props) {
       <div className={styles.label}>Party</div>
       <div className={styles.content}>{person.party}</div>
       <div className={styles.label}>Committees</div>
-      <div className={styles.content}>{committeeMemberships == null ? "Loading..." : committeeMemberships.map(membership => (
-        <div key={membership.committee.id}>{membership.committee.name}{membership.isChair && ' (chair)'}</div>
-      ))}</div>
+      <div className={styles.content}>
+        {committeeMemberships == null
+          ? 'Loading...'
+          : committeeMemberships.map((membership) => (
+              <div key={membership.committee.id}>
+                {membership.committee.name}
+                {membership.isChair && ' (chair)'}
+              </div>
+            ))}
+      </div>
       <div className={styles.label}>Website</div>
       <div className={styles.content}>
         {person.councilMember!.website && (

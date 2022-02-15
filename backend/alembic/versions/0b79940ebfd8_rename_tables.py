@@ -5,14 +5,15 @@ Revises: f84b802082d4
 Create Date: 2021-12-26 10:54:44.320323
 
 """
-from alembic import op
 import sqlalchemy as sa
-import src
 from sqlalchemy.dialects import postgresql
 
+import src
+from alembic import op
+
 # revision identifiers, used by Alembic.
-revision = '0b79940ebfd8'
-down_revision = 'f84b802082d4'
+revision = "0b79940ebfd8"
+down_revision = "f84b802082d4"
 branch_labels = None
 depends_on = None
 

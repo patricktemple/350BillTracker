@@ -284,10 +284,9 @@ class CouncilCommitteeMembership(db.Model):
 
     # Note this is the internal CouncilCommittee.id, not the city API's body ID
     # (which is CouncilCommittee.council_body_id).
-    council_committee_id = Column(
+    committee_id = Column(
         UUID, ForeignKey(CouncilCommittee.id), nullable=False, index=True
     )
-    # TODO rename just to committee id?
 
     person_id = Column(
         UUID, ForeignKey(CouncilMember.person_id), nullable=False, index=True
@@ -304,7 +303,7 @@ class CouncilCommitteeMembership(db.Model):
     # Really, should this just be a primary key then?
     __table_args__ = (
         UniqueConstraint(
-            "council_committee_id",
+            "committee_id",
             "person_id",
             name="_council_committee_member_unique",
         ),

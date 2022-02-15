@@ -12,6 +12,19 @@ from .utils import now
 # See http://webapi.legistar.com/Help for an overview of resources.
 
 
+# It's weird that Committee on Land Use has a type of Land Use instead of committee
+# For reference, the other active body types in 2022 were:
+# Primary Legislative Body
+# Charter Revision Commission 2019
+# New York City Advisory Commission on Property Tax Reform
+# Democratic Conference of the Council of the City of New York
+# Manhattan Borough Board
+# Minority (Republican) Conference of the Council of the City of New York
+# Withdrawn
+# Special Committee
+COMMITTEE_TYPES = {"Committee", "Subcommittee", "Land Use"}
+
+
 def council_get(path, *, params=None):
     if not params:
         params = {}
@@ -31,8 +44,19 @@ def eq_filter(field, value):
     return f"{field} eq '{value}'"
 
 
-def make_filter_param(*filters):
-    return {"$filter": " and ".join(filters)}
+def make_filter_param(filter_value):
+    return {"$filter": filter_value}
+
+
+def and_(*filters):
+    return " and ".join([f"({f})" for f in filters])
+
+def or_(*filters):
+    return " or ".join([f"({f})" for f in filters])
+
+
+def join_filters_with_or(*filters):
+    return {"$filter": " and ".join([f"({f})" for f in filters])}
 
 
 def _convert_matter_to_bill(matter):
@@ -60,8 +84,10 @@ def lookup_bills(file_name):
         "matters",
         params=make_filter_param(
             # "Introduction" means "bill". Matters can be other things like "Motion".
-            eq_filter("MatterTypeName", "Introduction"),
-            f"substringof('{file_name}', MatterFile) eq true",
+            and_(
+                eq_filter("MatterTypeName", "Introduction"),
+                f"substringof('{file_name}', MatterFile) eq true",
+            ),
         ),
     )
     return [_convert_matter_to_bill(m) for m in matters]
@@ -96,14 +122,15 @@ def get_current_council_members():
     return council_get(
         "officerecords",
         params=make_filter_param(
-            eq_filter("OfficeRecordBodyName", "City Council"),
-            date_filter("OfficeRecordStartDate", "le", now().date()),
-            date_filter("OfficeRecordEndDate", "ge", now().date()),
+            and_(
+                eq_filter("OfficeRecordBodyName", "City Council"),
+                date_filter("OfficeRecordStartDate", "le", now().date()),
+                date_filter("OfficeRecordEndDate", "ge", now().date()),
+            ),
         ),
     )
 
 
-# Unify office records
 def get_committee_memberships(committee_body_ids: Set[int]):
     # An alternate way to filter is to check that OfficeRecordTitle is either 'CHAIRPERSON' or 'Committee Member'.
     # However, this way lets us restrict to the committees that exist in the DB, and could flexibly include new
@@ -111,8 +138,10 @@ def get_committee_memberships(committee_body_ids: Set[int]):
     records = council_get(
         "officerecords",
         params=make_filter_param(
-            date_filter("OfficeRecordStartDate", "le", now().date()),
-            date_filter("OfficeRecordEndDate", "ge", now().date()),
+            and_(
+                date_filter("OfficeRecordStartDate", "le", now().date()),
+                date_filter("OfficeRecordEndDate", "ge", now().date()),
+            ),
         ),
     )
     if len(records) >= 1000:
@@ -120,14 +149,13 @@ def get_committee_memberships(committee_body_ids: Set[int]):
             ">=1000 office records returned. This may be getting truncated by lack of pagination"
         )
 
-    # TODO: Filter this in the query instead?
     # This API problematically returns duplicates for the same record, so we dedupe them
-
     output = []
     seen = set()
     for record in records:
         body_id = record["OfficeRecordBodyId"]
         key = body_id, record["OfficeRecordPersonId"]
+        # TODO: Filter this in the query instead?
         if key not in seen and body_id in committee_body_ids:
             seen.add(key)
             output.append(record)
@@ -135,26 +163,13 @@ def get_committee_memberships(committee_body_ids: Set[int]):
 
 
 def get_committees():
-    # TODO: Filter this in the query! Can do that at end of the PR
+    committee_name_filter = or_(*[f"BodyTypeName eq '{c}'" for c in COMMITTEE_TYPES])
+    committee_filter_param = make_filter_param(and_("BodyActiveFlag eq 1", committee_name_filter))
+    logging.info(committee_filter_param)
+
     bodies = council_get(
         "bodies",
+        params=committee_filter_param
     )
 
-    # It's weird that Committee on Land Use has a type of Land Use instead of committee
-    committee_types = {"Committee", "Subcommittee", "Land Use"}
-
-    # For reference, the other active body types in 2022 were:
-    # Primary Legislative Body
-    # Charter Revision Commission 2019
-    # New York City Advisory Commission on Property Tax Reform
-    # Democratic Conference of the Council of the City of New York
-    # Manhattan Borough Board
-    # Minority (Republican) Conference of the Council of the City of New York
-    # Withdrawn
-    # Special Committee
-
-    return [
-        b
-        for b in bodies
-        if b["BodyActiveFlag"] and b["BodyTypeName"] in committee_types
-    ]
+    return bodies
