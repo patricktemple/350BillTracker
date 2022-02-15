@@ -13,6 +13,7 @@ from .schema import (
     CouncilMemberSponsorshipSchema,
     SponsorListSchema,
     StateBillSponsorshipsSchema,
+    StateRepresenativeSponsorshipSchema
 )
 
 
@@ -126,3 +127,25 @@ def state_bill_sponsorships(bill_id):
             },
         }
     )
+
+
+
+@app.route("/api/senators/<uuid:person_id>/sponsorships", methods=["GET"])
+@auth_required
+def senator_sponsorships(person_id):
+    sponsorships = SenateSponsorship.query.filter_by(person_id=person_id).options(joinedload(SenateSponsorship.bill)).all()
+
+    return StateRepresenativeSponsorshipSchema(many=True).jsonify(sponsorships)
+
+
+
+
+@app.route("/api/assembly-members/<uuid:person_id>/sponsorships", methods=["GET"])
+@auth_required
+def assembly_member_sponsorships(person_id):
+    sponsorships = AssemblySponsorship.query.filter_by(person_id=person_id).options(joinedload(AssemblySponsorship.bill)).all()
+
+    return StateRepresenativeSponsorshipSchema(many=True).jsonify(sponsorships)
+
+
+# TODO test these

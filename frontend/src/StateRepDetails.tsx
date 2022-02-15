@@ -1,4 +1,4 @@
-import { Person, StateRepresentative, OfficeContact } from './types';
+import { Person, StateRepresentative, OfficeContact, StateRepresentativeSponsorship } from './types';
 import React, { useState } from 'react';
 import styles from './style/PersonDetailsPanel.module.scss';
 import useMountEffect from '@restart/hooks/esm/useMountEffect';
@@ -28,11 +28,18 @@ export default function StateRepDetails(props: Props) {
 
   const [contacts, setContacts] = useState<OfficeContact[] | null>(null);
 
+  const [sponsorships, setSponsorships] = useState<StateRepresentativeSponsorship[] | null>(null);
+
   const apiFetch = useApiFetch();
 
   useMountEffect(() => {
     apiFetch(`/api/persons/${person.id}/contacts`).then((response) => {
       setContacts(response);
+    });
+    const sponsorshipPath = person.type === 'SENATOR' ? 'senators' : 'assembly-members';
+    apiFetch(`/api/${sponsorshipPath}/${person.id}/sponsorships`).then((response) => {
+      console.log(JSON.stringify(response));
+      setSponsorships(response);
     });
   });
 
