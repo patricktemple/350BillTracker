@@ -232,7 +232,7 @@ def test_save_bill__already_exists(client):
 def test_lookup_bill_not_tracked(client):
     responses.add(
         responses.GET,
-        url="https://webapi.legistar.com/v1/nyc/matters?token=fake_token&%24filter=MatterTypeName+eq+%27Introduction%27+and+substringof%28%271234%27%2C+MatterFile%29+eq+true",
+        url="https://webapi.legistar.com/v1/nyc/matters?token=fake_token&%24filter=%28MatterTypeName+eq+%27Introduction%27%29+and+%28substringof%28%271234%27%2C+MatterFile%29+eq+true%29",
         json=[create_fake_matter(1)],
     )
 
@@ -265,7 +265,7 @@ def test_lookup_bill_already_tracked(client):
 
     responses.add(
         responses.GET,
-        url="https://webapi.legistar.com/v1/nyc/matters?token=fake_token&%24filter=MatterTypeName+eq+%27Introduction%27+and+substringof%28%271234%27%2C+MatterFile%29+eq+true",
+        url="https://webapi.legistar.com/v1/nyc/matters?token=fake_token&%24filter=%28MatterTypeName+eq+%27Introduction%27%29+and+%28substringof%28%271234%27%2C+MatterFile%29+eq+true%29",
         json=[create_fake_matter(1)],
     )
 

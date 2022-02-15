@@ -63,3 +63,13 @@ class PersonSchema(CamelCaseSchema):
 
 class PersonWithContactsSchema(PersonSchema):
     office_contacts = fields.List(fields.Nested(OfficeContactSchema))
+
+
+class CouncilCommitteeSchema(CamelCaseSchema):
+    id = fields.UUID(dump_only=True)
+    name = fields.String(dump_only=True)
+
+
+class CouncilMemberCommitteeMembershipSchema(CamelCaseSchema):
+    is_chair = fields.Boolean(dump_only=True)
+    committee = fields.Nested(CouncilCommitteeSchema)

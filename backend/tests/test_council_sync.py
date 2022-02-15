@@ -10,10 +10,18 @@ from src.council_sync import (
     fill_council_person_data_from_api,
     fill_council_person_static_data,
     sync_bill_updates,
+    sync_committee_memberships,
+    sync_council_committees,
     update_all_sponsorships,
 )
 from src.models import db
-from src.person.models import CouncilMember, OfficeContact, Person
+from src.person.models import (
+    CouncilCommittee,
+    CouncilCommitteeMembership,
+    CouncilMember,
+    OfficeContact,
+    Person,
+)
 from src.sponsorship.models import CitySponsorship
 from src.static_data.council_data import COUNCIL_DATA_BY_LEGISLATOR_ID
 
@@ -31,7 +39,7 @@ def test_add_council_members():
 
     responses.add(
         responses.GET,
-        url="https://webapi.legistar.com/v1/nyc/officerecords?token=fake_token&%24filter=OfficeRecordBodyName+eq+%27City+Council%27+and+OfficeRecordStartDate+le+datetime%272021-10-12%27+and+OfficeRecordEndDate+ge+datetime%272021-10-12%27",
+        url="https://webapi.legistar.com/v1/nyc/officerecords?token=fake_token&%24filter=%28OfficeRecordBodyName+eq+%27City+Council%27%29+and+%28OfficeRecordStartDate+le+datetime%272021-10-12%27%29+and+%28OfficeRecordEndDate+ge+datetime%272021-10-12%27%29",
         json=[
             {
                 "OfficeRecordFullName": "Corey Johnson the 2nd",
@@ -147,6 +155,120 @@ def test_fill_council_person_static_data():
     assert corey.person.party == corey_static["party"]
     assert corey.borough == corey_static["borough"]
     assert corey.person.email == "existing-email@council.nyc.gov"
+
+
+@responses.activate
+def test_add_council_committees(snapshot):
+    existing_committee = CouncilCommittee(
+        council_body_id=1, name="Environment", body_type="Committee"
+    )
+    db.session.add(existing_committee)
+
+    responses.add(
+        responses.GET,
+        url="https://webapi.legistar.com/v1/nyc/bodies",
+        json=[
+            {
+                "BodyActiveFlag": 1,
+                "BodyTypeName": "Committee",
+                "BodyId": 1,
+                "BodyName": "Existing committee",
+            },
+            {
+                "BodyActiveFlag": 1,
+                "BodyTypeName": "Committee",
+                "BodyId": 2,
+                "BodyName": "New valid committee",
+            },
+            {
+                "BodyActiveFlag": 1,
+                "BodyTypeName": "Subcommittee",
+                "BodyId": 3,
+                "BodyName": "Valid subcommittee",
+            },
+            {
+                "BodyActiveFlag": 1,
+                "BodyTypeName": "Land Use",
+                "BodyId": 4,
+                "BodyName": "Land Use committee",
+            },
+        ],
+    )
+
+    sync_council_committees()
+
+    db.session.rollback()  # ensure a commit
+
+    result = CouncilCommittee.query.all()
+    assert [
+        (r.name, r.council_body_id, r.body_type) for r in result
+    ] == snapshot
+
+
+@responses.activate
+def test_sync_committee_memberships(snapshot, council_member):
+    existing_committee = CouncilCommittee(
+        id=uuid4(),
+        council_body_id=1,
+        name="Environment",
+        body_type="Committee",
+    )
+    db.session.add(existing_committee)
+
+    empty_committee = CouncilCommittee(
+        id=uuid4(), council_body_id=2, name="Land Use", body_type="Committee"
+    )
+    db.session.add(empty_committee)
+
+    second_person = Person(
+        type=Person.PersonType.COUNCIL_MEMBER,
+        name="Member already in committee, staying",
+    )
+    second_person.council_member = CouncilMember(city_council_person_id=13)
+    second_person.council_member.committee_memberships.append(
+        CouncilCommitteeMembership(committee_id=existing_committee.id)
+    )
+    db.session.add(second_person)
+
+    third_person = Person(
+        type=Person.PersonType.COUNCIL_MEMBER,
+        name="Member removed from committee",
+    )
+    third_person.council_member = CouncilMember(city_council_person_id=899)
+    third_person.council_member.committee_memberships.append(
+        CouncilCommitteeMembership(committee_id=existing_committee.id)
+    )
+    db.session.add(third_person)
+
+    responses.add(
+        responses.GET,
+        url="https://webapi.legistar.com/v1/nyc/officerecords",
+        json=[
+            {
+                "OfficeRecordPersonId": council_member.council_member.city_council_person_id,
+                "OfficeRecordBodyId": existing_committee.council_body_id,
+                "OfficeRecordTitle": "Committee member",
+            },
+            {
+                "OfficeRecordPersonId": second_person.council_member.city_council_person_id,
+                "OfficeRecordBodyId": existing_committee.council_body_id,
+                "OfficeRecordTitle": "CHAIRPERSON",
+            },
+        ],
+    )
+
+    sync_committee_memberships()
+
+    db.session.rollback()  # ensure a commit
+
+    result = CouncilCommitteeMembership.query.all()
+    assert {
+        (m.council_member.person.name, m.is_chair, m.committee.council_body_id)
+        for m in result
+    } == {
+        ("Member already in committee, staying", True, 1),
+        (council_member.name, False, 1),
+    }
 
 
 @responses.activate

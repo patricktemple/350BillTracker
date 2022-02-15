@@ -6,12 +6,20 @@ from requests import HTTPError
 from .bill.models import Bill
 from .council_api import (
     get_bill_sponsors,
+    get_committee_memberships,
+    get_committees,
     get_current_council_members,
     get_person,
     lookup_bill,
 )
 from .models import db
-from .person.models import CouncilMember, OfficeContact, Person
+from .person.models import (
+    CouncilCommittee,
+    CouncilCommitteeMembership,
+    CouncilMember,
+    OfficeContact,
+    Person,
+)
 from .sponsorship.models import CitySponsorship
 from .static_data.council_data import COUNCIL_DATA_BY_LEGISLATOR_ID
 from .utils import cron_function, now
@@ -228,6 +236,97 @@ def update_bill_sponsorships(city_bill, set_added_at=False):
 
     for lost_sponsor in previous_bill_sponsorships_by_id.values():
         db.session.delete(lost_sponsor)
+
+
+COMMITTEE_PREFIXES = ["Committee on ", "Subcommittee on "]
+
+
+def _clean_committee_name(name: str) -> str:
+    for prefix in COMMITTEE_PREFIXES:
+        if name.startswith(prefix):
+            return name[len(prefix) :]
+
+    return name
+
+
+@cron_function
+def sync_council_committees():
+    committees_from_api = get_committees()
+
+    existing_committees = CouncilCommittee.query.all()
+    existing_committees_by_body_id = {
+        c.council_body_id: c for c in existing_committees
+    }
+    for committee_data in committees_from_api:
+        body_id = committee_data["BodyId"]
+        committee_name = _clean_committee_name(committee_data["BodyName"])
+        committee = existing_committees_by_body_id.get(body_id)
+        if committee:
+            logging.info(
+                f"Council committee {committee_name} already found in DB, updating"
+            )
+        else:
+            logging.info(f"Adding new council committee {committee_name}")
+            committee = CouncilCommittee(
+                council_body_id=body_id,
+            )
+            db.session.add(committee)
+
+        committee.name = committee_name
+        committee.body_type = committee_data["BodyTypeName"]
+
+        # TODO: Handle removal of old committees?
+
+    db.session.commit()
+
+
+@cron_function
+def sync_committee_memberships():
+    committees = CouncilCommittee.query.all()
+
+    for committee in committees:
+        # Just delete and re-add all the memberships each time
+        committee.memberships = []
+
+    committees_by_body_id = {c.council_body_id: c for c in committees}
+
+    memberships = get_committee_memberships(committees_by_body_id.keys())
+
+    council_members_in_committees = CouncilMember.query.filter(
+        CouncilMember.city_council_person_id.in_(
+            (m["OfficeRecordPersonId"] for m in memberships)
+        )
+    ).all()
+    council_members_by_council_id = {
+        c.city_council_person_id: c for c in council_members_in_committees
+    }
+
+    for membership in memberships:
+        membership_body_id = membership["OfficeRecordBodyId"]
+        committee = committees_by_body_id.get(membership_body_id)
+        if not committee:
+            # Should not be possible, because we filter by the known committees in the API request
+            logging.warning(
+                f"Found a membership for an unknown committee: {membership_body_id}"
+            )
+            continue
+
+        person_id = council_members_by_council_id.get(
+            membership["OfficeRecordPersonId"]
+        ).person_id
+        is_chair = membership["OfficeRecordTitle"] == "CHAIRPERSON"
+
+        if not person_id:
+            logging.warning(
+                f"Found a committee membership for a council member not in the DB: {membership['OfficeRecordPersonId']}"
+            )
+            continue
+
+        committee.memberships.append(
+            CouncilCommitteeMembership(person_id=person_id, is_chair=is_chair)
+        )
+
+    db.session.commit()
 
 
 @cron_function
