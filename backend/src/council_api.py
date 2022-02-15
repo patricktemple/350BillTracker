@@ -51,6 +51,7 @@ def make_filter_param(filter_value):
 def and_(*filters):
     return " and ".join([f"({f})" for f in filters])
 
+
 def or_(*filters):
     return " or ".join([f"({f})" for f in filters])
 
@@ -163,13 +164,14 @@ def get_committee_memberships(committee_body_ids: Set[int]):
 
 
 def get_committees():
-    committee_name_filter = or_(*[f"BodyTypeName eq '{c}'" for c in COMMITTEE_TYPES])
-    committee_filter_param = make_filter_param(and_("BodyActiveFlag eq 1", committee_name_filter))
+    committee_name_filter = or_(
+        *[f"BodyTypeName eq '{c}'" for c in COMMITTEE_TYPES]
+    )
+    committee_filter_param = make_filter_param(
+        and_("BodyActiveFlag eq 1", committee_name_filter)
+    )
     logging.info(committee_filter_param)
 
-    bodies = council_get(
-        "bodies",
-        params=committee_filter_param
-    )
+    bodies = council_get("bodies", params=committee_filter_param)
 
     return bodies

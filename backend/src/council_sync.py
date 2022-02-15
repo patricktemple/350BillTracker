@@ -306,7 +306,9 @@ def sync_committee_memberships():
         committee = committees_by_body_id.get(membership_body_id)
         if not committee:
             # Should not be possible, because we filter by the known committees in the API request
-            logging.warning(f"Found a membership for an unknown committee: {membership_body_id}")
+            logging.warning(
+                f"Found a membership for an unknown committee: {membership_body_id}"
+            )
             continue
 
         person_id = council_members_by_council_id.get(
