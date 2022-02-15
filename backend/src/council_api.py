@@ -56,10 +56,6 @@ def or_(*filters):
     return " or ".join([f"({f})" for f in filters])
 
 
-def join_filters_with_or(*filters):
-    return {"$filter": " and ".join([f"({f})" for f in filters])}
-
-
 def _convert_matter_to_bill(matter):
     """Converts the City Council's representation of a bill, called Matters,
     into our own format."""

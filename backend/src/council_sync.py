@@ -315,8 +315,9 @@ def sync_committee_memberships():
             membership["OfficeRecordPersonId"]
         ).person_id
         is_chair = membership["OfficeRecordTitle"] == "CHAIRPERSON"
+
         if not person_id:
-            logging.warning("TODO")
+            logging.warning(f"Found a committee membership for a council member not in the DB: {membership['OfficeRecordPersonId']}")
             continue
 
         committee.memberships.append(
