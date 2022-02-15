@@ -101,8 +101,6 @@ def test_get_state_bill_sponsorships(
     )
     db.session.add(assembly_sponsorship)
 
-    # breakpoint()
-
     db.session.commit()
 
     response = client.get(f"/api/state-bills/{state_bill.id}/sponsorships")
@@ -111,3 +109,77 @@ def test_get_state_bill_sponsorships(
     response_data = get_response_data(response)
 
     assert response_data == snapshot
+
+
+def test_get_senator_sponsorships(
+    client, state_bill, senator, snapshot, get_uuid
+):
+    senate_sponsorship = SenateSponsorship(
+        bill_id=state_bill.id,
+        person_id=senator.id,
+        is_lead_sponsor=True,
+    )
+    db.session.add(senate_sponsorship)
+
+    other_senator = Person(
+        id=get_uuid(),
+        name="Senate non sponsor",
+        type=Person.PersonType.SENATOR,
+    )
+    other_senator.senator = Senator(state_member_id=5)
+    other_senate_sponsorship = SenateSponsorship(
+        bill_id=state_bill.id,
+        person_id=other_senator.id,
+        is_lead_sponsor=False,
+    )
+    db.session.add(other_senator)
+    db.session.add(other_senate_sponsorship)
+
+    db.session.commit()
+
+    response = client.get(f"/api/senators/{senator.id}/sponsorships")
+
+    assert response.status_code == 200
+    response_data = get_response_data(response)
+
+    assert response_data == snapshot
+    assert len(response_data) == 1
+    assert response_data[0]["personId"] == str(senator.id)
+
+
+def test_get_assembly_member_sponsorships(
+    client, state_bill, assembly_member, snapshot, get_uuid
+):
+    senate_sponsorship = AssemblySponsorship(
+        bill_id=state_bill.id,
+        person_id=assembly_member.id,
+        is_lead_sponsor=True,
+    )
+    db.session.add(senate_sponsorship)
+
+    other_assembly_member = Person(
+        id=get_uuid(),
+        name="Senate non sponsor",
+        type=Person.PersonType.ASSEMBLY_MEMBER,
+    )
+    other_assembly_member.assembly_member = AssemblyMember(state_member_id=5)
+    other_assembly_sponsorship = AssemblySponsorship(
+        bill_id=state_bill.id,
+        person_id=other_assembly_member.id,
+        is_lead_sponsor=False,
+    )
+    db.session.add(other_assembly_member)
+    db.session.add(other_assembly_sponsorship)
+
+    db.session.commit()
+
+    response = client.get(
+        f"/api/assembly-members/{assembly_member.id}/sponsorships"
+    )
+
+    assert response.status_code == 200
+    response_data = get_response_data(response)
+
+    assert response_data == snapshot
+    assert len(response_data) == 1
+    assert response_data[0]["personId"] == str(assembly_member.id)

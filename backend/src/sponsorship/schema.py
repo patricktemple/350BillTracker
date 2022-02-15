@@ -19,3 +19,8 @@ class SponsorListSchema(CamelCaseSchema):
 class StateBillSponsorshipsSchema(CamelCaseSchema):
     senate_sponsorships = fields.Nested(SponsorListSchema)
     assembly_sponsorships = fields.Nested(SponsorListSchema)
+
+
+class StateRepresenativeSponsorshipSchema(CamelCaseSchema):
+    person_id = fields.UUID(required=True)
+    bill = fields.Nested(BillSchema)
