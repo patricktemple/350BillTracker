@@ -144,7 +144,7 @@ def test_get_senator_sponsorships(
 
     assert response_data == snapshot
     assert len(response_data) == 1
-    assert response_data[0]['personId'] == str(senator.id)
+    assert response_data[0]["personId"] == str(senator.id)
 
 
 def test_get_assembly_member_sponsorships(
@@ -173,11 +173,13 @@ def test_get_assembly_member_sponsorships(
 
     db.session.commit()
 
-    response = client.get(f"/api/assembly-members/{assembly_member.id}/sponsorships")
+    response = client.get(
+        f"/api/assembly-members/{assembly_member.id}/sponsorships"
+    )
 
     assert response.status_code == 200
     response_data = get_response_data(response)
 
     assert response_data == snapshot
     assert len(response_data) == 1
-    assert response_data[0]['personId'] == str(assembly_member.id)
+    assert response_data[0]["personId"] == str(assembly_member.id)
