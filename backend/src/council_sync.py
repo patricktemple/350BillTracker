@@ -288,7 +288,6 @@ def sync_committee_memberships():
         # Just delete and re-add all the memberships each time
         committee.memberships = []
 
-    # todo handle duplicates. clear all memberships?
     committees_by_body_id = {c.council_body_id: c for c in committees}
 
     memberships = get_committee_memberships(committees_by_body_id.keys())
@@ -306,8 +305,8 @@ def sync_committee_memberships():
         membership_body_id = membership["OfficeRecordBodyId"]
         committee = committees_by_body_id.get(membership_body_id)
         if not committee:
-            # Should not be possible?
-            logging.warning("TODO")
+            # Should not be possible, because we filter by the known committees in the API request
+            logging.warning(f"Found a membership for an unknown committee: {membership_body_id}")
             continue
 
         person_id = council_members_by_council_id.get(

@@ -18,6 +18,7 @@ from src.person.models import (
     Person,
     Senator,
     Staffer,
+    CouncilCommittee, CouncilCommitteeMembership
 )
 from src.user.models import User
 from src.utils import now
@@ -100,6 +101,27 @@ def council_member(get_uuid):
     db.session.add(person)
     db.session.commit()
     return person
+
+
+@pytest.fixture
+def council_committee(get_uuid):
+    committee = CouncilCommittee(
+        id=get_uuid(),
+        name="Aging",
+        council_body_id=1,
+        body_type="Committee"
+    )
+    db.session.add(committee)
+    db.session.commit()
+    return committee
+
+
+@pytest.fixture
+def council_committee_membership(council_committee, council_member):
+    membership = CouncilCommitteeMembership(committee_id=council_committee.id)
+    council_member.council_member.committee_memberships.append(membership)
+    db.session.commit()
+    return membership
 
 
 @pytest.fixture

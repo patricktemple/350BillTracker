@@ -300,7 +300,6 @@ class CouncilCommitteeMembership(db.Model):
         CouncilMember, back_populates="committee_memberships", lazy="joined"
     )
 
-    # Really, should this just be a primary key then?
     __table_args__ = (
         UniqueConstraint(
             "committee_id",

@@ -8,6 +8,17 @@
     },
   ]
 ---
+# name: test_get_council_member_committees
+  <class 'list'> [
+    <class 'dict'> {
+      'committee': <class 'dict'> {
+        'id': '00000000-0000-0000-0000-000000000002',
+        'name': 'Aging',
+      },
+      'isChair': False,
+    },
+  ]
+---
 # name: test_get_persons
   <class 'list'> [
     <class 'dict'> {
