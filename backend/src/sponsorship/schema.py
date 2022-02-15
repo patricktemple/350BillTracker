@@ -23,5 +23,4 @@ class StateBillSponsorshipsSchema(CamelCaseSchema):
 
 class StateRepresenativeSponsorshipSchema(CamelCaseSchema):
     person_id = fields.UUID(required=True)
-    # Unclear why this isn't showing the bill name...
     bill = fields.Nested(BillSchema)
