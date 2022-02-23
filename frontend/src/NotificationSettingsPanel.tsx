@@ -61,7 +61,7 @@ export default function NotificationSettingsPanel() {
               key={s.bill.id}
               checked={s.sendBillUpdateNotifications}
               type={'checkbox'}
-              label={s.bill.name}
+              label={`${s.bill.name} (${s.bill.codeName})`}
               onChange={(e: any) =>
                 updateBillNotificationSettings(s.bill, e.target.checked)
               }

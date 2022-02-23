@@ -60,6 +60,7 @@ export interface Bill {
   tracked: boolean;
   codeName: string;
   status: string;
+  displayName: string;
 
   // Editable fields
   notes: string;

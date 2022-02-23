@@ -54,6 +54,7 @@ class BillSchema(CamelCaseSchema):
     type = EnumField(Bill.BillType, dump_only=True)
     city_bill = fields.Nested(CityBillSchema)
     state_bill = fields.Nested(StateBillSchema)
+    display_name = fields.String(dump_only=True)
 
 
 class StateBillSearchResultSchema(CamelCaseSchema):

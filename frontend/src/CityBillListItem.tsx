@@ -24,7 +24,7 @@ export default function CityBillListItem({ bill }: Props) {
       <CityIcon className={styles.billTypeIcon} />
       <div className={styles.billDetails}>
         <div style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
-          {bill.nickname || bill.name}
+          {bill.displayName}
         </div>
         <div>{cityBill.file}</div>
         <div className="mt-3">{cityBill.status}</div>

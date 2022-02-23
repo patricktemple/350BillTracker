@@ -11,6 +11,7 @@ from .bill.models import AssemblyBill, Bill, SenateBill, UserBillSettings
 from .person.models import Person
 from .ses import send_email
 from .user.models import User
+from .settings import APP_ORIGIN
 
 
 @dataclass
@@ -222,6 +223,7 @@ def _get_diff_set_template_variables(bill_diffs: BillDiffSet):
     return {
         "city_bills": city_bills_for_template,
         "state_bills": state_bills_for_template,
+        "app_origin": APP_ORIGIN,
     }
 
 
@@ -384,6 +386,8 @@ def _send_user_notifications(user: User, bill_diffs: BillDiffSet):
             logging.exception(f"Failed to send email to {user.email}")
 
 
+# TODO: Modify the template to have a link to the settings page so that people
+# can change their settings
 def send_bill_update_notifications(
     snapshots_by_bill_id,
 ):
