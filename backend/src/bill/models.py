@@ -1,11 +1,11 @@
 import enum
 from uuid import uuid4
-import flask
 
+import flask
 from sqlalchemy import Boolean, Column, Enum, ForeignKey, Integer, Text, sql
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.orm import relationship, foreign, remote
+from sqlalchemy.orm import foreign, relationship, remote
 
 from ..models import TIMESTAMP, UUID, db
 from ..user.models import User
@@ -275,6 +275,16 @@ class UserBillSettings(db.Model):
     )
 
     user = relationship(User, lazy="joined", back_populates="bill_settings")
-    bill = relationship(Bill) # lazy joined?
+    bill = relationship(Bill)  # lazy joined?
 
-Bill.viewer_settings = relationship(UserBillSettings, primaryjoin=(remote(UserBillSettings.bill_id) == foreign(Bill.id)) & (UserBillSettings.user_id == sql.bindparam("request_user_id", callable_=lambda: flask.g.request_user_id)))
+
+Bill.viewer_settings = relationship(
+    UserBillSettings,
+    primaryjoin=(remote(UserBillSettings.bill_id) == foreign(Bill.id))
+    & (
+        UserBillSettings.user_id
+        == sql.bindparam(
+            "request_user_id", callable_=lambda: flask.g.request_user_id
+        )
+    ),
+)

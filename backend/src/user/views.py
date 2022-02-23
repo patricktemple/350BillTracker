@@ -1,3 +1,4 @@
+import logging
 import secrets
 from datetime import timedelta
 
@@ -5,17 +6,21 @@ import flask
 from flask import jsonify, request
 from sqlalchemy.exc import IntegrityError
 from werkzeug import exceptions
-import logging
 
 from ..app import app
 from ..auth import auth_required, create_jwt
+from ..bill.models import Bill, UserBillSettings
 from ..models import db
 from ..ses import send_login_link_email
 from ..settings import APP_ORIGIN
 from ..utils import now
 from .models import LoginLink, User
-from .schema import CreateLoginLinkSchema, LoginSchema, UserSchema, UserBillSettingsSchema
-from ..bill.models import UserBillSettings, Bill
+from .schema import (
+    CreateLoginLinkSchema,
+    LoginSchema,
+    UserBillSettingsSchema,
+    UserSchema,
+)
 
 
 @app.route(
@@ -153,9 +158,11 @@ def get_viewer_bill_settings():
         if viewer_bill_settings:
             complete_bill_settings.append(viewer_bill_settings)
         else:
-            complete_bill_settings.append({
-                "bill": bill,
-                "send_bill_update_notifications": False,
-            })
+            complete_bill_settings.append(
+                {
+                    "bill": bill,
+                    "send_bill_update_notifications": False,
+                }
+            )
 
     return UserBillSettingsSchema(many=True).jsonify(complete_bill_settings)

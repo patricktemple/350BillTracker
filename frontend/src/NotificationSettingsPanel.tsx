@@ -10,8 +10,7 @@ interface BillSettings {
 }
 
 export default function NotificationSettingsPanel() {
-  const [billSettings, setBillSettings] =
-    useState<BillSettings | null>(null);
+  const [billSettings, setBillSettings] = useState<BillSettings | null>(null);
   const apiFetch = useApiFetch();
 
   useMountEffect(() => {
@@ -25,12 +24,15 @@ export default function NotificationSettingsPanel() {
     });
   });
 
-  function updateBillNotificationSettings(bill: Bill, sendBillUpdateNotifications: boolean) {
+  function updateBillNotificationSettings(
+    bill: Bill,
+    sendBillUpdateNotifications: boolean
+  ) {
     setBillSettings({
       ...billSettings,
       [bill.id]: {
         sendBillUpdateNotifications,
-        bill,
+        bill
       }
     });
     apiFetch(`/api/bills/${bill.id}/viewer-settings`, {
@@ -48,15 +50,23 @@ export default function NotificationSettingsPanel() {
   return (
     <div>
       <h2 className={styles.title}>Notification settings</h2>
-      <p>Notify me by email whenever the status or sponsorships change on specific bills:</p>
-      {billSettings == null ? "Loading..." : Object.values(billSettings).map((s) => (
-      <Form.Check
-        key={s.bill.id}
-        checked={s.sendBillUpdateNotifications}
-        type={'checkbox'}
-        label={s.bill.name}
-        onChange={(e: any) => updateBillNotificationSettings(s.bill, e.target.checked)}
-      />))}
+      <p>
+        Notify me by email whenever the status or sponsorships change on
+        specific bills:
+      </p>
+      {billSettings == null
+        ? 'Loading...'
+        : Object.values(billSettings).map((s) => (
+            <Form.Check
+              key={s.bill.id}
+              checked={s.sendBillUpdateNotifications}
+              type={'checkbox'}
+              label={s.bill.name}
+              onChange={(e: any) =>
+                updateBillNotificationSettings(s.bill, e.target.checked)
+              }
+            />
+          ))}
     </div>
   );
 }

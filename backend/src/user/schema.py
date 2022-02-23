@@ -1,7 +1,7 @@
 from marshmallow import fields
 
-from ..schema import CamelCaseSchema
 from ..bill.schema import BillSchema
+from ..schema import CamelCaseSchema
 
 
 class UserSchema(CamelCaseSchema):
@@ -12,7 +12,7 @@ class UserSchema(CamelCaseSchema):
     name = fields.String()
     can_be_deleted = fields.Boolean(dump_only=True)
     send_bill_update_notifications = fields.Boolean()
-    
+
 
 # i can either put this into the user schema on its own... since it gets loaded when the page loads
 # or else make it a separate call

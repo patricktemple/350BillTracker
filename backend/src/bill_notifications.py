@@ -357,10 +357,7 @@ def _calculate_all_bill_diffs(snapshot_state: SnapshotState) -> BillDiffSet:
 
 
 def _filter_diffs_for_user(user: User, full_bill_diffs: BillDiffSet):
-    requested_bill_ids = {
-        bill.id
-        for bill in user.bills_with_notifications
-    }
+    requested_bill_ids = {bill.id for bill in user.bills_with_notifications}
 
     filtered_diffs = BillDiffSet()
     filtered_diffs.state_diffs = [

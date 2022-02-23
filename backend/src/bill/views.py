@@ -1,8 +1,8 @@
 import logging
 from uuid import uuid4
 
-from flask import jsonify, request
 import flask
+from flask import jsonify, request
 from werkzeug import exceptions
 
 from .. import state_api
@@ -19,17 +19,17 @@ from .models import (
     CityBill,
     PowerHour,
     SenateBill,
-    UserBillSettings
+    UserBillSettings,
 )
 from .schema import (
     BillAttachmentSchema,
     BillSchema,
+    BillSettingsSchema,
     CreatePowerHourSchema,
     PowerHourSchema,
     StateBillSearchResultSchema,
     TrackCityBillSchema,
     TrackStateBillSchema,
-    BillSettingsSchema
 )
 
 # Views ----------------------------------------------------------------------
@@ -269,15 +269,23 @@ def delete_bill_attachment(attachment_id):
 def update_viewer_bill_settings(bill_id):
     data = BillSettingsSchema().load(request.json)
 
-    bill_settings = UserBillSettings.query.filter_by(bill_id=bill_id, user_id=flask.g.request_user_id).one_or_none()
+    bill_settings = UserBillSettings.query.filter_by(
+        bill_id=bill_id, user_id=flask.g.request_user_id
+    ).one_or_none()
     if not bill_settings:
-        bill_settings = UserBillSettings(user_id=flask.g.request_user_id, bill_id=bill_id)
+        bill_settings = UserBillSettings(
+            user_id=flask.g.request_user_id, bill_id=bill_id
+        )
         db.session.add(bill_settings)
 
-    bill_settings.send_bill_update_notifications = data['send_bill_update_notifications']
+    bill_settings.send_bill_update_notifications = data[
+        "send_bill_update_notifications"
+    ]
     db.session.commit()
 
     return jsonify({})
+
+
 # TODO: Write a test for that
 
 

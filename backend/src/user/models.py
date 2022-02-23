@@ -27,8 +27,13 @@ class User(db.Model):
         "UserBillSettings", back_populates="user", cascade="all, delete-orphan"
     )
 
-    bills_with_notifications = relationship("Bill", secondary="user_bill_settings", primaryjoin="and_(UserBillSettings.user_id==User.id, UserBillSettings.send_bill_update_notifications)",
-        secondaryjoin="UserBillSettings.bill_id==Bill.id", viewonly=True)
+    bills_with_notifications = relationship(
+        "Bill",
+        secondary="user_bill_settings",
+        primaryjoin="and_(UserBillSettings.user_id==User.id, UserBillSettings.send_bill_update_notifications)",
+        secondaryjoin="UserBillSettings.bill_id==Bill.id",
+        viewonly=True,
+    )
 
     __table_args__ = (
         CheckConstraint(

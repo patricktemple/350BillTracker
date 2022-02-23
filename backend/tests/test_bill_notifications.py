@@ -1,8 +1,8 @@
 from unittest.mock import patch
 from uuid import uuid4
 
-import responses
 import pytest
+import responses
 
 from src.app import app
 from src.bill.models import (
@@ -21,9 +21,9 @@ from src.bill_notifications import (
     StateBillDiff,
     StateBillSnapshot,
     _calculate_all_bill_diffs,
+    _filter_diffs_for_user,
     _render_email_contents,
     send_bill_update_notifications,
-    _filter_diffs_for_user
 )
 from src.models import db
 from src.person.models import AssemblyMember, CouncilMember, Person, Senator
@@ -502,11 +502,22 @@ def test_email_contents__city_sponsor_added_and_removed(snapshot):
     assert snapshot == make_email_snapshot(subject, html, text)
 
 
-
-@pytest.mark.parametrize(("notify", "expected_diff_count"), [(False, 0), (True, 1)])
-def test_filter_diffs_for_user(user, state_bill, city_bill, notify, expected_diff_count):
-    user.bill_settings.append(UserBillSettings(bill_id=state_bill.id, send_bill_update_notifications=notify))
-    user.bill_settings.append(UserBillSettings(bill_id=city_bill.id, send_bill_update_notifications=notify))
+@pytest.mark.parametrize(
+    ("notify", "expected_diff_count"), [(False, 0), (True, 1)]
+)
+def test_filter_diffs_for_user(
+    user, state_bill, city_bill, notify, expected_diff_count
+):
+    user.bill_settings.append(
+        UserBillSettings(
+            bill_id=state_bill.id, send_bill_update_notifications=notify
+        )
+    )
+    user.bill_settings.append(
+        UserBillSettings(
+            bill_id=city_bill.id, send_bill_update_notifications=notify
+        )
+    )
     db.session.commit()
 
     city_diff = GenericBillDiff(
@@ -550,8 +561,16 @@ def test_send_email_notification_end_to_end(
         name="User to notify",
         email="user@example.com",
     )
-    user_to_notify.bill_settings.append(UserBillSettings(bill_id=city_bill.id, send_bill_update_notifications=True))
-    user_to_notify.bill_settings.append(UserBillSettings(bill_id=state_bill.id, send_bill_update_notifications=True))
+    user_to_notify.bill_settings.append(
+        UserBillSettings(
+            bill_id=city_bill.id, send_bill_update_notifications=True
+        )
+    )
+    user_to_notify.bill_settings.append(
+        UserBillSettings(
+            bill_id=state_bill.id, send_bill_update_notifications=True
+        )
+    )
     db.session.add(user_to_notify)
     other_user = User(
         id=uuid4(), name="Someone else", email="wrong@example.com"
