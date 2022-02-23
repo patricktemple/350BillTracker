@@ -1,8 +1,6 @@
 from marshmallow import fields
 from marshmallow_enum import EnumField
 
-from backend.src.bill_notifications import send_bill_update_notifications
-
 from ..schema import CamelCaseSchema
 from .models import Bill, StateChamber
 
