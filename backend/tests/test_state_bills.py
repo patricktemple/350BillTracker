@@ -24,6 +24,7 @@ def test_get_bills(client, state_bill):
                 "id": str(state_bill.id),
                 "name": "state bill",
                 "nickname": "nickname",
+                "displayName": "nickname",
                 "notes": "",
                 "stateBill": {
                     "assemblyBill": {
