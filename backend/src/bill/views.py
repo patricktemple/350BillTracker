@@ -269,8 +269,11 @@ def delete_bill_attachment(attachment_id):
 def update_viewer_bill_settings(bill_id):
     data = BillSettingsSchema().load(request.json)
 
-    # this needs to be an upsert! right now it does nothing
-    bill_settings = UserBillSettings.query.with_for_update().filter_by(bill_id=bill_id, user_id=flask.g.request_user_id)
+    bill_settings = UserBillSettings.query.filter_by(bill_id=bill_id, user_id=flask.g.request_user_id).one_or_none()
+    if not bill_settings:
+        bill_settings = UserBillSettings(user_id=flask.g.request_user_id, bill_id=bill_id)
+        db.session.add(bill_settings)
+
     bill_settings.send_bill_update_notifications = data['send_bill_update_notifications']
     db.session.commit()
 
