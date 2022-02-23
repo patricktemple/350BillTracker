@@ -145,7 +145,6 @@ def update_current_user():
 )
 @auth_required
 def get_viewer_bill_settings():
-    # viewer_bill_settings = UserBillSettings.query.filter_by(user_id=flask.g.request_user_id).all()
     bills = Bill.query.all()
 
     complete_bill_settings = []

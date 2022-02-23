@@ -267,10 +267,14 @@ def delete_bill_attachment(attachment_id):
 @app.route("/api/bills/<uuid:bill_id>/viewer-settings", methods=["PUT"])
 @auth_required
 def update_viewer_bill_settings(bill_id):
-    data = BillSettingsSchema.load(request.json)
+    data = BillSettingsSchema().load(request.json)
+
+    # this needs to be an upsert! right now it does nothing
     bill_settings = UserBillSettings.query.with_for_update().filter_by(bill_id=bill_id, user_id=flask.g.request_user_id)
     bill_settings.send_bill_update_notifications = data['send_bill_update_notifications']
     db.session.commit()
+
+    return jsonify({})
 # TODO: Write a test for that
 
 
