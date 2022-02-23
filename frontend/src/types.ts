@@ -172,3 +172,8 @@ export interface StateRepresentativeSponsorship {
   personId: Uuid;
   bill: Bill;
 }
+
+export interface UserBillSettings {
+  bill: Bill;
+  sendBillUpdateNotifications: boolean;
+}

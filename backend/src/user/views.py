@@ -5,6 +5,7 @@ import flask
 from flask import jsonify, request
 from sqlalchemy.exc import IntegrityError
 from werkzeug import exceptions
+import logging
 
 from ..app import app
 from ..auth import auth_required, create_jwt
@@ -13,7 +14,8 @@ from ..ses import send_login_link_email
 from ..settings import APP_ORIGIN
 from ..utils import now
 from .models import LoginLink, User
-from .schema import CreateLoginLinkSchema, LoginSchema, UserSchema
+from .schema import CreateLoginLinkSchema, LoginSchema, UserSchema, UserBillSettingsSchema
+from ..bill.models import UserBillSettings, Bill
 
 
 @app.route(
@@ -135,3 +137,26 @@ def update_current_user():
     db.session.commit()
 
     return jsonify({})
+
+
+@app.route(
+    "/api/viewer/bill-settings",
+    methods=["GET"],
+)
+@auth_required
+def get_viewer_bill_settings():
+    # viewer_bill_settings = UserBillSettings.query.filter_by(user_id=flask.g.request_user_id).all()
+    bills = Bill.query.all()
+
+    complete_bill_settings = []
+    for bill in bills:
+        viewer_bill_settings = bill.viewer_settings
+        if viewer_bill_settings:
+            complete_bill_settings.append(viewer_bill_settings)
+        else:
+            complete_bill_settings.append({
+                "bill": bill,
+                "send_bill_update_notifications": False,
+            })
+
+    return UserBillSettingsSchema(many=True).jsonify(complete_bill_settings)

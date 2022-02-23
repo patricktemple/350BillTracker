@@ -12,7 +12,7 @@ import src
 
 # revision identifiers, used by Alembic.
 revision = 'c8f2969150b7'
-down_revision = '9fd6c4dbc2fe'
+down_revision = '633c4c780a33'
 branch_labels = None
 depends_on = None
 
