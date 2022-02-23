@@ -64,6 +64,7 @@ def test_get_saved_bills(client):
                     "sponsorCount": 0,
                 },
                 "codeName": "file",
+                "displayName": "ban gas",
                 "status": "Enacted",
                 "name": "name",
                 "description": "description",
