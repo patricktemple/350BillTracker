@@ -386,8 +386,6 @@ def _send_user_notifications(user: User, bill_diffs: BillDiffSet):
             logging.exception(f"Failed to send email to {user.email}")
 
 
-# TODO: Modify the template to have a link to the settings page so that people
-# can change their settings
 def send_bill_update_notifications(
     snapshots_by_bill_id,
 ):

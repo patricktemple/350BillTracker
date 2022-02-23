@@ -96,3 +96,6 @@ def test_update_viewer(client, user_id):
 
     user = User.query.get(user_id)
     assert user.send_bill_update_notifications
+
+
+# Need a test for fetching the user's bill settings
