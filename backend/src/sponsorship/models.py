@@ -110,13 +110,15 @@ class StateSponsorshipMixin:
         )
 
     @declared_attr
-    def bill(self):
+    def chamber_bill(self):
         return relationship(
             self.bill_class,
             back_populates="sponsorships",
         )
 
     is_lead_sponsor = Column(Boolean, nullable=False)
+
+    # TODO: Add state sponsorship unique constraints
 
 
 class SenateSponsorship(db.Model, StateSponsorshipMixin):
@@ -131,6 +133,18 @@ class AssemblySponsorship(db.Model, StateSponsorshipMixin):
 
     bill_class = AssemblyBill
     representative_class = AssemblyMember
+
+
+AssemblySponsorship.bill = relationship(
+    Bill,
+    primaryjoin=remote(Bill.id) == foreign(AssemblySponsorship.bill_id),
+    viewonly=True,
+)
+SenateSponsorship.bill = relationship(
+    Bill,
+    primaryjoin=remote(Bill.id) == foreign(SenateSponsorship.bill_id),
+    viewonly=True,
+)
 
 
 # This may be inefficient because it loads this on every bill even if these fields aren't needed

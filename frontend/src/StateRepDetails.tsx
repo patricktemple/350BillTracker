@@ -1,8 +1,14 @@
-import { Person, StateRepresentative, OfficeContact } from './types';
+import {
+  Person,
+  StateRepresentative,
+  OfficeContact,
+  StateRepresentativeSponsorship
+} from './types';
 import React, { useState } from 'react';
 import styles from './style/PersonDetailsPanel.module.scss';
 import useMountEffect from '@restart/hooks/esm/useMountEffect';
 import useApiFetch from './useApiFetch';
+import { Link } from 'react-router-dom';
 
 interface Props {
   person: Person;
@@ -28,12 +34,23 @@ export default function StateRepDetails(props: Props) {
 
   const [contacts, setContacts] = useState<OfficeContact[] | null>(null);
 
+  const [sponsorships, setSponsorships] = useState<
+    StateRepresentativeSponsorship[] | null
+  >(null);
+
   const apiFetch = useApiFetch();
 
   useMountEffect(() => {
     apiFetch(`/api/persons/${person.id}/contacts`).then((response) => {
       setContacts(response);
     });
+    const sponsorshipPath =
+      person.type === 'SENATOR' ? 'senators' : 'assembly-members';
+    apiFetch(`/api/${sponsorshipPath}/${person.id}/sponsorships`).then(
+      (response) => {
+        setSponsorships(response);
+      }
+    );
   });
 
   // TODO: Display their sponsorships here, too (can do in later PR from State impl)
@@ -68,6 +85,26 @@ export default function StateRepDetails(props: Props) {
           <a href={`https://twitter.com/${person.twitter}`} target="twitter">
             @{person.twitter}
           </a>
+        )}
+      </div>
+      <div className={styles.label}>
+        <div style={{ fontWeight: 'bold' }}>Sponsored bills</div>
+      </div>
+      <div className={styles.content}>
+        {sponsorships == null ? (
+          'Loading...'
+        ) : (
+          <div>
+            {sponsorships.map((s) => (
+              <Link
+                className="d-block"
+                to={'/bills/' + s.bill.id}
+                key={s.bill.id}
+              >
+                <em>{s.bill.nickname || s.bill.name}</em>
+              </Link>
+            ))}
+          </div>
         )}
       </div>
     </>

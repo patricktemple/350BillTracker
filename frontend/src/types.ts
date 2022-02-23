@@ -117,7 +117,7 @@ export interface OfficeContact {
 
 export interface SingleMemberSponsorship {
   bill: Bill;
-  personId: string;
+  councilMemberId: string;
 }
 
 export interface BillAttachment {
@@ -156,4 +156,19 @@ export interface Staffer {
   email: string;
   officeContacts: OfficeContact[];
   twitter: string;
+}
+
+export interface CouncilCommittee {
+  name: string;
+  id: Uuid;
+}
+
+export interface CouncilMemberCommitteeMembership {
+  isChair: boolean;
+  committee: CouncilCommittee;
+}
+
+export interface StateRepresentativeSponsorship {
+  personId: Uuid;
+  bill: Bill;
 }
