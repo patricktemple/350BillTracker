@@ -287,4 +287,5 @@ Bill.viewer_settings = relationship(
             "request_user_id", callable_=lambda: flask.g.request_user_id
         )
     ),
+    viewonly=True
 )
