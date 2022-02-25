@@ -85,7 +85,7 @@ def track_city_bill():
 def update_bill(bill_id):
     data = BillSchema().load(request.json)
 
-    bill = Bill.query.with_for_update().get(bill_id)
+    bill = Bill.query.get(bill_id)
     bill.notes = data["notes"]
     bill.nickname = data["nickname"]
 

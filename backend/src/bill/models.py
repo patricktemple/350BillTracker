@@ -275,7 +275,7 @@ class UserBillSettings(db.Model):
     )
 
     user = relationship(User, lazy="joined", back_populates="bill_settings")
-    bill = relationship(Bill)  # lazy joined?
+    bill = relationship(Bill)
 
 
 Bill.viewer_settings = relationship(
