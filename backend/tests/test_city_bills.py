@@ -2,7 +2,13 @@ import json
 from uuid import uuid4
 
 import responses
-from src.bill.models import DEFAULT_TWITTER_SEARCH_TERMS, Bill, CityBill, UserBillSettings
+
+from src.bill.models import (
+    DEFAULT_TWITTER_SEARCH_TERMS,
+    Bill,
+    CityBill,
+    UserBillSettings,
+)
 from src.models import db
 from src.person.models import CouncilMember, Person
 from src.utils import now
@@ -282,23 +288,31 @@ def test_lookup_bill_already_tracked(client):
 
 def test_update_bill_settings__no_explicit_setting(client, city_bill, user_id):
     client.put(
-        f"/api/bills/{city_bill.id}/viewer-settings", data={
-            "sendBillUpdateNotifications": True
-        }
+        f"/api/bills/{city_bill.id}/viewer-settings",
+        data={"sendBillUpdateNotifications": True},
     )
-    bill_settings = UserBillSettings.query.filter_by(bill_id=city_bill.id, user_id=user_id).one()
+    bill_settings = UserBillSettings.query.filter_by(
+        bill_id=city_bill.id, user_id=user_id
+    ).one()
     assert bill_settings.send_bill_update_notifications
 
 
-def test_update_bill_settings__setting_already_exists(client, city_bill, user_id):
-    existing_settings = UserBillSettings(bill_id=city_bill.id, user_id=user_id, send_bill_update_notifications=False)
+def test_update_bill_settings__setting_already_exists(
+    client, city_bill, user_id
+):
+    existing_settings = UserBillSettings(
+        bill_id=city_bill.id,
+        user_id=user_id,
+        send_bill_update_notifications=False,
+    )
     db.session.add(existing_settings)
     db.session.commit()
 
     client.put(
-        f"/api/bills/{city_bill.id}/viewer-settings", data={
-            "sendBillUpdateNotifications": True
-        }
+        f"/api/bills/{city_bill.id}/viewer-settings",
+        data={"sendBillUpdateNotifications": True},
     )
-    bill_settings = UserBillSettings.query.filter_by(bill_id=city_bill.id, user_id=user_id).one()
+    bill_settings = UserBillSettings.query.filter_by(
+        bill_id=city_bill.id, user_id=user_id
+    ).one()
     assert bill_settings.send_bill_update_notifications

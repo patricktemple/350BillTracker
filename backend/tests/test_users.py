@@ -1,6 +1,6 @@
+from src.bill.models import CityBill, StateBill, UserBillSettings
 from src.models import db
 from src.user.models import User
-from src.bill.models import CityBill, StateBill, UserBillSettings
 
 from .utils import assert_response, get_response_data
 
@@ -85,10 +85,16 @@ def test_get_viewer_requires_auth(unauthenticated_client, user_id, user_email):
 
 
 def test_get_viewer_bill_settings(client, city_bill, state_bill, user_id):
-    existing_city_settings = UserBillSettings(bill_id=city_bill.id, user_id=user_id, send_bill_update_notifications=True)
+    existing_city_settings = UserBillSettings(
+        bill_id=city_bill.id,
+        user_id=user_id,
+        send_bill_update_notifications=True,
+    )
     db.session.add(existing_city_settings)
 
-    response = client.get('/api/viewer/bill-settings')
+    response = client.get("/api/viewer/bill-settings")
     response_data = get_response_data(response)
-    assert {(d['bill']['id'], d['sendBillUpdateNotifications']) for d in response_data} == \
-        {(str(city_bill.id), True), (str(state_bill.id), False)}
+    assert {
+        (d["bill"]["id"], d["sendBillUpdateNotifications"])
+        for d in response_data
+    } == {(str(city_bill.id), True), (str(state_bill.id), False)}

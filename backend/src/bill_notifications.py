@@ -10,8 +10,8 @@ from flask import render_template
 from .bill.models import AssemblyBill, Bill, SenateBill, UserBillSettings
 from .person.models import Person
 from .ses import send_email
-from .user.models import User
 from .settings import APP_ORIGIN
+from .user.models import User
 
 
 @dataclass
