@@ -17,14 +17,22 @@ class User(db.Model):
     name = Column(Text)
 
     login_links = relationship(
-        "LoginLink", back_populates="user", cascade="all, delete"
+        "LoginLink", back_populates="user", cascade="all, delete-orphan"
     )
 
     # The "root" user can never be deleted.
     can_be_deleted = Column(Boolean, nullable=False, server_default=sql.true())
 
-    send_bill_update_notifications = Column(
-        Boolean, nullable=False, server_default=sql.false(), index=True
+    bill_settings = relationship(
+        "UserBillSettings", back_populates="user", cascade="all, delete-orphan"
+    )
+
+    bills_with_notifications = relationship(
+        "Bill",
+        secondary="user_bill_settings",
+        primaryjoin="and_(UserBillSettings.user_id==User.id, UserBillSettings.send_bill_update_notifications)",
+        secondaryjoin="UserBillSettings.bill_id==Bill.id",
+        viewonly=True,
     )
 
     __table_args__ = (

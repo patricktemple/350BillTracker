@@ -101,7 +101,7 @@ export default function StateRepDetails(props: Props) {
                 to={'/bills/' + s.bill.id}
                 key={s.bill.id}
               >
-                <em>{s.bill.nickname || s.bill.name}</em>
+                <em>{s.bill.displayName}</em>
               </Link>
             ))}
           </div>

@@ -20,3 +20,5 @@ STATE BILLS
 {% endfor %}
 {% endfor %}
 {% endif %}
+
+You can change which bills you're subscribed to at {{ app_origin }}/settings.

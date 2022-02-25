@@ -1,6 +1,7 @@
 import logging
 from uuid import uuid4
 
+import flask
 from flask import jsonify, request
 from werkzeug import exceptions
 
@@ -18,10 +19,12 @@ from .models import (
     CityBill,
     PowerHour,
     SenateBill,
+    UserBillSettings,
 )
 from .schema import (
     BillAttachmentSchema,
     BillSchema,
+    BillSettingsSchema,
     CreatePowerHourSchema,
     PowerHourSchema,
     StateBillSearchResultSchema,
@@ -256,6 +259,28 @@ def add_bill_attachment(bill_id):
 def delete_bill_attachment(attachment_id):
     attachment = BillAttachment.query.filter_by(id=attachment_id).one()
     db.session.delete(attachment)
+    db.session.commit()
+
+    return jsonify({})
+
+
+@app.route("/api/bills/<uuid:bill_id>/viewer-settings", methods=["PUT"])
+@auth_required
+def update_viewer_bill_settings(bill_id):
+    data = BillSettingsSchema().load(request.json)
+
+    bill_settings = UserBillSettings.query.filter_by(
+        bill_id=bill_id, user_id=flask.g.request_user_id
+    ).one_or_none()
+    if not bill_settings:
+        bill_settings = UserBillSettings(
+            user_id=flask.g.request_user_id, bill_id=bill_id
+        )
+        db.session.add(bill_settings)
+
+    bill_settings.send_bill_update_notifications = data[
+        "send_bill_update_notifications"
+    ]
     db.session.commit()
 
     return jsonify({})

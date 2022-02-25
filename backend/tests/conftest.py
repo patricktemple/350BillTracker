@@ -231,6 +231,14 @@ def user_name():
 
 
 @pytest.fixture
+def user(user_name, user_email, user_id):
+    user = User(id=user_id, email=user_email, name=user_name)
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
+@pytest.fixture
 def client(user_id, user_email, user_name):
     app.app.test_client_class = ApiClient
     with app.app.test_client() as client:

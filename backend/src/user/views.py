@@ -1,3 +1,4 @@
+import logging
 import secrets
 from datetime import timedelta
 
@@ -8,12 +9,18 @@ from werkzeug import exceptions
 
 from ..app import app
 from ..auth import auth_required, create_jwt
+from ..bill.models import Bill, UserBillSettings
 from ..models import db
 from ..ses import send_login_link_email
 from ..settings import APP_ORIGIN
 from ..utils import now
 from .models import LoginLink, User
-from .schema import CreateLoginLinkSchema, LoginSchema, UserSchema
+from .schema import (
+    CreateLoginLinkSchema,
+    LoginSchema,
+    UserBillSettingsSchema,
+    UserSchema,
+)
 
 
 @app.route(
@@ -135,3 +142,27 @@ def update_current_user():
     db.session.commit()
 
     return jsonify({})
+
+
+@app.route(
+    "/api/viewer/bill-settings",
+    methods=["GET"],
+)
+@auth_required
+def get_viewer_bill_settings():
+    bills = Bill.query.all()
+
+    complete_bill_settings = []
+    for bill in bills:
+        viewer_bill_settings = bill.viewer_settings
+        if viewer_bill_settings:
+            complete_bill_settings.append(viewer_bill_settings)
+        else:
+            complete_bill_settings.append(
+                {
+                    "bill": bill,
+                    "send_bill_update_notifications": False,
+                }
+            )
+
+    return UserBillSettingsSchema(many=True).jsonify(complete_bill_settings)

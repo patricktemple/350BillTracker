@@ -50,7 +50,7 @@ export default function StateBillListItem({ bill }: Props) {
         onClick={() => history.push(`/bills/${bill.id}`)}
       >
         <div style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
-          {bill.nickname || bill.name}
+          {bill.displayName}
         </div>
         <StateChamberDetails
           chamberName="Senate"

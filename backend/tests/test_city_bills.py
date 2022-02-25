@@ -3,7 +3,12 @@ from uuid import uuid4
 
 import responses
 
-from src.bill.models import DEFAULT_TWITTER_SEARCH_TERMS, Bill, CityBill
+from src.bill.models import (
+    DEFAULT_TWITTER_SEARCH_TERMS,
+    Bill,
+    CityBill,
+    UserBillSettings,
+)
 from src.models import db
 from src.person.models import CouncilMember, Person
 from src.utils import now
@@ -65,6 +70,7 @@ def test_get_saved_bills(client):
                     "sponsorCount": 0,
                 },
                 "codeName": "file",
+                "displayName": "ban gas",
                 "status": "Enacted",
                 "name": "name",
                 "description": "description",
@@ -152,6 +158,7 @@ def test_update_bill(client):
                 "name": "name",
                 "nickname": "skip the stuff",
                 "notes": "good bill",
+                "displayName": "skip the stuff",
                 "tracked": True,
                 "twitterSearchTerms": ["oil"],
             }
@@ -277,3 +284,35 @@ def test_lookup_bill_already_tracked(client):
     response_data = json.loads(response.data)[0]
     assert response_data["cityBill"]["cityBillId"] == 1
     assert response_data["tracked"] == True
+
+
+def test_update_bill_settings__no_explicit_setting(client, city_bill, user_id):
+    client.put(
+        f"/api/bills/{city_bill.id}/viewer-settings",
+        data={"sendBillUpdateNotifications": True},
+    )
+    bill_settings = UserBillSettings.query.filter_by(
+        bill_id=city_bill.id, user_id=user_id
+    ).one()
+    assert bill_settings.send_bill_update_notifications
+
+
+def test_update_bill_settings__setting_already_exists(
+    client, city_bill, user_id
+):
+    existing_settings = UserBillSettings(
+        bill_id=city_bill.id,
+        user_id=user_id,
+        send_bill_update_notifications=False,
+    )
+    db.session.add(existing_settings)
+    db.session.commit()
+
+    client.put(
+        f"/api/bills/{city_bill.id}/viewer-settings",
+        data={"sendBillUpdateNotifications": True},
+    )
+    bill_settings = UserBillSettings.query.filter_by(
+        bill_id=city_bill.id, user_id=user_id
+    ).one()
+    assert bill_settings.send_bill_update_notifications

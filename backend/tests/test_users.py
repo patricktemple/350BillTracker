@@ -1,7 +1,8 @@
+from src.bill.models import CityBill, StateBill, UserBillSettings
 from src.models import db
 from src.user.models import User
 
-from .utils import assert_response
+from .utils import assert_response, get_response_data
 
 
 def test_get_users(client, user_id, user_name, user_email):
@@ -17,7 +18,6 @@ def test_get_users(client, user_id, user_name, user_email):
                 "email": "test@example.com",
                 "id": str(user_id),
                 "name": "Test user",
-                "sendBillUpdateNotifications": False,
             }
         ],
     )
@@ -75,7 +75,6 @@ def test_get_viewer(client, user_id, user_email):
             "email": user_email,
             "id": str(user_id),
             "name": "Test user",
-            "sendBillUpdateNotifications": False,
         },
     )
 
@@ -85,14 +84,17 @@ def test_get_viewer_requires_auth(unauthenticated_client, user_id, user_email):
     assert response.status_code == 401
 
 
-def test_update_viewer(client, user_id):
-    user = User.query.get(user_id)
-    assert not user.send_bill_update_notifications
-
-    response = client.put(
-        "/api/viewer", data={"sendBillUpdateNotifications": True}
+def test_get_viewer_bill_settings(client, city_bill, state_bill, user_id):
+    existing_city_settings = UserBillSettings(
+        bill_id=city_bill.id,
+        user_id=user_id,
+        send_bill_update_notifications=True,
     )
-    assert response.status_code == 200
+    db.session.add(existing_city_settings)
 
-    user = User.query.get(user_id)
-    assert user.send_bill_update_notifications
+    response = client.get("/api/viewer/bill-settings")
+    response_data = get_response_data(response)
+    assert {
+        (d["bill"]["id"], d["sendBillUpdateNotifications"])
+        for d in response_data
+    } == {(str(city_bill.id), True), (str(state_bill.id), False)}

@@ -121,8 +121,7 @@ export default function CouncilMemberDetails(props: Props) {
                 to={'/bills/' + s.bill.id}
                 key={s.bill.id}
               >
-                {s.bill.cityBill!.file}:{' '}
-                <em>{s.bill.nickname || s.bill.name}</em>
+                {s.bill.cityBill!.file}: <em>{s.bill.displayName}</em>
               </Link>
             ))}
           </div>

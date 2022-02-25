@@ -60,6 +60,7 @@ export interface Bill {
   tracked: boolean;
   codeName: string;
   status: string;
+  displayName: string;
 
   // Editable fields
   notes: string;
@@ -171,4 +172,9 @@ export interface CouncilMemberCommitteeMembership {
 export interface StateRepresentativeSponsorship {
   personId: Uuid;
   bill: Bill;
+}
+
+export interface UserBillSettings {
+  bill: Bill;
+  sendBillUpdateNotifications: boolean;
 }
