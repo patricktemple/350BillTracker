@@ -284,10 +284,3 @@ def update_viewer_bill_settings(bill_id):
     db.session.commit()
 
     return jsonify({})
-
-
-# TODO: Write a test for that
-
-
-# Now, how to get the data? Are we fetching all bill settings for a particular user? Or are we putting
-# the settings on each bill?

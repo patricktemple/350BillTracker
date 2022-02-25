@@ -15,7 +15,6 @@ export default function NotificationSettingsPanel() {
 
   useMountEffect(() => {
     apiFetch('/api/viewer/bill-settings').then((response) => {
-      // hmm map is mutable... maybe best just to do this as a dict
       const settingsMap: BillSettings = {};
       for (const setting of response) {
         settingsMap[setting.bill.id] = setting;
@@ -42,10 +41,6 @@ export default function NotificationSettingsPanel() {
       }
     });
   }
-
-  // add Select All option?
-  // make the name use "display name"
-  // make "display name" a server-side thing
 
   return (
     <div>
