@@ -152,6 +152,7 @@ def test_update_bill(client):
                 "name": "name",
                 "nickname": "skip the stuff",
                 "notes": "good bill",
+                "displayName": "skip the stuff",
                 "tracked": True,
                 "twitterSearchTerms": ["oil"],
             }
