@@ -3,6 +3,7 @@
 // TODO: Only save the font styles we use! This is inefficient.
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
 
+// TODO: Delete old palette!
 $palette-black: #000000;
 $palette-dark-blue: #133c55;
 $palette-medium-blue: #386fa4;
@@ -12,3 +13,28 @@ $palette-red: #ac3931;
 
 $title-font: 'Lato';
 $body-font: 'Open Sans';
+
+// New palette below
+$darkest-grey: #17292e;
+$darker-grey: #263f45;
+$dark-grey: #647882;
+$grey: #9eafb5;
+$light-grey: #c3cfda;
+$lighter-grey: #d7e2ec;
+$lightest-grey: #e6f0fa;
+
+$darkest-blue: #063660;
+$darker-blue: #0a5699;
+$dark-blue: #0d74ce;
+$blue: #0f81e8;
+$light-blue: #57abf4;
+$lighter-blue: #9fcff9;
+$lightest-blue: #d9ecfd;
+
+$darker-teal: #197674;
+$dark-teal: #24a8a6;
+$teal: #40d7d4;
+$orange: #ffa902;
+$dark-red: #d14600;
+$red: #ff6112;
+$white: #ffffff;
