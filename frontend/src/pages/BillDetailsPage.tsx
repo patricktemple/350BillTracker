@@ -194,41 +194,45 @@ export default function BillDetailsPage(props: Props): ReactElement {
           </div>
           <div className={styles.label}>
             <div style={{ fontWeight: 'bold' }}>
-              Attachments {attachments != null && <>({attachments.length})</>}:
+              Attachments {attachments != null && <>({attachments.length})</>}
             </div>
-            <Button
-              size="sm"
-              variant="outline-secondary"
-              onClick={handleAddAttachmentClicked}
-              className="mt-2 mb-2 d-block"
-            >
-              Attach a link
-            </Button>
-            <AddAttachmentModal
-              show={addAttachmentModalOpen}
-              handleAddAttachment={handleAddAttachment}
-              onHide={() => setAddAttachmentModalOpen(false)}
-            />
           </div>
           <div className={styles.content}>
             {attachments == null ? (
               'Loading...'
             ) : (
               <>
-                {attachments.map((a) => (
-                  <div key={a.id}>
-                    <a href={a.url} target="attachment">
-                      {a.name}
-                    </a>
-                    &nbsp;
-                    <a
-                      href="#"
-                      onClick={(e) => handleDeleteAttachment(e, a.id)}
-                    >
-                      [Remove]
-                    </a>
+                {attachments?.length > 0 && (
+                  <div className="mb-2">
+                    {attachments.map((a) => (
+                      <div key={a.id}>
+                        <a href={a.url} target="attachment">
+                          {a.name}
+                        </a>
+                        &nbsp;
+                        <a
+                          href="#"
+                          onClick={(e) => handleDeleteAttachment(e, a.id)}
+                        >
+                          [Remove]
+                        </a>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
+                <Button
+                  size="sm"
+                  variant="outline-secondary"
+                  onClick={handleAddAttachmentClicked}
+                  className="mb-2 d-block"
+                >
+                  Attach a link
+                </Button>
+                <AddAttachmentModal
+                  show={addAttachmentModalOpen}
+                  handleAddAttachment={handleAddAttachment}
+                  onHide={() => setAddAttachmentModalOpen(false)}
+                />
               </>
             )}
           </div>
@@ -271,25 +275,6 @@ export default function BillDetailsPage(props: Props): ReactElement {
                       </Popover.Body>
                     </Popover>
                   </Overlay>
-                  {powerHours != null && (
-                    <>
-                      <Button
-                        size="sm"
-                        variant="outline-secondary"
-                        onClick={() => setCreatePowerHourModalOpen(true)}
-                        className="mb-2 d-block"
-                      >
-                        Create power hour
-                      </Button>
-                      <CreatePowerHourModal
-                        bill={bill}
-                        oldPowerHours={powerHours}
-                        show={createPowerHourModalOpen}
-                        handlePowerHourCreated={handlePowerHourCreated}
-                        onHide={() => setCreatePowerHourModalOpen(false)}
-                      />
-                    </>
-                  )}
                 </div>
               </div>
               <div className={styles.content}>
@@ -297,18 +282,37 @@ export default function BillDetailsPage(props: Props): ReactElement {
                   'Loading...'
                 ) : (
                   <>
-                    {powerHours.map((p, i) => (
-                      <div key={p.id}>
-                        <a
-                          href={p.spreadsheetUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {p.title}
-                        </a>
-                        {i == powerHours.length - 1 && ' (latest)'}
+                    {powerHours.length > 0 && (
+                      <div className="mb-2">
+                        {powerHours.map((p, i) => (
+                          <div key={p.id}>
+                            <a
+                              href={p.spreadsheetUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {p.title}
+                            </a>
+                            {i == powerHours.length - 1 && ' (latest)'}
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    )}
+                    <Button
+                      size="sm"
+                      variant="outline-secondary"
+                      onClick={() => setCreatePowerHourModalOpen(true)}
+                      className="mb-2 d-block"
+                    >
+                      Create power hour
+                    </Button>
+                    <CreatePowerHourModal
+                      bill={bill}
+                      oldPowerHours={powerHours}
+                      show={createPowerHourModalOpen}
+                      handlePowerHourCreated={handlePowerHourCreated}
+                      onHide={() => setCreatePowerHourModalOpen(false)}
+                    />
                   </>
                 )}
               </div>

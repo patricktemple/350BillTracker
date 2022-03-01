@@ -26,17 +26,19 @@ function ChamberDetails({
     <Accordion.Item key={chamber} eventKey={chamber}>
       <Accordion.Header className={styles.accordionItem}>
         <div>
-          <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>
+          <h3>
             {chamber} bill {chamberDetails?.basePrintNo}
+          </h3>
+          <div className={styles.chamberDetailsBody}>
+            {chamberDetails == null ? (
+              <div>Not yet introduced in {chamber}</div>
+            ) : (
+              <>
+                <div>{chamberDetails?.status}</div>
+                <div>{chamberDetails?.sponsorCount} sponsors</div>
+              </>
+            )}
           </div>
-          {chamberDetails == null ? (
-            <div>Not yet introduced in {chamber}</div>
-          ) : (
-            <>
-              <div>{chamberDetails?.status}</div>
-              <div>{chamberDetails?.sponsorCount} sponsors</div>
-            </>
-          )}
         </div>
       </Accordion.Header>
       {chamberDetails && (

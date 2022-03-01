@@ -20,7 +20,8 @@ $palette-light-blue: #dff9ff;
 $palette-red: #ac3931;
 
 $title-font: "Klima Bold", Arial, sans-serif;
-$body-font: Klima, Arial;
+$body-font: Klima, Arial, sans-serif;
+$bold-font: $title-font;
 
 // New palette below
 // TODO: Separate out the colors we actually use?

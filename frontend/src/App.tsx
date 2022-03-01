@@ -38,17 +38,17 @@ function AppContent() {
         <div className={styles.leftNav}>
           <LeftNav onLogout={handleLogout} />
         </div>
-          
-          <main className={styles.content}>
-            <Route exact path="/">
-              <Redirect to="/bills" />
-            </Route>
-            <Route exact path="/bills" component={BillListPage} />
-            <Route path="/bills/:billId" component={BillDetailsPage} />
-            <Route path="/people/:personId?" component={PersonsPage} />
-            <Route path="/settings" component={SettingsPage} />
-          </main>
-        </div>
+
+        <main className={styles.content}>
+          <Route exact path="/">
+            <Redirect to="/bills" />
+          </Route>
+          <Route exact path="/bills" component={BillListPage} />
+          <Route path="/bills/:billId" component={BillDetailsPage} />
+          <Route path="/people/:personId?" component={PersonsPage} />
+          <Route path="/settings" component={SettingsPage} />
+        </main>
+      </div>
     </Router>
   );
 }

@@ -39,27 +39,32 @@ export default function StateBillListItem({ bill }: Props) {
   const stateBill = bill.stateBill!;
   return (
     <div className={styles.itemContainer}>
-      {bill.type === 'STATE' ? <StateIcon className={styles.stateIcon} /> : <CityIcon className={styles.cityIcon} />}
+      {bill.type === 'STATE' ? (
+        <StateIcon className={styles.stateIcon} />
+      ) : (
+        <CityIcon className={styles.cityIcon} />
+      )}
       <div
         className={styles.billDetails}
         onClick={() => history.push(`/bills/${bill.id}`)}
       >
-        <h2>
-          {bill.displayName}
-        </h2>
+        <h2>{bill.displayName}</h2>
         {bill.type === 'STATE' ? (
-        <><StateChamberDetails
-          chamberName="Senate"
-          chamberBill={stateBill.senateBill}
-        />
-        <StateChamberDetails
-          chamberName="Assembly"
-          chamberBill={stateBill.assemblyBill}
-        /></>) : (
           <>
-          <div>{bill.cityBill?.file}</div>
-          <div className="mt-3">{bill.cityBill?.status}</div>
-          <div>{bill.cityBill?.sponsorCount} sponsors</div>
+            <StateChamberDetails
+              chamberName="Senate"
+              chamberBill={stateBill.senateBill}
+            />
+            <StateChamberDetails
+              chamberName="Assembly"
+              chamberBill={stateBill.assemblyBill}
+            />
+          </>
+        ) : (
+          <>
+            <div>{bill.cityBill?.file}</div>
+            <div className="mt-3">{bill.cityBill?.status}</div>
+            <div>{bill.cityBill?.sponsorCount} sponsors</div>
           </>
         )}
       </div>

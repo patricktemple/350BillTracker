@@ -20,8 +20,8 @@
     > h1 {
         color: $darker-grey;
         text-transform: uppercase;
-        font-size: 2.4rem;
         display: block;
+        font-size: 1.5rem;
         text-align: center;
         letter-spacing: .15rem;
         margin-top: 1rem;
@@ -49,7 +49,7 @@
 .mainLinkItem {
     @extend .linkItem;
 
-    font-size: 2.4rem;
+    font-size: 1.5rem;
 }
 
 .mainNavLink {
@@ -68,5 +68,5 @@
 .bottomLinkItem {
     @extend .linkItem;
 
-    font-size: 1.6rem;
+    font-size: 1rem;
 }

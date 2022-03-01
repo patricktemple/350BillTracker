@@ -1,5 +1,7 @@
 @import '../_variables.scss';
 
+
+// TODO: Refactor so we don't have the two sharing one CSS file this way?
 .page {
     padding: $page-content-padding;
     display: grid;
@@ -10,6 +12,7 @@
 
 .label {
     grid-column: 1;
+    font-family: $title-font;
     font-weight: bold;
 }
 

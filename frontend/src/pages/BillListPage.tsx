@@ -43,7 +43,7 @@ export default function BillListPage(): ReactElement {
             </div>
             <div className={styles.billList}>
               {bills.map((bill) => (
-                <BillListItem bill={bill} key={bill.id}/>
+                <BillListItem bill={bill} key={bill.id} />
               ))}
             </div>
             <SearchBillsModal
