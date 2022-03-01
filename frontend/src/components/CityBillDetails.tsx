@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Bill, SponsorList, BillAttachment, PowerHour } from './types';
+import { Bill, SponsorList, BillAttachment, PowerHour } from '../types';
 import useMountEffect from '@restart/hooks/useMountEffect';
-import useApiFetch from './useApiFetch';
+import useApiFetch from '../useApiFetch';
 import BillSponsorList from './BillSponsorList';
-import styles from './style/pages/BillDetailsPage.module.scss';
+import styles from '../style/pages/BillDetailsPage.module.scss';
 
 import BillSponsorItem from './BillSponsorItem';
 

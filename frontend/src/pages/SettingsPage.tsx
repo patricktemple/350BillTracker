@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import useApiFetch from './useApiFetch';
+import useApiFetch from '../useApiFetch';
 import useMountEffect from '@restart/hooks/esm/useMountEffect';
 import Button from 'react-bootstrap/Button';
-import Table from 'react-bootstrap/Table';
-import { User, Uuid } from './types';
-import InviteUserModal from './InviteUserModal';
-import style from './style/pages/SettingsPage.module.scss';
-import UserList from './UserList';
-import NotificationSettingsPanel from './NotificationSettingsPanel';
+import { User, Uuid } from '../types';
+import InviteUserModal from '../components/InviteUserModal';
+import style from '../style/pages/SettingsPage.module.scss';
+import UserList from '../components/UserList';
+import NotificationSettingsPanel from '../components/NotificationSettingsPanel';
 
 export default function SettingsPage() {
   const [users, setUsers] = useState<User[] | null>(null);

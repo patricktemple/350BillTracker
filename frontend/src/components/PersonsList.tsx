@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Table from 'react-bootstrap/Table';
-import { Person, CouncilMember, PersonType } from './types';
+import { Person, CouncilMember, PersonType } from '../types';
 import Accordion from 'react-bootstrap/Accordion';
 import PersonDetailsPanel from './PersonDetailsPanel';
 import { Form } from 'react-bootstrap';
 import LazyAccordionBody from './LazyAccordionBody';
-import useApiFetch from './useApiFetch';
+import useApiFetch from '../useApiFetch';
 import styles from './style/LegislatorsPage.module.scss';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';

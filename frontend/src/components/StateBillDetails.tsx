@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { Bill, StateBillSponsorships, Person, SponsorList } from './types';
+import { Bill, StateBillSponsorships, Person, SponsorList } from '../types';
 import useMountEffect from '@restart/hooks/useMountEffect';
-import useApiFetch from './useApiFetch';
+import useApiFetch from '../useApiFetch';
 import BillSponsorList from './BillSponsorList';
-import { StateChamberBill } from './types';
+import { StateChamberBill } from '../types';
 import Accordion from 'react-bootstrap/Accordion';
 import BillSponsorItem from './BillSponsorItem';
 
-import styles from './style/components/StateBillDetails.module.scss';
+import styles from '../style/components/StateBillDetails.module.scss';
 
 interface ChamberProps {
   chamber: string;

@@ -4,11 +4,11 @@ import {
   SingleMemberSponsorship,
   OfficeContact,
   CouncilMemberCommitteeMembership
-} from './types';
+} from '../types';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import { Link } from 'react-router-dom';
-import useApiFetch from './useApiFetch';
-import styles from './style/components/PersonDetailsPanel.module.scss';
+import useApiFetch from '../useApiFetch';
+import styles from '../style/components/PersonDetailsPanel.module.scss';
 
 interface Props {
   person: Person;

@@ -1,9 +1,9 @@
 import React from 'react';
-import { Bill, StateChamberBill } from './types';
-import { ReactComponent as StateIcon } from './assets/state.svg';
+import { Bill, StateChamberBill } from '../types';
+import { ReactComponent as StateIcon } from '../assets/state.svg';
 import { useHistory } from 'react-router-dom';
 
-import styles from './style/components/BillListItem.module.scss';
+import styles from '../style/components/BillListItem.module.scss';
 
 interface StateChamberDetailsProps {
   chamberBill: StateChamberBill | null;

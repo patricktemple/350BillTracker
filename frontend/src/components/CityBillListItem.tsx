@@ -1,7 +1,7 @@
 import React from 'react';
-import { Bill } from './types';
-import { ReactComponent as CityIcon } from './assets/city.svg';
-import styles from './style/components/BillListItem.module.scss';
+import { Bill } from '../types';
+import { ReactComponent as CityIcon } from '../assets/city.svg';
+import styles from '../style/components/BillListItem.module.scss';
 import { useHistory } from 'react-router-dom';
 
 interface Props {

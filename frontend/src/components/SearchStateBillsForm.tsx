@@ -1,9 +1,9 @@
 import React, { useState, useRef, ReactElement } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { Bill, BillType, StateBillSearchResult } from './types';
+import { Bill, BillType, StateBillSearchResult } from '../types';
 import Modal from 'react-bootstrap/Modal';
-import useApiFetch from './useApiFetch';
+import useApiFetch from '../useApiFetch';
 import SearchCityBillsForm from './SearchCityBillsForm';
 import Table from 'react-bootstrap/Table';
 

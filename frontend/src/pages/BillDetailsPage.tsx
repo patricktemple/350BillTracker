@@ -1,21 +1,21 @@
 import React, { ReactElement, useState, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { Bill, BillAttachment, PowerHour } from './types';
+import { Bill, BillAttachment, PowerHour } from '../types';
 import useMountEffect from '@restart/hooks/useMountEffect';
-import AddAttachmentModal from './AddAttachmentModal';
-import useAutosavingFormData from './utils/useAutosavingFormData';
-import ConfirmDeleteBillModel from './ConfirmDeleteBillModal';
-import CreatePowerHourModal from './CreatePowerHourModal';
-import useApiFetch from './useApiFetch';
+import AddAttachmentModal from '../components/AddAttachmentModal';
+import useAutosavingFormData from '../utils/useAutosavingFormData';
+import ConfirmDeleteBillModel from '../components/ConfirmDeleteBillModal';
+import CreatePowerHourModal from '../components/CreatePowerHourModal';
+import useApiFetch from '../useApiFetch';
 import Popover from 'react-bootstrap/Popover';
 import Overlay from 'react-bootstrap/Overlay';
 import { MdHelpOutline } from 'react-icons/md';
-import styles from './style/pages/BillDetailsPage.module.scss';
+import styles from '../style/pages/BillDetailsPage.module.scss';
 
-import { ReactComponent as TwitterIcon } from './assets/twitter.svg';
-import CityBillSponsorList from './CityBillDetails';
-import StateBillDetails from './StateBillDetails';
+import { ReactComponent as TwitterIcon } from '../assets/twitter.svg';
+import CityBillSponsorList from '../components/CityBillDetails';
+import StateBillDetails from '../components/StateBillDetails';
 import { useHistory } from 'react-router-dom';
 
 interface Props {

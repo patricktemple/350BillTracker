@@ -3,11 +3,11 @@ import {
   StateRepresentative,
   OfficeContact,
   StateRepresentativeSponsorship
-} from './types';
+} from '../types';
 import React, { useState } from 'react';
-import styles from './style/components/PersonDetailsPanel.module.scss';
+import styles from '../style/components/PersonDetailsPanel.module.scss';
 import useMountEffect from '@restart/hooks/esm/useMountEffect';
-import useApiFetch from './useApiFetch';
+import useApiFetch from '../useApiFetch';
 import { Link } from 'react-router-dom';
 
 interface Props {

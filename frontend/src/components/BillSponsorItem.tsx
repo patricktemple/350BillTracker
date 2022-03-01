@@ -1,8 +1,8 @@
 import React from 'react';
-import { Person } from './types';
+import { Person } from '../types';
 import { Link } from 'react-router-dom';
 
-import { ReactComponent as TwitterIcon } from './assets/twitter.svg';
+import { ReactComponent as TwitterIcon } from '../assets/twitter.svg';
 
 interface Props {
   person: Person;

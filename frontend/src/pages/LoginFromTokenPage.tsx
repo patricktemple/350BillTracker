@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { AuthContext } from './AuthContext';
+import { AuthContext } from '../AuthContext';
 import { Redirect } from 'react-router-dom';
 import useMountEffect from '@restart/hooks/useMountEffect';
 

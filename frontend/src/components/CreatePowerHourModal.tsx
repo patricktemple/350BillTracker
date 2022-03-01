@@ -1,9 +1,9 @@
 import React, { useState, useRef, ReactElement } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { Bill, CreatePowerHourResponse, PowerHour } from './types';
+import { Bill, CreatePowerHourResponse, PowerHour } from '../types';
 import Modal from 'react-bootstrap/Modal';
-import useApiFetch from './useApiFetch';
+import useApiFetch from '../useApiFetch';
 import { MdHelpOutline } from 'react-icons/md';
 import Alert from 'react-bootstrap/Alert';
 import Popover from 'react-bootstrap/Popover';

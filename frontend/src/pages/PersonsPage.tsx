@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import styles from './style/pages/PersonsPage.module.scss';
+import styles from '../style/pages/PersonsPage.module.scss';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
-import PersonsList from './PersonsList';
+import PersonsList from '../components/PersonsList';
 
 interface Props {
   match: { params: { personId?: string } };
