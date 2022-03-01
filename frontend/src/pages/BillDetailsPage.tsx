@@ -12,6 +12,7 @@ import Popover from 'react-bootstrap/Popover';
 import Overlay from 'react-bootstrap/Overlay';
 import { MdHelpOutline } from 'react-icons/md';
 import styles from '../style/pages/BillDetailsPage.module.scss';
+import PageHeader from '../components/PageHeader';
 
 import { ReactComponent as TwitterIcon } from '../assets/twitter.svg';
 import CityBillSponsorList from '../components/CityBillDetails';
@@ -168,7 +169,7 @@ export default function BillDetailsPage(props: Props): ReactElement {
 
   return (
     <div>
-      <div className={styles.title}>{formData.nickname || bill.name}</div>
+      <PageHeader>{formData.nickname || bill.name}</PageHeader>
       <Form onSubmit={(e) => e.preventDefault()} className={styles.page}>
         <>
           <div className={styles.label}>Bill number</div>

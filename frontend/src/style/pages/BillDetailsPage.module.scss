@@ -1,16 +1,7 @@
 @import '../_variables.scss';
 
-.title {
-    color: $palette-medium-blue;
-    font-family: $title-font;
-    font-size: 1.6rem;
-    font-weight: bold;
-    border-bottom: 1px solid $palette-light-blue;
-    padding: 20px;
-  }
-  
 .page {
-    padding: 20px;
+    padding: $page-content-padding;
     display: grid;
     grid-template-columns: 200px 1fr 150px 1fr;
     grid-template-rows: auto;

@@ -4,14 +4,15 @@
   display: grid;
   grid-template-columns: 30px 1fr 1fr;
   grid-gap: 10px;
-  border: 1px solid $palette-light-blue;
+  border: 1px solid $lighter-grey;
   align-items: center;
   padding: 5px;
+  margin-bottom: 2rem;
 
   > svg {
     width: 20px;
     height: 20px;
-    stroke: $palette-medium-blue;
+    stroke: $dark-blue;
     cursor: pointer;
     justify-self: right;
   }

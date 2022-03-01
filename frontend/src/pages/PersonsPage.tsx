@@ -3,6 +3,7 @@ import styles from '../style/pages/PersonsPage.module.scss';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import PersonsList from '../components/PersonsList';
+import PageHeader from '../components/PageHeader';
 
 interface Props {
   match: { params: { personId?: string } };
@@ -21,7 +22,7 @@ export default function PersonsPage({
 
   return (
     <div>
-      <div className={styles.title}>People</div>
+      <PageHeader>People</PageHeader>
       <div className={styles.content}>
         <input
           type="text"

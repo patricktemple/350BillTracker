@@ -7,6 +7,7 @@ import InviteUserModal from '../components/InviteUserModal';
 import style from '../style/pages/SettingsPage.module.scss';
 import UserList from '../components/UserList';
 import NotificationSettingsPanel from '../components/NotificationSettingsPanel';
+import PageHeader from '../components/PageHeader';
 
 export default function SettingsPage() {
   const [users, setUsers] = useState<User[] | null>(null);
@@ -47,13 +48,13 @@ export default function SettingsPage() {
 
   return (
     <div>
-      <h1 className={style.title}>Settings</h1>
+      <PageHeader>Settings</PageHeader>
       <div className={style.content}>
         <h2>Users</h2>
-        <p>
+        <div>
           Invite 350 Brooklyn volunteers to access this bill tracker.
           They&apos;ll need to be on this list in order to log in.
-        </p>
+        </div>
         <div style={{ textAlign: 'right' }}>
           <Button onClick={handleInvite} size="sm" className="mb-2">
             Invite

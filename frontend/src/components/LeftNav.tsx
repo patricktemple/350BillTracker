@@ -30,11 +30,11 @@ export default function LeftNav(props: Props) {
                     </Link>
                 </div>
                 <div className={styles.bottomLinkSection}>
-                    <Link to="/setting" className={styles.bottomLinkItem}>
+                    <Link to="/settings" className={styles.bottomLinkItem}>
                         <SettingsIcon /> Settings
                     </Link>
                     <a href="#" onClick={props.onLogout} className={styles.bottomLinkItem}>
-                        <LogoutIcon /> Logout
+                        <LogoutIcon /> Log out
                     </a>
                 </div>
             </div>

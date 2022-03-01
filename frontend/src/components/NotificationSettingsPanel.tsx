@@ -44,7 +44,7 @@ export default function NotificationSettingsPanel() {
 
   return (
     <div>
-      <h2 className={styles.title}>Notification settings</h2>
+      <h2>Notification settings</h2>
       <p>
         Notify me by email whenever the status or sponsorships change on
         specific bills:

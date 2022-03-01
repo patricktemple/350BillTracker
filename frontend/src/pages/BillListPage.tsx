@@ -4,10 +4,10 @@ import SearchBillsModal from '../components/SearchBillsModal';
 import Button from 'react-bootstrap/Button';
 import { Bill } from '../types';
 import useApiFetch from '../useApiFetch';
-import CityBillListItem from '../components/CityBillListItem';
+import PageHeader from '../components/PageHeader';
 
 import styles from '../style/pages/BillListPage.module.scss';
-import StateBillListItem from '../components/StateBillListItem';
+import BillListItem from '../components/BillListItem';
 
 export default function BillListPage(): ReactElement {
   const [bills, setBills] = useState<Bill[] | null>(null);
@@ -26,7 +26,7 @@ export default function BillListPage(): ReactElement {
 
   return (
     <div>
-      <div className={styles.title}>Bills</div>
+      <PageHeader>Bills</PageHeader>
       <div className={styles.content}>
         {bills == null ? (
           'Loading...'
@@ -43,13 +43,7 @@ export default function BillListPage(): ReactElement {
             </div>
             <div className={styles.billList}>
               {bills.map((bill) => (
-                <>
-                  {bill.stateBill ? (
-                    <StateBillListItem bill={bill} />
-                  ) : (
-                    <CityBillListItem bill={bill} />
-                  )}
-                </>
+                <BillListItem bill={bill} key={bill.id}/>
               ))}
             </div>
             <SearchBillsModal
