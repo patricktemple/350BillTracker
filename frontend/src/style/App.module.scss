@@ -21,8 +21,14 @@
   // }
 }
 
+.appLogo {
+  width: 25%;
+  display: block;
+  margin: 0 auto;
+}
+
 .appTitle {
-  padding: 16px 0;
+  padding: 1.6rem 0;
   grid-area: appTitle;
   font-family: $title-font;
 
@@ -33,13 +39,14 @@
   }
 
   > h2 {
-    font-size: 1.2rem;
-    color: $palette-lighter-blue;
+    color: $darker-grey;
+    text-transform: uppercase;
+    font-size: 2.4rem;
   }
 }
 
 .leftNavBackground {
-  background-color: $palette-light-blue;
+  background-color: $lightest-grey;
   grid-row: 1 / span 6;
   grid-column: 1 / span 2;
 }
@@ -52,7 +59,7 @@
   > svg {
     width: 26px;
     height: 26px;
-    stroke: $palette-medium-blue;
+    stroke: $dark-teal;
   }
 }
 
@@ -62,7 +69,7 @@
 }
 
 .mainNavLink {
-  color: $palette-medium-blue;
+  color: $darker-grey;
   text-decoration: none;
   align-self: center;
   font-weight: 600;
@@ -84,7 +91,7 @@
 }
 
 .bottomNavLink {
-  color: $palette-medium-blue;
+  color: $darker-grey;
   text-decoration: none;
   font-size: 0.9rem;
   align-self: center;
@@ -98,7 +105,7 @@
   > svg {
     width: 22px;
     height: 22px;
-    stroke: $palette-medium-blue;
+    stroke: $dark-teal;
   }
 }
 

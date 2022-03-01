@@ -8,6 +8,7 @@ import { ReactComponent as SettingsIcon } from './assets/settings.svg';
 import { ReactComponent as LogoutIcon } from './assets/logout.svg';
 import { ReactComponent as BillsIcon } from './assets/paper.svg';
 import { ReactComponent as LegislatorIcon } from './assets/person.svg';
+import AppLogo from './assets/app-logo.png';
 import React, { useContext } from 'react';
 import RequestLoginLinkPage from './pages/RequestLoginLinkPage';
 import { AuthContextProvider, AuthContext } from './AuthContext';
@@ -40,7 +41,7 @@ function AppContent() {
       <div className={styles.container}>
         <div className={styles.leftNavBackground} />
         <div className={styles.appTitle}>
-          <h1>350 Brooklyn</h1>
+          <img src={AppLogo} alt="Logo" className={styles.appLogo} />
           <h2>Bill Tracker</h2>
         </div>
         <Link to="/" className={styles.billsLogo}>
