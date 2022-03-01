@@ -1,7 +1,7 @@
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import React, { useState } from 'react';
-import styles from './style/RequestLoginLinkPage.module.scss';
+import styles from './style/pages/RequestLoginLinkPage.module.scss';
 
 export default function RequestLoginLinkPage() {
   const [emailAddress, setEmailAddress] = useState<string>('');

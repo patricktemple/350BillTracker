@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Person, OfficeContact } from './types';
-import styles from './style/PersonDetailsPanel.module.scss';
+import styles from './style/components/PersonDetailsPanel.module.scss';
 import useApiFetch from './useApiFetch';
 import useMountEffect from '@restart/hooks/esm/useMountEffect';
 

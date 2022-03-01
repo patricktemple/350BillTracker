@@ -3,7 +3,7 @@ import Modal from 'react-bootstrap/Modal';
 import { User, Uuid } from './types';
 import Button from 'react-bootstrap/Button';
 
-import styles from './style/UserList.module.scss';
+import styles from './style/components/UserList.module.scss';
 import { ReactComponent as TrashIcon } from './assets/trash.svg';
 
 interface Props {

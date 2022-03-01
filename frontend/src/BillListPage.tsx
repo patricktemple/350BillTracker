@@ -2,16 +2,11 @@ import React, { ReactElement, useState } from 'react';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import SearchBillsModal from './SearchBillsModal';
 import Button from 'react-bootstrap/Button';
-import Accordion from 'react-bootstrap/Accordion';
 import { Bill } from './types';
-import BillDetails from './BillDetailsPage';
-import LazyAccordionBody from './LazyAccordionBody';
 import useApiFetch from './useApiFetch';
-import { ReactComponent as StateIcon } from './assets/state.svg';
 import CityBillListItem from './CityBillListItem';
-import { useHistory } from 'react-router-dom';
 
-import styles from './style/BillListPage.module.scss';
+import styles from './style/pages/BillListPage.module.scss';
 import StateBillListItem from './StateBillListItem';
 
 export default function BillListPage(): ReactElement {

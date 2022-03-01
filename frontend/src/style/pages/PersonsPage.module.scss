@@ -1,4 +1,4 @@
-@import './_variables.scss';
+@import '../_variables.scss';
 
 .title {
   color: $palette-medium-blue;
@@ -11,14 +11,12 @@
 
 .content {
   padding: 20px;
+}
 
-  > h2 {
-    font-size: 1.4rem;
-    font-family: $title-font;
-    color: $palette-medium-blue;
-  }
+.searchBox {
+  margin-bottom: 1rem;
 
-  > p {
-    font-size: 0.9rem;
+  ::placeholder {
+    font-style: italic;
   }
 }

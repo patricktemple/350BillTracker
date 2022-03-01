@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import { User, Uuid } from './types';
 import InviteUserModal from './InviteUserModal';
-import style from './style/SettingsPage.module.scss';
+import style from './style/pages/SettingsPage.module.scss';
 import UserList from './UserList';
 import NotificationSettingsPanel from './NotificationSettingsPanel';
 

@@ -1,20 +1,10 @@
-import React, { ReactElement, useState, useRef } from 'react';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
+import React, { useState } from 'react';
 import { Bill, SponsorList, BillAttachment, PowerHour } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
-import AddAttachmentModal from './AddAttachmentModal';
-import useAutosavingFormData from './utils/useAutosavingFormData';
-import ConfirmDeleteBillModel from './ConfirmDeleteBillModal';
-import CreatePowerHourModal from './CreatePowerHourModal';
 import useApiFetch from './useApiFetch';
 import BillSponsorList from './BillSponsorList';
-import Popover from 'react-bootstrap/Popover';
-import Overlay from 'react-bootstrap/Overlay';
-import { MdHelpOutline } from 'react-icons/md';
-import styles from './style/BillDetailsPage.module.scss';
+import styles from './style/pages/BillDetailsPage.module.scss';
 
-import { ReactComponent as TwitterIcon } from './assets/twitter.svg';
 import BillSponsorItem from './BillSponsorItem';
 
 interface Props {

@@ -7,7 +7,7 @@ import { StateChamberBill } from './types';
 import Accordion from 'react-bootstrap/Accordion';
 import BillSponsorItem from './BillSponsorItem';
 
-import styles from './style/StateBillDetails.module.scss';
+import styles from './style/components/StateBillDetails.module.scss';
 
 interface ChamberProps {
   chamber: string;

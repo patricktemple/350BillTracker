@@ -11,7 +11,7 @@ import useApiFetch from './useApiFetch';
 import Popover from 'react-bootstrap/Popover';
 import Overlay from 'react-bootstrap/Overlay';
 import { MdHelpOutline } from 'react-icons/md';
-import styles from './style/BillDetailsPage.module.scss';
+import styles from './style/pages/BillDetailsPage.module.scss';
 
 import { ReactComponent as TwitterIcon } from './assets/twitter.svg';
 import CityBillSponsorList from './CityBillDetails';

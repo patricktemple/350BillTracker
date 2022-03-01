@@ -11,7 +11,7 @@ import useAutosavingFormData from './utils/useAutosavingFormData';
 import useApiFetch from './useApiFetch';
 import Button from 'react-bootstrap/Button';
 import AddStafferModal from './AddStafferModal';
-import styles from './style/PersonDetailsPanel.module.scss';
+import styles from './style/components/PersonDetailsPanel.module.scss';
 import CouncilMemberDetails from './CouncilMemberDetails';
 import StateRepDetails from './StateRepDetails';
 import StafferDetails from './StafferDetails';

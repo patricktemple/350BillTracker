@@ -1,25 +1,14 @@
-import React, { useState, ReactElement } from 'react';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import React, { useState } from 'react';
 import {
   Person,
   SingleMemberSponsorship,
-  Staffer,
-  Uuid,
   OfficeContact,
   CouncilMemberCommitteeMembership
 } from './types';
 import useMountEffect from '@restart/hooks/useMountEffect';
-import Stack from 'react-bootstrap/Stack';
 import { Link } from 'react-router-dom';
-import Form from 'react-bootstrap/Form';
-import useAutosavingFormData from './utils/useAutosavingFormData';
 import useApiFetch from './useApiFetch';
-import Button from 'react-bootstrap/Button';
-import AddStafferModal from './AddStafferModal';
-import styles from './style/PersonDetailsPanel.module.scss';
-import { MdDriveEta } from 'react-icons/md';
+import styles from './style/components/PersonDetailsPanel.module.scss';
 
 interface Props {
   person: Person;

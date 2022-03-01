@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import useApiFetch from './useApiFetch';
 import useMountEffect from '@restart/hooks/useMountEffect';
-import styles from './style/NotificationSettingsPanel.module.scss';
+import styles from './style/components/NotificationSettingsPanel.module.scss';
 import Form from 'react-bootstrap/Form';
 import { UserBillSettings, Uuid, Bill } from './types';
 

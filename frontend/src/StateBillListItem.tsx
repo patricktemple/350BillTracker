@@ -1,15 +1,9 @@
-import React, { ReactElement, useState } from 'react';
-import useMountEffect from '@restart/hooks/useMountEffect';
-import SearchBillsModal from './SearchBillsModal';
-import Button from 'react-bootstrap/Button';
-import Accordion from 'react-bootstrap/Accordion';
+import React from 'react';
 import { Bill, StateChamberBill } from './types';
-import LazyAccordionBody from './LazyAccordionBody';
-import useApiFetch from './useApiFetch';
 import { ReactComponent as StateIcon } from './assets/state.svg';
 import { useHistory } from 'react-router-dom';
 
-import styles from './style/BillListItem.module.scss';
+import styles from './style/components/BillListItem.module.scss';
 
 interface StateChamberDetailsProps {
   chamberBill: StateChamberBill | null;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from './style/PersonsPage.module.scss';
+import styles from './style/pages/PersonsPage.module.scss';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import PersonsList from './PersonsList';

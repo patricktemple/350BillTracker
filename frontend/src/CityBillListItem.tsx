@@ -1,12 +1,7 @@
-import React, { ReactElement, useState } from 'react';
-import useMountEffect from '@restart/hooks/useMountEffect';
-import SearchBillsModal from './SearchBillsModal';
-import Button from 'react-bootstrap/Button';
-import Accordion from 'react-bootstrap/Accordion';
-import { Bill, StateChamberBill } from './types';
-import useApiFetch from './useApiFetch';
+import React from 'react';
+import { Bill } from './types';
 import { ReactComponent as CityIcon } from './assets/city.svg';
-import styles from './style/BillListItem.module.scss';
+import styles from './style/components/BillListItem.module.scss';
 import { useHistory } from 'react-router-dom';
 
 interface Props {
