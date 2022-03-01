@@ -1,0 +1,70 @@
+@import "../_variables.scss";
+
+.container {
+    background-color: $lightest-grey;
+    height: 100%;
+    position: relative;
+}
+
+.appLogo {
+    width: 60%;
+    display: block;
+    margin: 0 auto;
+}
+
+.appTitle {
+    padding: 1.6rem 0;
+    // grid-area: appTitle;
+    font-family: $title-font;
+
+    > h1 {
+        color: $darker-grey;
+        text-transform: uppercase;
+        font-size: 2.4rem;
+        display: block;
+        text-align: center;
+    }
+}
+
+.mainLinkSection {
+}
+
+.linkItem {
+    text-decoration: none;
+    color: $darker-grey;
+    display: block;
+    padding-bottom: 1rem;
+    font-weight: 600;
+
+    > svg {
+        width: 26px;
+        height: 26px;
+        stroke: $dark-teal;
+        margin: 0 1rem;
+    }
+}
+
+.mainLinkItem {
+    @extend .linkItem;
+
+    font-size: 2.4rem;
+}
+
+.mainNavLink {
+    color: $darker-grey;
+    text-decoration: none;
+    // align-self: center;
+    font-weight: 600;
+}
+
+.bottomLinkSection {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.bottomLinkItem {
+    @extend .linkItem;
+
+    font-size: 1.6rem;
+}
