@@ -24,7 +24,7 @@ function ChamberDetails({
 }: ChamberProps) {
   return (
     <Accordion.Item key={chamber} eventKey={chamber}>
-      <Accordion.Header>
+      <Accordion.Header className={styles.accordionItem}>
         <div>
           <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>
             {chamber} bill {chamberDetails?.basePrintNo}

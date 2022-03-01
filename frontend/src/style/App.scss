@@ -3,7 +3,8 @@
 //
 // The main styling stack is SCSS + CSS modules for each component, with
 // some shared variables like the color palette in variables.scss
-@import './variables.scss';
+@import './variables';
+@import './typography';
 
 // We do use some React-Bootstrap components, and we override the bootstrap
 // variables so that it uses our main theme colors.

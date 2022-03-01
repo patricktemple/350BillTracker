@@ -7,7 +7,7 @@ import PersonDetailsPanel from './PersonDetailsPanel';
 import { Form } from 'react-bootstrap';
 import LazyAccordionBody from './LazyAccordionBody';
 import useApiFetch from '../useApiFetch';
-import styles from './style/LegislatorsPage.module.scss';
+import styles from '../style/components/PersonsList.module.scss';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 
@@ -47,7 +47,7 @@ export default function PersonsList({
     <Accordion defaultActiveKey={selectedPersonId}>
       {filteredPersons.map((person) => (
         <Accordion.Item key={person.id} eventKey={person.id}>
-          <Accordion.Header>
+          <Accordion.Header className={styles.accordionItem}>
             <strong>{person.name}</strong>
             {person.councilMember?.borough && (
               <>&nbsp;({person.councilMember.borough})</>
