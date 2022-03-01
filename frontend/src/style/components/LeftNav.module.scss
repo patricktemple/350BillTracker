@@ -9,7 +9,7 @@
 
 .appTitle {
     padding: 1.6rem 0;
-    font-family: $title-font;
+    font-weight: bold;
 
     > .appLogo {
         width: 60%;
@@ -36,7 +36,7 @@
     color: $darker-grey;
     display: block;
     padding-bottom: 1rem;
-    font-weight: 600;
+    // font-weight: 600;
 
     > svg {
         width: 26px;

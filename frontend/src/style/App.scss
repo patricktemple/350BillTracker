@@ -46,7 +46,7 @@ h1 {
 h2 {
   font-family: $title-font;
   font-size: 1.5rem;
-  font-weight: bold;
+  // font-weight: bold;
 }
 
 h3 {
@@ -55,6 +55,6 @@ h3 {
   font-weight: bold;
 }
 
-a:link, a:visited {
-  font-weight: bold;
-}
+// a:link, a:visited {
+//   font-weight: 500;
+// }

@@ -1,15 +1,5 @@
 // Shared variables for all components.
 
-// TODO: Only save the font styles we use! This is inefficient.
-@font-face {
-    font-family: "Klima Bold";
-    src: url('../assets/fonts/klima-bold.otf');
-} 
-
-@font-face {
-    font-family: "Klima";
-    src: url('../assets/fonts/klima-regular.otf');
-} 
 
 // TODO: Delete old palette!
 $palette-black: #000000;
@@ -18,10 +8,6 @@ $palette-medium-blue: #386fa4;
 $palette-lighter-blue: #4690c1;
 $palette-light-blue: #dff9ff;
 $palette-red: #ac3931;
-
-$title-font: "Klima Bold", Arial, sans-serif;
-$body-font: Klima, Arial, sans-serif;
-$bold-font: $title-font;
 
 // New palette below
 // TODO: Separate out the colors we actually use?

@@ -1,0 +1,23 @@
+// TODO: Only save the font styles we use! This is inefficient.
+@font-face {
+    font-family: "Klima";
+    src: url('../assets/fonts/klima-bold.otf');
+    font-weight: bold;
+} 
+
+@font-face {
+    font-family: "Klima";
+    src: url('../assets/fonts/klima-regular.otf');
+    font-weight: normal;
+} 
+
+@font-face {
+    font-family: "Klima";
+    src: url('../assets/fonts/klima-regular-italic.otf');
+    font-style: italic;
+} 
+
+
+$title-font: Klima, Arial, sans-serif;
+$body-font: Klima, Arial, sans-serif;
+$bold-font: $title-font;

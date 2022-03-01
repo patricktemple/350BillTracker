@@ -52,15 +52,15 @@ export default function NotificationSettingsPanel() {
       {billSettings == null
         ? 'Loading...'
         : Object.values(billSettings).map((s) => (
-            <Form.Check
-              key={s.bill.id}
+            <label key={s.bill.id} className={styles.bill}><Form.Check
+              className={styles.checkBox}
+              id={s.bill.id}
               checked={s.sendBillUpdateNotifications}
               type={'checkbox'}
-              label={`${s.bill.displayName} (${s.bill.codeName})`}
               onChange={(e: any) =>
                 updateBillNotificationSettings(s.bill, e.target.checked)
               }
-            />
+            />{s.bill.displayName} <span className={styles.billCodeName}>({s.bill.codeName})</span></label>
           ))}
     </div>
   );
