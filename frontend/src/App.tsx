@@ -1,7 +1,7 @@
 import './style/App.scss';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
-import BillListPage from './BillListPage';
-import PersonsPage from './PersonsPage';
+import BillListPage from './pages/BillListPage';
+import PersonsPage from './pages/PersonsPage';
 import styles from './style/App.module.scss';
 import { Link } from 'react-router-dom';
 import { ReactComponent as SettingsIcon } from './assets/settings.svg';
@@ -9,12 +9,12 @@ import { ReactComponent as LogoutIcon } from './assets/logout.svg';
 import { ReactComponent as BillsIcon } from './assets/paper.svg';
 import { ReactComponent as LegislatorIcon } from './assets/person.svg';
 import React, { useContext } from 'react';
-import RequestLoginLinkPage from './RequestLoginLinkPage';
+import RequestLoginLinkPage from './pages/RequestLoginLinkPage';
 import { AuthContextProvider, AuthContext } from './AuthContext';
 import { useLocation } from 'react-router-dom';
-import LoginFromTokenPage from './LoginFromTokenPage';
-import SettingsPage from './SettingsPage';
-import BillDetailsPage from './BillDetailsPage';
+import LoginFromTokenPage from './pages/LoginFromTokenPage';
+import SettingsPage from './pages/SettingsPage';
+import BillDetailsPage from './pages/BillDetailsPage';
 
 function AppContent() {
   const authContext = useContext(AuthContext);

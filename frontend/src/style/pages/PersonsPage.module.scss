@@ -1,0 +1,22 @@
+@import '../_variables.scss';
+
+.title {
+  color: $palette-medium-blue;
+  font-family: $title-font;
+  font-size: 1.6rem;
+  font-weight: bold;
+  border-bottom: 1px solid $palette-light-blue;
+  padding: 20px;
+}
+
+.content {
+  padding: 20px;
+}
+
+.searchBox {
+  margin-bottom: 1rem;
+
+  ::placeholder {
+    font-style: italic;
+  }
+}

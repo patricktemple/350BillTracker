@@ -1,0 +1,22 @@
+@import '../_variables.scss';
+
+.container {
+  display: grid;
+  grid-template-columns: 30px 1fr 1fr;
+  grid-gap: 10px;
+  border: 1px solid $palette-light-blue;
+  align-items: center;
+  padding: 5px;
+
+  > svg {
+    width: 20px;
+    height: 20px;
+    stroke: $palette-medium-blue;
+    cursor: pointer;
+    justify-self: right;
+  }
+}
+
+.header {
+  font-weight: bold;
+}
