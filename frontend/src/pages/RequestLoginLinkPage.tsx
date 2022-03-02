@@ -59,7 +59,6 @@ export default function RequestLoginLinkPage() {
             <span className={styles.labelText}>Email Address</span>
           <Form.Control
             type="text"
-            placeholder="Enter your email address"
             value={emailAddress}
             onChange={emailAddressChanged}
             size="sm"
