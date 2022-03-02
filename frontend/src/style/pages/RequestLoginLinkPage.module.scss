@@ -1,8 +1,8 @@
 @import '../_variables.scss';
 
 .fullScreenContainer {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   background: $lightest-grey;
   display: grid;
   grid-template-rows: 1fr;
@@ -19,6 +19,7 @@
 
   .appLogo {
     width: 40%;
+    margin-bottom: 1.5rem;
   }
 
   > form {
