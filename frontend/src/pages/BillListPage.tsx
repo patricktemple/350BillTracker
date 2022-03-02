@@ -41,10 +41,10 @@ export default function BillListPage(): ReactElement {
           'Loading...'
         ) : (
           <>
+          <div className={styles.topControls}>
           <SearchBox onChange={handleFilterTextChanged} placeholder="Type name or number to search" />
-            <div style={{ textAlign: 'right' }}>
               <Button
-                className="mb-2"
+                className={styles.addBillButton}
                 onClick={() => setAddBillVisible(true)}
                 size="sm"
               >

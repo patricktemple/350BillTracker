@@ -3,3 +3,13 @@
 .content {
   padding: $page-content-padding;
 }
+
+.topControls {
+  position: relative;
+
+  > .addBillButton {
+    position: absolute;
+    right: 0;
+    bottom: 1rem;
+  }
+}
