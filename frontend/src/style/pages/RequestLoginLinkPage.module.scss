@@ -1,47 +1,42 @@
 @import '../_variables.scss';
 
 .fullScreenContainer {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(45deg, rgba(56,111,164,1) 0%, rgba(19,60,85,1) 70%);
+  width: 100vw;
+  height: 100vh;
+  background: $lightest-grey;
   display: grid;
   grid-template-rows: 1fr;
   grid-template-columns: 1fr;
 }
 
 .pageContent {
-  grid-row: 1 / span 1;
-  grid-column: 1 / span 1;
+  grid-row: 1;
+  grid-column: 1;
   justify-self: center;
   align-self: center;
+  max-width: 40rem;
 
-  > h1 {
-    color: $palette-light-blue;
-    font-weight: bold;
-    font-size: 2.4rem;
-  }
 
-  p {
-    color: $palette-light-blue;
-    font-size: 0.9rem;
+  .appLogo {
+    width: 40%;
   }
 
   > form {
-    vertical-align: middle;
+    .labelText {
+      margin-bottom: .2rem;
+      display: block;
+      font-weight: bold;
+    }
 
     > button {
       background-color: $palette-lighter-blue;
     };
   
-    > input {
+    input {
       width: 26rem;
       display: inline-block;
       margin-right: 10px;
-    }
-  
-    > input::placeholder {
-      font-style: italic;
-      color: $palette-lighter-blue;
+      border-color: $dark-grey;
     }
   }
 }

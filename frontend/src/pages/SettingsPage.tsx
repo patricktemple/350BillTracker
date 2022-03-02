@@ -52,7 +52,7 @@ export default function SettingsPage() {
       <div className={style.content}>
         <h2>Users</h2>
         <div>
-          Invite 350 Brooklyn volunteers to access this bill tracker.
+          Invite 350Brooklyn volunteers to access this bill tracker.
           They&apos;ll need to be on this list in order to log in.
         </div>
         <div style={{ textAlign: 'right' }}>

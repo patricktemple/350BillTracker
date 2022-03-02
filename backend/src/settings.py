@@ -17,7 +17,7 @@ APP_ORIGIN = os.environ["APP_ORIGIN"]
 
 ENABLE_CRON = os.environ.get("ENABLE_CRON", "True") == "True"
 
-APP_TITLE = os.environ.get("APP_TITLE", "350 Brooklyn Bill Tracker")
+APP_TITLE = os.environ.get("APP_TITLE", "350Brooklyn Bill Tracker")
 
 SENATE_API_TOKEN = os.environ["SENATE_API_TOKEN"]
 
