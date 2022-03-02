@@ -51,7 +51,7 @@ def send_login_link_email(email_address, login_link):
 
     try:
         send_email(
-            email_address, "Log in to 350 Bill Tracker", body_html, body_text
+            email_address, "Log in to 350Brooklyn Bill Tracker", body_html, body_text
         )
     except ClientError as e:
         logging.exception(e)
