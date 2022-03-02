@@ -14,7 +14,7 @@ export interface Props {
 
 export default function LeftNav(props: Props) {
   return (
-    <div className={styles.container}>
+    <nav className={styles.container}>
       <div className={styles.appTitle}>
         <img src={AppLogo} alt="Logo" className={styles.appLogo} />
         <h1>Bill Tracker</h1>
@@ -37,6 +37,6 @@ export default function LeftNav(props: Props) {
           <LogoutIcon /> Log out
         </a>
       </div>
-    </div>
+    </nav>
   );
 }

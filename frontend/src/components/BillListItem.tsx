@@ -15,9 +15,8 @@ function StateChamberDetails({
   chamberBill,
   chamberName
 }: StateChamberDetailsProps) {
-  // TODO: Noticed that this info here is the same as the info shown on the bill detail page
-  // accordion
-  // I can make this a shared component?
+  // TODO: This info here is the same as the info shown on the bill
+  // detail page. accordion. Make this a shared component?
   if (!chamberBill) {
     return <div className="mt-3">{chamberName} bill not yet introduced</div>;
   }
@@ -40,7 +39,6 @@ export default function StateBillListItem({ bill }: Props) {
   const history = useHistory();
 
   // TODO: Also show the lead sponsor of bills right here
-
   const stateBill = bill.stateBill!;
   return (
     <div className={styles.itemContainer}>

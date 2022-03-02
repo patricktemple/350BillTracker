@@ -1,6 +1,5 @@
 @import '../_variables.scss';
 
-// TODO: Not sure if grid needed?
 .itemContainer {
     padding: 1.5rem .4rem;
     display: grid;
@@ -14,7 +13,7 @@
 }
 
 .itemContainer:last-of-type {
-    border-bottom: 1px solid $palette-light-blue;
+    border-bottom: 1px solid $lighter-grey;
 }
 
 

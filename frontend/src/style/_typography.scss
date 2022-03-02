@@ -1,4 +1,3 @@
-// TODO: Only save the font styles we use! This is inefficient.
 @font-face {
     font-family: "Klima";
     src: url('../assets/fonts/klima-bold.otf');
@@ -20,4 +19,3 @@
 
 $title-font: Klima, Arial, sans-serif;
 $body-font: Klima, Arial, sans-serif;
-$bold-font: $title-font;
