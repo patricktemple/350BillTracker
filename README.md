@@ -1,7 +1,7 @@
-# 350 Bill Tracker
+# 350Brooklyn Bill Tracker
 
 ## Overview
-The 350 Bill Tracker is a web app made for 350.org's Brooklyn chapter to help them lobby for strong climate legislation in NYC and New York State. It's a centralized place for volunteers to keep track of the bills that the group is pushing
+The 350Brooklyn Bill Tracker is a web app made for 350.org's Brooklyn chapter to help them lobby for strong climate legislation in NYC and New York State. It's a centralized place for volunteers to keep track of the bills that the group is pushing
 and organize efforts to get them passed. It's hosted at [350billtracker.com](https://350billtracker.com) but its use is locked down to organizers within the group. Some demos are displayed on this page below.
 
 Key features:
@@ -81,7 +81,7 @@ script/format
 ![Tracking a new state bill](demo/track-state-bill.gif) 
 
 ## Generating a Power Hour spreadsheet
-Each week, 350 Brooklyn runs "Power Hour" phone bank sessions in which volunteers call the city
+Each week, 350Brooklyn runs "Power Hour" phone bank sessions in which volunteers call the city
 council members for particular bills to ask them to sponsor the bill. We run these
 off a spreadsheet where volunteers log the results of each conversation. This tool
 autogenerates the sheets along with the latest sponsorship status and contact info.
