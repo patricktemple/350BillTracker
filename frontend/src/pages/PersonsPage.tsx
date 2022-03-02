@@ -4,6 +4,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import PersonsList from '../components/PersonsList';
 import PageHeader from '../components/PageHeader';
+import SearchBox from '../components/SearchBox';
 
 interface Props {
   match: { params: { personId?: string } };
@@ -16,22 +17,15 @@ export default function PersonsPage({
 }: Props) {
   const [filterText, setFilterText] = useState<string>('');
 
-  function handleFilterTextChanged(e: any) {
-    setFilterText(e.target.value);
+  function handleFilterTextChanged(text: string) {
+    setFilterText(text);
   }
 
   return (
     <div>
       <PageHeader>People</PageHeader>
       <div className={styles.content}>
-        <input
-          type="text"
-          placeholder="Type name to search"
-          value={filterText}
-          className={styles.searchBox}
-          size={30}
-          onChange={handleFilterTextChanged}
-        />
+        <SearchBox onChange={handleFilterTextChanged} />
         <Tabs className="mt-2" unmountOnExit={true}>
           <Tab eventKey="all" title="All">
             <PersonsList filterText={filterText} selectedPersonId={personId} />

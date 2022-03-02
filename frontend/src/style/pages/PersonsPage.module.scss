@@ -7,17 +7,3 @@
     border: none;
   }
 }
-
-.searchBox {
-  margin-bottom: 1rem;
-  padding: .5rem .8rem;
-  border-radius: 5px;
-  border: 1px solid $dark-grey;
-
-
-  &::placeholder {
-    background-image: url('../../assets/search.svg');
-    background-repeat: no-repeat;
-    background-position: right;
-  }
-}
