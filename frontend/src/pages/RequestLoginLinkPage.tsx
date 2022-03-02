@@ -2,6 +2,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import React, { useState } from 'react';
 import styles from '../style/pages/RequestLoginLinkPage.module.scss';
+import AppLogo from '../assets/app-logo.png';
 
 export default function RequestLoginLinkPage() {
   const [emailAddress, setEmailAddress] = useState<string>('');
@@ -26,7 +27,7 @@ export default function RequestLoginLinkPage() {
       .then((response) => {
         if (response.status == 422) {
           throw Error(
-            'This email was not found in the system. You need to be invited to this tool before you can log in.'
+            'You must be invited to this tool before you can use it. Ask for an invite from a 350Brooklyn administrator.'
           );
         }
         if (!response.ok) {
@@ -47,12 +48,15 @@ export default function RequestLoginLinkPage() {
   return (
     <div className={styles.fullScreenContainer}>
       <div className={styles.pageContent}>
-        <h1>Log in to 350 Brooklyn Bill Tracker</h1>
+        <img src={AppLogo} alt="Logo" className={styles.appLogo}/>
+        <h1>Log in to 350Brooklyn Bill Tracker</h1>
         <p>
           We&apos;ll email you a link you can click to login. No password
           needed.
         </p>
         <Form onSubmit={handleSubmit}>
+          <label>
+            <span className={styles.labelText}>Email Address</span>
           <Form.Control
             type="text"
             placeholder="Enter your email address"
@@ -60,9 +64,10 @@ export default function RequestLoginLinkPage() {
             onChange={emailAddressChanged}
             size="sm"
           />
+          </label>
 
           <Button size="sm" type="submit" disabled={requestInProgress}>
-            {requestInProgress ? 'Requesting...' : 'Request login link'}
+            {requestInProgress ? 'Requesting...' : 'Request a link'}
           </Button>
           {statusText && <p className="mt-3">{statusText}</p>}
         </Form>

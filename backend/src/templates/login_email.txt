@@ -1,4 +1,4 @@
-Log in to 350 Brooklyn Bill Tracker
+Log in to 350Brooklyn Bill Tracker
 
 Click the link below to be redirected back to the app and log in:
 {{ login_link }}
