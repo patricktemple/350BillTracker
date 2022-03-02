@@ -8,11 +8,13 @@ import PageHeader from '../components/PageHeader';
 
 import styles from '../style/pages/BillListPage.module.scss';
 import BillListItem from '../components/BillListItem';
+import SearchBox from '../components/SearchBox';
 
 export default function BillListPage(): ReactElement {
   const [bills, setBills] = useState<Bill[] | null>(null);
   const [addBillVisible, setAddBillVisible] = useState<boolean>(false);
   const apiFetch = useApiFetch();
+  const [filterText, setFilterText] = useState<string>('');
 
   function loadBillList() {
     apiFetch('/api/bills').then((response) => {
@@ -24,14 +26,21 @@ export default function BillListPage(): ReactElement {
     loadBillList();
   });
 
+  function handleFilterTextChanged(text: string) {
+    setFilterText(text);
+  }
+
+  const filteredBills = bills == null ? null : bills.filter(bill => bill.displayName.toLowerCase().includes(filterText.toLowerCase()));
+
   return (
     <div>
       <PageHeader>Bills</PageHeader>
       <div className={styles.content}>
-        {bills == null ? (
+        {filteredBills == null ? (
           'Loading...'
         ) : (
           <>
+          <SearchBox onChange={handleFilterTextChanged} />
             <div style={{ textAlign: 'right' }}>
               <Button
                 className="mb-2"
@@ -42,7 +51,7 @@ export default function BillListPage(): ReactElement {
               </Button>
             </div>
             <div className={styles.billList}>
-              {bills.map((bill) => (
+              {filteredBills.map((bill) => (
                 <BillListItem bill={bill} key={bill.id} />
               ))}
             </div>
