@@ -133,9 +133,7 @@ export default function PersonDetailsPanel(props: Props) {
         <StafferDetails person={person} />
       ) : (
         <>
-          <div className={styles.label}>
-            Staffers:
-          </div>
+          <div className={styles.label}>Staffers:</div>
           <div className={styles.content}>
             {staffers &&
               staffers.map((staffer) => (
@@ -148,19 +146,21 @@ export default function PersonDetailsPanel(props: Props) {
                   />
                 </div>
               ))}
-              <Button
+            <Button
               variant="outline-secondary"
               size="sm"
               onClick={() => setAddStafferModalVisible(true)}
-              className={`mb-2 d-block ${staffers && staffers.length > 0 && 'mt-2'}`}
+              className={`mb-2 d-block ${
+                staffers && staffers.length > 0 && 'mt-2'
+              }`}
             >
               Add staffer
             </Button>
-          <AddStafferModal
-            show={addStafferModalVisible}
-            handleAddStaffer={handleAddStaffer}
-            onHide={() => setAddStafferModalVisible(false)}
-          />
+            <AddStafferModal
+              show={addStafferModalVisible}
+              handleAddStaffer={handleAddStaffer}
+              onHide={() => setAddStafferModalVisible(false)}
+            />
           </div>{' '}
         </>
       )}
