@@ -25,7 +25,7 @@ def index(path):
 def after_request(response):
     response.headers[
         "Content-Security-Policy"
-    ] = "default-src 'self'; style-src 'self' fonts.googleapis.com; font-src fonts.googleapis.com fonts.gstatic.com"
+    ] = "default-src 'self'; style-src 'self' fonts.googleapis.com; font-src 'self' fonts.googleapis.com fonts.gstatic.com"
     response.headers["X-Frame-Options"] = "DENY"
 
     if not settings.DISABLE_STRICT_TRANSPORT_SECURITY:
