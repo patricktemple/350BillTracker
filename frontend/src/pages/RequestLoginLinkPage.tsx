@@ -48,7 +48,7 @@ export default function RequestLoginLinkPage() {
   return (
     <div className={styles.fullScreenContainer}>
       <div className={styles.pageContent}>
-        <img src={AppLogo} alt="Logo" className={styles.appLogo}/>
+        <img src={AppLogo} alt="Logo" className={styles.appLogo} />
         <h1>Log in to 350Brooklyn Bill Tracker</h1>
         <p>
           We&apos;ll email you a link you can click to login. No password
@@ -57,12 +57,12 @@ export default function RequestLoginLinkPage() {
         <Form onSubmit={handleSubmit}>
           <label>
             <span className={styles.labelText}>Email Address</span>
-          <Form.Control
-            type="text"
-            value={emailAddress}
-            onChange={emailAddressChanged}
-            size="sm"
-          />
+            <Form.Control
+              type="text"
+              value={emailAddress}
+              onChange={emailAddressChanged}
+              size="sm"
+            />
           </label>
 
           <Button size="sm" type="submit" disabled={requestInProgress}>
