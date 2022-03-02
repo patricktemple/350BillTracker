@@ -2,11 +2,15 @@
 
 .content {
   padding: 20px;
+
+  > ul {
+    border: none;
+  }
 }
 
 .searchBox {
   margin-bottom: 1rem;
-  padding: .5rem;
+  padding: .5rem .8rem;
   border-radius: 5px;
   border: 1px solid $dark-grey;
 
