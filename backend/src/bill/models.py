@@ -3,9 +3,10 @@ from uuid import uuid4
 
 import flask
 from sqlalchemy import Boolean, Column, Enum, ForeignKey, Integer, Text, sql
+from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.orm import foreign, relationship, remote
+from sqlalchemy.orm import foreign, relationship, remote, column_property
 
 from ..models import TIMESTAMP, UUID, db
 from ..user.models import User
@@ -83,9 +84,7 @@ class Bill(db.Model):
         "BillAttachment", back_populates="bill", cascade="all, delete"
     )
 
-    @property
-    def display_name(self):
-        return self.nickname if self.nickname else self.name
+    display_name = column_property(func.coalesce(func.nullif(nickname, ''), name))
 
     @property
     def tracked(self):

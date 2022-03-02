@@ -38,7 +38,7 @@ from .schema import (
 @app.route("/api/bills", methods=["GET"])
 @auth_required
 def bills():
-    bills = Bill.query.order_by(Bill.name).all()
+    bills = Bill.query.order_by(Bill.display_name).all()
     return BillSchema(many=True).jsonify(bills)
 
 
