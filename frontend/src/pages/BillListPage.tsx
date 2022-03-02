@@ -31,7 +31,14 @@ export default function BillListPage(): ReactElement {
   }
 
   const lowerFilterText = filterText.toLowerCase();
-  const filteredBills = bills == null ? null : bills.filter(bill => bill.displayName.toLowerCase().includes(lowerFilterText) || bill.codeName.toLowerCase().includes(lowerFilterText));
+  const filteredBills =
+    bills == null
+      ? null
+      : bills.filter(
+          (bill) =>
+            bill.displayName.toLowerCase().includes(lowerFilterText) ||
+            bill.codeName.toLowerCase().includes(lowerFilterText)
+        );
 
   return (
     <div>
@@ -41,8 +48,11 @@ export default function BillListPage(): ReactElement {
           'Loading...'
         ) : (
           <>
-          <div className={styles.topControls}>
-          <SearchBox onChange={handleFilterTextChanged} placeholder="Type name or number to search" />
+            <div className={styles.topControls}>
+              <SearchBox
+                onChange={handleFilterTextChanged}
+                placeholder="Type name or number to search"
+              />
               <Button
                 className={styles.addBillButton}
                 onClick={() => setAddBillVisible(true)}

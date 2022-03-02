@@ -58,7 +58,7 @@ def or_(*filters):
 
 def _convert_file(matter_file: str):
     # Intro is slightly preferred over Int
-    if matter_file.startswith('Int '):
+    if matter_file.startswith("Int "):
         return f"Intro {matter_file[4:]}"
 
 

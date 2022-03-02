@@ -211,8 +211,10 @@ export default function BillDetailsPage(props: Props): ReactElement {
                           {a.name}
                         </a>
                         &nbsp;
-                          <TrashIcon onClick={(e) => handleDeleteAttachment(e, a.id)} className={styles.trashIcon} />
-
+                        <TrashIcon
+                          onClick={(e) => handleDeleteAttachment(e, a.id)}
+                          className={styles.trashIcon}
+                        />
                       </div>
                     ))}
                   </div>
