@@ -6,8 +6,14 @@
 
 .searchBox {
   margin-bottom: 1rem;
+  padding: .5rem;
+  border-radius: 5px;
+  border: 1px solid $dark-grey;
 
-  ::placeholder {
-    font-style: italic;
+
+  &::placeholder {
+    background-image: url('../../assets/search.svg');
+    background-repeat: no-repeat;
+    background-position: right;
   }
 }
