@@ -36,13 +36,13 @@
     color: $darker-grey;
     display: block;
     padding-bottom: 1rem;
-    font-weight: bold;
+    // font-weight: bold;
 
     > svg {
         width: 26px;
         height: 26px;
         stroke: $dark-teal;
-        margin: 0 1rem 0 1.7rem;
+        margin: -.3rem 1rem 0 1.7rem;
     }
 }
 
