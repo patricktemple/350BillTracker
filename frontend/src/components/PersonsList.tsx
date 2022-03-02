@@ -17,6 +17,29 @@ interface Props {
   personTypeFilter?: PersonType;
 }
 
+function getPersonDetail(person: Person, displayPersonType: boolean) {
+  if (displayPersonType) {
+    if (person.type === 'COUNCIL_MEMBER' && person.councilMember?.borough) {
+      return `(City Council, ${person.councilMember.borough})`;
+    }
+    if (person.type === 'COUNCIL_MEMBER') {
+      return '(City Council)';
+    }
+    if (person.type === 'SENATOR') {
+      return '(Senate)';
+    }
+    if (person.type === 'ASSEMBLY_MEMBER') {
+      return '(Assembly)';
+    }
+    if (person.type === 'STAFFER') {
+      return '(Staffer)';
+    }
+  } else if (person.councilMember?.borough) {
+    return ` (${person.councilMember.borough})`;
+  }
+  return null;
+}
+
 export default function PersonsList({
   filterText,
   selectedPersonId,
@@ -49,9 +72,7 @@ export default function PersonsList({
         <Accordion.Item key={person.id} eventKey={person.id}>
           <Accordion.Header className={styles.accordionItem}>
             <strong>{person.name}</strong>
-            {person.councilMember?.borough && (
-              <>&nbsp;({person.councilMember.borough})</>
-            )}
+            &nbsp;{getPersonDetail(person, personTypeFilter == null)}
           </Accordion.Header>
           <LazyAccordionBody eventKey={person.id}>
             <PersonDetailsPanel person={person} />
