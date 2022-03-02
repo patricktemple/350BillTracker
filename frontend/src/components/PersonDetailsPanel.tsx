@@ -149,11 +149,11 @@ export default function PersonDetailsPanel(props: Props) {
               staffers.map((staffer) => (
                 <div key={staffer.id} className={styles.staffer}>
                   {formatStaffer(staffer)}
-                    &nbsp;
-                    <TrashIcon
-                      onClick={(e) => handleRemoveStaffer(e, staffer.id)}
-                      className={styles.trashIcon}
-                    />
+                  &nbsp;
+                  <TrashIcon
+                    onClick={(e) => handleRemoveStaffer(e, staffer.id)}
+                    className={styles.trashIcon}
+                  />
                 </div>
               ))}
           </div>{' '}
