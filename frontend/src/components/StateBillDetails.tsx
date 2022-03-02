@@ -29,7 +29,7 @@ function ChamberDetails({
           <h3>
             {chamber} bill {chamberDetails?.basePrintNo}
           </h3>
-          <div className={styles.chamberDetailsBody}>
+          <div>
             {chamberDetails == null ? (
               <div>Not yet introduced in {chamber}</div>
             ) : (

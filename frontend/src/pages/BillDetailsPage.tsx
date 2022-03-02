@@ -13,6 +13,7 @@ import Overlay from 'react-bootstrap/Overlay';
 import { MdHelpOutline } from 'react-icons/md';
 import styles from '../style/pages/BillDetailsPage.module.scss';
 import PageHeader from '../components/PageHeader';
+import { ReactComponent as TrashIcon } from '../assets/trash.svg';
 
 import { ReactComponent as TwitterIcon } from '../assets/twitter.svg';
 import CityBillSponsorList from '../components/CityBillDetails';
@@ -210,12 +211,8 @@ export default function BillDetailsPage(props: Props): ReactElement {
                           {a.name}
                         </a>
                         &nbsp;
-                        <a
-                          href="#"
-                          onClick={(e) => handleDeleteAttachment(e, a.id)}
-                        >
-                          [Remove]
-                        </a>
+                          <TrashIcon onClick={(e) => handleDeleteAttachment(e, a.id)} className={styles.trashIcon} />
+
                       </div>
                     ))}
                   </div>
