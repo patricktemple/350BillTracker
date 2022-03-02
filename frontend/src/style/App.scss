@@ -3,23 +3,54 @@
 //
 // The main styling stack is SCSS + CSS modules for each component, with
 // some shared variables like the color palette in variables.scss
-@import './variables.scss';
+@import './variables';
+@import './typography';
 
 // We do use some React-Bootstrap components, and we override the bootstrap
 // variables so that it uses our main theme colors.
 $font-family-sans-serif: $body-font;
 $theme-colors: (
-  "primary": $palette-medium-blue,
-  "secondary": $palette-lighter-blue,
-  "danger": $palette-red,
+  "primary": $dark-blue,
+  "secondary": $dark-blue,
+  "danger": $dark-red,
 );
-$blue: $palette-medium-blue;
-$dark: $palette-dark-blue;
+$blue: $dark-blue;
+$dark: $dark-blue;
 
 // Must put this last for our overrides of the Bootstrap variables to work
 @import "~bootstrap/scss/bootstrap";
 
-html, body, .root {
+html {
   width: 100%;
   height: 100%;
+}
+
+body, .root {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: $body-font;
+  font-size: 1rem;
+
+  line-height: 1.5;
+}
+
+h1 {
+  font-family: $title-font;
+  font-size: 2.25rem;
+  font-weight: bold;
+}
+
+h2 {
+  font-family: $title-font;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+h3 {
+  font-family: $title-font;
+  font-size: 1.25rem;
+  font-weight: bold;
 }

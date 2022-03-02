@@ -44,7 +44,7 @@ export default function NotificationSettingsPanel() {
 
   return (
     <div>
-      <h2 className={styles.title}>Notification settings</h2>
+      <h2>Notification settings</h2>
       <p>
         Notify me by email whenever the status or sponsorships change on
         specific bills:
@@ -52,15 +52,19 @@ export default function NotificationSettingsPanel() {
       {billSettings == null
         ? 'Loading...'
         : Object.values(billSettings).map((s) => (
-            <Form.Check
-              key={s.bill.id}
-              checked={s.sendBillUpdateNotifications}
-              type={'checkbox'}
-              label={`${s.bill.displayName} (${s.bill.codeName})`}
-              onChange={(e: any) =>
-                updateBillNotificationSettings(s.bill, e.target.checked)
-              }
-            />
+            <label key={s.bill.id} className={styles.bill}>
+              <Form.Check
+                className={styles.checkBox}
+                id={s.bill.id}
+                checked={s.sendBillUpdateNotifications}
+                type={'checkbox'}
+                onChange={(e: any) =>
+                  updateBillNotificationSettings(s.bill, e.target.checked)
+                }
+              />
+              {s.bill.displayName}{' '}
+              <span className={styles.billCodeName}>({s.bill.codeName})</span>
+            </label>
           ))}
     </div>
   );

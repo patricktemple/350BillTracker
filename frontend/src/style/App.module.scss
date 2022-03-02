@@ -1,19 +1,14 @@
 @import './_variables.scss';
 
-.container {
+.pageContainer {
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-rows: 120px min-content min-content 1fr min-content min-content;
-  grid-gap: 20px 0;
-  grid-template-columns: 50px 200px 1fr;
+  grid-template-rows: 1fr;
+  grid-gap: 2rem 0;
+  grid-template-columns: minmax(12.5rem, 23%) 1fr;
   grid-template-areas: 
-      ". appTitle content"
-      "billsLogo billsLink content"
-      "legislatorsLogo legislatorsLink content"
-      ". . content"
-      "settingsLogo settingsLink content"
-      "logoutLogo logoutLink content";
+      "leftNav content";
   
   // Uncomment to debug grid lines:
   // > * {
@@ -21,117 +16,12 @@
   // }
 }
 
-.appTitle {
-  padding: 16px 0;
-  grid-area: appTitle;
-  font-family: $title-font;
-
-  > h1 {
-    font-size: 1.5rem;
-    color: $palette-medium-blue;
-    font-weight: bold;
-  }
-
-  > h2 {
-    font-size: 1.2rem;
-    color: $palette-lighter-blue;
-  }
-}
-
-.leftNavBackground {
-  background-color: $palette-light-blue;
-  grid-row: 1 / span 6;
-  grid-column: 1 / span 2;
-}
-
-.mainNavLogo {
-  margin-right: 10px;
-  justify-self: right;
-  align-self: center;
-
-  > svg {
-    width: 26px;
-    height: 26px;
-    stroke: $palette-medium-blue;
-  }
-}
-
-.billsLogo {
-  @extend .mainNavLogo;
-  grid-area: billsLogo;
-}
-
-.mainNavLink {
-  color: $palette-medium-blue;
-  text-decoration: none;
-  align-self: center;
-  font-weight: 600;
-}
-
-.billsLink {
-  @extend .mainNavLink;
-  grid-area: billsLink;
-}
-
-.legislatorsLogo {
-  @extend .mainNavLogo;
-  grid-area: legislatorsLogo;
-}
-
-.legislatorsLink {
-  @extend .mainNavLink;
-  grid-area: legislatorsLink;
-}
-
-.bottomNavLink {
-  color: $palette-medium-blue;
-  text-decoration: none;
-  font-size: 0.9rem;
-  align-self: center;
-}
-
-.bottomNavLogo {
-  justify-self: right;
-  align-self: center;
-  margin-right: 10px;
-
-  > svg {
-    width: 22px;
-    height: 22px;
-    stroke: $palette-medium-blue;
-  }
-}
-
-
-.logoutLogo {
-  @extend .bottomNavLogo;
-  grid-area: logoutLogo;
-  margin-bottom: 1.5rem;
-}
-
-.logoutLink {
-  @extend .bottomNavLink;
-  grid-area: logoutLink;
-  margin-bottom: 1.5rem;
-}
-
-.settingsLogo {
-  @extend .bottomNavLogo;
-  grid-area: settingsLogo;
-}
-
-.settingsLink {
-  @extend .bottomNavLink;
-  grid-area: settingsLink;
+.leftNav {
+  grid-area: leftNav;
 }
 
 .content {
   grid-area: content;
   max-height: 100%;
   overflow-y: auto;
-}
-
-.navLink {
-  font-size: 1.3rem;
-  padding: 0 0 0.8rem 0
 }

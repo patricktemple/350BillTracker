@@ -1,23 +1,24 @@
 @import '../_variables.scss';
 
 .itemContainer {
+    padding: 1.5rem .4rem;
     display: grid;
     grid-template-rows: 1fr;
     grid-template-columns: 90px 1fr;
 
-    border-top: 1px solid $palette-light-blue;
-    border-right: 1px solid $palette-light-blue;
-    border-left: 1px solid $palette-light-blue;
+    border-top: 1px solid $lighter-grey;
+    border-right: 1px solid $lighter-grey;
+    border-left: 1px solid $lighter-grey;
     cursor: pointer;
 }
 
 .itemContainer:last-of-type {
-    border-bottom: 1px solid $palette-light-blue;
+    border-bottom: 1px solid $lighter-grey;
 }
 
 
 .itemContainer:hover {
-    background-color: #eeeeee;
+    background-color: $lightest-grey;
 }
 
 // .itemContainer > * {
@@ -31,7 +32,18 @@
     height: 70px;
     justify-self: center;
     margin-top: 10px;
-    fill: $palette-dark-blue;
+}
+
+.cityIcon {
+    @extend .billTypeIcon;
+
+    fill: $red;
+}
+
+.stateIcon {
+    @extend .billTypeIcon;
+
+    fill: $orange;
 }
 
 .billDetails {

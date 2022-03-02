@@ -1,11 +1,6 @@
 import React, { useState, ReactElement } from 'react';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { Person, SingleMemberSponsorship, Staffer, Uuid } from '../types';
+import { Person, Staffer, Uuid } from '../types';
 import useMountEffect from '@restart/hooks/useMountEffect';
-import Stack from 'react-bootstrap/Stack';
-import { Link } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import useAutosavingFormData from '../utils/useAutosavingFormData';
 import useApiFetch from '../useApiFetch';
@@ -15,6 +10,8 @@ import styles from '../style/components/PersonDetailsPanel.module.scss';
 import CouncilMemberDetails from './CouncilMemberDetails';
 import StateRepDetails from './StateRepDetails';
 import StafferDetails from './StafferDetails';
+
+import { ReactComponent as TrashIcon } from '../assets/trash.svg';
 
 interface Props {
   person: Person;
@@ -150,15 +147,13 @@ export default function PersonDetailsPanel(props: Props) {
           <div className={styles.content}>
             {staffers &&
               staffers.map((staffer) => (
-                <div key={staffer.id}>
-                  {formatStaffer(staffer)} [
-                  <a
-                    href="#"
+                <div key={staffer.id} className={styles.staffer}>
+                  {formatStaffer(staffer)}
+                  &nbsp;
+                  <TrashIcon
                     onClick={(e) => handleRemoveStaffer(e, staffer.id)}
-                  >
-                    Delete
-                  </a>
-                  ]
+                    className={styles.trashIcon}
+                  />
                 </div>
               ))}
           </div>{' '}

@@ -1,0 +1,5 @@
+@import "../variables";
+
+.accordionItem:hover > button {
+    background-color: $lightest-grey;
+}

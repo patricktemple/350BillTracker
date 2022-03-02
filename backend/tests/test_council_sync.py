@@ -278,7 +278,7 @@ def test_sync_bill_updates(city_bill):
         url="https://webapi.legistar.com/v1/nyc/matters/1?token=fake_token",
         json={
             "MatterId": city_bill.city_bill.city_bill_id,
-            "MatterFile": "New file",
+            "MatterFile": "Int 12",
             "MatterName": "New name",
             "MatterTitle": "New title",
             "MatterBodyName": "New body",
@@ -293,7 +293,7 @@ def test_sync_bill_updates(city_bill):
     result = Bill.query.one()
     assert result.name == "New name"
     assert result.description == "New title"
-    assert result.city_bill.file == "New file"
+    assert result.city_bill.file == "Intro 12"
     assert result.city_bill.council_body == "New body"
     assert result.city_bill.status == "New status"
     assert result.city_bill.intro_date == datetime(

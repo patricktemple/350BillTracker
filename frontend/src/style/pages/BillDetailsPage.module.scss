@@ -1,18 +1,11 @@
 @import '../_variables.scss';
 
-.title {
-    color: $palette-medium-blue;
-    font-family: $title-font;
-    font-size: 1.6rem;
-    font-weight: bold;
-    border-bottom: 1px solid $palette-light-blue;
-    padding: 20px;
-  }
-  
+
+// TODO: Refactor so we don't have the two sharing one CSS file this way?
 .page {
-    padding: 20px;
+    padding: $page-content-padding;
     display: grid;
-    grid-template-columns: 200px 1fr 150px 1fr;
+    grid-template-columns: minmax(8rem, 18%) 1fr 150px 1fr;
     grid-template-rows: auto;
     gap: 15px;
 }
@@ -41,4 +34,11 @@
 
 .fullWidth {
     grid-column: 1 / span 4;
+}
+
+.trashIcon {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+    color: $dark-blue;
 }

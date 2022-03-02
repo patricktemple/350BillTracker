@@ -2,7 +2,18 @@
 
 .title {
     padding-top: 1.4rem;
-    font-size: 1.4rem;
-    font-family: $title-font;
-    color: $palette-medium-blue;
+    color: $darkest-grey;
+}
+
+.billCodeName {
+    font-style: italic;
+}
+
+.checkBox {
+    display: inline;
+    margin-right: .6rem;
+}
+
+.bill {
+    display: block;
 }

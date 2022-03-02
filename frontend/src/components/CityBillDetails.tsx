@@ -42,7 +42,7 @@ export default function CityBillSponsorList({
       <div className={styles.label}>
         <div>
           Co-sponsors{' '}
-          {sponsorships != null && <>({sponsorships.cosponsors.length})</>}:
+          {sponsorships != null && <>({sponsorships.cosponsors.length})</>}
         </div>
       </div>
       <div className={styles.sponsorList}>
@@ -57,7 +57,7 @@ export default function CityBillSponsorList({
       </div>
       <div className={styles.nonSponsorLabel}>
         Non-sponsors{' '}
-        {sponsorships != null && <>({sponsorships.nonSponsors.length})</>}:
+        {sponsorships != null && <>({sponsorships.nonSponsors.length})</>}
       </div>
       <div className={styles.nonSponsorList}>
         {sponsorships == null ? (

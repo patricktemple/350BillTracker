@@ -16,6 +16,14 @@
     grid-column: 2;
 }
 
+.staffer > svg {
+    width: 20px;
+    height: 20px;
+    stroke: $dark-blue;
+    cursor: pointer;
+    justify-self: right;
+    margin-top: -.3rem;
+  }
 // .fullWidth {
 //     grid-column: 1 / span 4;
 // }

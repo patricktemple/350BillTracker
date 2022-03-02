@@ -4,15 +4,17 @@ import SearchBillsModal from '../components/SearchBillsModal';
 import Button from 'react-bootstrap/Button';
 import { Bill } from '../types';
 import useApiFetch from '../useApiFetch';
-import CityBillListItem from '../components/CityBillListItem';
+import PageHeader from '../components/PageHeader';
 
 import styles from '../style/pages/BillListPage.module.scss';
-import StateBillListItem from '../components/StateBillListItem';
+import BillListItem from '../components/BillListItem';
+import SearchBox from '../components/SearchBox';
 
 export default function BillListPage(): ReactElement {
   const [bills, setBills] = useState<Bill[] | null>(null);
   const [addBillVisible, setAddBillVisible] = useState<boolean>(false);
   const apiFetch = useApiFetch();
+  const [filterText, setFilterText] = useState<string>('');
 
   function loadBillList() {
     apiFetch('/api/bills').then((response) => {
@@ -24,17 +26,35 @@ export default function BillListPage(): ReactElement {
     loadBillList();
   });
 
+  function handleFilterTextChanged(text: string) {
+    setFilterText(text);
+  }
+
+  const lowerFilterText = filterText.toLowerCase();
+  const filteredBills =
+    bills == null
+      ? null
+      : bills.filter(
+          (bill) =>
+            bill.displayName.toLowerCase().includes(lowerFilterText) ||
+            bill.codeName.toLowerCase().includes(lowerFilterText)
+        );
+
   return (
     <div>
-      <div className={styles.title}>Bills</div>
+      <PageHeader>Bills</PageHeader>
       <div className={styles.content}>
-        {bills == null ? (
+        {filteredBills == null ? (
           'Loading...'
         ) : (
           <>
-            <div style={{ textAlign: 'right' }}>
+            <div className={styles.topControls}>
+              <SearchBox
+                onChange={handleFilterTextChanged}
+                placeholder="Type name or number to search"
+              />
               <Button
-                className="mb-2"
+                className={styles.addBillButton}
                 onClick={() => setAddBillVisible(true)}
                 size="sm"
               >
@@ -42,14 +62,8 @@ export default function BillListPage(): ReactElement {
               </Button>
             </div>
             <div className={styles.billList}>
-              {bills.map((bill) => (
-                <>
-                  {bill.stateBill ? (
-                    <StateBillListItem bill={bill} />
-                  ) : (
-                    <CityBillListItem bill={bill} />
-                  )}
-                </>
+              {filteredBills.map((bill) => (
+                <BillListItem bill={bill} key={bill.id} />
               ))}
             </div>
             <SearchBillsModal

@@ -1,18 +1,15 @@
 @import '../_variables.scss';
 
-.title {
-  color: $palette-medium-blue;
-  font-family: $title-font;
-  font-size: 1.6rem;
-  font-weight: bold;
-  border-bottom: 1px solid $palette-light-blue;
-  padding: 20px;
-}
-
 .content {
-  padding: 20px;
+  padding: $page-content-padding;
 }
 
-.billList {
-  // border: 1px solid $palette-medium-blue;
+.topControls {
+  position: relative;
+
+  > .addBillButton {
+    position: absolute;
+    right: 0;
+    bottom: 1rem;
+  }
 }

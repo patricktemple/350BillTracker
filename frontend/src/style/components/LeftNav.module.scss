@@ -1,0 +1,72 @@
+@import "../_variables.scss";
+
+.container {
+    background-color: $lightest-grey;
+    height: 100%;
+    position: relative;
+}
+
+
+.appTitle {
+    padding: 1.6rem 0;
+    font-weight: bold;
+
+    > .appLogo {
+        width: 60%;
+        display: block;
+        margin: 0 auto;
+    }
+
+    > h1 {
+        color: $darker-grey;
+        text-transform: uppercase;
+        display: block;
+        font-size: 1.5rem;
+        text-align: center;
+        letter-spacing: .15rem;
+        margin-top: 1rem;
+    }
+}
+
+.mainLinkSection {
+}
+
+.linkItem {
+    text-decoration: none;
+    color: $darker-grey;
+    display: block;
+    padding-bottom: 1rem;
+    // font-weight: bold;
+
+    > svg {
+        width: 26px;
+        height: 26px;
+        stroke: $dark-teal;
+        margin: -.3rem 1rem 0 1.7rem;
+    }
+}
+
+.mainLinkItem {
+    @extend .linkItem;
+
+    font-size: 1.5rem;
+}
+
+.mainNavLink {
+    color: $darker-grey;
+    text-decoration: none;
+    // align-self: center;
+    font-weight: 600;
+}
+
+.bottomLinkSection {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.bottomLinkItem {
+    @extend .linkItem;
+
+    font-size: 1rem;
+}
