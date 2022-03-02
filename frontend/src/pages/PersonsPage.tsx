@@ -25,7 +25,7 @@ export default function PersonsPage({
     <div>
       <PageHeader>People</PageHeader>
       <div className={styles.content}>
-        <SearchBox onChange={handleFilterTextChanged} />
+        <SearchBox onChange={handleFilterTextChanged} placeholder="Type name to search" />
         <Tabs className="mt-2" unmountOnExit={true}>
           <Tab eventKey="all" title="All">
             <PersonsList filterText={filterText} selectedPersonId={personId} />

@@ -3,6 +3,7 @@ import styles from "../style/components/SearchBox.module.scss";
 
 interface Props {
     onChange: (text: string) => void;
+    placeholder: string;
 }
 
 export default function SearchBox(props: Props) {
@@ -15,7 +16,7 @@ export default function SearchBox(props: Props) {
 
     return (<input
         type="text"
-        placeholder="Type name to search"
+        placeholder={props.placeholder}
         value={text}
         className={styles.searchBox}
         size={30}

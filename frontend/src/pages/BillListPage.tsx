@@ -41,7 +41,7 @@ export default function BillListPage(): ReactElement {
           'Loading...'
         ) : (
           <>
-          <SearchBox onChange={handleFilterTextChanged} />
+          <SearchBox onChange={handleFilterTextChanged} placeholder="Type name or number to search" />
             <div style={{ textAlign: 'right' }}>
               <Button
                 className="mb-2"

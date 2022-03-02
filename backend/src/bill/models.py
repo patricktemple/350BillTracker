@@ -126,6 +126,8 @@ class Bill(db.Model):
         )
 
         return f"{senate_print_no} / {assembly_print_no} from {self.state_bill.session_year} session"
+    
+    user_bill_settings = relationship("UserBillSettings", back_populates="bill", cascade="all, delete-orphan")
 
 
 class BillAttachment(db.Model):
@@ -275,7 +277,7 @@ class UserBillSettings(db.Model):
     )
 
     user = relationship(User, lazy="joined", back_populates="bill_settings")
-    bill = relationship(Bill)
+    bill = relationship(Bill, back_populates="user_bill_settings")
 
 
 Bill.viewer_settings = relationship(

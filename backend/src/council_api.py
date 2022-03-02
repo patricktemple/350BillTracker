@@ -56,6 +56,12 @@ def or_(*filters):
     return " or ".join([f"({f})" for f in filters])
 
 
+def _convert_file(matter_file: str):
+    # Intro is slightly preferred over Int
+    if matter_file.startswith('Int '):
+        return f"Intro {matter_file[4:]}"
+
+
 def _convert_matter_to_bill(matter):
     """Converts the City Council's representation of a bill, called Matters,
     into our own format."""
@@ -64,7 +70,7 @@ def _convert_matter_to_bill(matter):
         "name": matter["MatterName"],
         "description": matter["MatterTitle"],
         "city_bill": {
-            "file": matter["MatterFile"],
+            "file": _convert_file(matter["MatterFile"]),
             "council_body": matter["MatterBodyName"],
             "city_bill_id": matter["MatterId"],
             "intro_date": datetime.fromisoformat(
