@@ -50,6 +50,10 @@ h1 {
   font-family: $title-font;
   font-size: 2.25rem;
   font-weight: bold;
+
+  @include tablet {
+    font-size: 2rem;
+  }
 }
 
 h2 {

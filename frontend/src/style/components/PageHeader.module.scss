@@ -1,7 +1,12 @@
 @import "../variables";
+@import "../mixins";
 
 .title {
     color: $darker-grey;
     border-bottom: 1px solid $lighter-grey;
     padding: 2.5rem $page-content-padding 1.5rem $page-content-padding;
+
+    @include tablet {
+      padding: 1rem $page-content-padding .7rem $page-content-padding;
+    }
   }
