@@ -39,12 +39,15 @@
 
     > button {
       background-color: $dark-blue;
+      margin-left: 1rem;
     };
   
+    // This still needs fixing...
     input {
-      width: 26rem;
+      width: 100%;
+      // max-width: 26rem;
       display: inline-block;
-      margin: 0 1rem 1rem 0;
+      // margin: 0 1rem 1rem 0;
       border-color: $dark-grey;
     }
   }

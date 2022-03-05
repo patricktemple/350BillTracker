@@ -17,7 +17,6 @@ import MobileHeader from './components/MobileHeader';
 /*
 Issues I found in testing mobile:
 - Login page UI broken
-- There's a little scroll width at bottom that brings the top bar out of view. Maybe the page content has height 100%?
 - "Add a bill" search results table broken
 - Bill list hover effect is weird
 - Page can zoom in... then things break. Disable zoom? is this bad? research it
@@ -62,7 +61,9 @@ function AppContent() {
   return (
     <Router>
       <div className={styles.pageContainer}>
-        <MobileHeader onMenuClicked={handleMobileMenuIconClicked} />
+        <div className={styles.mobileHeader}>
+          <MobileHeader onMenuClicked={handleMobileMenuIconClicked} />
+        </div>
         <div className={leftNavClassNames.join(" ")}>
           <LeftNav onLogout={handleLogout} onMobileMenuClosed={handleMobileMenuCloseClicked} />
         </div>

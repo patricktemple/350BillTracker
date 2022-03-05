@@ -9,9 +9,14 @@
     vertical-align: middle;
     position: relative;
 
-    > img {
+    img {
         height: 1.5rem;
         // maybe use a smaller logo file?
+    }
+
+    a {
+        text-decoration: none;
+        color: $darkest-grey;
     }
 
     .appTitle {

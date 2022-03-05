@@ -5,8 +5,7 @@
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-rows: 1fr;
-  grid-gap: 2rem 0;
+  grid-template-rows: 100%;
   grid-template-columns: minmax(12.5rem, 23%) 1fr;
   grid-template-areas: 
       "leftNav content";
@@ -18,7 +17,10 @@
   // }
 
   @include tablet {
-    display: block;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 1fr;
+    grid-template-areas: "mobileHeader"
+      "content";
   }
 }
 
@@ -61,8 +63,11 @@
   }
 }
 
+.mobileHeader {
+  grid-area: mobileHeader;
+}
+
 .content {
   grid-area: content;
-  max-height: 100%;
   overflow-y: auto;
 }
