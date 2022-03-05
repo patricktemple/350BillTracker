@@ -1,0 +1,44 @@
+@import '../variables';
+@import '../mixins';
+
+.container {
+    display: none;
+    // height: 4rem; // or take this from the content?
+    background-color: $lightest-grey;
+    padding: 1rem;
+    vertical-align: middle;
+    position: relative;
+
+    > img {
+        height: 1.5rem;
+        // maybe use a smaller logo file?
+    }
+
+    .appTitle {
+        text-transform: uppercase;
+        font-weight: bold;
+        margin-left: .5rem;
+    }
+
+    .menuContainer {
+        display: inline-block;
+        position: absolute;
+        right: 0;
+        height: 100%;
+        vertical-align: middle;
+        font-weight: bold;
+
+        cursor: pointer;
+
+        > svg {
+            margin-left: .5rem;
+            margin-right: 1rem;
+        }
+    }
+
+    @include tablet {
+        display: block;
+    }
+
+
+}
