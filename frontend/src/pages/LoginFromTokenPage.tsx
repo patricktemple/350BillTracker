@@ -22,8 +22,14 @@ export default function LoginFromTokenPage() {
     })
       .then((response) => response.json())
       .then((response) => {
-        authContext?.updateToken(response['authToken']);
-        window.location.replace('/');
+        if (response.status === 401) {
+          window.location.replace('/#' + response['errorCode']); // TODO use a better URL builder
+        } else if (!response.ok) {
+          window.location.replace('/#unknownError');
+        } else {
+          authContext?.updateToken(response['authToken']);
+          window.location.replace('/');
+        }
       });
   });
 

@@ -4,7 +4,20 @@ import React, { useState } from 'react';
 import styles from '../style/pages/RequestLoginLinkPage.module.scss';
 import AppLogo from '../assets/app-logo.png';
 
-export default function RequestLoginLinkPage() {
+// Need to render error message
+
+interface Props {
+  errorCode: string | null;
+}
+
+const ERROR_CODE_MESSAGES = new Map<string, string>([
+  ['invalidLink', "The link you clicked was not valid. Please request a new one below."],
+  ['alreadyUsed', 'The link you clicked was already used. Please request a new one below.'],
+  ['linkExpired', 'The link you clicked has expired. Please request a new one below.'],
+  ['unknownError', 'An unknown error occurred when logging you in.']
+]);
+
+export default function RequestLoginLinkPage(props: Props) {
   const [emailAddress, setEmailAddress] = useState<string>('');
   const [statusText, setStatusText] = useState<string | null>(null);
   const [requestInProgress, setRequestInProgress] = useState<boolean>(false);
@@ -50,6 +63,9 @@ export default function RequestLoginLinkPage() {
       <div className={styles.pageContent}>
         <img src={AppLogo} alt="Logo" className={styles.appLogo} />
         <h1>Log in to 350Brooklyn Bill Tracker</h1>
+        {props.errorCode && (
+          <div className={styles.errorMessage}>{ERROR_CODE_MESSAGES.get(props.errorCode)}</div>
+        )}
         <p>
           We&apos;ll email you a link you can click to login. No password
           needed.

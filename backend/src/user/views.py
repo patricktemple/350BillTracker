@@ -62,19 +62,23 @@ def login():
 
     # TODO: Pass a message down to the client distinguishing these 403s
     if not login_link:
-        raise exceptions.Unauthorized()
-
-    if login_link.expires_at < now():
-        raise exceptions.Unauthorized()
-
-    if login_link.used_at:
-        raise exceptions.Unauthorized()
+        error_code = "invalidLink"
+    elif login_link.expires_at < now():
+        error_code = "linkExpired"
+    elif login_link.used_at:
+        error_code = "alreadyUsed"
+    
+    if error_code:
+        return jsonify({"errorCode": error_code}), 401
     
     login_link.used_at = now()
     db.session.commit()
 
     user_id = login_link.user_id
     return jsonify({"authToken": create_jwt(user_id)})
+
+
+# TODO: Add assertions on error messages!
 
 
 @app.route(

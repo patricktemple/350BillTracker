@@ -26,7 +26,7 @@ function AppContent() {
   }
 
   if (!authContext.token) {
-    return <RequestLoginLinkPage />;
+    return <RequestLoginLinkPage errorCode={location.hash.substring(1)}/>;
   }
 
   function handleLogout(event: any) {

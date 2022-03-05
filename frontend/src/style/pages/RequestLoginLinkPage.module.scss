@@ -57,3 +57,9 @@
   position: absolute;
   top: 100%;
 }
+
+.errorMessage {
+  font-weight: bold;
+  color: $dark-red;
+  margin-bottom: 1rem;
+}
