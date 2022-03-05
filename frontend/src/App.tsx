@@ -39,6 +39,10 @@ function AppContent() {
     setMobileMenuShown(true);
   }
 
+  function handleMobileMenuCloseClicked() {
+    setMobileMenuShown(false);
+  }
+
   const leftNavClassNames = [styles.leftNav];
   if (mobileMenuShown) {
     leftNavClassNames.push(styles.leftNavMobileShown);
@@ -48,7 +52,7 @@ function AppContent() {
       <div className={styles.pageContainer}>
         <MobileHeader onMenuClicked={handleMobileMenuIconClicked} />
         <div className={leftNavClassNames.join(" ")}>
-          <LeftNav onLogout={handleLogout} />
+          <LeftNav onLogout={handleLogout} onMobileMenuClosed={handleMobileMenuCloseClicked} />
         </div>
 
         <main className={styles.content}>
