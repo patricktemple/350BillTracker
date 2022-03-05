@@ -6,14 +6,20 @@
     height: 100%;
     position: relative;
 
-    > .mobileCloseIcon {
+    > .mobileCloseContainer {
         position: absolute;
         top: 1rem;
         right: 1rem;
-        width: 1.2rem;
-        height: 1.2rem;
         cursor: pointer;
         display: none;
+        font-weight: bold;
+
+        > svg {
+            margin-left: .3rem;
+            margin-right: 1rem;
+            width: 1.2rem;
+            height: 1.2rem;
+        }
 
         @include tablet {
             display: inline-block;
@@ -30,6 +36,10 @@
         width: 60%;
         display: block;
         margin: 0 auto;
+
+        @include tablet {
+            margin-top: 2rem;
+        }
     }
 
     > h1 {

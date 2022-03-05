@@ -20,7 +20,10 @@ export default function LeftNav(props: Props) {
   // TODO: Also hide this when someone clicks any of the pages
   return (
     <nav className={styles.container}>
-      <CloseIcon className={styles.mobileCloseIcon} onClick={props.onMobileMenuClosed} />
+      <div className={styles.mobileCloseContainer} onClick={props.onMobileMenuClosed}>
+        Close
+        <CloseIcon />
+      </div>
       <div className={styles.appTitle}>
         <img src={AppLogo} alt="Logo" className={styles.appLogo} />
         <h1>Bill Tracker</h1>
