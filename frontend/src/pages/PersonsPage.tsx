@@ -27,7 +27,7 @@ export default function PersonsPage({
       <div className={styles.content}>
         <SearchBox
           onChange={handleFilterTextChanged}
-          placeholder="Type name to search"
+          placeholder="Search by name"
         />
         <Tabs className="mt-2" unmountOnExit={true}>
           <Tab eventKey="all" title="All">

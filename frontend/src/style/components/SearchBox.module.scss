@@ -1,10 +1,15 @@
 @import "../variables";
+@import "../mixins";
 
 .searchBox {
     margin-bottom: 1rem;
     padding: .5rem .8rem;
     border-radius: 5px;
     border: 1px solid $dark-grey;
+
+    @include phone {
+      padding: .3rem .6rem;
+    }
   
   
     &::placeholder {

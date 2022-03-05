@@ -7,6 +7,6 @@
     padding: 2.5rem $page-content-padding 1.5rem $page-content-padding;
 
     @include tablet {
-      padding: 1rem $page-content-padding .7rem $page-content-padding;
+      padding: 1rem $page-content-padding-mobile .7rem $page-content-padding-mobile;
     }
   }

@@ -1,4 +1,5 @@
-@import '../_variables.scss';
+@import '../_variables';
+@import '../mixins';
 
 
 // TODO: Refactor so we don't have the two sharing one CSS file this way?
@@ -8,11 +9,25 @@
     grid-template-columns: minmax(8rem, 18%) 1fr 150px 1fr;
     grid-template-rows: auto;
     gap: 15px;
+
+    @include tablet {
+        padding: $page-content-padding-mobile;
+        display: block;
+    }
 }
 
+// TODO: Make this 2x2 grid a shared component with the PersonDetailsPanel!
+// and considered getting rid of grid for this altogether
 .label {
     grid-column: 1;
     font-weight: bold;
+
+    @include tablet {
+        &:not(:first-child) {
+            margin-top: 1rem;
+        }
+        margin-bottom: .2rem;
+    }
 }
 
 .content {
@@ -26,6 +41,7 @@
 .nonSponsorLabel {
     grid-column: 3 / span 1;
     font-weight: bold;
+    margin-top: 1rem;
 }
 
 .nonSponsorList {

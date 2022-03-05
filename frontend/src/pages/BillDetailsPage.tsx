@@ -385,7 +385,7 @@ export default function BillDetailsPage(props: Props): ReactElement {
               twitterSearchTerms={formData.twitterSearchTerms}
             />
           ) : (
-            <div className={styles.fullWidth}>
+            <div className={`${styles.fullWidth} mt-4 mb-3`}>
               <StateBillDetails
                 bill={bill}
                 twitterSearchTerms={formData.twitterSearchTerms}

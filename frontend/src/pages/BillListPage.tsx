@@ -51,7 +51,7 @@ export default function BillListPage(): ReactElement {
             <div className={styles.topControls}>
               <SearchBox
                 onChange={handleFilterTextChanged}
-                placeholder="Type name or number to search"
+                placeholder="Search by name or number"
               />
               <Button
                 className={styles.addBillButton}
