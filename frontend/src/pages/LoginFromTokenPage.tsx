@@ -20,17 +20,17 @@ export default function LoginFromTokenPage() {
         'Content-Type': 'application/json'
       }
     })
-      .then((response) => response.json())
       .then((response) => {
         if (response.status === 401) {
-          window.location.replace('/#' + response['errorCode']); // TODO use a better URL builder
+          window.location.replace('/#' + response.json()['errorCode']); // TODO use a better URL builder
         } else if (!response.ok) {
           window.location.replace('/#unknownError');
         } else {
-          authContext?.updateToken(response['authToken']);
+          authContext?.updateToken(response.json()['authToken']);
           window.location.replace('/');
         }
-      });
+      })
+
   });
 
   return <div>Logging in...</div>;
