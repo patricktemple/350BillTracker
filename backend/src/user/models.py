@@ -57,3 +57,6 @@ class LoginLink(db.Model):
 
     # TODO: Consider only allowing these links to be used once. Better security
     # in case of leaked browser URL, but worse UX.
+
+# TODO: Make these linkes only usably once
+# We would need to have a good error page for this too, if they click it a second time
