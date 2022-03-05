@@ -61,6 +61,7 @@ def login():
     login_link = LoginLink.query.filter_by(token=token).with_for_update().one_or_none()
 
     # TODO: Pass a message down to the client distinguishing these 403s
+    error_code = None
     if not login_link:
         error_code = "invalidLink"
     elif login_link.expires_at < now():
