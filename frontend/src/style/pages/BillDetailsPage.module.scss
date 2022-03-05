@@ -12,6 +12,9 @@
 
     @include tablet {
         padding: $page-content-padding-mobile;
+    }
+
+    @include phone {
         display: block;
     }
 }
@@ -22,7 +25,7 @@
     grid-column: 1;
     font-weight: bold;
 
-    @include tablet {
+    @include phone {
         &:not(:first-child) {
             margin-top: 1rem;
         }

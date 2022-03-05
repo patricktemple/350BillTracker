@@ -29,17 +29,17 @@ export default function LeftNav(props: Props) {
         <h1>Bill Tracker</h1>
       </div>
       <div className={styles.mainLinkSection}>
-        <Link to="/" className={styles.mainLinkItem}>
+        <Link to="/" className={styles.mainLinkItem} onClick={props.onMobileMenuClosed}>
           <BillsIcon />
           Bills
         </Link>
-        <Link to="/people" className={styles.mainLinkItem}>
+        <Link to="/people" className={styles.mainLinkItem} onClick={props.onMobileMenuClosed}>
           <PersonIcon />
           People
         </Link>
       </div>
       <div className={styles.bottomLinkSection}>
-        <Link to="/settings" className={styles.bottomLinkItem}>
+        <Link to="/settings" className={styles.bottomLinkItem} onClick={props.onMobileMenuClosed}>
           <SettingsIcon /> Settings
         </Link>
         <a href="#" onClick={props.onLogout} className={styles.bottomLinkItem}>
