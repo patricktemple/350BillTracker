@@ -12,3 +12,21 @@
     border: none;
   }
 }
+
+.desktopTabs {
+  @include tablet {
+    display: none;
+  }
+}
+
+.mobileDropdownContainer {
+  display: none;
+  @include tablet {
+    display: block;
+  }
+
+  .mobileDropdown {
+    padding-left: 0;
+    font-weight: bold;
+  }
+}
