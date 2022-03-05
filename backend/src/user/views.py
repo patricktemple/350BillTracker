@@ -58,15 +58,22 @@ def login():
     data = LoginSchema().load(request.json)
     token = data["token"]
 
-    login_link = LoginLink.query.filter_by(token=token).one_or_none()
+    login_link = LoginLink.query.filter_by(token=token).with_for_update().one_or_none()
+
+    # TODO: Pass a message down to the client distinguishing these 403s
     if not login_link:
         raise exceptions.Unauthorized()
-
-    user_id = login_link.user_id
 
     if login_link.expires_at < now():
         raise exceptions.Unauthorized()
 
+    if login_link.used_at:
+        raise exceptions.Unauthorized()
+    
+    login_link.used_at = now()
+    db.session.commit()
+
+    user_id = login_link.user_id
     return jsonify({"authToken": create_jwt(user_id)})
 
 

@@ -53,6 +53,8 @@ class LoginLink(db.Model):
 
     created_at = Column(TIMESTAMP, nullable=False, default=now)
 
+    used_at = Column(TIMESTAMP)
+
     user = relationship("User", back_populates="login_links")
 
     # TODO: Consider only allowing these links to be used once. Better security

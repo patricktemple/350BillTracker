@@ -22,7 +22,7 @@ def test_create_login_link_user_not_found(client):
     assert response.status_code == 422
 
 
-def test_login_success(client, user_id):
+def test_login_success_then_fail(client, user_id):
     login_link = LoginLink(
         user_id=user_id,
         token="foo",
@@ -34,6 +34,10 @@ def test_login_success(client, user_id):
     response = client.post("/api/login", data={"token": "foo"})
     assert response.status_code == 200
     assert "authToken" in json.loads(response.data)
+
+    # Link can only be used once
+    response = client.post("/api/login", data={"token": "foo"})
+    assert response.status_code == 401
 
 
 def test_login_token_expired(client, user_id):
