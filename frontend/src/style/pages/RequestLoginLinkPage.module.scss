@@ -49,3 +49,11 @@
     }
   }
 }
+
+.statusText {
+  // Absolute positioning so that this doesn't get considered as part of the
+  // vertical height for centering purposes. Otherwise, the whole page content
+  // shifts up when text appears below.
+  position: absolute;
+  top: 100%;
+}

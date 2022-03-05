@@ -68,7 +68,7 @@ export default function RequestLoginLinkPage() {
           <Button size="sm" type="submit" disabled={requestInProgress}>
             {requestInProgress ? 'Requesting...' : 'Request a link'}
           </Button>
-          {statusText && <p className="mt-3">{statusText}</p>}
+          <div className={styles.statusText}>{statusText && <p className="mt-3">{statusText}</p>}</div>
         </Form>
       </div>
     </div>
