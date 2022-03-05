@@ -62,7 +62,7 @@ export default function StateRepDetails(props: Props) {
       <div className={styles.content}>{person.title}</div>
       <div className={styles.label}>Email</div>
       <div className={styles.content}>{person.email}</div>
-      <div className={styles.label}>Contact info</div>
+      <div className={`${styles.label} ${styles.contactInfo}`}>Contact info</div>
       <div className={styles.content}>
         {contacts &&
           contacts.map((contact, index) => (
