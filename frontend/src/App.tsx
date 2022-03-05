@@ -14,6 +14,18 @@ import LeftNav from './components/LeftNav';
 import { setSyntheticLeadingComments } from 'typescript';
 import MobileHeader from './components/MobileHeader';
 
+/*
+Issues I found in testing mobile:
+- Login page UI broken
+- There's a little scroll width at bottom that brings the top bar out of view. Maybe the page content has height 100%?
+- "Add a bill" search results table broken
+- Bill list hover effect is weird
+- Page can zoom in... then things break. Disable zoom? is this bad? research it
+- Popover is off screen, which then makes the page width wide, and enables horz scroll
+- should state cosponsors and non sponsors really be side by side?
+
+*/
+
 function AppContent() {
   const authContext = useContext(AuthContext);
 

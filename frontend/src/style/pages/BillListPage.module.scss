@@ -1,15 +1,37 @@
 @import '../_variables';
+@import '../mixins';
 
 .content {
   padding: $page-content-padding;
+
+  @include tablet {
+    padding: $page-content-padding-mobile;
+  }
 }
 
+// Use flexbox for this?
 .topControls {
   position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
 
-  > .addBillButton {
-    position: absolute;
-    right: 0;
-    bottom: 1rem;
+  > .searchContainer {
+    grid-column: 1;
+    display: inline-block;
+  }
+
+  .addBillButtonContainer {
+    grid-column: 2;
+    padding-bottom: 1rem;
+    padding-left: 1rem;
+    align-self: end;
+
+    > button {
+      padding: .4rem .7rem;
+
+      @include phone {
+        padding: .2rem .4rem;
+      }
+    }
   }
 }

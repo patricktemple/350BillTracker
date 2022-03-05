@@ -6,6 +6,8 @@
     padding: .5rem .8rem;
     border-radius: 5px;
     border: 1px solid $dark-grey;
+    width: 100%;
+    max-width: 30rem;
 
     @include phone {
       padding: .3rem .6rem;
