@@ -19,6 +19,8 @@ Issues I found in testing mobile:
 - Bill list hover effect is weird
 - Popover is off screen, which then makes the page width wide, and enables horz scroll
 - should state cosponsors and non sponsors really be side by side?
+- On landscape mode, page boundaries are wrong. Test on a real tablet. Also on landscape, the left nav is so big that 
+- scaling breaks, and the item positions are wrong too. Set a max width?
 
 */
 
@@ -52,8 +54,10 @@ function AppContent() {
   }
 
   const leftNavClassNames = [styles.leftNav];
+  const leftNavGlassClassNames = [styles.leftNavMobileGlass];
   if (mobileMenuShown) {
     leftNavClassNames.push(styles.leftNavMobileShown);
+    leftNavGlassClassNames.push(styles.leftNavMobileShown);
   }
   return (
     <Router>
@@ -61,8 +65,8 @@ function AppContent() {
         <div className={styles.mobileHeader}>
           <MobileHeader onMenuClicked={handleMobileMenuIconClicked} />
         </div>
+        <div className={leftNavGlassClassNames.join(' ')} onClick={handleMobileMenuCloseClicked} />
         <div className={leftNavClassNames.join(' ')}>
-          <div className={styles.leftNavMobileGlass} onClick={handleMobileMenuCloseClicked} />
           <LeftNav
             onLogout={handleLogout}
             onMobileMenuClosed={handleMobileMenuCloseClicked}

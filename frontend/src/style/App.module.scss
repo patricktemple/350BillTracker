@@ -35,9 +35,10 @@
     top: 0;
     height: 100%;
     width: 80%;
+    max-width: 30rem;
     left: 100%;
     z-index: 5;
-    transition: left .5s;
+    transition: transform .5s;
   }
 
   .leftNavMobileGlass {
@@ -48,18 +49,25 @@
   &.leftNavMobileShown {
     @include tablet {
       visibility: visible;
-      left: 20%;
+      transform: translateX(-100%);
       box-shadow: 0 1rem 4rem rgba(#000, 0.2);
+    }
+  }
+}
 
-      .leftNavMobileGlass {
-        visibility: visible;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(#000, 0.5);
-      }
+.leftNavMobileGlass {
+  visibility: hidden;
+  
+  &.leftNavMobileShown {
+    @include tablet {
+      visibility: visible;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(#000, 0.5);
+      z-index: 4;
     }
   }
 }
