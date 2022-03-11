@@ -71,20 +71,19 @@ export default function RequestLoginLinkPage(props: Props) {
           needed.
         </p>
         <Form onSubmit={handleSubmit}>
-          <label>
-            <span className={styles.labelText}>Email Address</span>
+          <label htmlFor="RequestLoginLinkPage-email" className={styles.labelText}>Email Address</label>
             <Form.Control
               type="text"
               value={emailAddress}
               onChange={emailAddressChanged}
               size="sm"
+              id="RequestLoginLinkPage-email"
             />
-          </label>
 
           <Button size="sm" type="submit" disabled={requestInProgress}>
             {requestInProgress ? 'Requesting...' : 'Request a link'}
           </Button>
-          <div className={styles.statusText}>{statusText && <p className="mt-3">{statusText}</p>}</div>
+          <div className={styles.statusText}>{statusText && <p>{statusText}</p>}</div>
         </Form>
       </div>
     </div>
