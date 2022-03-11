@@ -40,24 +40,25 @@
     transition: left .5s;
   }
 
+  .leftNavMobileGlass {
+    visibility: hidden;
+  }
+
   // Not sure why the animation only happens when the menu opens... maybe that's fine though?
   &.leftNavMobileShown {
     @include tablet {
       visibility: visible;
       left: 20%;
       box-shadow: 0 1rem 4rem rgba(#000, 0.2);
-    }
 
-    &::before {
-      @include tablet {
-        content: '';
+      .leftNavMobileGlass {
+        visibility: visible;
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
         background-color: rgba(#000, 0.5);
-        z-index: 0;
       }
     }
   }
