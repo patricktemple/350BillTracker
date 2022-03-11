@@ -16,8 +16,8 @@ import MobileHeader from './components/MobileHeader';
 
 /*
 Issues I found in testing mobile:
-- Login page UI broken
-- "Add a bill" search results table broken
+- "Add a bill" search results table broken... should switch this to use the same grid component
+  as the bill and person page.
 - Bill list hover effect is weird
 - Page can zoom in... then things break. Disable zoom? is this bad? research it
 - Popover is off screen, which then makes the page width wide, and enables horz scroll
@@ -37,7 +37,7 @@ function AppContent() {
   }
 
   if (!authContext.token) {
-    return <RequestLoginLinkPage errorCode={location.hash.substring(1)}/>;
+    return <RequestLoginLinkPage errorCode={location.hash.substring(1)} />;
   }
 
   function handleLogout(event: any) {
@@ -64,8 +64,11 @@ function AppContent() {
         <div className={styles.mobileHeader}>
           <MobileHeader onMenuClicked={handleMobileMenuIconClicked} />
         </div>
-        <div className={leftNavClassNames.join(" ")}>
-          <LeftNav onLogout={handleLogout} onMobileMenuClosed={handleMobileMenuCloseClicked} />
+        <div className={leftNavClassNames.join(' ')}>
+          <LeftNav
+            onLogout={handleLogout}
+            onMobileMenuClosed={handleMobileMenuCloseClicked}
+          />
         </div>
 
         <main className={styles.content}>

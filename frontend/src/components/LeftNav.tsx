@@ -20,7 +20,10 @@ export default function LeftNav(props: Props) {
   // TODO: Also hide this when someone clicks any of the pages
   return (
     <nav className={styles.container}>
-      <div className={styles.mobileCloseContainer} onClick={props.onMobileMenuClosed}>
+      <div
+        className={styles.mobileCloseContainer}
+        onClick={props.onMobileMenuClosed}
+      >
         Close
         <CloseIcon />
       </div>
@@ -29,17 +32,29 @@ export default function LeftNav(props: Props) {
         <h1>Bill Tracker</h1>
       </div>
       <div className={styles.mainLinkSection}>
-        <Link to="/" className={styles.mainLinkItem} onClick={props.onMobileMenuClosed}>
+        <Link
+          to="/"
+          className={styles.mainLinkItem}
+          onClick={props.onMobileMenuClosed}
+        >
           <BillsIcon />
           Bills
         </Link>
-        <Link to="/people" className={styles.mainLinkItem} onClick={props.onMobileMenuClosed}>
+        <Link
+          to="/people"
+          className={styles.mainLinkItem}
+          onClick={props.onMobileMenuClosed}
+        >
           <PersonIcon />
           People
         </Link>
       </div>
       <div className={styles.bottomLinkSection}>
-        <Link to="/settings" className={styles.bottomLinkItem} onClick={props.onMobileMenuClosed}>
+        <Link
+          to="/settings"
+          className={styles.bottomLinkItem}
+          onClick={props.onMobileMenuClosed}
+        >
           <SettingsIcon /> Settings
         </Link>
         <a href="#" onClick={props.onLogout} className={styles.bottomLinkItem}>

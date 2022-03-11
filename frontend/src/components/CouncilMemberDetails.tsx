@@ -9,6 +9,7 @@ import useMountEffect from '@restart/hooks/useMountEffect';
 import { Link } from 'react-router-dom';
 import useApiFetch from '../useApiFetch';
 import styles from '../style/components/PersonDetailsPanel.module.scss';
+import { DetailLabel, DetailContent } from '../components/DetailTable';
 
 interface Props {
   person: Person;
@@ -55,22 +56,22 @@ export default function CouncilMemberDetails(props: Props) {
       .map((c) => c.phone);
   return (
     <>
-      <div className={styles.label}>Name</div>
-      <div className={styles.content}>{person.name}</div>
-      <div className={styles.label}>Title</div>
-      <div className={styles.content}>{person.title}</div>
-      <div className={styles.label}>Borough</div>
-      <div className={styles.content}>{person.councilMember!.borough}</div>
-      <div className={styles.label}>Email</div>
-      <div className={styles.content}>{person.email}</div>
-      <div className={styles.label}>District phone</div>
-      <div className={styles.content}>{districtPhoneText}</div>
-      <div className={styles.label}>Legislative phone</div>
-      <div className={styles.content}>{legislativePhoneText}</div>
-      <div className={styles.label}>Party</div>
-      <div className={styles.content}>{person.party}</div>
-      <div className={styles.label}>Committees</div>
-      <div className={styles.content}>
+      <DetailLabel>Name</DetailLabel>
+      <DetailContent>{person.name}</DetailContent>
+      <DetailLabel>Title</DetailLabel>
+      <DetailContent>{person.title}</DetailContent>
+      <DetailLabel>Borough</DetailLabel>
+      <DetailContent>{person.councilMember!.borough}</DetailContent>
+      <DetailLabel>Email</DetailLabel>
+      <DetailContent>{person.email}</DetailContent>
+      <DetailLabel>District phone</DetailLabel>
+      <DetailContent>{districtPhoneText}</DetailContent>
+      <DetailLabel>Legislative phone</DetailLabel>
+      <DetailContent>{legislativePhoneText}</DetailContent>
+      <DetailLabel>Party</DetailLabel>
+      <DetailContent>{person.party}</DetailContent>
+      <DetailLabel>Committees</DetailLabel>
+      <DetailContent>
         {committeeMemberships == null
           ? 'Loading...'
           : committeeMemberships.map((membership) => (
@@ -79,27 +80,27 @@ export default function CouncilMemberDetails(props: Props) {
                 {membership.isChair && ' (chair)'}
               </div>
             ))}
-      </div>
-      <div className={styles.label}>Website</div>
-      <div className={styles.content}>
+      </DetailContent>
+      <DetailLabel>Website</DetailLabel>
+      <DetailContent>
         {person.councilMember!.website && (
           <a href={person.councilMember!.website} target="website">
             Visit website
           </a>
         )}
-      </div>
-      <div className={styles.label}>Twitter</div>
-      <div className={styles.content}>
+      </DetailContent>
+      <DetailLabel>Twitter</DetailLabel>
+      <DetailContent>
         {person.twitter && (
           <a href={`https://twitter.com/${person.twitter}`} target="twitter">
             @{person.twitter}
           </a>
         )}
-      </div>
-      <div className={styles.label}>
+      </DetailContent>
+      <DetailLabel>
         <div style={{ fontWeight: 'bold' }}>Sponsored bills</div>
-      </div>
-      <div className={styles.content}>
+      </DetailLabel>
+      <DetailContent>
         {sponsorships == null ? (
           'Loading...'
         ) : (
@@ -115,7 +116,7 @@ export default function CouncilMemberDetails(props: Props) {
             ))}
           </div>
         )}
-      </div>
+      </DetailContent>
     </>
   );
 }

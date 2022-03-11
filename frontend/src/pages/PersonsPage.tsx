@@ -15,12 +15,12 @@ interface Props {
 type PersonTypeFilter = PersonType | 'ALL';
 
 const mobileDropdownText = {
-  'ALL': "all people",
-  'COUNCIL_MEMBER': 'council members',
-  'SENATOR': 'senators',
-  "ASSEMBLY_MEMBER": 'assembly members',
-  "STAFFER": "staffers"
-}
+  ALL: 'all people',
+  COUNCIL_MEMBER: 'council members',
+  SENATOR: 'senators',
+  ASSEMBLY_MEMBER: 'assembly members',
+  STAFFER: 'staffers'
+};
 
 export default function PersonsPage({
   match: {
@@ -45,7 +45,11 @@ export default function PersonsPage({
           onChange={handleFilterTextChanged}
           placeholder="Search by name"
         />
-        <Tabs className={`mt-2 ${styles.desktopTabs}`} unmountOnExit={true} onSelect={handleTabSelect} >
+        <Tabs
+          className={`mt-2 ${styles.desktopTabs}`}
+          unmountOnExit={true}
+          onSelect={handleTabSelect}
+        >
           <Tab eventKey={'ALL'} title="All" />
           <Tab eventKey={'COUNCIL_MEMBER'} title="Council members" />
           <Tab eventKey={'SENATOR'} title="Senators" />
@@ -53,25 +57,32 @@ export default function PersonsPage({
           <Tab eventKey={'STAFFER'} title="Staffers" />
         </Tabs>
         <div className={styles.mobileDropdownContainer}>
-                <Dropdown onSelect={handleTabSelect}>
-        <Dropdown.Toggle variant="success" className={styles.mobileDropdown}>
-           Show <a href="#">{mobileDropdownText[typeFilter]}</a>
-        </Dropdown.Toggle>
+          <Dropdown onSelect={handleTabSelect}>
+            <Dropdown.Toggle
+              variant="success"
+              className={styles.mobileDropdown}
+            >
+              Show <a href="#">{mobileDropdownText[typeFilter]}</a>
+            </Dropdown.Toggle>
 
-        <Dropdown.Menu>
-          <Dropdown.Item eventKey="ALL">All people</Dropdown.Item>
-          <Dropdown.Item eventKey="COUNCIL_MEMBER">City council members</Dropdown.Item>
-          <Dropdown.Item eventKey="SENATOR">State senators</Dropdown.Item>
-          <Dropdown.Item eventKey="ASSEMBLY_MEMBER">State assembly members</Dropdown.Item>
-          <Dropdown.Item eventKey="STAFFER">Staffers</Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
+            <Dropdown.Menu>
+              <Dropdown.Item eventKey="ALL">All people</Dropdown.Item>
+              <Dropdown.Item eventKey="COUNCIL_MEMBER">
+                City council members
+              </Dropdown.Item>
+              <Dropdown.Item eventKey="SENATOR">State senators</Dropdown.Item>
+              <Dropdown.Item eventKey="ASSEMBLY_MEMBER">
+                State assembly members
+              </Dropdown.Item>
+              <Dropdown.Item eventKey="STAFFER">Staffers</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
         <PersonsList
-              filterText={filterText}
-              selectedPersonId={personId}
-              personTypeFilter={typeFilter === 'ALL' ? undefined : typeFilter}
-            />
+          filterText={filterText}
+          selectedPersonId={personId}
+          personTypeFilter={typeFilter === 'ALL' ? undefined : typeFilter}
+        />
       </div>
     </div>
   );

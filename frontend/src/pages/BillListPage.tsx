@@ -56,12 +56,12 @@ export default function BillListPage(): ReactElement {
                 />
               </div>
               <div className={styles.addBillButtonContainer}>
-              <Button
-                className={styles.addBillButton}
-                onClick={() => setAddBillVisible(true)}
-              >
-                Add a bill
-              </Button>
+                <Button
+                  className={styles.addBillButton}
+                  onClick={() => setAddBillVisible(true)}
+                >
+                  Add a bill
+                </Button>
               </div>
             </div>
             <div className={styles.billList}>

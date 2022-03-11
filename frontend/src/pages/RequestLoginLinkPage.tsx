@@ -11,9 +11,18 @@ interface Props {
 }
 
 const ERROR_CODE_MESSAGES = new Map<string, string>([
-  ['invalidLink', "The link you clicked was not valid. Please request a new one below."],
-  ['alreadyUsed', 'The link you clicked was already used. Please request a new one below.'],
-  ['linkExpired', 'The link you clicked has expired. Please request a new one below.'],
+  [
+    'invalidLink',
+    'The link you clicked was not valid. Please request a new one below.'
+  ],
+  [
+    'alreadyUsed',
+    'The link you clicked was already used. Please request a new one below.'
+  ],
+  [
+    'linkExpired',
+    'The link you clicked has expired. Please request a new one below.'
+  ],
   ['unknownError', 'An unknown error occurred when logging you in.']
 ]);
 
@@ -64,26 +73,35 @@ export default function RequestLoginLinkPage(props: Props) {
         <img src={AppLogo} alt="Logo" className={styles.appLogo} />
         <h1>Log in to 350Brooklyn Bill Tracker</h1>
         {props.errorCode && (
-          <div className={styles.errorMessage}>{ERROR_CODE_MESSAGES.get(props.errorCode)}</div>
+          <div className={styles.errorMessage}>
+            {ERROR_CODE_MESSAGES.get(props.errorCode)}
+          </div>
         )}
         <p>
           We&apos;ll email you a link you can click to login. No password
           needed.
         </p>
         <Form onSubmit={handleSubmit}>
-          <label htmlFor="RequestLoginLinkPage-email" className={styles.labelText}>Email Address</label>
-            <Form.Control
-              type="text"
-              value={emailAddress}
-              onChange={emailAddressChanged}
-              size="sm"
-              id="RequestLoginLinkPage-email"
-            />
+          <label
+            htmlFor="RequestLoginLinkPage-email"
+            className={styles.labelText}
+          >
+            Email Address
+          </label>
+          <Form.Control
+            type="text"
+            value={emailAddress}
+            onChange={emailAddressChanged}
+            size="sm"
+            id="RequestLoginLinkPage-email"
+          />
 
           <Button size="sm" type="submit" disabled={requestInProgress}>
             {requestInProgress ? 'Requesting...' : 'Request a link'}
           </Button>
-          <div className={styles.statusText}>{statusText && <p>{statusText}</p>}</div>
+          <div className={styles.statusText}>
+            {statusText && <p>{statusText}</p>}
+          </div>
         </Form>
       </div>
     </div>

@@ -10,6 +10,7 @@ import styles from '../style/components/PersonDetailsPanel.module.scss';
 import CouncilMemberDetails from './CouncilMemberDetails';
 import StateRepDetails from './StateRepDetails';
 import StafferDetails from './StafferDetails';
+import DetailTable, { DetailLabel, DetailContent } from './DetailTable';
 
 import { ReactComponent as TrashIcon } from '../assets/trash.svg';
 
@@ -113,69 +114,71 @@ export default function PersonDetailsPanel(props: Props) {
   }
 
   return (
-    <Form onSubmit={(e) => e.preventDefault()} className={styles.root}>
-      {person.type === 'COUNCIL_MEMBER' && (
-        <CouncilMemberDetails person={person} />
-      )}
-      {person.type === 'SENATOR' && (
-        <StateRepDetails
-          person={person}
-          representativeDetails={person.senator!}
-        />
-      )}
-      {person.type === 'ASSEMBLY_MEMBER' && (
-        <StateRepDetails
-          person={person}
-          representativeDetails={person.assemblyMember!}
-        />
-      )}
-      {person.type === 'STAFFER' ? (
-        <StafferDetails person={person} />
-      ) : (
-        <>
-          <div className={styles.label}>Staffers:</div>
-          <div className={styles.content}>
-            {staffers &&
-              staffers.map((staffer) => (
-                <div key={staffer.id} className={styles.staffer}>
-                  {formatStaffer(staffer)}
-                  &nbsp;
-                  <TrashIcon
-                    onClick={(e) => handleRemoveStaffer(e, staffer.id)}
-                    className={styles.trashIcon}
-                  />
-                </div>
-              ))}
-            <Button
-              variant="outline-secondary"
-              size="sm"
-              onClick={() => setAddStafferModalVisible(true)}
-              className={`mb-2 d-block ${
-                staffers && staffers.length > 0 && 'mt-2'
-              }`}
-            >
-              Add staffer
-            </Button>
-            <AddStafferModal
-              show={addStafferModalVisible}
-              handleAddStaffer={handleAddStaffer}
-              onHide={() => setAddStafferModalVisible(false)}
-            />
-          </div>{' '}
-        </>
-      )}
-      <div className={styles.label}>Our notes:</div>
-      <div className={styles.content}>
-        <Form.Control
-          as="textarea"
-          rows={3}
-          size="sm"
-          value={formData.notes}
-          placeholder="Add our notes about this person"
-          onChange={handleNotesChanged}
-        />
-      </div>
-      <div className={styles.label}>{saveStatus}</div>
+    <Form onSubmit={(e) => e.preventDefault()}>
+      <DetailTable>
+        {person.type === 'COUNCIL_MEMBER' && (
+          <CouncilMemberDetails person={person} />
+        )}
+        {person.type === 'SENATOR' && (
+          <StateRepDetails
+            person={person}
+            representativeDetails={person.senator!}
+          />
+        )}
+        {person.type === 'ASSEMBLY_MEMBER' && (
+          <StateRepDetails
+            person={person}
+            representativeDetails={person.assemblyMember!}
+          />
+        )}
+        {person.type === 'STAFFER' ? (
+          <StafferDetails person={person} />
+        ) : (
+          <>
+            <DetailLabel>Staffers</DetailLabel>
+            <DetailContent>
+              {staffers &&
+                staffers.map((staffer) => (
+                  <div key={staffer.id} className={styles.staffer}>
+                    {formatStaffer(staffer)}
+                    &nbsp;
+                    <TrashIcon
+                      onClick={(e) => handleRemoveStaffer(e, staffer.id)}
+                      className={styles.trashIcon}
+                    />
+                  </div>
+                ))}
+              <Button
+                variant="outline-secondary"
+                size="sm"
+                onClick={() => setAddStafferModalVisible(true)}
+                className={`mb-2 d-block ${
+                  staffers && staffers.length > 0 && 'mt-2'
+                }`}
+              >
+                Add staffer
+              </Button>
+              <AddStafferModal
+                show={addStafferModalVisible}
+                handleAddStaffer={handleAddStaffer}
+                onHide={() => setAddStafferModalVisible(false)}
+              />
+            </DetailContent>{' '}
+          </>
+        )}
+        <DetailLabel>Our notes</DetailLabel>
+        <DetailContent>
+          <Form.Control
+            as="textarea"
+            rows={3}
+            size="sm"
+            value={formData.notes}
+            placeholder="Add our notes about this person"
+            onChange={handleNotesChanged}
+          />
+        </DetailContent>
+        <DetailLabel>{saveStatus}</DetailLabel>
+      </DetailTable>
     </Form>
   );
 }

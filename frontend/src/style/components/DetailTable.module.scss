@@ -1,0 +1,37 @@
+@import '../variables';
+@import '../mixins';
+
+.container {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: auto;
+    gap: 15px;
+
+    @include phone {
+        display: block;
+    }
+}
+
+.label {
+    grid-column: 1;
+    font-weight: bold;
+
+    @include phone {
+        // font-size: 1.1rem;
+        &:not(:first-child) {
+            margin-top: 1rem;
+        }
+        margin-bottom: .2rem;
+
+        &.contactInfo {
+            text-transform: uppercase;
+            margin-bottom: .5rem;
+        }
+    }
+
+
+}
+
+.content {
+    grid-column: 2;
+}

@@ -58,7 +58,9 @@ def login():
     data = LoginSchema().load(request.json)
     token = data["token"]
 
-    login_link = LoginLink.query.filter_by(token=token).with_for_update().one_or_none()
+    login_link = (
+        LoginLink.query.filter_by(token=token).with_for_update().one_or_none()
+    )
 
     # TODO: Pass a message down to the client distinguishing these 403s
     error_code = None
@@ -68,10 +70,10 @@ def login():
         error_code = "linkExpired"
     elif login_link.used_at:
         error_code = "alreadyUsed"
-    
+
     if error_code:
         return jsonify({"errorCode": error_code}), 401
-    
+
     login_link.used_at = now()
     db.session.commit()
 

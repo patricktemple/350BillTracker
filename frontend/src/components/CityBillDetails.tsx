@@ -4,6 +4,7 @@ import useMountEffect from '@restart/hooks/useMountEffect';
 import useApiFetch from '../useApiFetch';
 import BillSponsorList from './BillSponsorList';
 import styles from '../style/pages/BillDetailsPage.module.scss';
+import { DetailLabel, DetailContent } from '../components/DetailTable';
 
 import BillSponsorItem from './BillSponsorItem';
 
@@ -28,8 +29,8 @@ export default function CityBillSponsorList({
 
   return (
     <>
-      <div className={styles.label}>Lead sponsor</div>
-      <div className={styles.content}>
+      <DetailLabel>Lead sponsor</DetailLabel>
+      <DetailContent>
         {sponsorships == null
           ? 'Loading...'
           : sponsorships.leadSponsor && (
@@ -38,13 +39,13 @@ export default function CityBillSponsorList({
                 twitterSearchTerms={twitterSearchTerms}
               />
             )}
-      </div>
-      <div className={styles.label}>
+      </DetailContent>
+      <DetailLabel>
         <div>
           Co-sponsors{' '}
           {sponsorships != null && <>({sponsorships.cosponsors.length})</>}
         </div>
-      </div>
+      </DetailLabel>
       <div className={styles.sponsorList}>
         {sponsorships == null ? (
           'Loading...'
@@ -55,11 +56,11 @@ export default function CityBillSponsorList({
           />
         )}
       </div>
-      <div className={styles.nonSponsorLabel}>
+      <DetailLabel>
         Non-sponsors{' '}
         {sponsorships != null && <>({sponsorships.nonSponsors.length})</>}
-      </div>
-      <div className={styles.nonSponsorList}>
+      </DetailLabel>
+      <DetailContent>
         {sponsorships == null ? (
           'Loading...'
         ) : (
@@ -68,7 +69,7 @@ export default function CityBillSponsorList({
             twitterSearchTerms={twitterSearchTerms}
           />
         )}
-      </div>
+      </DetailContent>
     </>
   );
 }
