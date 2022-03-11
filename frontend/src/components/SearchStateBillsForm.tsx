@@ -66,15 +66,18 @@ export default function SearchBillsModal(props: Props): ReactElement {
   const [searchResults, setSearchResults] = useState<
     StateBillSearchResult[] | null
   >(null);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
 
   const apiFetch = useApiFetch();
 
   function handleSubmit(e: any) {
+    setIsSearching(true);
     const params = new URLSearchParams({
       codeName: codeNameRef.current!.value,
       sessionYear: sessionYearRef.current!.value
     });
     apiFetch('/api/state-bills/search?' + params).then((response) => {
+      setIsSearching(false);
       setSearchResults(response);
     });
     e.preventDefault();
@@ -109,8 +112,8 @@ export default function SearchBillsModal(props: Props): ReactElement {
         />
       </Form.Group>
 
-      <Button variant="primary" type="submit" className="mb-2">
-        Search
+      <Button variant="primary" type="submit" className="mb-2" disabled={isSearching}>
+        {isSearching ? 'Searching...' : 'Search'}
       </Button>
       {searchResults != null && (
         <div className={styles.resultsContainer}>
