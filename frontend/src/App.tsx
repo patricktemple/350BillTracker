@@ -16,10 +16,7 @@ import MobileHeader from './components/MobileHeader';
 
 /*
 Issues I found in testing mobile:
-- "Add a bill" search results table broken... should switch this to use the same grid component
-  as the bill and person page.
 - Bill list hover effect is weird
-- Page can zoom in... then things break. Disable zoom? is this bad? research it
 - Popover is off screen, which then makes the page width wide, and enables horz scroll
 - should state cosponsors and non sponsors really be side by side?
 
