@@ -2,6 +2,8 @@ import Table from 'react-bootstrap/Table';
 import { Bill } from '../types';
 import Button from 'react-bootstrap/Button';
 import React, { useState } from 'react';
+import DetailTable, { DetailLabel, DetailContent } from '../components/DetailTable';
+import styles from '../style/components/BillSearchResults.module.scss';
 
 interface Props {
   bills: Bill[];
@@ -23,41 +25,38 @@ function BillListRow(props: {
   // Lazy way to make this UI respond to click, without better global state.
   // Assumes that tracking API call actually will work.
   return (
-    <tr key={bill.cityBill!.cityBillId}>
-      <td>{bill.cityBill!.file}</td>
-      <td>{bill.name}</td>
-      <td>{bill.description}</td>
-      <td>{bill.cityBill!.status}</td>
-      <td>{bill.cityBill!.councilBody}</td>
-      <td>
+    <div className={styles.resultsItem}>
+      <DetailTable>
+      <DetailLabel>Number</DetailLabel>
+      <DetailContent>{bill.cityBill!.file}</DetailContent>
+      <DetailLabel>Official name</DetailLabel>
+      <DetailContent>{bill.name}</DetailContent>
+      <DetailLabel>Description</DetailLabel>
+      <DetailContent>{bill.description}</DetailContent>
+      <DetailLabel>Status</DetailLabel>
+      <DetailContent>{bill.cityBill!.status}</DetailContent>
+      <DetailLabel>Council body</DetailLabel>
+      <DetailContent>{bill.cityBill!.councilBody}</DetailContent>
+      <DetailLabel>Track this bill?</DetailLabel>
+      <DetailContent>
         {bill.tracked || trackClicked ? (
           <Button disabled size="sm">
-            Tracked
+            Already tracked
           </Button>
         ) : (
           <Button size="sm" onClick={handleTrackBill}>
             Track
           </Button>
         )}
-      </td>
-    </tr>
+      </DetailContent>
+      </DetailTable>
+    </div>
   );
 }
 
 export default function BillList(props: Props) {
   return (
-    <Table striped bordered>
-      <thead>
-        <tr>
-          <th>Bill number</th>
-          <th>Name</th>
-          <th>Title</th>
-          <th>Status</th>
-          <th>Body</th>
-          <th>Are we tracking this bill?</th>
-        </tr>
-      </thead>
-      <tbody>
+    <div className={styles.resultsContainer}>
         {props.bills.map((bill: any) => (
           <BillListRow
             key={bill.id}
@@ -65,7 +64,6 @@ export default function BillList(props: Props) {
             handleTrackBill={props.handleTrackBill}
           />
         ))}
-      </tbody>
-    </Table>
+    </div>
   );
 }

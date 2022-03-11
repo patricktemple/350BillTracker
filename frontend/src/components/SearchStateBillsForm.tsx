@@ -4,8 +4,8 @@ import Button from 'react-bootstrap/Button';
 import { Bill, BillType, StateBillSearchResult } from '../types';
 import Modal from 'react-bootstrap/Modal';
 import useApiFetch from '../useApiFetch';
-import SearchCityBillsForm from './SearchCityBillsForm';
-import Table from 'react-bootstrap/Table';
+import DetailTable, { DetailLabel, DetailContent } from '../components/DetailTable';
+import styles from '../style/components/BillSearchResults.module.scss';
 
 function BillRow(props: {
   bill: StateBillSearchResult;
@@ -23,25 +23,34 @@ function BillRow(props: {
   // Lazy way to make this UI respond to click, without better global state.
   // Assumes that tracking API call actually will work.
   return (
-    <tr key={bill.basePrintNo}>
-      <td>{bill.basePrintNo}</td>
-      <td>{bill.sessionYear}</td>
-      <td>{bill.chamber}</td>
-      <td>{bill.name}</td>
-      <td>{bill.description}</td>
-      <td>{bill.status}</td>
-      <td>
+    <div className={styles.resultsItem}>
+      <DetailTable>
+        <DetailLabel>Number</DetailLabel>
+      <DetailContent>{bill.basePrintNo}</DetailContent>
+      <DetailLabel>Session year</DetailLabel>
+      <DetailContent>{bill.sessionYear}</DetailContent>
+      <DetailLabel>Chamber</DetailLabel>
+      <DetailContent>{bill.chamber}</DetailContent>
+      <DetailLabel>Official name</DetailLabel>
+      <DetailContent>{bill.name}</DetailContent>
+      <DetailLabel>Description</DetailLabel>
+      <DetailContent>{bill.description}</DetailContent>
+      <DetailLabel>Status</DetailLabel>
+      <DetailContent>{bill.status}</DetailContent>
+      <DetailLabel>Track this bill?</DetailLabel>
+      <DetailContent>
         {bill.tracked || trackClicked ? (
           <Button disabled size="sm">
-            Tracked
+            Already tracked
           </Button>
         ) : (
           <Button size="sm" onClick={handleTrackBill}>
             Track
           </Button>
         )}
-      </td>
-    </tr>
+      </DetailContent>
+      </DetailTable>
+    </div>
   );
 }
 
@@ -104,19 +113,7 @@ export default function SearchBillsModal(props: Props): ReactElement {
         Search
       </Button>
       {searchResults != null && (
-        <Table striped bordered>
-          <thead>
-            <tr>
-              <th>Bill number</th>
-              <th>Session year</th>
-              <th>Chamber</th>
-              <th>Title</th>
-              <th>Description</th>
-              <th>Status</th>
-              {/* <th>Are we tracking this bill?</th> */}
-            </tr>
-          </thead>
-          <tbody>
+        <div className={styles.resultsContainer}>
             {searchResults.map((bill: any) => (
               <BillRow
                 key={bill.id}
@@ -124,8 +121,7 @@ export default function SearchBillsModal(props: Props): ReactElement {
                 handleTrackBill={handleTrackBill}
               />
             ))}
-          </tbody>
-        </Table>
+        </div>
       )}
     </Form>
   );
