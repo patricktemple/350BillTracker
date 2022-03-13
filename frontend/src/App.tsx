@@ -20,7 +20,6 @@ Responsive fixes to do:
 - In landscape mode, it's only partway across the page
 - Maybe, the #errorCode token stays and becomes part of the bookmarked URL?
 - On tablet, sometimes focus doesn't go to main content, and it won't scroll
-- Scroll to specific person when their name is clicked on a bill
 
 */
 
