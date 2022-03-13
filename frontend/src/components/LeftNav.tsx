@@ -18,7 +18,10 @@ export interface Props {
 export default function LeftNav(props: Props) {
   return (
     <nav className={styles.container}>
-      <a className={styles.mobileCloseContainer} onClick={props.onMobileMenuClosed}>
+      <a
+        className={styles.mobileCloseContainer}
+        onClick={props.onMobileMenuClosed}
+      >
         Close
         <CloseIcon />
       </a>
