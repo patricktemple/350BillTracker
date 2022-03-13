@@ -73,7 +73,6 @@ def login():
     return jsonify({"authToken": create_jwt(user_id)})
 
 
-
 @app.route(
     "/api/users",
     methods=["GET"],
