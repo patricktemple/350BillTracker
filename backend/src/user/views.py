@@ -73,8 +73,6 @@ def login():
     return jsonify({"authToken": create_jwt(user_id)})
 
 
-# TODO: Add assertions on error messages!
-
 
 @app.route(
     "/api/users",

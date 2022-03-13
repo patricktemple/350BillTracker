@@ -24,13 +24,13 @@
   }
 }
 
-// TODO: reset the grid properties?
 .leftNav {
   grid-area: leftNav;
 
   @include tablet {
     // Have this start off the side to the right, so that it can slide in
     visibility: hidden;
+    grid-area: unset;
     position: fixed;
     top: 0;
     height: 100%;

@@ -10,7 +10,6 @@ interface Props {
 }
 
 export default function MobileHeader(props: Props) {
-  // Should make the shole div an A tag? Read up on best practice here
   return (
     <div className={styles.container}>
       <Link to="/">

@@ -4,6 +4,7 @@ from unittest.mock import patch
 
 from src.models import db
 from src.user.models import LoginLink
+from .utils import get_response_data
 
 
 @patch("src.ses.client")
@@ -48,7 +49,13 @@ def test_login_token_expired(client, user_id):
     response = client.post("/api/login", data={"token": "foo"})
     assert response.status_code == 401
 
+    data = get_response_data(response)
+    assert data['errorCode'] == 'linkExpired'
+
 
 def test_login_token_not_found(client, user_id):
     response = client.post("/api/login", data={"token": "unknown"})
     assert response.status_code == 401
+
+    data = get_response_data(response)
+    assert data['errorCode'] == 'invalidLink'
