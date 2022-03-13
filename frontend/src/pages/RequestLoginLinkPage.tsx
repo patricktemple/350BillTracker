@@ -16,10 +16,6 @@ const ERROR_CODE_MESSAGES = new Map<string, string>([
     'The link you clicked was not valid. Please request a new one below.'
   ],
   [
-    'alreadyUsed',
-    'The link you clicked was already used. Please request a new one below.'
-  ],
-  [
     'linkExpired',
     'The link you clicked has expired. Please request a new one below.'
   ],
@@ -45,7 +41,6 @@ export default function RequestLoginLinkPage(props: Props) {
         'Content-Type': 'application/json'
       }
     })
-      // TODO: Handle failed login
       .then((response) => {
         if (response.status == 422) {
           throw Error(

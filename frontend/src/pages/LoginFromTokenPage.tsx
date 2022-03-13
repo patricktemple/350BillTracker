@@ -1,7 +1,24 @@
 import React, { useContext } from 'react';
-import { AuthContext } from '../AuthContext';
+import { AuthContext, AuthState } from '../AuthContext';
 import { Redirect } from 'react-router-dom';
 import useMountEffect from '@restart/hooks/useMountEffect';
+
+async function login(token: string, authState: AuthState) {
+  const response = await fetch(`/api/login`, {
+    method: 'POST',
+    body: JSON.stringify({ token }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  const responseJson = await response.json();
+  if (response.status === 401) {
+    window.location.replace('/#' + responseJson['errorCode']);
+  } else {
+    authState?.updateToken(responseJson['authToken']);
+    window.location.replace('/');
+  }
+}
 
 // This is not a login screen. Instead it just looks for a token in the
 // URL params, calls the login API, and then updates the state.
@@ -13,23 +30,11 @@ export default function LoginFromTokenPage() {
   const authContext = useContext(AuthContext);
 
   useMountEffect(() => {
-    fetch(`/api/login`, {
-      method: 'POST',
-      body: JSON.stringify({ token }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        // if (response.status === 401) {
-        //   const errorMessage = response['errorCode'];
-        //   window.location.replace('/#' + response['errorCode']); // TODO
-        // }
-        authContext?.updateToken(response['authToken']);
-        window.location.replace('/');
-        // TODO: Handle the possible error messages
-      });
+    if (!token) {
+      window.location.replace('/#invalidToken');
+    } else if (authContext) {
+      login(token, authContext);
+    }
   });
 
   return <div>Logging in...</div>;
