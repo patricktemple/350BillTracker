@@ -13,7 +13,7 @@ from src.models import db
 from src.person.models import CouncilMember, Person
 from src.utils import now
 
-from .utils import assert_response
+from .utils import assert_response, get_response_data
 
 
 def create_fake_matter(matter_id):
@@ -201,6 +201,7 @@ def test_save_bill(client):
         data={"cityBillId": 123},
     )
     assert response.status_code == 200
+    assert 'id' in get_response_data(response)
 
     bill = Bill.query.one()
     assert bill.type == Bill.BillType.CITY

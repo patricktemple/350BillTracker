@@ -8,7 +8,7 @@ from src.bill.models import AssemblyBill, Bill, SenateBill, StateBill
 from src.models import db
 from src.person.models import AssemblyMember, Person, Senator
 
-from .utils import assert_response, create_mock_bill_response
+from .utils import assert_response, create_mock_bill_response, get_response_data
 
 
 def test_get_bills(client, state_bill):
@@ -139,6 +139,7 @@ def test_track_bill(client, snapshot):
         data={"sessionYear": 2021, "basePrintNo": "S100"},
     )
     assert response.status_code == 200
+    assert 'id' in get_response_data(response)
 
     bill = Bill.query.one()
     assert bill.type == Bill.BillType.STATE

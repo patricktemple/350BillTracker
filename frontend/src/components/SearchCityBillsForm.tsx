@@ -2,12 +2,12 @@ import React, { useState, useRef, ReactElement } from 'react';
 import CityBillSearchResults from './CityBillSearchResults';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { Bill, BillType } from '../types';
+import { Bill, BillType, Uuid } from '../types';
 import Modal from 'react-bootstrap/Modal';
 import useApiFetch from '../useApiFetch';
 
 interface Props {
-  handleBillTracked: () => void;
+  handleBillTracked: (billId: Uuid) => void;
 }
 
 export default function SearchCityBillsForm(props: Props): ReactElement {
@@ -35,7 +35,7 @@ export default function SearchCityBillsForm(props: Props): ReactElement {
       method: 'POST',
       body: { cityBillId }
     }).then((response) => {
-      props.handleBillTracked();
+      props.handleBillTracked(response.id);
     });
   }
 

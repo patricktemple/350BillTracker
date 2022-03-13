@@ -72,7 +72,6 @@ export default function BillListPage(): ReactElement {
             <SearchBillsModal
               show={addBillVisible}
               handleHide={() => setAddBillVisible(false)}
-              handleBillTracked={loadBillList}
             />
           </>
         )}

@@ -1,16 +1,17 @@
 import React, { useState, useRef, ReactElement } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { Bill, BillType } from '../types';
+import { Bill, BillType, Uuid } from '../types';
 import Modal from 'react-bootstrap/Modal';
 import useApiFetch from '../useApiFetch';
 import SearchCityBillsForm from './SearchCityBillsForm';
 import SearchStateBillsForm from './SearchStateBillsForm';
 
+import { useHistory } from 'react-router-dom';
+
 interface Props {
   show: boolean;
   handleHide: () => void;
-  handleBillTracked: () => void;
 }
 
 export default function SearchBillsModal(props: Props): ReactElement {
@@ -24,6 +25,8 @@ export default function SearchBillsModal(props: Props): ReactElement {
 
   const [billType, setBillType] = useState<BillType>('CITY');
 
+  const history = useHistory();
+
   function handleHide() {
     setSearchResults(null);
     props.handleHide();
@@ -31,6 +34,10 @@ export default function SearchBillsModal(props: Props): ReactElement {
 
   function handleBillTypeChanged(e: any) {
     setBillType(e.target.value);
+  }
+
+  function handleBillTracked(billId: Uuid) {
+    history.push(`/bills/${billId}`);
   }
 
   return (
@@ -60,9 +67,9 @@ export default function SearchBillsModal(props: Props): ReactElement {
           id={`inline-radio-2`}
         />
         {billType === 'CITY' ? (
-          <SearchCityBillsForm handleBillTracked={props.handleBillTracked} />
+          <SearchCityBillsForm handleBillTracked={handleBillTracked} />
         ) : (
-          <SearchStateBillsForm handleBillTracked={props.handleBillTracked} />
+          <SearchStateBillsForm handleBillTracked={handleBillTracked} />
         )}
       </Modal.Body>
     </Modal>

@@ -39,6 +39,7 @@ export default function StateBillListItem({ bill }: Props) {
   const history = useHistory();
 
   // TODO: Also show the lead sponsor of bills right here
+  // TODO: Make these a Link?
   const stateBill = bill.stateBill!;
   return (
     <div className={styles.itemContainer}>

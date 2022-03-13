@@ -16,7 +16,6 @@ import MobileHeader from './components/MobileHeader';
 /*
 
 Responsive fixes to do:
-- Close "add bill" modal ones one is selected
 - Weird hover state when scrolling
 - In landscape mode, it's only partway across the page
 - Maybe, the #errorCode token stays and becomes part of the bookmarked URL?
