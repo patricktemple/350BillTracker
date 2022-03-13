@@ -18,10 +18,10 @@ export default function MobileHeader(props: Props) {
         <span className={styles.appTitle}>Bill tracker</span>
       </Link>
 
-      <div className={styles.menuContainer} onClick={props.onMenuClicked}>
+      <a className={styles.menuContainer} onClick={props.onMenuClicked}>
         Menu
         <HamburgerIcon />
-      </div>
+      </a>
     </div>
   );
 }

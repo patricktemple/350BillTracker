@@ -3,7 +3,6 @@
 
 .container {
     display: none;
-    // height: 4rem; // or take this from the content?
     background-color: $lightest-grey;
     padding: 1rem;
     vertical-align: middle;
@@ -11,7 +10,6 @@
 
     img {
         height: 1.5rem;
-        // maybe use a smaller logo file?
     }
 
     a {
@@ -29,8 +27,6 @@
         display: inline-block;
         position: absolute;
         right: 0;
-        height: 100%;
-        vertical-align: middle;
         font-weight: bold;
 
         cursor: pointer;

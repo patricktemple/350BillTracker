@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import styles from '../style/components/DetailTable.module.scss';
 
 export interface Props {
-  children: any; // TODO, types here and below
+  children: any;
 }
 
 export function DetailLabel(props: { children: any }) {

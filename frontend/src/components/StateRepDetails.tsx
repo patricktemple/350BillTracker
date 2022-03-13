@@ -54,7 +54,6 @@ export default function StateRepDetails(props: Props) {
     );
   });
 
-  // TODO: Display their sponsorships here, too (can do in later PR from State impl)
   return (
     <>
       <DetailLabel>Name</DetailLabel>
@@ -63,7 +62,7 @@ export default function StateRepDetails(props: Props) {
       <DetailContent>{person.title}</DetailContent>
       <DetailLabel>Email</DetailLabel>
       <DetailContent>{person.email}</DetailContent>
-      {/* TODO add back styles.contactInfo for all caps */}
+      {/* TODO: Make this all caps when on mobile */}
       <DetailLabel>Contact info</DetailLabel>
       <DetailContent>
         {contacts &&

@@ -54,7 +54,3 @@ class LoginLink(db.Model):
     created_at = Column(TIMESTAMP, nullable=False, default=now)
 
     user = relationship("User", back_populates="login_links")
-
-
-# TODO: Make these linkes only usably once
-# We would need to have a good error page for this too, if they click it a second time

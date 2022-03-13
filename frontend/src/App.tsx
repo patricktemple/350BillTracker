@@ -11,20 +11,7 @@ import LoginFromTokenPage from './pages/LoginFromTokenPage';
 import SettingsPage from './pages/SettingsPage';
 import BillDetailsPage from './pages/BillDetailsPage';
 import LeftNav from './components/LeftNav';
-import { setSyntheticLeadingComments } from 'typescript';
 import MobileHeader from './components/MobileHeader';
-
-/*
-Issues I found in testing mobile:
-- Bill list hover effect is weird
-- On landscape mode, page boundaries are wrong. Test on a real tablet. Also on landscape, the left nav is so big that 
-- scaling breaks, and the item positions are wrong too. Set a max width?
-
-- search icon disappears once typing starts... it was in the placeholder?
-- links to certain bills or people don't scroll... this is important on mobile
-- hide 
-
-*/
 
 function AppContent() {
   const authContext = useContext(AuthContext);

@@ -16,17 +16,12 @@ export interface Props {
 }
 
 export default function LeftNav(props: Props) {
-  // Again, see if an A tag is better for onclick on close icon
-  // TODO: Also hide this when someone clicks any of the pages
   return (
     <nav className={styles.container}>
-      <div
-        className={styles.mobileCloseContainer}
-        onClick={props.onMobileMenuClosed}
-      >
+      <a className={styles.mobileCloseContainer} onClick={props.onMobileMenuClosed}>
         Close
         <CloseIcon />
-      </div>
+      </a>
       <div className={styles.appTitle}>
         <img src={AppLogo} alt="Logo" className={styles.appLogo} />
         <h1>Bill Tracker</h1>

@@ -29,7 +29,7 @@
   grid-area: leftNav;
 
   @include tablet {
-    // Actually we want this to be off to the side on the right so that it can slide in
+    // Have this start off the side to the right, so that it can slide in
     visibility: hidden;
     position: fixed;
     top: 0;
@@ -45,7 +45,6 @@
     visibility: hidden;
   }
 
-  // Not sure why the animation only happens when the menu opens... maybe that's fine though?
   &.leftNavMobileShown {
     @include tablet {
       visibility: visible;

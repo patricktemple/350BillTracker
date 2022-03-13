@@ -4,8 +4,6 @@ import React, { useState } from 'react';
 import styles from '../style/pages/RequestLoginLinkPage.module.scss';
 import AppLogo from '../assets/app-logo.png';
 
-// Need to render error message
-
 interface Props {
   errorCode: string | null;
 }
