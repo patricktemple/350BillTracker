@@ -2,7 +2,10 @@ import Table from 'react-bootstrap/Table';
 import { Bill } from '../types';
 import Button from 'react-bootstrap/Button';
 import React, { useState } from 'react';
-import DetailTable, { DetailLabel, DetailContent } from '../components/DetailTable';
+import DetailTable, {
+  DetailLabel,
+  DetailContent
+} from '../components/DetailTable';
 import styles from '../style/components/BillSearchResults.module.scss';
 
 interface Props {
@@ -27,28 +30,28 @@ function BillListRow(props: {
   return (
     <div className={styles.resultsItem}>
       <DetailTable>
-      <DetailLabel>Number</DetailLabel>
-      <DetailContent>{bill.cityBill!.file}</DetailContent>
-      <DetailLabel>Official name</DetailLabel>
-      <DetailContent>{bill.name}</DetailContent>
-      <DetailLabel>Description</DetailLabel>
-      <DetailContent>{bill.description}</DetailContent>
-      <DetailLabel>Status</DetailLabel>
-      <DetailContent>{bill.cityBill!.status}</DetailContent>
-      <DetailLabel>Council body</DetailLabel>
-      <DetailContent>{bill.cityBill!.councilBody}</DetailContent>
-      <DetailLabel>Track this bill?</DetailLabel>
-      <DetailContent>
-        {bill.tracked || trackClicked ? (
-          <Button disabled size="sm">
-            Already tracked
-          </Button>
-        ) : (
-          <Button size="sm" onClick={handleTrackBill}>
-            Track
-          </Button>
-        )}
-      </DetailContent>
+        <DetailLabel>Number</DetailLabel>
+        <DetailContent>{bill.cityBill!.file}</DetailContent>
+        <DetailLabel>Official name</DetailLabel>
+        <DetailContent>{bill.name}</DetailContent>
+        <DetailLabel>Description</DetailLabel>
+        <DetailContent>{bill.description}</DetailContent>
+        <DetailLabel>Status</DetailLabel>
+        <DetailContent>{bill.cityBill!.status}</DetailContent>
+        <DetailLabel>Council body</DetailLabel>
+        <DetailContent>{bill.cityBill!.councilBody}</DetailContent>
+        <DetailLabel>Track this bill?</DetailLabel>
+        <DetailContent>
+          {bill.tracked || trackClicked ? (
+            <Button disabled size="sm">
+              Already tracked
+            </Button>
+          ) : (
+            <Button size="sm" onClick={handleTrackBill}>
+              Track
+            </Button>
+          )}
+        </DetailContent>
       </DetailTable>
     </div>
   );
@@ -57,13 +60,13 @@ function BillListRow(props: {
 export default function BillList(props: Props) {
   return (
     <div className={styles.resultsContainer}>
-        {props.bills.map((bill: any) => (
-          <BillListRow
-            key={bill.id}
-            bill={bill}
-            handleTrackBill={props.handleTrackBill}
-          />
-        ))}
+      {props.bills.map((bill: any) => (
+        <BillListRow
+          key={bill.id}
+          bill={bill}
+          handleTrackBill={props.handleTrackBill}
+        />
+      ))}
     </div>
   );
 }

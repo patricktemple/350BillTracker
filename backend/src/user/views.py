@@ -58,9 +58,7 @@ def login():
     data = LoginSchema().load(request.json)
     token = data["token"]
 
-    login_link = (
-        LoginLink.query.filter_by(token=token).one_or_none()
-    )
+    login_link = LoginLink.query.filter_by(token=token).one_or_none()
 
     # TODO: Pass a message down to the client distinguishing these 403s
     error_code = None

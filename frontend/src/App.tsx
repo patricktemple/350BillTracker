@@ -67,7 +67,10 @@ function AppContent() {
         <div className={styles.mobileHeader}>
           <MobileHeader onMenuClicked={handleMobileMenuIconClicked} />
         </div>
-        <div className={leftNavGlassClassNames.join(' ')} onClick={handleMobileMenuCloseClicked} />
+        <div
+          className={leftNavGlassClassNames.join(' ')}
+          onClick={handleMobileMenuCloseClicked}
+        />
         <div className={leftNavClassNames.join(' ')}>
           <LeftNav
             onLogout={handleLogout}

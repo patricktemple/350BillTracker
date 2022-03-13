@@ -49,7 +49,12 @@ export default function SearchCityBillsForm(props: Props): ReactElement {
           ref={searchBoxRef}
         />
       </Form.Group>
-      <Button variant="primary" type="submit" className="mb-2" disabled={isSearching}>
+      <Button
+        variant="primary"
+        type="submit"
+        className="mb-2"
+        disabled={isSearching}
+      >
         {isSearching ? 'Searching...' : 'Search'}
       </Button>
       {searchResults != null && (

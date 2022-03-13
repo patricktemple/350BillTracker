@@ -4,7 +4,10 @@ import Button from 'react-bootstrap/Button';
 import { Bill, BillType, StateBillSearchResult } from '../types';
 import Modal from 'react-bootstrap/Modal';
 import useApiFetch from '../useApiFetch';
-import DetailTable, { DetailLabel, DetailContent } from '../components/DetailTable';
+import DetailTable, {
+  DetailLabel,
+  DetailContent
+} from '../components/DetailTable';
 import styles from '../style/components/BillSearchResults.module.scss';
 
 function BillRow(props: {
@@ -26,29 +29,29 @@ function BillRow(props: {
     <div className={styles.resultsItem}>
       <DetailTable>
         <DetailLabel>Number</DetailLabel>
-      <DetailContent>{bill.basePrintNo}</DetailContent>
-      <DetailLabel>Session year</DetailLabel>
-      <DetailContent>{bill.sessionYear}</DetailContent>
-      <DetailLabel>Chamber</DetailLabel>
-      <DetailContent>{bill.chamber}</DetailContent>
-      <DetailLabel>Official name</DetailLabel>
-      <DetailContent>{bill.name}</DetailContent>
-      <DetailLabel>Description</DetailLabel>
-      <DetailContent>{bill.description}</DetailContent>
-      <DetailLabel>Status</DetailLabel>
-      <DetailContent>{bill.status}</DetailContent>
-      <DetailLabel>Track this bill?</DetailLabel>
-      <DetailContent>
-        {bill.tracked || trackClicked ? (
-          <Button disabled size="sm">
-            Already tracked
-          </Button>
-        ) : (
-          <Button size="sm" onClick={handleTrackBill}>
-            Track
-          </Button>
-        )}
-      </DetailContent>
+        <DetailContent>{bill.basePrintNo}</DetailContent>
+        <DetailLabel>Session year</DetailLabel>
+        <DetailContent>{bill.sessionYear}</DetailContent>
+        <DetailLabel>Chamber</DetailLabel>
+        <DetailContent>{bill.chamber}</DetailContent>
+        <DetailLabel>Official name</DetailLabel>
+        <DetailContent>{bill.name}</DetailContent>
+        <DetailLabel>Description</DetailLabel>
+        <DetailContent>{bill.description}</DetailContent>
+        <DetailLabel>Status</DetailLabel>
+        <DetailContent>{bill.status}</DetailContent>
+        <DetailLabel>Track this bill?</DetailLabel>
+        <DetailContent>
+          {bill.tracked || trackClicked ? (
+            <Button disabled size="sm">
+              Already tracked
+            </Button>
+          ) : (
+            <Button size="sm" onClick={handleTrackBill}>
+              Track
+            </Button>
+          )}
+        </DetailContent>
       </DetailTable>
     </div>
   );
@@ -112,18 +115,23 @@ export default function SearchBillsModal(props: Props): ReactElement {
         />
       </Form.Group>
 
-      <Button variant="primary" type="submit" className="mb-2" disabled={isSearching}>
+      <Button
+        variant="primary"
+        type="submit"
+        className="mb-2"
+        disabled={isSearching}
+      >
         {isSearching ? 'Searching...' : 'Search'}
       </Button>
       {searchResults != null && (
         <div className={styles.resultsContainer}>
-            {searchResults.map((bill: any) => (
-              <BillRow
-                key={bill.id}
-                bill={bill}
-                handleTrackBill={handleTrackBill}
-              />
-            ))}
+          {searchResults.map((bill: any) => (
+            <BillRow
+              key={bill.id}
+              bill={bill}
+              handleTrackBill={handleTrackBill}
+            />
+          ))}
         </div>
       )}
     </Form>
