@@ -17,14 +17,12 @@ import MobileHeader from './components/MobileHeader';
 /*
 Issues I found in testing mobile:
 - Bill list hover effect is weird
-- Popover is off screen, which then makes the page width wide, and enables horz scroll
 - On landscape mode, page boundaries are wrong. Test on a real tablet. Also on landscape, the left nav is so big that 
 - scaling breaks, and the item positions are wrong too. Set a max width?
 
-- don't have links be single use. if somone is fuddling with the email login webview stuff, they may try a link twice
 - search icon disappears once typing starts... it was in the placeholder?
-- cant login via real safari on mobile, only can do webview!
 - links to certain bills or people don't scroll... this is important on mobile
+- hide 
 
 */
 
