@@ -1,20 +1,5 @@
-@import '../_variables.scss';
-
-.root {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    grid-template-rows: auto;
-    gap: 15px;
-}
-
-.label {
-    grid-column: 1;
-    font-weight: bold;
-}
-
-.content {
-    grid-column: 2;
-}
+@import '../_variables';
+@import '../mixins';
 
 .staffer > svg {
     width: 20px;

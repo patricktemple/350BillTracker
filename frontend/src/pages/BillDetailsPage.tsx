@@ -19,6 +19,10 @@ import { ReactComponent as TwitterIcon } from '../assets/twitter.svg';
 import CityBillSponsorList from '../components/CityBillDetails';
 import StateBillDetails from '../components/StateBillDetails';
 import { useHistory } from 'react-router-dom';
+import DetailTable, {
+  DetailLabel,
+  DetailContent
+} from '../components/DetailTable';
 
 interface Props {
   bill: Bill;
@@ -172,19 +176,19 @@ export default function BillDetailsPage(props: Props): ReactElement {
     <div>
       <PageHeader>{formData.nickname || bill.name}</PageHeader>
       <Form onSubmit={(e) => e.preventDefault()} className={styles.page}>
-        <>
-          <div className={styles.label}>Bill number</div>
-          <div className={styles.content}>{bill.codeName}</div>
-          <div className={styles.label}>Official title</div>
+        <DetailTable>
+          <DetailLabel>Bill number</DetailLabel>
+          <DetailContent>{bill.codeName}</DetailContent>
+          <DetailLabel>Official title</DetailLabel>
 
-          <div className={styles.content}>{bill.name}</div>
+          <DetailContent>{bill.name}</DetailContent>
 
-          <div className={styles.label}>Official description</div>
-          <div className={styles.content}>{bill.description}</div>
-          <div className={styles.label}>Status</div>
-          <div className={styles.content}>{bill.status}</div>
-          <div className={styles.label}>Our nickname</div>
-          <div className={styles.content}>
+          <DetailLabel>Official description</DetailLabel>
+          <DetailContent>{bill.description}</DetailContent>
+          <DetailLabel>Status</DetailLabel>
+          <DetailContent>{bill.status}</DetailContent>
+          <DetailLabel>Our nickname</DetailLabel>
+          <DetailContent>
             <Form.Control
               type="text"
               size="sm"
@@ -192,13 +196,13 @@ export default function BillDetailsPage(props: Props): ReactElement {
               value={formData.nickname}
               onChange={handleNicknameChanged}
             />
-          </div>
-          <div className={styles.label}>
+          </DetailContent>
+          <DetailLabel>
             <div style={{ fontWeight: 'bold' }}>
               Attachments {attachments != null && <>({attachments.length})</>}
             </div>
-          </div>
-          <div className={styles.content}>
+          </DetailLabel>
+          <DetailContent>
             {attachments == null ? (
               'Loading...'
             ) : (
@@ -234,10 +238,10 @@ export default function BillDetailsPage(props: Props): ReactElement {
                 />
               </>
             )}
-          </div>
+          </DetailContent>
           {bill.type === 'CITY' && (
             <>
-              <div className={styles.label}>
+              <DetailLabel>
                 <div>
                   <div style={{ fontWeight: 'bold' }}>
                     Power hours{' '}
@@ -275,8 +279,8 @@ export default function BillDetailsPage(props: Props): ReactElement {
                     </Popover>
                   </Overlay>
                 </div>
-              </div>
-              <div className={styles.content}>
+              </DetailLabel>
+              <DetailContent>
                 {powerHours == null ? (
                   'Loading...'
                 ) : (
@@ -314,10 +318,10 @@ export default function BillDetailsPage(props: Props): ReactElement {
                     />
                   </>
                 )}
-              </div>
+              </DetailContent>
             </>
           )}
-          <div className={styles.label}>
+          <DetailLabel>
             Twitter search terms{' '}
             <span
               onClick={() =>
@@ -358,8 +362,8 @@ export default function BillDetailsPage(props: Props): ReactElement {
                 </Popover.Body>
               </Popover>
             </Overlay>
-          </div>
-          <div className={styles.content}>
+          </DetailLabel>
+          <DetailContent>
             <Form.Control
               type="text"
               size="sm"
@@ -367,9 +371,9 @@ export default function BillDetailsPage(props: Props): ReactElement {
               value={twitterSearchTermsRaw}
               onChange={handleTwitterSearchTermsChanged}
             />
-          </div>
-          <div className={styles.label}>Our notes</div>
-          <div className={styles.content}>
+          </DetailContent>
+          <DetailLabel>Our notes</DetailLabel>
+          <DetailContent>
             <Form.Control
               as="textarea"
               rows={3}
@@ -378,39 +382,36 @@ export default function BillDetailsPage(props: Props): ReactElement {
               placeholder="Add our notes about this bill"
               onChange={handleNotesChanged}
             />
-          </div>
-          {bill.type === 'CITY' ? (
+          </DetailContent>
+          {bill.type === 'CITY' && (
             <CityBillSponsorList
               bill={bill}
               twitterSearchTerms={formData.twitterSearchTerms}
             />
-          ) : (
-            <div className={styles.fullWidth}>
-              <StateBillDetails
-                bill={bill}
-                twitterSearchTerms={formData.twitterSearchTerms}
-              />
-            </div>
           )}
-          <div className={styles.fullWidth}>
-            <Button
-              variant="outline-secondary"
-              size="sm"
-              onClick={handleRemoveBill}
-              className="mt-2 mb-2"
-            >
-              Remove bill from tracker
-            </Button>
-            <ConfirmDeleteBillModel
-              show={showDeleteBillConfirmation}
-              handleConfirm={handleConfirmRemoveBill}
-              handleCloseWithoutConfirm={() =>
-                setShowDeleteBillConfirmation(false)
-              }
+        </DetailTable>
+        {bill.type === 'STATE' && (
+          <div className={`${styles.fullWidth} mt-4 mb-3`}>
+            <StateBillDetails
+              bill={bill}
+              twitterSearchTerms={formData.twitterSearchTerms}
             />
-            <div style={{ fontStyle: 'italic' }}>{saveStatus}</div>
           </div>
-        </>
+        )}
+        <Button
+          variant="outline-secondary"
+          size="sm"
+          onClick={handleRemoveBill}
+          className="mt-2 mb-2"
+        >
+          Remove bill from tracker
+        </Button>
+        <ConfirmDeleteBillModel
+          show={showDeleteBillConfirmation}
+          handleConfirm={handleConfirmRemoveBill}
+          handleCloseWithoutConfirm={() => setShowDeleteBillConfirmation(false)}
+        />
+        <div style={{ fontStyle: 'italic' }}>{saveStatus}</div>
       </Form>
     </div>
   );

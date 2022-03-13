@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import BillListPage from './pages/BillListPage';
 import PersonsPage from './pages/PersonsPage';
 import styles from './style/App.module.scss';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import RequestLoginLinkPage from './pages/RequestLoginLinkPage';
 import { AuthContextProvider, AuthContext } from './AuthContext';
 import { useLocation } from 'react-router-dom';
@@ -11,10 +11,12 @@ import LoginFromTokenPage from './pages/LoginFromTokenPage';
 import SettingsPage from './pages/SettingsPage';
 import BillDetailsPage from './pages/BillDetailsPage';
 import LeftNav from './components/LeftNav';
-import { setSyntheticLeadingComments } from 'typescript';
+import MobileHeader from './components/MobileHeader';
 
 function AppContent() {
   const authContext = useContext(AuthContext);
+
+  const [mobileMenuShown, setMobileMenuShown] = useState<boolean>(false);
 
   const location = useLocation();
 
@@ -23,7 +25,7 @@ function AppContent() {
   }
 
   if (!authContext.token) {
-    return <RequestLoginLinkPage />;
+    return <RequestLoginLinkPage errorCode={location.hash.substring(1)} />;
   }
 
   function handleLogout(event: any) {
@@ -32,11 +34,35 @@ function AppContent() {
     window.location.replace('/');
   }
 
+  function handleMobileMenuIconClicked() {
+    setMobileMenuShown(true);
+  }
+
+  function handleMobileMenuCloseClicked() {
+    setMobileMenuShown(false);
+  }
+
+  const leftNavClassNames = [styles.leftNav];
+  const leftNavGlassClassNames = [styles.leftNavMobileGlass];
+  if (mobileMenuShown) {
+    leftNavClassNames.push(styles.leftNavMobileShown);
+    leftNavGlassClassNames.push(styles.leftNavMobileShown);
+  }
   return (
     <Router>
       <div className={styles.pageContainer}>
-        <div className={styles.leftNav}>
-          <LeftNav onLogout={handleLogout} />
+        <div className={styles.mobileHeader}>
+          <MobileHeader onMenuClicked={handleMobileMenuIconClicked} />
+        </div>
+        <div
+          className={leftNavGlassClassNames.join(' ')}
+          onClick={handleMobileMenuCloseClicked}
+        />
+        <div className={leftNavClassNames.join(' ')}>
+          <LeftNav
+            onLogout={handleLogout}
+            onMobileMenuClosed={handleMobileMenuCloseClicked}
+          />
         </div>
 
         <main className={styles.content}>

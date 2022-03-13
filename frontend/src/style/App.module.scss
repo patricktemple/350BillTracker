@@ -1,27 +1,81 @@
-@import './_variables.scss';
+@import './_variables';
+@import './mixins';
 
 .pageContainer {
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-rows: 1fr;
-  grid-gap: 2rem 0;
+  grid-template-rows: 100%;
   grid-template-columns: minmax(12.5rem, 23%) 1fr;
   grid-template-areas: 
       "leftNav content";
+  overflow: visible;
   
   // Uncomment to debug grid lines:
   // > * {
   //   border: 1px solid black;
   // }
+
+  @include tablet {
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 1fr;
+    grid-template-areas: "mobileHeader"
+      "content";
+  }
 }
 
 .leftNav {
   grid-area: leftNav;
+
+  @include tablet {
+    // Have this start off the side to the right, so that it can slide in
+    visibility: hidden;
+    grid-area: unset;
+    position: fixed;
+    top: 0;
+    height: 100%;
+    width: 80%;
+    max-width: 26rem;
+    left: 100%;
+    z-index: 5;
+    transition: transform .5s;
+  }
+
+  .leftNavMobileGlass {
+    visibility: hidden;
+  }
+
+  &.leftNavMobileShown {
+    @include tablet {
+      visibility: visible;
+      transform: translateX(-100%);
+      box-shadow: 0 1rem 4rem rgba(#000, 0.2);
+    }
+  }
+}
+
+.leftNavMobileGlass {
+  visibility: hidden;
+  
+  &.leftNavMobileShown {
+    @include tablet {
+      visibility: visible;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(#000, 0.5);
+      z-index: 4;
+    }
+  }
+}
+
+.mobileHeader {
+  grid-area: mobileHeader;
 }
 
 .content {
   grid-area: content;
-  max-height: 100%;
   overflow-y: auto;
 }

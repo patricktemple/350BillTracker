@@ -1,39 +1,13 @@
-@import '../_variables.scss';
+@import '../_variables';
+@import '../mixins';
 
 
-// TODO: Refactor so we don't have the two sharing one CSS file this way?
 .page {
     padding: $page-content-padding;
-    display: grid;
-    grid-template-columns: minmax(8rem, 18%) 1fr 150px 1fr;
-    grid-template-rows: auto;
-    gap: 15px;
-}
 
-.label {
-    grid-column: 1;
-    font-weight: bold;
-}
-
-.content {
-    grid-column: 2 / span 3;
-}
-
-.sponsorList {
-    grid-column: 2 / span 1;
-}
-
-.nonSponsorLabel {
-    grid-column: 3 / span 1;
-    font-weight: bold;
-}
-
-.nonSponsorList {
-    grid-column: 4 / span 1;
-}
-
-.fullWidth {
-    grid-column: 1 / span 4;
+    @include tablet {
+        padding: $page-content-padding-mobile;
+    }
 }
 
 .trashIcon {

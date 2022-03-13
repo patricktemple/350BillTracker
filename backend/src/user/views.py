@@ -37,7 +37,7 @@ def create_login_link():
 
     login = LoginLink(
         user_id=user.id,
-        expires_at=now() + timedelta(days=1),
+        expires_at=now() + timedelta(hours=1),
         token=secrets.token_urlsafe(),
     )
     db.session.add(login)
@@ -59,14 +59,17 @@ def login():
     token = data["token"]
 
     login_link = LoginLink.query.filter_by(token=token).one_or_none()
+
+    error_code = None
     if not login_link:
-        raise exceptions.Unauthorized()
+        error_code = "invalidLink"
+    elif login_link.expires_at < now():
+        error_code = "linkExpired"
+
+    if error_code:
+        return jsonify({"errorCode": error_code}), 401
 
     user_id = login_link.user_id
-
-    if login_link.expires_at < now():
-        raise exceptions.Unauthorized()
-
     return jsonify({"authToken": create_jwt(user_id)})
 
 

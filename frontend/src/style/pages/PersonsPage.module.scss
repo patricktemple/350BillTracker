@@ -1,9 +1,32 @@
-@import '../_variables.scss';
+@import '../_variables';
+@import "../mixins";
 
 .content {
-  padding: 20px;
+  padding: $page-content-padding;
+
+  @include tablet {
+    padding: $page-content-padding-mobile;
+  }
 
   > ul {
     border: none;
+  }
+}
+
+.desktopTabs {
+  @include tablet {
+    display: none;
+  }
+}
+
+.mobileDropdownContainer {
+  display: none;
+  @include tablet {
+    display: block;
+  }
+
+  .mobileDropdown {
+    padding-left: 0;
+    font-weight: bold;
   }
 }

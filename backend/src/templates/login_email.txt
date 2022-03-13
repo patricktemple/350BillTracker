@@ -3,4 +3,9 @@ Log in to 350Brooklyn Bill Tracker
 Click the link below to be redirected back to the app and log in:
 {{ login_link }}
 
-Your session will be saved, and you should not need to repeat this often.
+If you're on desktop: Your session will be saved, and you should not need to log in again for a while.
+If you're on iPhone: You may need to take some extra steps to avoid needing to repeat this every time you visit the tracker:
+  1. Long press the link above
+  2. Press "copy link"
+  3. Exit your email app, and open your browser
+  4. Paste the link into the address bar, and load the page

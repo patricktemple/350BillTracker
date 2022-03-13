@@ -71,7 +71,7 @@ export default function PersonsList({
       {filteredPersons.map((person) => (
         <Accordion.Item key={person.id} eventKey={person.id}>
           <Accordion.Header className={styles.accordionItem}>
-            <strong>{person.name}</strong>
+            <span className={styles.personName}>{person.name}</span>
             &nbsp;{getPersonDetail(person, personTypeFilter == null)}
           </Accordion.Header>
           <LazyAccordionBody eventKey={person.id}>

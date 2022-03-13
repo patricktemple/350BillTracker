@@ -9,6 +9,7 @@ import styles from '../style/components/PersonDetailsPanel.module.scss';
 import useMountEffect from '@restart/hooks/esm/useMountEffect';
 import useApiFetch from '../useApiFetch';
 import { Link } from 'react-router-dom';
+import { DetailLabel, DetailContent } from '../components/DetailTable';
 
 interface Props {
   person: Person;
@@ -53,44 +54,44 @@ export default function StateRepDetails(props: Props) {
     );
   });
 
-  // TODO: Display their sponsorships here, too (can do in later PR from State impl)
   return (
     <>
-      <div className={styles.label}>Name</div>
-      <div className={styles.content}>{person.name}</div>
-      <div className={styles.label}>Title</div>
-      <div className={styles.content}>{person.title}</div>
-      <div className={styles.label}>Email</div>
-      <div className={styles.content}>{person.email}</div>
-      <div className={styles.label}>Contact info</div>
-      <div className={styles.content}>
+      <DetailLabel>Name</DetailLabel>
+      <DetailContent>{person.name}</DetailContent>
+      <DetailLabel>Title</DetailLabel>
+      <DetailContent>{person.title}</DetailContent>
+      <DetailLabel>Email</DetailLabel>
+      <DetailContent>{person.email}</DetailContent>
+      {/* TODO: Make this all caps when on mobile */}
+      <DetailLabel>Contact info</DetailLabel>
+      <DetailContent>
         {contacts &&
           contacts.map((contact, index) => (
             <ContactPanel contact={contact} key={index} />
           ))}
-      </div>
-      <div className={styles.label}>Party</div>
-      <div className={styles.content}>{person.party}</div>
-      <div className={styles.label}>District website</div>
-      <div className={styles.content}>
+      </DetailContent>
+      <DetailLabel>Party</DetailLabel>
+      <DetailContent>{person.party}</DetailContent>
+      <DetailLabel>District website</DetailLabel>
+      <DetailContent>
         {website && (
           <a href={website} target="_blank" rel="noreferrer">
             District {props.representativeDetails.district}
           </a>
         )}
-      </div>
-      <div className={styles.label}>Twitter</div>
-      <div className={styles.content}>
+      </DetailContent>
+      <DetailLabel>Twitter</DetailLabel>
+      <DetailContent>
         {person.twitter && (
           <a href={`https://twitter.com/${person.twitter}`} target="twitter">
             @{person.twitter}
           </a>
         )}
-      </div>
-      <div className={styles.label}>
+      </DetailContent>
+      <DetailLabel>
         <div style={{ fontWeight: 'bold' }}>Sponsored bills</div>
-      </div>
-      <div className={styles.content}>
+      </DetailLabel>
+      <DetailContent>
         {sponsorships == null ? (
           'Loading...'
         ) : (
@@ -106,7 +107,7 @@ export default function StateRepDetails(props: Props) {
             ))}
           </div>
         )}
-      </div>
+      </DetailContent>
     </>
   );
 }

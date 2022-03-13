@@ -4,7 +4,23 @@ import React, { useState } from 'react';
 import styles from '../style/pages/RequestLoginLinkPage.module.scss';
 import AppLogo from '../assets/app-logo.png';
 
-export default function RequestLoginLinkPage() {
+interface Props {
+  errorCode: string | null;
+}
+
+const ERROR_CODE_MESSAGES = new Map<string, string>([
+  [
+    'invalidLink',
+    'The link you clicked was not valid. Please request a new one below.'
+  ],
+  [
+    'linkExpired',
+    'The link you clicked has expired. Please request a new one below.'
+  ],
+  ['unknownError', 'An unknown error occurred when logging you in.']
+]);
+
+export default function RequestLoginLinkPage(props: Props) {
   const [emailAddress, setEmailAddress] = useState<string>('');
   const [statusText, setStatusText] = useState<string | null>(null);
   const [requestInProgress, setRequestInProgress] = useState<boolean>(false);
@@ -23,7 +39,6 @@ export default function RequestLoginLinkPage() {
         'Content-Type': 'application/json'
       }
     })
-      // TODO: Handle failed login
       .then((response) => {
         if (response.status == 422) {
           throw Error(
@@ -50,25 +65,36 @@ export default function RequestLoginLinkPage() {
       <div className={styles.pageContent}>
         <img src={AppLogo} alt="Logo" className={styles.appLogo} />
         <h1>Log in to 350Brooklyn Bill Tracker</h1>
+        {props.errorCode && (
+          <div className={styles.errorMessage}>
+            {ERROR_CODE_MESSAGES.get(props.errorCode)}
+          </div>
+        )}
         <p>
           We&apos;ll email you a link you can click to login. No password
           needed.
         </p>
         <Form onSubmit={handleSubmit}>
-          <label>
-            <span className={styles.labelText}>Email Address</span>
-            <Form.Control
-              type="text"
-              value={emailAddress}
-              onChange={emailAddressChanged}
-              size="sm"
-            />
+          <label
+            htmlFor="RequestLoginLinkPage-email"
+            className={styles.labelText}
+          >
+            Email Address
           </label>
+          <Form.Control
+            type="text"
+            value={emailAddress}
+            onChange={emailAddressChanged}
+            size="sm"
+            id="RequestLoginLinkPage-email"
+          />
 
           <Button size="sm" type="submit" disabled={requestInProgress}>
             {requestInProgress ? 'Requesting...' : 'Request a link'}
           </Button>
-          {statusText && <p className="mt-3">{statusText}</p>}
+          <div className={styles.statusText}>
+            {statusText && <p>{statusText}</p>}
+          </div>
         </Form>
       </div>
     </div>

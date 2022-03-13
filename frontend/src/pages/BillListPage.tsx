@@ -49,17 +49,20 @@ export default function BillListPage(): ReactElement {
         ) : (
           <>
             <div className={styles.topControls}>
-              <SearchBox
-                onChange={handleFilterTextChanged}
-                placeholder="Type name or number to search"
-              />
-              <Button
-                className={styles.addBillButton}
-                onClick={() => setAddBillVisible(true)}
-                size="sm"
-              >
-                Add a bill
-              </Button>
+              <div className={styles.searchContainer}>
+                <SearchBox
+                  onChange={handleFilterTextChanged}
+                  placeholder="Search by name or number"
+                />
+              </div>
+              <div className={styles.addBillButtonContainer}>
+                <Button
+                  className={styles.addBillButton}
+                  onClick={() => setAddBillVisible(true)}
+                >
+                  Add a bill
+                </Button>
+              </div>
             </div>
             <div className={styles.billList}>
               {filteredBills.map((bill) => (

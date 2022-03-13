@@ -1,0 +1,47 @@
+@import '../variables';
+@import '../mixins';
+
+.container {
+    display: none;
+    background-color: $lightest-grey;
+    padding: 1rem;
+    vertical-align: middle;
+    position: relative;
+
+    img {
+        height: 1.5rem;
+    }
+
+    a {
+        text-decoration: none;
+        color: $darkest-grey;
+    }
+
+    .appTitle {
+        text-transform: uppercase;
+        font-weight: bold;
+        margin-left: .5rem;
+    }
+
+    .menuContainer {
+        display: inline-block;
+        position: absolute;
+        right: 0;
+        font-weight: bold;
+
+        cursor: pointer;
+
+        > svg {
+            margin-left: .5rem;
+            margin-right: 1rem;
+            width: 1.2rem;
+            height: 1.2rem;
+        }
+    }
+
+    @include tablet {
+        display: block;
+    }
+
+
+}

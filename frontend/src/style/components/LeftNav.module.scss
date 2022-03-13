@@ -1,9 +1,32 @@
 @import "../_variables.scss";
+@import '../mixins';
 
 .container {
     background-color: $lightest-grey;
     height: 100%;
     position: relative;
+
+    > .mobileCloseContainer {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        cursor: pointer;
+        display: none;
+        font-weight: bold;
+        text-decoration: none;
+        color: inherit;
+
+        > svg {
+            margin-left: .3rem;
+            margin-right: .5rem;
+            width: 1.2rem;
+            height: 1.2rem;
+        }
+
+        @include tablet {
+            display: inline-block;
+        }
+    }
 }
 
 
@@ -15,6 +38,10 @@
         width: 60%;
         display: block;
         margin: 0 auto;
+
+        @include tablet {
+            margin-top: 2rem;
+        }
     }
 
     > h1 {

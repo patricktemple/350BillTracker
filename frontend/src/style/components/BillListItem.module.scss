@@ -1,10 +1,11 @@
-@import '../_variables.scss';
+@import '../_variables';
+@import '../mixins';
 
 .itemContainer {
     padding: 1.5rem .4rem;
     display: grid;
     grid-template-rows: 1fr;
-    grid-template-columns: 90px 1fr;
+    grid-template-columns: auto 1fr;
 
     border-top: 1px solid $lighter-grey;
     border-right: 1px solid $lighter-grey;
@@ -28,10 +29,16 @@
 .billTypeIcon {
     grid-column-start: 1;
     grid-row-start: 1;
-    width: 70px;
-    height: 70px;
+    width: 4.3rem;
+    height: 4.3rem;
     justify-self: center;
-    margin-top: 10px;
+    margin: .7rem 1rem 0 1rem;
+
+    @include phone {
+        width: 3.5rem;
+        height: 3.5rem;
+        margin: 0 .5rem 0 .5rem;
+    }
 }
 
 .cityIcon {

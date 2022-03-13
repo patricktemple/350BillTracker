@@ -1,0 +1,14 @@
+@import '../variables';
+
+.resultsContainer {
+    margin-top: 1rem;
+}
+
+.resultsItem {
+    border: 1px solid $light-grey;
+    padding: 1.2rem 1.5rem;
+    
+    &:not(:last-child) {
+        border-bottom: none;
+    }
+}
