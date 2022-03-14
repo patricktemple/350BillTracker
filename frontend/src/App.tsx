@@ -13,7 +13,6 @@ import BillDetailsPage from './pages/BillDetailsPage';
 import LeftNav from './components/LeftNav';
 import MobileHeader from './components/MobileHeader';
 
-
 function AppContent() {
   const authContext = useContext(AuthContext);
 
