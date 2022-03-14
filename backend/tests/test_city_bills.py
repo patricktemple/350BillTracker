@@ -201,7 +201,7 @@ def test_save_bill(client):
         data={"cityBillId": 123},
     )
     assert response.status_code == 200
-    assert 'id' in get_response_data(response)
+    assert "id" in get_response_data(response)
 
     bill = Bill.query.one()
     assert bill.type == Bill.BillType.CITY

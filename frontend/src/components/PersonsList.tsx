@@ -81,8 +81,8 @@ export default function PersonsList({
         <Accordion.Item key={person.id} eventKey={person.id}>
           <Accordion.Header className={styles.accordionItem}>
             <div ref={person.id === selectedPersonId ? activePersonRef : null}>
-            <span className={styles.personName}>{person.name}</span>
-            &nbsp;{getPersonDetail(person, personTypeFilter == null)}
+              <span className={styles.personName}>{person.name}</span>
+              &nbsp;{getPersonDetail(person, personTypeFilter == null)}
             </div>
           </Accordion.Header>
           <LazyAccordionBody eventKey={person.id}>

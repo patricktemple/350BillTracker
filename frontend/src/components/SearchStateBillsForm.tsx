@@ -42,12 +42,17 @@ function BillRow(props: {
         <DetailContent>{bill.status}</DetailContent>
         <DetailLabel>Track this bill?</DetailLabel>
         <DetailContent>
-        <Button disabled={bill.tracked || trackClicked} size="sm" onClick={handleTrackBill}>
-              <>{bill.tracked && 'Already tracked'}
+          <Button
+            disabled={bill.tracked || trackClicked}
+            size="sm"
+            onClick={handleTrackBill}
+          >
+            <>
+              {bill.tracked && 'Already tracked'}
               {trackClicked && 'Tracking...'}
               {!bill.tracked && !trackClicked && 'Track'}
-              </>
-            </Button>
+            </>
+          </Button>
         </DetailContent>
       </DetailTable>
     </div>
