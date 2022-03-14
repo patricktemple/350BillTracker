@@ -13,14 +13,6 @@ import BillDetailsPage from './pages/BillDetailsPage';
 import LeftNav from './components/LeftNav';
 import MobileHeader from './components/MobileHeader';
 
-/*
-
-Responsive fixes to do:
-- Weird hover state when scrolling
-- In landscape mode, it's only partway across the page
-- Maybe, the #errorCode token stays and becomes part of the bookmarked URL?
-- On tablet, sometimes focus doesn't go to main content, and it won't scroll
-*/
 
 function AppContent() {
   const authContext = useContext(AuthContext);
