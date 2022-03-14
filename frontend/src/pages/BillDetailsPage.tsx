@@ -191,7 +191,6 @@ export default function BillDetailsPage(props: Props): ReactElement {
           <DetailContent>
             <Form.Control
               type="text"
-              size="sm"
               placeholder='e.g. "Skip the stuff"'
               value={formData.nickname}
               onChange={handleNicknameChanged}
@@ -366,7 +365,6 @@ export default function BillDetailsPage(props: Props): ReactElement {
           <DetailContent>
             <Form.Control
               type="text"
-              size="sm"
               placeholder="Enter comma-separated terms, e.g. solar, climate, fossil fuels"
               value={twitterSearchTermsRaw}
               onChange={handleTwitterSearchTermsChanged}
@@ -377,7 +375,6 @@ export default function BillDetailsPage(props: Props): ReactElement {
             <Form.Control
               as="textarea"
               rows={3}
-              size="sm"
               value={formData.notes}
               placeholder="Add our notes about this bill"
               onChange={handleNotesChanged}
