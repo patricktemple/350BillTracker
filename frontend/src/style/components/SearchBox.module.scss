@@ -9,14 +9,12 @@
     width: 100%;
     max-width: 30rem;
 
+    background-image: url('../../assets/search.svg');
+    background-repeat: no-repeat;
+    background-position: top .5rem right .8rem;
+
     @include phone {
       padding: .3rem .6rem;
-    }
-  
-  
-    &::placeholder {
-      background-image: url('../../assets/search.svg');
-      background-repeat: no-repeat;
-      background-position: right;
+      background-position: top .3rem right .6rem;
     }
   }

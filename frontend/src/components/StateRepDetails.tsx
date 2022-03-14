@@ -63,7 +63,9 @@ export default function StateRepDetails(props: Props) {
       <DetailLabel>Email</DetailLabel>
       <DetailContent>{person.email}</DetailContent>
       {/* TODO: Make this all caps when on mobile */}
-      <DetailLabel>Contact info</DetailLabel>
+      <DetailLabel>
+        <span className={styles.contactInfoLabel}>Contact info</span>
+      </DetailLabel>
       <DetailContent>
         {contacts &&
           contacts.map((contact, index) => (

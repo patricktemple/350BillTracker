@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import useMountEffect from '@restart/hooks/useMountEffect';
 import Table from 'react-bootstrap/Table';
 import { Person, CouncilMember, PersonType } from '../types';
@@ -47,12 +47,21 @@ export default function PersonsList({
 }: Props) {
   const apiFetch = useApiFetch();
   const [persons, setPersons] = useState<Person[] | null>(null);
+  const [initialScrollDone, setInitialScrollDone] = useState<boolean>(false);
+  const activePersonRef = useRef<HTMLDivElement>(null);
 
   useMountEffect(() => {
     apiFetch('/api/persons').then((response) => {
       setPersons(response);
     });
   });
+
+  useEffect(() => {
+    if (persons && activePersonRef.current && !initialScrollDone) {
+      activePersonRef.current.scrollIntoView();
+      setInitialScrollDone(true);
+    }
+  }, [persons]);
 
   if (persons == null) {
     return <div>Loading...</div>;
@@ -71,8 +80,10 @@ export default function PersonsList({
       {filteredPersons.map((person) => (
         <Accordion.Item key={person.id} eventKey={person.id}>
           <Accordion.Header className={styles.accordionItem}>
-            <span className={styles.personName}>{person.name}</span>
-            &nbsp;{getPersonDetail(person, personTypeFilter == null)}
+            <div ref={person.id === selectedPersonId ? activePersonRef : null}>
+              <span className={styles.personName}>{person.name}</span>
+              &nbsp;{getPersonDetail(person, personTypeFilter == null)}
+            </div>
           </Accordion.Header>
           <LazyAccordionBody eventKey={person.id}>
             <PersonDetailsPanel person={person} />

@@ -1,7 +1,7 @@
 import React, { useState, useRef, ReactElement } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { Bill, BillType, StateBillSearchResult } from '../types';
+import { Bill, BillType, StateBillSearchResult, Uuid } from '../types';
 import Modal from 'react-bootstrap/Modal';
 import useApiFetch from '../useApiFetch';
 import DetailTable, {
@@ -42,15 +42,17 @@ function BillRow(props: {
         <DetailContent>{bill.status}</DetailContent>
         <DetailLabel>Track this bill?</DetailLabel>
         <DetailContent>
-          {bill.tracked || trackClicked ? (
-            <Button disabled size="sm">
-              Already tracked
-            </Button>
-          ) : (
-            <Button size="sm" onClick={handleTrackBill}>
-              Track
-            </Button>
-          )}
+          <Button
+            disabled={bill.tracked || trackClicked}
+            size="sm"
+            onClick={handleTrackBill}
+          >
+            <>
+              {bill.tracked && 'Already tracked'}
+              {trackClicked && 'Tracking...'}
+              {!bill.tracked && !trackClicked && 'Track'}
+            </>
+          </Button>
         </DetailContent>
       </DetailTable>
     </div>
@@ -59,7 +61,7 @@ function BillRow(props: {
 
 interface Props {
   todo?: string;
-  handleBillTracked: () => void;
+  handleBillTracked: (billId: Uuid) => void;
 }
 
 export default function SearchBillsModal(props: Props): ReactElement {
@@ -91,7 +93,7 @@ export default function SearchBillsModal(props: Props): ReactElement {
       method: 'POST',
       body: { sessionYear: bill.sessionYear, basePrintNo: bill.basePrintNo }
     }).then((response) => {
-      props.handleBillTracked();
+      props.handleBillTracked(response.id);
     });
   }
 

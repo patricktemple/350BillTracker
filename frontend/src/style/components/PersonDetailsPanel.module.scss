@@ -9,6 +9,12 @@
     justify-self: right;
     margin-top: -.3rem;
   }
+
+.contactInfoLabel {
+    @include phone {
+        text-transform: uppercase;
+    }
+}
 // .fullWidth {
 //     grid-column: 1 / span 4;
 // }

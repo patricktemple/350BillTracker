@@ -171,7 +171,6 @@ export default function PersonDetailsPanel(props: Props) {
           <Form.Control
             as="textarea"
             rows={3}
-            size="sm"
             value={formData.notes}
             placeholder="Add our notes about this person"
             onChange={handleNotesChanged}

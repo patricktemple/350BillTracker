@@ -77,7 +77,7 @@ def track_city_bill():
 
     db.session.commit()
 
-    return jsonify({})
+    return BillSchema().jsonify(bill)
 
 
 @app.route("/api/bills/<uuid:bill_id>", methods=["PUT"])
@@ -183,9 +183,9 @@ def track_state_bill():
         if bill.state_bill.session_year == session_year:
             raise exceptions.Conflict()
 
-    state_api.import_bill(session_year, base_print_no)
+    new_bill = state_api.import_bill(session_year, base_print_no)
 
-    return jsonify({})
+    return BillSchema().jsonify(new_bill)
 
 
 @app.route("/api/bills/<uuid:bill_id>/power-hours", methods=["GET"])
