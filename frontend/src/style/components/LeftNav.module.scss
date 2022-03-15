@@ -5,6 +5,9 @@
     background-color: $lightest-grey;
     height: 100%;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
 
     > .mobileCloseContainer {
         position: absolute;
@@ -56,6 +59,7 @@
 }
 
 .mainLinkSection {
+    margin-bottom: auto;
 }
 
 .linkItem {
@@ -87,9 +91,9 @@
 }
 
 .bottomLinkSection {
-    position: absolute;
-    bottom: 0;
-    left: 0;
+    // position: absolute;
+    // bottom: 0;
+    // left: 0;
 }
 
 .bottomLinkItem {
