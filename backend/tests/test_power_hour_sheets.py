@@ -6,6 +6,7 @@ from src.person.models import CouncilMember, OfficeContact, Person
 from src.power_hours import (
     _extract_data_from_previous_spreadsheet,
     create_power_hour,
+    CITY_COLUMN_TITLE_SET,
 )
 from src.sponsorship.models import CitySponsorship
 
@@ -189,7 +190,7 @@ def test_extract_data_from_previous_spreadsheet():
         ["Bread Lender", "bread@council.ny.gov", "Put a typo in Brad's name"],
     ]
 
-    result = _extract_data_from_previous_spreadsheet(cell_data)
+    result = _extract_data_from_previous_spreadsheet(cell_data, CITY_COLUMN_TITLE_SET, [Person.PersonType.COUNCIL_MEMBER])
 
     assert result.extra_column_titles == ["Summary of action"]
     assert len(result.column_data_by_person_id) == 2
@@ -220,7 +221,7 @@ def test_extract_data_from_previous_spreadsheet_no_name():
         ["Corey D. Johnson", "cojo@council.ny.gov", "Left a voicemail"],
     ]
 
-    result = _extract_data_from_previous_spreadsheet(cell_data)
+    result = _extract_data_from_previous_spreadsheet(cell_data, CITY_COLUMN_TITLE_SET, [Person.PersonType.COUNCIL_MEMBER])
 
     assert not result.column_data_by_person_id
     assert result.import_messages == [
