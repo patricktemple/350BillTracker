@@ -162,20 +162,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
         "name": "Catherine Nolan",
         "scrape_name__SANITY_CHECK": "Catherine Nolan",
     },
-    493: {
-        "albany_contact": [{"city": "Albany", "phone": "518-455-5912"}],
-        "district": 60,
-        "district_contact": [
-            {
-                "city": "Brooklyn",
-                "fax": "718-257-2590",
-                "phone": "718-257-5824",
-            }
-        ],
-        "email": "lucasn@nyassembly.gov",
-        "name": "Charles Barron",
-        "scrape_name__SANITY_CHECK": "Nikki Lucas",
-    },
     494: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5462"}],
         "district": 41,
@@ -1011,14 +997,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
         "email": "DickensI@nyassembly.gov",
         "name": "Inez E. Dickens",
         "scrape_name__SANITY_CHECK": "Inez E. Dickens",
-    },
-    1129: {
-        "albany_contact": [{"city": "Albany", "phone": "518-455-5807"}],
-        "district": 72,
-        "district_contact": [{"city": "Manhattan", "phone": "212-544-2278"}],
-        "email": None,
-        "name": "Carmen De La Rosa",
-        "scrape_name__SANITY_CHECK": "Manny De Los Santos",
     },
     1131: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4292"}],
