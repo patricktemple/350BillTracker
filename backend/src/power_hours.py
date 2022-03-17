@@ -1,14 +1,10 @@
 import json
 import logging
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union, Set
 
-from google.oauth2.service_account import Credentials
-from googleapiclient.discovery import build
-from sqlalchemy.orm import selectinload
-
-from . import settings, twitter
-from .bill.models import AssemblyBill, Bill, CityBill, SenateBill, StateBill
+from . import twitter
+from .bill.models import Bill
 from .google_sheets import (
     Color,
     Cell,
@@ -31,49 +27,37 @@ from .sponsorship.models import (
     SenateSponsorship,
 )
 
+# Title and width in pixels for each column. We can't dynamically set it to match the,
+# contents via the API, so instead we just hardcode the width as best we can.
 CITY_COLUMN_TITLES = [
-    "",
-    "Name",
-    "Email",
-    "Party",
-    "Borough",
-    "District Phone",
-    "Legislative Phone",
-    "Twitter",
-    "Committees",
-    "Staffers",
-    "Twitter search\nNote: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.",
+    ("Name", 150),
+    ("Sponsor", 75),
+    ("Email", 200),
+    ("Party", 50),
+    ("Borough", 100),
+    ("District Phone", 100),
+    ("Legislative Phone", 100),
+    ("Twitter", 150),
+    ("Committees", 200),
+    ("Staffers", 250),
+    ("Twitter search\nNote: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.", 250),
 ]
-CITY_COLUMN_TITLE_SET = set(CITY_COLUMN_TITLES)
+CITY_COLUMN_TITLE_SET = {t[0] for t in CITY_COLUMN_TITLES}
 
 STATE_COLUMN_TITLES = [
-    "",
-    "Name",
-    "Sponsored",
-    "Chamber",
-    "Email",
-    "Party",
-    "District",
-    "District Contact",
-    "Albany Contact",
-    "Twitter",
-    # "Committees",
-    "Staffers",
-    # "Twitter search\nNote: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.",
+    ("Name", 150),
+    ("Sponsor", 75),
+    ("Chamber", 75),
+    ("Email", 200),
+    ("Party", 50),
+    ("District", 60),
+    ("District Contact", 200),
+    ("Albany Contact", 200),
+    ("Twitter", 150),
+    ("Staffers", 250),
+    ("Twitter search", 100)
 ]
-CITY_COLUMN_TITLES = [
-    "",
-    "Name",
-    "Email",
-    "Party",
-    "Borough",
-    "District Phone",
-    "Legislative Phone",
-    "Twitter",
-    "Committees",
-    "Staffers",
-    "Twitter search\nNote: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.",
-]
+STATE_COLUMN_TITLE_SET = {t[0] for t in STATE_COLUMN_TITLES}
 
 BOROUGH_SORT_TABLE = {
     "Brooklyn": 0,
@@ -84,9 +68,6 @@ BOROUGH_SORT_TABLE = {
     "Staten Island": 5,
 }
 
-# Width in pixels for each column. We can't dynamically set it to match the,
-# contents via the API, so instead we just hardcode them as best we can.
-CITY_COLUMN_WIDTHS = [150, 150, 200, 50, 100, 100, 150, 200, 250, 250, 250]
 
 
 @dataclass
@@ -94,7 +75,7 @@ class PowerHourImportData:
     """Data about a previous power hour that will be copied into a new sheet."""
 
     extra_column_titles: List[str]
-    column_data_by_legislator_id: Dict[id, Dict[str, str]]
+    column_data_by_person_id: Dict[id, Dict[str, str]]
     import_messages: List[str]
 
 
@@ -113,7 +94,7 @@ def _get_staffer_display_string(staffer: Person):
 
 def _get_imported_data_cells(person, import_data):
     cells = []
-    legislator_data = import_data.column_data_by_legislator_id.get(person.id)
+    legislator_data = import_data.column_data_by_person_id.get(person.id)
     if legislator_data is not None:
         for extra_column in import_data.extra_column_titles:
             text = legislator_data.get(extra_column, "")
@@ -127,6 +108,8 @@ def _create_council_member_row(
     council_member: CouncilMember,
     bill: Bill,
     import_data: Optional[PowerHourImportData],
+    *,
+    is_sponsor: bool,
     is_lead_sponsor: bool = False,
 ):
     staffer_strings = [
@@ -164,10 +147,10 @@ def _create_council_member_row(
         )
     )
     cells = [
-        Cell(""),
         Cell(
             _get_sponsor_name_text(council_member.person.name, is_lead_sponsor)
         ),
+        _format_sponsor_status(is_sponsor),
         Cell(council_member.person.email),
         Cell(council_member.person.party),
         Cell(council_member.borough),
@@ -255,9 +238,8 @@ def _create_state_representative_row(
     )
 
     cells = [
-        Cell(""),
         Cell(_get_sponsor_name_text(person.name, is_lead_sponsor)),
-        _format_sponsor_status(is_sponsor), # TODO: Do this for city council too
+        _format_sponsor_status(is_sponsor),
         Cell(chamber_name),
         Cell(person.email),
         Cell(person.party or ""),
@@ -275,7 +257,7 @@ def _create_state_representative_row(
         ),
     ]
     if import_data:
-        cells.append(_get_imported_data_cells(person, import_data))
+        cells.extend(_get_imported_data_cells(person, import_data))
 
     return create_row_data(cells)
 
@@ -292,15 +274,11 @@ def _create_city_power_hour_row_data(
     extra_titles = import_data.extra_column_titles if import_data else []
     rows = [
         create_bolded_row_data(
-            CITY_COLUMN_TITLES + extra_titles,
+            [title for title, _ in CITY_COLUMN_TITLES] + extra_titles,
         ),
-        create_bolded_row_data(["NON-SPONSORS"]),
     ]
     for non_sponsor in non_sponsors:
-        rows.append(_create_council_member_row(non_sponsor, bill, import_data))
-
-    rows.append(create_row_data([]))
-    rows.append(create_bolded_row_data(["SPONSORS"]))
+        rows.append(_create_council_member_row(non_sponsor, bill, import_data, is_sponsor=False))
 
     for sponsorship in sponsorships:
         rows.append(
@@ -308,20 +286,14 @@ def _create_city_power_hour_row_data(
                 sponsorship.council_member,
                 bill,
                 import_data,
-                sponsorship.sponsor_sequence == 0,
+                is_sponsor=True,
+                is_lead_sponsor=sponsorship.sponsor_sequence == 0,
             )
         )
 
     return rows
 
 
-# Other change:
-# Make "sponsor" a column
-# Mark it red or green
-# This way, people can sort by this and other fields in the spreadsheet after it's created, without messing things up
-
-
-# TODO: Dedupe this with above!
 def _create_state_power_hour_row_data(
     bill: Bill,
     sponsorships: List[Union[SenateSponsorship, AssemblySponsorship]],
@@ -334,7 +306,7 @@ def _create_state_power_hour_row_data(
     extra_titles = import_data.extra_column_titles if import_data else []
     rows = [
         create_bolded_row_data(
-            STATE_COLUMN_TITLES + extra_titles,
+            [title for title, _ in STATE_COLUMN_TITLES] + extra_titles,
         ),
     ]
     for non_sponsor in non_sponsors:
@@ -381,13 +353,13 @@ def _create_city_power_hour(bill, sheet_title, import_data):
     non_sponsors = sorted(non_sponsors, key=get_sort_key)
 
     row_data = _create_city_power_hour_row_data(
-        bill.city_bill,
+        bill,
         sponsorships,
         non_sponsors,
-        import_data,  # unclear this needs to pass city_bill
+        import_data,
     )
 
-    return create_spreadsheet(sheet_title, row_data, CITY_COLUMN_WIDTHS)
+    return create_spreadsheet(sheet_title, row_data, [width for _, width in CITY_COLUMN_TITLES])
 
 
 def _create_state_power_hour(bill, sheet_title, import_data):
@@ -398,7 +370,7 @@ def _create_state_power_hour(bill, sheet_title, import_data):
     sponsorships = []
     non_sponsors = []
 
-    # TODO: Factor out non_sponsors into something  on the view! It's used all over
+    # TODO: Factor out non_sponsors into the view. It's used all over.
     if senate_bill:
         sponsorships.extend(senate_bill.sponsorships)
         senate_sponsor_ids = [s.person_id for s in senate_bill.sponsorships]
@@ -415,9 +387,8 @@ def _create_state_power_hour(bill, sheet_title, import_data):
     )
 
     return create_spreadsheet(
-        sheet_title, row_data, []
-    )  # TODO: DO  state column widths
-
+        sheet_title, row_data, [width for _, width in STATE_COLUMN_TITLES])
+    
 
 def create_power_hour(
     bill_id: UUID, title: str, old_spreadsheet_to_import: str
@@ -431,10 +402,17 @@ def create_power_hour(
     logging.info(
         f"Creating new power hour titled {title}, importing old spreadsheet {old_spreadsheet_to_import}"
     )
+
+    # can simplify this forking logic
     if old_spreadsheet_to_import:
-        import_data = _extract_data_from_previous_power_hour(
-            old_spreadsheet_to_import
-        )
+        if bill.type == Bill.BillType.CITY:
+            import_data = _extract_data_from_previous_power_hour(
+                old_spreadsheet_to_import,CITY_COLUMN_TITLE_SET, [Person.PersonType.COUNCIL_MEMBER]
+            )
+        else:
+            import_data = _extract_data_from_previous_power_hour(
+                old_spreadsheet_to_import,STATE_COLUMN_TITLE_SET, [Person.PersonType.SENATOR, Person.PersonType.ASSEMBLY_MEMBER]
+            ) 
     else:
         import_data = None
 
@@ -451,6 +429,8 @@ def create_power_hour(
 
 def _extract_data_from_previous_spreadsheet(
     spreadsheet_cells,
+    standard_column_titles: Set[str],
+    person_types: List[Person.PersonType]
 ) -> PowerHourImportData:
     import_messages = []
 
@@ -465,7 +445,7 @@ def _extract_data_from_previous_spreadsheet(
     extra_column_title_indices: Tuple[int, str] = []
     name_column_index = None
     for i, title in enumerate(title_row):
-        if title not in CITY_COLUMN_TITLE_SET:
+        if title not in standard_column_titles:
             extra_column_title_indices.append((i, title))
         elif title == "Name":
             name_column_index = i
@@ -504,35 +484,38 @@ def _extract_data_from_previous_spreadsheet(
         )
 
     # Now rekey by legislator ID
-    # TODO: I think I need to change this so that it's by person_id, not the council_id
-    council_members = CouncilMember.query.all()
-    column_data_by_council_member_id: Dict[UUID, Dict[str, str]] = {}
-    for council_member in council_members:
-        council_member_data = extra_columns_by_council_member_name.get(
-            council_member.person.name
+    persons = Person.query.filter(Person.type.in_(person_types)).all()
+    person_data_by_id: Dict[UUID, Dict[str, str]] = {}
+    for person in persons:
+        person_data = extra_columns_by_council_member_name.get(
+            person.name
         )
-        if council_member_data is None:
-            council_member_data = extra_columns_by_council_member_name.get(
-                _get_sponsor_name_text(council_member.person.name, True)
+        if person_data is None:
+            # If they're the lead sponsor, their name is formatted differently, so try
+            # that as well.
+            person_data = extra_columns_by_council_member_name.get(
+                _get_sponsor_name_text(person.name, True)
             )
-        if council_member_data is not None:
-            column_data_by_council_member_id[
-                council_member.person_id
-            ] = council_member_data
+        if person_data is not None:
+            person_data_by_id[
+                person.id
+            ] = person_data
         else:
             import_messages.append(
-                f"Could not find {council_member.person.name} under the Name column in the old sheet. Make sure the name matches exactly."
+                f"Could not find {person.name} under the Name column in the old sheet. Make sure the name matches exactly."
             )
 
     return PowerHourImportData(
         extra_column_titles=titles,
-        column_data_by_legislator_id=column_data_by_council_member_id,
+        column_data_by_person_id=person_data_by_id,
         import_messages=import_messages,
     )
 
 
 def _extract_data_from_previous_power_hour(
-    spreadsheet_id,
+    spreadsheet_id: str,
+    standard_column_titles: Set[str],
+    person_types: List[Person.PersonType]
 ) -> Optional[PowerHourImportData]:
     """Reads cells from the spreadsheet of a previous power hour and extracts
     some data that should be copied into the next power hour, to preserve context
@@ -546,4 +529,4 @@ def _extract_data_from_previous_power_hour(
     """
 
     spreadsheet_cells = get_spreadsheet_cells(spreadsheet_id)
-    return _extract_data_from_previous_spreadsheet(spreadsheet_cells)
+    return _extract_data_from_previous_spreadsheet(spreadsheet_cells, standard_column_titles, person_types)

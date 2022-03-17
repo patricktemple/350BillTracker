@@ -192,13 +192,13 @@ def test_extract_data_from_previous_spreadsheet():
     result = _extract_data_from_previous_spreadsheet(cell_data)
 
     assert result.extra_column_titles == ["Summary of action"]
-    assert len(result.column_data_by_legislator_id) == 2
+    assert len(result.column_data_by_person_id) == 2
     assert (
-        result.column_data_by_legislator_id[corey.id]["Summary of action"]
+        result.column_data_by_person_id[corey.id]["Summary of action"]
         == "Left a voicemail"
     )
     assert (
-        result.column_data_by_legislator_id[lead.id]["Summary of action"]
+        result.column_data_by_person_id[lead.id]["Summary of action"]
         == "Called them"
     )
     assert result.import_messages == [
@@ -222,7 +222,7 @@ def test_extract_data_from_previous_spreadsheet_no_name():
 
     result = _extract_data_from_previous_spreadsheet(cell_data)
 
-    assert not result.column_data_by_legislator_id
+    assert not result.column_data_by_person_id
     assert result.import_messages == [
         "Could not find a 'Name' column at the top of the old spreadsheet, so nothing was copied over"
     ]
