@@ -7,6 +7,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
 
     > .mobileCloseContainer {
         position: absolute;
@@ -57,12 +58,8 @@
     }
 }
 
-.linkSection {
-    flex: 1;
-
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
+.mainLinkSection {
+    margin-bottom: auto;
 }
 
 .linkItem {
@@ -91,6 +88,12 @@
     text-decoration: none;
     // align-self: center;
     font-weight: 600;
+}
+
+.bottomLinkSection {
+    // position: absolute;
+    // bottom: 0;
+    // left: 0;
 }
 
 .bottomLinkItem {

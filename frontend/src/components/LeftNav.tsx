@@ -29,33 +29,35 @@ export default function LeftNav(props: Props) {
         <img src={AppLogo} alt="Logo" className={styles.appLogo} />
         <h1>Bill Tracker</h1>
       </div>
-      <div className={styles.linkSection}>
-          <Link
-            to="/"
-            className={styles.mainLinkItem}
-            onClick={props.onMobileMenuClosed}
-          >
-            <BillsIcon />
-            Bills
-          </Link>
-          <Link
-            to="/people"
-            className={styles.mainLinkItem}
-            onClick={props.onMobileMenuClosed}
-          >
-            <PersonIcon />
-            People
-          </Link>
-          <Link
-            to="/settings"
-            className={styles.bottomLinkItem}
-            onClick={props.onMobileMenuClosed}
-          >
-            <SettingsIcon /> Settings
-          </Link>
-          <a href="#" onClick={props.onLogout} className={styles.bottomLinkItem}>
-            <LogoutIcon /> Log out
-          </a>
+      <div className={styles.mainLinkSection}>
+        <Link
+          to="/"
+          className={styles.mainLinkItem}
+          onClick={props.onMobileMenuClosed}
+        >
+          <BillsIcon />
+          Bills
+        </Link>
+        <Link
+          to="/people"
+          className={styles.mainLinkItem}
+          onClick={props.onMobileMenuClosed}
+        >
+          <PersonIcon />
+          People
+        </Link>
+      </div>
+      <div className={styles.bottomLinkSection}>
+        <Link
+          to="/settings"
+          className={styles.bottomLinkItem}
+          onClick={props.onMobileMenuClosed}
+        >
+          <SettingsIcon /> Settings
+        </Link>
+        <a href="#" onClick={props.onLogout} className={styles.bottomLinkItem}>
+          <LogoutIcon /> Log out
+        </a>
       </div>
     </nav>
   );
