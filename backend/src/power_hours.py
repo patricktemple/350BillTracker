@@ -40,7 +40,7 @@ CITY_COLUMN_TITLES = [
     ("Twitter", 150),
     ("Committees", 200),
     ("Staffers", 250),
-    ("Twitter search\nNote: Due to a Twitter bug, the Twitter search sometimes displays 0 results even when there should be should be matching tweets. Refreshing the Twitter page often fixes this.", 250),
+    ("Search for relevant tweets to bill", 250),
 ]
 CITY_COLUMN_TITLE_SET = {t[0] for t in CITY_COLUMN_TITLES}
 
@@ -55,7 +55,7 @@ STATE_COLUMN_TITLES = [
     ("Albany Contact", 200),
     ("Twitter", 150),
     ("Staffers", 250),
-    ("Twitter search", 100)
+    ("Search for relevant tweets to bill", 100)
 ]
 STATE_COLUMN_TITLE_SET = {t[0] for t in STATE_COLUMN_TITLES}
 
