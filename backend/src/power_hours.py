@@ -190,6 +190,19 @@ def _create_council_member_row(
     return create_row_data(cells)
 
 
+def _format_office_contacts(office_contacts: List[OfficeContact]):
+    office_strings = []
+    for office_contact in office_contacts:
+        single_office_lines = [f"----- {office_contact.city} -----"]
+        if office_contact.phone:
+            single_office_lines.append(f"Phone: {office_contact.phone}")
+        if office_contact.fax:
+            single_office_lines.append(f"Fax: {office_contact.fax}")
+        office_strings.append("\n".join(single_office_lines))
+    
+    return "\n\n".join(office_strings)
+
+
 # TODO: Make generic to be all state reps
 # Can I dedupe this more?
 def _create_state_representative_row(
@@ -215,21 +228,18 @@ def _create_state_representative_row(
         chamber_name = "Assembly"
         district = f"A-{representative.district}"
 
-    # TODO: Improve contact info
-    legislative_phone = ", ".join(
+    albany_contacts = _format_office_contacts(
         (
-            c.phone
+            c
             for c in person.office_contacts
-            if c.phone
-            and c.type == OfficeContact.OfficeContactType.CENTRAL_OFFICE
+            if c.type == OfficeContact.OfficeContactType.CENTRAL_OFFICE
         )
     )
-    district_phone = ", ".join(
+    district_contacts = _format_office_contacts(
         (
-            c.phone
+            c
             for c in person.office_contacts
-            if c.phone
-            and c.type == OfficeContact.OfficeContactType.DISTRICT_OFFICE
+            if c.type == OfficeContact.OfficeContactType.DISTRICT_OFFICE
         )
     )
 
@@ -238,10 +248,10 @@ def _create_state_representative_row(
         Cell(_get_sponsor_name_text(person.name, is_lead_sponsor)),
         Cell(chamber_name),
         Cell(person.email),
-        Cell(person.party),
+        Cell(person.party or ""),
         Cell(district, link_url=representative.website),
-        Cell(district_phone),
-        Cell(legislative_phone),
+        Cell(district_contacts),
+        Cell(albany_contacts),
         Cell(
             person.display_twitter or "",
             link_url=person.twitter_url,
