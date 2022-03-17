@@ -1,13 +1,13 @@
 import json
 import logging
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple, Union, Set
+from typing import Dict, List, Optional, Set, Tuple, Union
 
 from . import twitter
 from .bill.models import Bill
 from .google_sheets import (
-    Color,
     Cell,
+    Color,
     create_bolded_row_data,
     create_row_data,
     create_spreadsheet,
@@ -55,7 +55,7 @@ STATE_COLUMN_TITLES = [
     ("Albany Contact", 200),
     ("Twitter", 150),
     ("Staffers", 250),
-    ("Search for relevant tweets to bill", 100)
+    ("Search for relevant tweets to bill", 100),
 ]
 STATE_COLUMN_TITLE_SET = {t[0] for t in STATE_COLUMN_TITLES}
 
@@ -67,7 +67,6 @@ BOROUGH_SORT_TABLE = {
     "Bronx": 4,
     "Staten Island": 5,
 }
-
 
 
 @dataclass
@@ -184,14 +183,14 @@ def _format_office_contacts(office_contacts: List[OfficeContact]):
         if office_contact.fax:
             single_office_lines.append(f"Fax: {office_contact.fax}")
         office_strings.append("\n".join(single_office_lines))
-    
+
     return "\n\n".join(office_strings)
 
 
 def _format_sponsor_status(sponsored: bool):
     if sponsored:
         return Cell(value="Yes", color=Color.Green)
-    
+
     return Cell(value="No", color=Color.Red)
 
 
@@ -211,9 +210,7 @@ def _create_state_representative_row(
     ]
     staffer_text = "\n\n".join(staffer_strings)
 
-    twitter_search_url = twitter.get_bill_twitter_search_url(
-        bill, person
-    )
+    twitter_search_url = twitter.get_bill_twitter_search_url(bill, person)
 
     if person.type == Person.PersonType.SENATOR:
         chamber_name = "Senate"
@@ -278,7 +275,11 @@ def _create_city_power_hour_row_data(
         ),
     ]
     for non_sponsor in non_sponsors:
-        rows.append(_create_council_member_row(non_sponsor, bill, import_data, is_sponsor=False))
+        rows.append(
+            _create_council_member_row(
+                non_sponsor, bill, import_data, is_sponsor=False
+            )
+        )
 
     for sponsorship in sponsorships:
         rows.append(
@@ -359,7 +360,9 @@ def _create_city_power_hour(bill, sheet_title, import_data):
         import_data,
     )
 
-    return create_spreadsheet(sheet_title, row_data, [width for _, width in CITY_COLUMN_TITLES])
+    return create_spreadsheet(
+        sheet_title, row_data, [width for _, width in CITY_COLUMN_TITLES]
+    )
 
 
 def _create_state_power_hour(bill, sheet_title, import_data):
@@ -374,12 +377,18 @@ def _create_state_power_hour(bill, sheet_title, import_data):
     if senate_bill:
         sponsorships.extend(senate_bill.sponsorships)
         senate_sponsor_ids = [s.person_id for s in senate_bill.sponsorships]
-        senate_non_sponsors = Senator.query.filter(Senator.person_id.not_in(senate_sponsor_ids))
+        senate_non_sponsors = Senator.query.filter(
+            Senator.person_id.not_in(senate_sponsor_ids)
+        )
         non_sponsors.extend(senate_non_sponsors)
     if assembly_bill:
         sponsorships.extend(assembly_bill.sponsorships)
-        assembly_sponsor_ids = [s.person_id for s in assembly_bill.sponsorships]
-        assembly_non_sponsors = AssemblyMember.query.filter(AssemblyMember.person_id.not_in(assembly_sponsor_ids))
+        assembly_sponsor_ids = [
+            s.person_id for s in assembly_bill.sponsorships
+        ]
+        assembly_non_sponsors = AssemblyMember.query.filter(
+            AssemblyMember.person_id.not_in(assembly_sponsor_ids)
+        )
         non_sponsors.extend(assembly_non_sponsors)
 
     row_data = _create_state_power_hour_row_data(
@@ -387,8 +396,9 @@ def _create_state_power_hour(bill, sheet_title, import_data):
     )
 
     return create_spreadsheet(
-        sheet_title, row_data, [width for _, width in STATE_COLUMN_TITLES])
-    
+        sheet_title, row_data, [width for _, width in STATE_COLUMN_TITLES]
+    )
+
 
 def create_power_hour(
     bill_id: UUID, title: str, old_spreadsheet_to_import: str
@@ -407,12 +417,16 @@ def create_power_hour(
     if old_spreadsheet_to_import:
         if bill.type == Bill.BillType.CITY:
             import_data = _extract_data_from_previous_power_hour(
-                old_spreadsheet_to_import,CITY_COLUMN_TITLE_SET, [Person.PersonType.COUNCIL_MEMBER]
+                old_spreadsheet_to_import,
+                CITY_COLUMN_TITLE_SET,
+                [Person.PersonType.COUNCIL_MEMBER],
             )
         else:
             import_data = _extract_data_from_previous_power_hour(
-                old_spreadsheet_to_import,STATE_COLUMN_TITLE_SET, [Person.PersonType.SENATOR, Person.PersonType.ASSEMBLY_MEMBER]
-            ) 
+                old_spreadsheet_to_import,
+                STATE_COLUMN_TITLE_SET,
+                [Person.PersonType.SENATOR, Person.PersonType.ASSEMBLY_MEMBER],
+            )
     else:
         import_data = None
 
@@ -430,7 +444,7 @@ def create_power_hour(
 def _extract_data_from_previous_spreadsheet(
     spreadsheet_cells,
     standard_column_titles: Set[str],
-    person_types: List[Person.PersonType]
+    person_types: List[Person.PersonType],
 ) -> PowerHourImportData:
     import_messages = []
 
@@ -487,9 +501,7 @@ def _extract_data_from_previous_spreadsheet(
     persons = Person.query.filter(Person.type.in_(person_types)).all()
     person_data_by_id: Dict[UUID, Dict[str, str]] = {}
     for person in persons:
-        person_data = extra_columns_by_council_member_name.get(
-            person.name
-        )
+        person_data = extra_columns_by_council_member_name.get(person.name)
         if person_data is None:
             # If they're the lead sponsor, their name is formatted differently, so try
             # that as well.
@@ -497,9 +509,7 @@ def _extract_data_from_previous_spreadsheet(
                 _get_sponsor_name_text(person.name, True)
             )
         if person_data is not None:
-            person_data_by_id[
-                person.id
-            ] = person_data
+            person_data_by_id[person.id] = person_data
         else:
             import_messages.append(
                 f"Could not find {person.name} under the Name column in the old sheet. Make sure the name matches exactly."
@@ -515,7 +525,7 @@ def _extract_data_from_previous_spreadsheet(
 def _extract_data_from_previous_power_hour(
     spreadsheet_id: str,
     standard_column_titles: Set[str],
-    person_types: List[Person.PersonType]
+    person_types: List[Person.PersonType],
 ) -> Optional[PowerHourImportData]:
     """Reads cells from the spreadsheet of a previous power hour and extracts
     some data that should be copied into the next power hour, to preserve context
@@ -529,4 +539,6 @@ def _extract_data_from_previous_power_hour(
     """
 
     spreadsheet_cells = get_spreadsheet_cells(spreadsheet_id)
-    return _extract_data_from_previous_spreadsheet(spreadsheet_cells, standard_column_titles, person_types)
+    return _extract_data_from_previous_spreadsheet(
+        spreadsheet_cells, standard_column_titles, person_types
+    )

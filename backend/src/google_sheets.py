@@ -18,7 +18,7 @@ SCOPES = [
 # todo: make these colors more pleasant
 class Color:
     Red = {
-        "red": .7,
+        "red": 0.7,
         "green": 0,
         "blue": 0,
     }
@@ -32,7 +32,6 @@ class Color:
         "green": 0.7,
         "blue": 0,
     }
-
 
 
 @dataclass
