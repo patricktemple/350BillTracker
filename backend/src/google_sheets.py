@@ -14,12 +14,33 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive.file",
 ]
 
+# is this the best way do to this?
+# todo: make these colors more pleasant
+class Color:
+    Red = {
+        "red": .7,
+        "green": 0,
+        "blue": 0,
+    }
+    White = {
+        "red": 1,
+        "green": 1,
+        "blue": 1,
+    }
+    Green = {
+        "red": 0,
+        "green": 0.7,
+        "blue": 0,
+    }
+
+
 
 @dataclass
 class Cell:
     value: str = None
     link_url: str = None
     bold: bool = False
+    color: Color = None
 
 
 def _get_google_credentials():
@@ -47,6 +68,7 @@ def _create_cell_data(cell):
         "userEnteredValue": {"stringValue": str(cell.value)},
         "userEnteredFormat": {
             "wrapStrategy": "WRAP",
+            "backgroundColor": cell.color or Color.White,
             "textFormat": {"bold": cell.bold},
         },
     }

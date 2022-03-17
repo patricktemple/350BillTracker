@@ -10,6 +10,7 @@ from sqlalchemy.orm import selectinload
 from . import settings, twitter
 from .bill.models import AssemblyBill, Bill, CityBill, SenateBill, StateBill
 from .google_sheets import (
+    Color,
     Cell,
     create_bolded_row_data,
     create_row_data,
@@ -48,6 +49,7 @@ CITY_COLUMN_TITLE_SET = set(CITY_COLUMN_TITLES)
 STATE_COLUMN_TITLES = [
     "",
     "Name",
+    "Sponsored",
     "Chamber",
     "Email",
     "Party",
@@ -203,12 +205,21 @@ def _format_office_contacts(office_contacts: List[OfficeContact]):
     return "\n\n".join(office_strings)
 
 
+def _format_sponsor_status(sponsored: bool):
+    if sponsored:
+        return Cell(value="Yes", color=Color.Green)
+    
+    return Cell(value="No", color=Color.Red)
+
+
 # TODO: Make generic to be all state reps
 # Can I dedupe this more?
 def _create_state_representative_row(
     representative: Union[Senator, AssemblyMember],
     bill: Bill,
     import_data: Optional[PowerHourImportData],
+    *,
+    is_sponsor: bool,
     is_lead_sponsor: bool = False,
 ):
     person = representative.person
@@ -246,6 +257,7 @@ def _create_state_representative_row(
     cells = [
         Cell(""),
         Cell(_get_sponsor_name_text(person.name, is_lead_sponsor)),
+        _format_sponsor_status(is_sponsor), # TODO: Do this for city council too
         Cell(chamber_name),
         Cell(person.email),
         Cell(person.party or ""),
@@ -324,25 +336,21 @@ def _create_state_power_hour_row_data(
         create_bolded_row_data(
             STATE_COLUMN_TITLES + extra_titles,
         ),
-        create_bolded_row_data(["NON-SPONSORS"]),
     ]
     for non_sponsor in non_sponsors:
         rows.append(
             _create_state_representative_row(
-                non_sponsor, bill, import_data
+                non_sponsor, bill, import_data, is_sponsor=False
             )
         )
-
-    rows.append(create_row_data([]))
-    rows.append(create_bolded_row_data(["SPONSORS"]))
-
     for sponsorship in sponsorships:
         rows.append(
             _create_state_representative_row(
                 sponsorship.representative,
                 bill,
                 import_data,
-                sponsorship.is_lead_sponsor,
+                is_sponsor=True,
+                is_lead_sponsor=sponsorship.is_lead_sponsor,
             )
         )
 
