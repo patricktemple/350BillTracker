@@ -14,13 +14,11 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive.file",
 ]
 
-# is this the best way do to this?
-# todo: make these colors more pleasant
 class Color:
     Red = {
-        "red": 0.7,
-        "green": 0,
-        "blue": 0,
+        "red": 0.87,
+        "green": .6,
+        "blue": .6,
     }
     White = {
         "red": 1,
@@ -28,9 +26,9 @@ class Color:
         "blue": 1,
     }
     Green = {
-        "red": 0,
-        "green": 0.7,
-        "blue": 0,
+        "red": .74,
+        "green": 0.84,
+        "blue": .67,
     }
 
 
