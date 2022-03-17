@@ -14,11 +14,12 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive.file",
 ]
 
+
 class Color:
     Red = {
         "red": 0.87,
-        "green": .6,
-        "blue": .6,
+        "green": 0.6,
+        "blue": 0.6,
     }
     White = {
         "red": 1,
@@ -26,9 +27,9 @@ class Color:
         "blue": 1,
     }
     Green = {
-        "red": .74,
+        "red": 0.74,
         "green": 0.84,
-        "blue": .67,
+        "blue": 0.67,
     }
 
 

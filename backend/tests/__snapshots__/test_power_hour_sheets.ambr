@@ -5019,3 +5019,505 @@
     ],
   }
 ---
+# name: test_create_state_power_hour__with_import
+  <class 'dict'> {
+    'properties': <class 'dict'> {
+      'title': 'My power hour',
+    },
+    'sheets': <class 'list'> [
+      <class 'dict'> {
+        'data': <class 'dict'> {
+          'columnMetadata': <class 'list'> [
+            <class 'dict'> {
+              'pixelSize': 150,
+            },
+            <class 'dict'> {
+              'pixelSize': 75,
+            },
+            <class 'dict'> {
+              'pixelSize': 75,
+            },
+            <class 'dict'> {
+              'pixelSize': 200,
+            },
+            <class 'dict'> {
+              'pixelSize': 50,
+            },
+            <class 'dict'> {
+              'pixelSize': 60,
+            },
+            <class 'dict'> {
+              'pixelSize': 200,
+            },
+            <class 'dict'> {
+              'pixelSize': 200,
+            },
+            <class 'dict'> {
+              'pixelSize': 150,
+            },
+            <class 'dict'> {
+              'pixelSize': 250,
+            },
+            <class 'dict'> {
+              'pixelSize': 100,
+            },
+          ],
+          'rowData': <class 'list'> [
+            <class 'dict'> {
+              'values': <class 'list'> [
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Name',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Sponsor',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Chamber',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Email',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Party',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'District',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'District Contact',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Albany Contact',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Twitter',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Staffers',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Search for relevant tweets to bill',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': True,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Extra column',
+                  },
+                },
+              ],
+            },
+            <class 'dict'> {
+              'values': <class 'list'> [
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'senator name',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 0.6,
+                      'green': 0.6,
+                      'red': 0.87,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'No',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Senate',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'me@senate.com',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'D',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': <class 'list'> [
+                    <class 'dict'> {
+                      'format': <class 'dict'> {
+                        'link': <class 'dict'> {
+                          'uri': 'https://www.nysenate.gov/district/3',
+                        },
+                      },
+                      'startIndex': 0,
+                    },
+                  ],
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'S-3',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '
+                      ----- Albany -----
+                      Phone: 111-222-3333
+                      Fax: 888-888-8888
+                    ',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': <class 'list'> [
+                    <class 'dict'> {
+                      'format': <class 'dict'> {
+                        'link': <class 'dict'> {
+                          'uri': 'https://www.twitter.com/thesenateguy',
+                        },
+                      },
+                      'startIndex': 0,
+                    },
+                  ],
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '@thesenateguy',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': '',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': <class 'list'> [
+                    <class 'dict'> {
+                      'format': <class 'dict'> {
+                        'link': <class 'dict'> {
+                          'uri': 'https://twitter.com/search?q=%28from%3Athesenateguy%29%20%22solar%22%20OR%20%22climate%22%20OR%20%22wind%20power%22%20OR%20%22renewable%22%20OR%20%22fossil%20fuel%22&f=live',
+                        },
+                      },
+                      'startIndex': 0,
+                    },
+                  ],
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Relevant tweets',
+                  },
+                },
+                <class 'dict'> {
+                  'textFormatRuns': None,
+                  'userEnteredFormat': <class 'dict'> {
+                    'backgroundColor': <class 'dict'> {
+                      'blue': 1,
+                      'green': 1,
+                      'red': 1,
+                    },
+                    'textFormat': <class 'dict'> {
+                      'bold': False,
+                    },
+                    'wrapStrategy': 'WRAP',
+                  },
+                  'userEnteredValue': <class 'dict'> {
+                    'stringValue': 'Called',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        'properties': <class 'dict'> {
+          'gridProperties': <class 'dict'> {
+            'frozenRowCount': 1,
+          },
+        },
+      },
+    ],
+  }
+---
