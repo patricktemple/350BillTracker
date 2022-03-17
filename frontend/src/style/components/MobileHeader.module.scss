@@ -6,8 +6,7 @@
     background-color: $lightest-grey;
     padding: 1rem;
     vertical-align: middle;
-    justify-content: space-between;
-    align-items: center;
+    position: relative;
 
     img {
         height: 1.5rem;
@@ -18,19 +17,18 @@
         color: $darkest-grey;
     }
 
-    .appTitleContainer {
-        display: flex;
-        align-items: start;
-
-        .appTitle {
-            text-transform: uppercase;
-            font-weight: bold;
-            margin-left: .5rem;
-        }
+    .appTitle {
+        text-transform: uppercase;
+        font-weight: bold;
+        margin-left: .5rem;
     }
 
     .menuContainer {
+        display: inline-block;
+        position: absolute;
+        right: 0;
         font-weight: bold;
+
         cursor: pointer;
 
         > svg {
@@ -42,6 +40,8 @@
     }
 
     @include tablet {
-        display: flex;
+        display: block;
     }
+
+
 }

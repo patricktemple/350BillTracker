@@ -12,7 +12,7 @@ interface Props {
 export default function MobileHeader(props: Props) {
   return (
     <div className={styles.container}>
-      <Link to="/" className={styles.appTitleContainer}>
+      <Link to="/">
         <img src={AppLogo} alt="Logo" />
         <span className={styles.appTitle}>Bill tracker</span>
       </Link>
