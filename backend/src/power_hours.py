@@ -1,7 +1,7 @@
 import json
 import logging
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
@@ -48,6 +48,7 @@ CITY_COLUMN_TITLE_SET = set(CITY_COLUMN_TITLES)
 STATE_COLUMN_TITLES = [
     "",
     "Name",
+    "Chamber",
     "Email",
     "Party",
     "District",
@@ -192,25 +193,33 @@ def _create_council_member_row(
 # TODO: Make generic to be all state reps
 # Can I dedupe this more?
 def _create_state_representative_row(
-    representative: Person,
+    representative: Union[Senator, AssemblyMember],
     bill: Bill,
     import_data: Optional[PowerHourImportData],
     is_lead_sponsor: bool = False,
 ):
+    person = representative.person
     staffer_strings = [
-        _get_staffer_display_string(s) for s in representative.staffer_persons
+        _get_staffer_display_string(s) for s in person.staffer_persons
     ]
     staffer_text = "\n\n".join(staffer_strings)
 
     twitter_search_url = twitter.get_bill_twitter_search_url(
-        bill, representative
+        bill, person
     )
+
+    if person.type == Person.PersonType.SENATOR:
+        chamber_name = "Senate"
+        district = f"S-{representative.district}"
+    else:
+        chamber_name = "Assembly"
+        district = f"A-{representative.district}"
 
     # TODO: Improve contact info
     legislative_phone = ", ".join(
         (
             c.phone
-            for c in representative.office_contacts
+            for c in person.office_contacts
             if c.phone
             and c.type == OfficeContact.OfficeContactType.CENTRAL_OFFICE
         )
@@ -218,7 +227,7 @@ def _create_state_representative_row(
     district_phone = ", ".join(
         (
             c.phone
-            for c in representative.office_contacts
+            for c in person.office_contacts
             if c.phone
             and c.type == OfficeContact.OfficeContactType.DISTRICT_OFFICE
         )
@@ -226,14 +235,16 @@ def _create_state_representative_row(
 
     cells = [
         Cell(""),
-        Cell(_get_sponsor_name_text(representative.name, is_lead_sponsor)),
-        Cell(representative.email),
-        Cell(representative.party),
+        Cell(_get_sponsor_name_text(person.name, is_lead_sponsor)),
+        Cell(chamber_name),
+        Cell(person.email),
+        Cell(person.party),
+        Cell(district, link_url=representative.website),
         Cell(district_phone),
         Cell(legislative_phone),
         Cell(
-            representative.display_twitter or "",
-            link_url=representative.twitter_url,
+            person.display_twitter or "",
+            link_url=person.twitter_url,
         ),
         Cell(staffer_text),
         Cell(
@@ -242,7 +253,7 @@ def _create_state_representative_row(
         ),
     ]
     if import_data:
-        cells.append(_get_imported_data_cells(representative, import_data))
+        cells.append(_get_imported_data_cells(person, import_data))
 
     return create_row_data(cells)
 
@@ -282,11 +293,17 @@ def _create_city_power_hour_row_data(
     return rows
 
 
+# Other change:
+# Make "sponsor" a column
+# Mark it red or green
+# This way, people can sort by this and other fields in the spreadsheet after it's created, without messing things up
+
+
 # TODO: Dedupe this with above!
 def _create_state_power_hour_row_data(
     bill: Bill,
-    sponsorships: List[SenateSponsorship],
-    non_sponsors: List[Senator],
+    sponsorships: List[Union[SenateSponsorship, AssemblySponsorship]],
+    non_sponsors: List[Union[Senator, AssemblyMember]],
     import_data: Optional[PowerHourImportData],
 ):
     """Generates the full body payload that the Sheets API requires for a
@@ -295,14 +312,14 @@ def _create_state_power_hour_row_data(
     extra_titles = import_data.extra_column_titles if import_data else []
     rows = [
         create_bolded_row_data(
-            CITY_COLUMN_TITLES + extra_titles,
+            STATE_COLUMN_TITLES + extra_titles,
         ),
         create_bolded_row_data(["NON-SPONSORS"]),
     ]
     for non_sponsor in non_sponsors:
         rows.append(
             _create_state_representative_row(
-                non_sponsor.person, bill, import_data
+                non_sponsor, bill, import_data
             )
         )
 
@@ -312,7 +329,7 @@ def _create_state_power_hour_row_data(
     for sponsorship in sponsorships:
         rows.append(
             _create_state_representative_row(
-                sponsorship.senator.person,
+                sponsorship.representative,
                 bill,
                 import_data,
                 sponsorship.is_lead_sponsor,
@@ -360,19 +377,23 @@ def _create_state_power_hour(bill, sheet_title, import_data):
     senate_bill = bill.state_bill.senate_bill
     assembly_bill = bill.state_bill.assembly_bill
 
+    sponsorships = []
+    non_sponsors = []
+
+    # TODO: Factor out non_sponsors into something  on the view! It's used all over
     if senate_bill:
-        senate_sponsorships = senate_bill.sponsorships
-        senate_sponsor_ids = [s.person_id for s in senate_sponsorships]
-        senate_non_sponsors = Senator.query.filter(
-            Senator.person_id.not_in(senate_sponsor_ids)
-        ).all()
-        # TODO repeat for assembly, make generic
-    else:
-        senate_sponsorships = []
-        senate_non_sponsors = []
+        sponsorships.extend(senate_bill.sponsorships)
+        senate_sponsor_ids = [s.person_id for s in senate_bill.sponsorships]
+        senate_non_sponsors = Senator.query.filter(Senator.person_id.not_in(senate_sponsor_ids))
+        non_sponsors.extend(senate_non_sponsors)
+    if assembly_bill:
+        sponsorships.extend(assembly_bill.sponsorships)
+        assembly_sponsor_ids = [s.person_id for s in assembly_bill.sponsorships]
+        assembly_non_sponsors = AssemblyMember.query.filter(AssemblyMember.person_id.not_in(assembly_sponsor_ids))
+        non_sponsors.extend(assembly_non_sponsors)
 
     row_data = _create_state_power_hour_row_data(
-        bill, senate_sponsorships, senate_non_sponsors, import_data
+        bill, sponsorships, non_sponsors, import_data
     )
 
     return create_spreadsheet(
