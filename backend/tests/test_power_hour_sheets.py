@@ -1,12 +1,12 @@
 from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
+from src.models import db
+from src.person.models import CouncilMember, OfficeContact, Person
 from src.power_hours import (
     _extract_data_from_previous_spreadsheet,
     create_power_hour,
 )
-from src.models import db
-from src.person.models import CouncilMember, OfficeContact, Person
 from src.sponsorship.models import CitySponsorship
 
 

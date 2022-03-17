@@ -10,8 +10,8 @@ from ..app import app
 from ..auth import auth_required
 from ..council_api import lookup_bill, lookup_bills
 from ..council_sync import update_bill_sponsorships
-from ..power_hours import create_power_hour
 from ..models import db
+from ..power_hours import create_power_hour
 from .models import (
     AssemblyBill,
     Bill,

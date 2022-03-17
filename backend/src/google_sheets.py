@@ -6,8 +6,8 @@ from typing import Dict, List, Optional, Tuple
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from sqlalchemy.orm import selectinload
-from . import settings
 
+from . import settings
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -62,9 +62,7 @@ def create_bolded_row_data(raw_values):
 
 
 def create_spreadsheet(
-    sheet_title: str,
-    row_data: Dict,
-    column_widths: List[int]
+    sheet_title: str, row_data: Dict, column_widths: List[int]
 ):
     """TODO"""
 
@@ -74,7 +72,10 @@ def create_spreadsheet(
         "sheets": [
             {
                 "properties": {"gridProperties": {"frozenRowCount": 1}},
-                "data": {"rowData": row_data, "columnMetadata": column_metadata},
+                "data": {
+                    "rowData": row_data,
+                    "columnMetadata": column_metadata,
+                },
             }
         ],
     }

@@ -8,11 +8,27 @@ from googleapiclient.discovery import build
 from sqlalchemy.orm import selectinload
 
 from . import settings, twitter
-from .bill.models import CityBill, StateBill, SenateBill, AssemblyBill, Bill
+from .bill.models import AssemblyBill, Bill, CityBill, SenateBill, StateBill
+from .google_sheets import (
+    Cell,
+    create_bolded_row_data,
+    create_row_data,
+    create_spreadsheet,
+    get_spreadsheet_cells,
+)
 from .models import UUID
-from .person.models import CouncilMember, OfficeContact, Person, Senator, AssemblyMember
-from .sponsorship.models import CitySponsorship, SenateSponsorship, AssemblySponsorship
-from .google_sheets import  Cell, get_spreadsheet_cells, create_spreadsheet, create_row_data, create_bolded_row_data, get_spreadsheet_cells
+from .person.models import (
+    AssemblyMember,
+    CouncilMember,
+    OfficeContact,
+    Person,
+    Senator,
+)
+from .sponsorship.models import (
+    AssemblySponsorship,
+    CitySponsorship,
+    SenateSponsorship,
+)
 
 CITY_COLUMN_TITLES = [
     "",
@@ -94,17 +110,13 @@ def _get_staffer_display_string(staffer: Person):
 
 def _get_imported_data_cells(person, import_data):
     cells = []
-    legislator_data = import_data.column_data_by_legislator_id.get(
-        person.id
-    )
+    legislator_data = import_data.column_data_by_legislator_id.get(person.id)
     if legislator_data is not None:
         for extra_column in import_data.extra_column_titles:
             text = legislator_data.get(extra_column, "")
             cells.append(Cell(text))
     else:
-        logging.warning(
-            f"No data for {person.name} in import data"
-        )   
+        logging.warning(f"No data for {person.name} in import data")
     return cells
 
 
@@ -170,7 +182,9 @@ def _create_council_member_row(
         ),
     ]
     if import_data:
-        cells.extend(_get_imported_data_cells(council_member.person, import_data))
+        cells.extend(
+            _get_imported_data_cells(council_member.person, import_data)
+        )
 
     return create_row_data(cells)
 
@@ -184,8 +198,7 @@ def _create_state_representative_row(
     is_lead_sponsor: bool = False,
 ):
     staffer_strings = [
-        _get_staffer_display_string(s)
-        for s in representative.staffer_persons
+        _get_staffer_display_string(s) for s in representative.staffer_persons
     ]
     staffer_text = "\n\n".join(staffer_strings)
 
@@ -213,9 +226,7 @@ def _create_state_representative_row(
 
     cells = [
         Cell(""),
-        Cell(
-            _get_sponsor_name_text(representative.name, is_lead_sponsor)
-        ),
+        Cell(_get_sponsor_name_text(representative.name, is_lead_sponsor)),
         Cell(representative.email),
         Cell(representative.party),
         Cell(district_phone),
@@ -253,9 +264,7 @@ def _create_city_power_hour_row_data(
         create_bolded_row_data(["NON-SPONSORS"]),
     ]
     for non_sponsor in non_sponsors:
-        rows.append(
-            _create_council_member_row(non_sponsor, bill, import_data)
-        )
+        rows.append(_create_council_member_row(non_sponsor, bill, import_data))
 
     rows.append(create_row_data([]))
     rows.append(create_bolded_row_data(["SPONSORS"]))
@@ -269,7 +278,7 @@ def _create_city_power_hour_row_data(
                 sponsorship.sponsor_sequence == 0,
             )
         )
-    
+
     return rows
 
 
@@ -292,7 +301,9 @@ def _create_state_power_hour_row_data(
     ]
     for non_sponsor in non_sponsors:
         rows.append(
-            _create_state_representative_row(non_sponsor.person, bill, import_data)
+            _create_state_representative_row(
+                non_sponsor.person, bill, import_data
+            )
         )
 
     rows.append(create_row_data([]))
@@ -307,7 +318,7 @@ def _create_state_power_hour_row_data(
                 sponsorship.is_lead_sponsor,
             )
         )
-    
+
     return rows
 
 
@@ -335,7 +346,10 @@ def _create_city_power_hour(bill, sheet_title, import_data):
     non_sponsors = sorted(non_sponsors, key=get_sort_key)
 
     row_data = _create_city_power_hour_row_data(
-        bill.city_bill, sponsorships, non_sponsors, import_data # unclear this needs to pass city_bill
+        bill.city_bill,
+        sponsorships,
+        non_sponsors,
+        import_data,  # unclear this needs to pass city_bill
     )
 
     return create_spreadsheet(sheet_title, row_data, CITY_COLUMN_WIDTHS)
@@ -349,17 +363,21 @@ def _create_state_power_hour(bill, sheet_title, import_data):
     if senate_bill:
         senate_sponsorships = senate_bill.sponsorships
         senate_sponsor_ids = [s.person_id for s in senate_sponsorships]
-        senate_non_sponsors = Senator.query.filter(Senator.person_id.not_in(senate_sponsor_ids)).all()
+        senate_non_sponsors = Senator.query.filter(
+            Senator.person_id.not_in(senate_sponsor_ids)
+        ).all()
         # TODO repeat for assembly, make generic
     else:
         senate_sponsorships = []
         senate_non_sponsors = []
-    
+
     row_data = _create_state_power_hour_row_data(
         bill, senate_sponsorships, senate_non_sponsors, import_data
     )
 
-    return create_spreadsheet(sheet_title, row_data, []) # TODO: DO  state column widths
+    return create_spreadsheet(
+        sheet_title, row_data, []
+    )  # TODO: DO  state column widths
 
 
 def create_power_hour(
