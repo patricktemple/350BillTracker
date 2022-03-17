@@ -777,7 +777,7 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
         ],
         "email": "DilanE@nyassembly.gov",
         "name": "Erik Dilan",
-        "scrape_name__SANITY_CHECK": "Erik  M. Dilan",
+        "scrape_name__SANITY_CHECK": "Erik M. Dilan",
     },
     901: {
         "albany_contact": [
@@ -841,20 +841,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
         "name": "Karl Brabenec",
         "scrape_name__SANITY_CHECK": "Karl Brabenec",
     },
-    912: {
-        "albany_contact": [{"city": "Albany", "phone": "518-455-5262"}],
-        "district": 43,
-        "district_contact": [
-            {
-                "city": "Brooklyn",
-                "fax": "718-771-3276",
-                "phone": "718-771-3105",
-            }
-        ],
-        "email": "district43@nyassembly.gov",
-        "name": "Diana Richardson",
-        "scrape_name__SANITY_CHECK": "Diana C. Richardson",
-    },
     1089: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4451"}],
         "district": 29,
@@ -872,22 +858,6 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
         "email": "HunterP@nyassembly.gov",
         "name": "Pamela J. Hunter",
         "scrape_name__SANITY_CHECK": "Pamela J. Hunter",
-    },
-    1115: {
-        "albany_contact": [
-            {"city": "Albany", "fax": "518-455-5769", "phone": "518-455-3028"}
-        ],
-        "district": 20,
-        "district_contact": [
-            {
-                "city": "Atlantic Beach",
-                "fax": "516-431-0412",
-                "phone": "516-431-0500",
-            }
-        ],
-        "email": "MillerML@nyassembly.gov",
-        "name": "Melissa Miller",
-        "scrape_name__SANITY_CHECK": "Melissa Miller",
     },
     1116: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5211"}],
@@ -1749,10 +1719,7 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
     1482: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5444"}],
         "district": 125,
-        "district_contact": [
-            {"city": "Ithaca", "phone": "607-277-8030"},
-            {"city": "Cortland", "phone": "607-208-2024"},
-        ],
+        "district_contact": [{"city": "Ithaca", "phone": "607-277-8030"}],
         "email": "kellesa@nyassembly.gov",
         "name": "Anna Kelles",
         "scrape_name__SANITY_CHECK": "Dr. Anna R. Kelles",
@@ -1800,7 +1767,9 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
     1486: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5784"}],
         "district": 135,
-        "district_contact": [{"city": "Fairport", "phone": "585-223-9130"}],
+        "district_contact": [
+            {"city": "East Rochester", "phone": "585-223-9130"}
+        ],
         "email": "lunsfordj@nyassembly.gov",
         "name": "Jen Lunsford",
         "scrape_name__SANITY_CHECK": "Jennifer Lunsford",
@@ -1835,8 +1804,38 @@ SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5511"}],
         "district": 86,
         "district_contact": [{"city": "Bronx", "phone": "718-933-6909"}],
-        "email": None,
+        "email": "tapiay@nyassembly.gov",
         "name": "Yudelka Tapia",
         "scrape_name__SANITY_CHECK": "Yudelka Tapia",
+    },
+    1505: {
+        "albany_contact": [{"city": "Albany", "phone": "518-455-4781"}],
+        "district": 68,
+        "district_contact": [{"city": "Manhattan", "phone": "212-828-3953"}],
+        "email": "gibbse@nyassembly.gov",
+        "name": "Eddie Gibbs",
+        "scrape_name__SANITY_CHECK": "Edward Gibbs",
+    },
+    1506: {
+        "albany_contact": [{"city": "Albany", "phone": "518-455-5807"}],
+        "district": 72,
+        "district_contact": [{"city": "Manhattan", "phone": "212-544-2278"}],
+        "email": None,
+        "name": "Manny De Los Santos",
+        "scrape_name__SANITY_CHECK": "Manny De Los Santos",
+    },
+    1507: {
+        "albany_contact": [{"city": "Albany", "phone": "518-455-5912"}],
+        "district": 60,
+        "district_contact": [
+            {
+                "city": "Brooklyn",
+                "fax": "718-257-2590",
+                "phone": "718-257-5824",
+            }
+        ],
+        "email": "lucasn@nyassembly.gov",
+        "name": "Nikki Lucas",
+        "scrape_name__SANITY_CHECK": "Nikki Lucas",
     },
 }
