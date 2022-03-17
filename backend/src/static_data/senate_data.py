@@ -198,12 +198,7 @@ SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
                 "city": "Staten Island",
                 "fax": "(718) 727-9426",
                 "phone": "(718) 727-9406",
-            },
-            {
-                "city": "Brooklyn",
-                "fax": "(347) 492-3263",
-                "phone": "(718) 333-0311",
-            },
+            }
         ],
         "email": "Savino@nysenate.gov",
         "name": "Diane J. Savino",
