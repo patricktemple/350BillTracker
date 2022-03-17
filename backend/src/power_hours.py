@@ -194,8 +194,6 @@ def _format_sponsor_status(sponsored: bool):
     return Cell(value="No", color=Color.Red)
 
 
-# TODO: Make generic to be all state reps
-# Can I dedupe this more?
 def _create_state_representative_row(
     representative: Union[Senator, AssemblyMember],
     bill: Bill,
@@ -266,7 +264,7 @@ def _create_city_power_hour_row_data(
     import_data: Optional[PowerHourImportData],
 ):
     """Generates the full body payload that the Sheets API requires for a
-    phone bank spreadsheet."""
+    city phone bank spreadsheet."""
 
     extra_titles = import_data.extra_column_titles if import_data else []
     rows = [
@@ -302,7 +300,7 @@ def _create_state_power_hour_row_data(
     import_data: Optional[PowerHourImportData],
 ):
     """Generates the full body payload that the Sheets API requires for a
-    phone bank spreadsheet."""
+    state phone bank spreadsheet."""
 
     extra_titles = import_data.extra_column_titles if import_data else []
     rows = [
@@ -366,7 +364,6 @@ def _create_city_power_hour(bill, sheet_title, import_data):
 
 
 def _create_state_power_hour(bill, sheet_title, import_data):
-    # Make sure this works if only one of senate or assembly bill are defined
     senate_bill = bill.state_bill.senate_bill
     assembly_bill = bill.state_bill.assembly_bill
 
@@ -413,7 +410,6 @@ def create_power_hour(
         f"Creating new power hour titled {title}, importing old spreadsheet {old_spreadsheet_to_import}"
     )
 
-    # can simplify this forking logic
     if old_spreadsheet_to_import:
         if bill.type == Bill.BillType.CITY:
             import_data = _extract_data_from_previous_power_hour(
@@ -422,10 +418,15 @@ def create_power_hour(
                 [Person.PersonType.COUNCIL_MEMBER],
             )
         else:
+            person_types = []
+            if bill.state_bill.senate_bill:
+                person_types.append(Person.PersonType.SENATOR)
+            if bill.state_bill.assembly_bill:
+                person_types.append(Person.PersonType.ASSEMBLY_MEMBER)
             import_data = _extract_data_from_previous_power_hour(
                 old_spreadsheet_to_import,
                 STATE_COLUMN_TITLE_SET,
-                [Person.PersonType.SENATOR, Person.PersonType.ASSEMBLY_MEMBER],
+                person_types,
             )
     else:
         import_data = None

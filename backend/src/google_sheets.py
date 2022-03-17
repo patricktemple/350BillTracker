@@ -84,7 +84,7 @@ def create_bolded_row_data(raw_values):
 def create_spreadsheet(
     sheet_title: str, row_data: Dict, column_widths: List[int]
 ):
-    """TODO"""
+    """Creates a spreadsheet from the raw Google sheets row data."""
 
     column_metadata = [{"pixelSize": size} for size in column_widths]
     spreadsheet_data = {

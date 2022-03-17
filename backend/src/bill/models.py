@@ -231,13 +231,13 @@ class StateBill(db.Model):
         "SenateBill",
         back_populates="state_bill",
         uselist=False,
-        cascade="all, delete",
+        cascade="all, delete-orphan",
     )
     assembly_bill = relationship(
         "AssemblyBill",
         back_populates="state_bill",
         uselist=False,
-        cascade="all, delete",
+        cascade="all, delete-orphan",
     )
 
 

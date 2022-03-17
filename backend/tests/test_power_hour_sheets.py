@@ -232,7 +232,7 @@ def test_create_state_power_hour__no_import(
             )
         )
     else:
-        state_bill.senate_bill = None
+        state_bill.state_bill.senate_bill = None
 
     if assembly_bill_exists:
         non_sponsor_assembly_member = Person(
@@ -260,7 +260,7 @@ def test_create_state_power_hour__no_import(
             )
         )
     else:
-        state_bill.assembly_bill = None
+        state_bill.state_bill.assembly_bill = None
     db.session.commit()
 
     mock_sheets_service.spreadsheets().create().execute.return_value = {
