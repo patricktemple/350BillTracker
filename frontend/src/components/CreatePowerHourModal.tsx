@@ -51,7 +51,6 @@ function PowerHourModalBody(props: BodyProps): ReactElement {
 
   const apiFetch = useApiFetch();
 
-  // This code name is rough, too long
   const defaultTitle = `Power Hour for ${
     props.bill.codeNameShort
   } (${moment().format('MMM D YYYY')})`;
