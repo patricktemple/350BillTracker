@@ -59,6 +59,7 @@ export interface Bill {
   description: string;
   tracked: boolean;
   codeName: string;
+  codeNameShort: string;
   status: string;
   displayName: string;
 

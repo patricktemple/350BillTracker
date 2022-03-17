@@ -53,7 +53,7 @@ function PowerHourModalBody(props: BodyProps): ReactElement {
 
   // This code name is rough, too long
   const defaultTitle = `Power Hour for ${
-    props.bill.codeName
+    props.bill.codeNameShort
   } (${moment().format('MMM D YYYY')})`;
   const lastWeekText = moment().subtract(7, 'days').format('MM/D');
 
