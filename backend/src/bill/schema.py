@@ -45,6 +45,7 @@ class BillSchema(CamelCaseSchema):
     # Derived data from either city or state bill
     status = fields.String(dump_only=True)
     code_name = fields.String(dump_only=True)
+    code_name_short = fields.String(dump_only=True)
 
     # Data that we track
     tracked = fields.Boolean(dump_only=True)

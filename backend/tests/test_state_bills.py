@@ -24,6 +24,7 @@ def test_get_bills(client, state_bill):
             {
                 "cityBill": None,
                 "codeName": "S1234 / A1234 from 2021 session",
+                "codeNameShort": "S1234 / A1234",
                 "description": "description",
                 "id": str(state_bill.id),
                 "name": "state bill",

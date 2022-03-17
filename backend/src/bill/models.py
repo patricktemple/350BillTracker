@@ -136,6 +136,18 @@ class Bill(db.Model):
 
         return f"{senate_print_no} / {assembly_print_no} from {self.state_bill.session_year} session"
 
+    @property
+    def code_name_short(self):
+        if self.type == Bill.BillType.CITY:
+            return self.city_bill.file
+
+        if self.state_bill.senate_bill:
+            if self.state_bill.assembly_bill:
+                return f"{self.state_bill.senate_bill.base_print_no} / {self.state_bill.assembly_bill.base_print_no}"
+            return self.state_bill.senate_bill.base_print_no
+
+        return self.state_bill.assembly_bill.base_print_no
+
     user_bill_settings = relationship(
         "UserBillSettings", back_populates="bill", cascade="all, delete-orphan"
     )
@@ -219,13 +231,13 @@ class StateBill(db.Model):
         "SenateBill",
         back_populates="state_bill",
         uselist=False,
-        cascade="all, delete",
+        cascade="all, delete-orphan",
     )
     assembly_bill = relationship(
         "AssemblyBill",
         back_populates="state_bill",
         uselist=False,
-        cascade="all, delete",
+        cascade="all, delete-orphan",
     )
 
 

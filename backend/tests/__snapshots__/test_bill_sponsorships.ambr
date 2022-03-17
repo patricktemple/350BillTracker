@@ -4,6 +4,7 @@
       'bill': <class 'dict'> {
         'cityBill': None,
         'codeName': 'S1234 / A1234 from 2021 session',
+        'codeNameShort': 'S1234 / A1234',
         'description': 'description',
         'displayName': 'nickname',
         'id': '00000000-0000-0000-0000-000000000001',
@@ -49,6 +50,7 @@
       'bill': <class 'dict'> {
         'cityBill': None,
         'codeName': 'S1234 / A1234 from 2021 session',
+        'codeNameShort': 'S1234 / A1234',
         'description': 'description',
         'displayName': 'nickname',
         'id': '00000000-0000-0000-0000-000000000001',
