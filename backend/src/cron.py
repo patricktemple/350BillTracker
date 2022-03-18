@@ -52,7 +52,7 @@ def cron_command():
 
                 state_static_sync.fill_static_state_data(
                     senate_data_by_member_id=senate_data.SCRAPED_SENATE_DATA_BY_MEMBER_ID,
-                    assembly_data_by_member_id=assembly_data.SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID,
+                    assembly_data_by_member_id=assembly_data.ASSEMBLY_DATA_BY_MEMBER_ID,
                 )
 
                 logging.info(
