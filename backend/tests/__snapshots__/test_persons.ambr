@@ -23,6 +23,9 @@
   <class 'list'> [
     <class 'dict'> {
       'assemblyMember': <class 'dict'> {
+        'counties': <class 'list'> [
+          'Nassau',
+        ],
         'district': 5,
         'website': 'https://nyassembly.gov/mem/?ad=5',
       },
@@ -64,6 +67,7 @@
       'notes': None,
       'party': 'D',
       'senator': <class 'dict'> {
+        'counties': None,
         'district': 3,
         'website': 'https://www.nysenate.gov/district/3',
       },

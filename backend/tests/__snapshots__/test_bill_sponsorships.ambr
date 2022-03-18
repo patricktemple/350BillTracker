@@ -97,6 +97,7 @@
       ],
       'leadSponsor': <class 'dict'> {
         'assemblyMember': <class 'dict'> {
+          'counties': None,
           'district': None,
           'website': None,
         },
@@ -114,6 +115,7 @@
       'nonSponsors': <class 'list'> [
         <class 'dict'> {
           'assemblyMember': <class 'dict'> {
+            'counties': None,
             'district': None,
             'website': None,
           },
@@ -141,6 +143,7 @@
           'notes': None,
           'party': None,
           'senator': <class 'dict'> {
+            'counties': None,
             'district': None,
             'website': None,
           },
@@ -160,6 +163,7 @@
           'notes': None,
           'party': None,
           'senator': <class 'dict'> {
+            'counties': None,
             'district': None,
             'website': None,
           },

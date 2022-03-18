@@ -186,7 +186,7 @@ def assembly_member(get_uuid):
             type=OfficeContact.OfficeContactType.CENTRAL_OFFICE,
         )
     )
-    person.assembly_member = AssemblyMember(state_member_id=51, district=5)
+    person.assembly_member = AssemblyMember(state_member_id=51, district=5, counties=["Nassau"])
     db.session.add(person)
     db.session.commit()
     return person
