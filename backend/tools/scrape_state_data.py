@@ -182,7 +182,7 @@ for senator in senators:
         "district": senator.district,
         # This should be visually inspected every time the scraper is re-run,
         # before the data is accepted.
-        "scrape_name__SANITY_CHECK": matching_item["name"],
+        "website_scraped_name__SANITY_CHECK": matching_item["name"],
     }
 
 print("Senate\n")
@@ -202,7 +202,7 @@ for member in assembly_members:
         **matching_item,
         "name": member.person.name,
         "district": member.district,
-        "scrape_name__SANITY_CHECK": matching_item["name"],
+        "website_scraped_name__SANITY_CHECK": matching_item["name"],
     }
 
 print("Assembly\n")

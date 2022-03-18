@@ -1,4 +1,4 @@
-SCRAPED_ASSEMBLY_DATA_BY_MEMBER_ID = {
+ASSEMBLY_DATA_FROM_WEBSITE = {
     457: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4203"}],
         "district": 32,

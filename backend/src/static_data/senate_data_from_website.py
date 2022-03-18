@@ -1,4 +1,4 @@
-SCRAPED_SENATE_DATA_BY_MEMBER_ID = {
+SENATE_DATA_FROM_WEBSITE = {
     372: {
         "albany_contact": [
             {

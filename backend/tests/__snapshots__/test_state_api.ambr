@@ -2,6 +2,9 @@
   <class 'list'> [
     <class 'dict'> {
       'assemblyMember': <class 'dict'> {
+        'counties': <class 'list'> [
+          'Nassau',
+        ],
         'district': 4,
         'website': 'https://nyassembly.gov/mem/?ad=4',
       },
@@ -39,6 +42,7 @@
       ],
       'party': 'D',
       'senator': <class 'dict'> {
+        'counties': None,
         'district': 2,
         'website': 'https://www.nysenate.gov/district/2',
       },
@@ -48,6 +52,7 @@
     },
     <class 'dict'> {
       'assemblyMember': <class 'dict'> {
+        'counties': None,
         'district': 3,
         'website': 'https://nyassembly.gov/mem/?ad=3',
       },
@@ -73,6 +78,7 @@
       ],
       'party': None,
       'senator': <class 'dict'> {
+        'counties': None,
         'district': 1,
         'website': 'https://www.nysenate.gov/district/1',
       },

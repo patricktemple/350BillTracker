@@ -19,14 +19,10 @@ class CouncilMemberSchema(CamelCaseSchema):
     website = fields.String(dump_only=True)
 
 
-class SenatorSchema(CamelCaseSchema):
+class StateRepresentativeSchema(CamelCaseSchema):
     website = fields.String(dump_only=True)
     district = fields.Integer(dump_only=True)
-
-
-class AssemblyMemberSchema(CamelCaseSchema):
-    website = fields.String(dump_only=True)
-    district = fields.Integer(dump_only=True)
+    counties = fields.List(fields.String(), dump_only=True)
 
 
 class CreateStafferSchema(CamelCaseSchema):
@@ -57,8 +53,8 @@ class PersonSchema(CamelCaseSchema):
     party = fields.String(dump_only=True)
 
     council_member = fields.Nested(CouncilMemberSchema)
-    senator = fields.Nested(SenatorSchema)
-    assembly_member = fields.Nested(AssemblyMemberSchema)
+    senator = fields.Nested(StateRepresentativeSchema)
+    assembly_member = fields.Nested(StateRepresentativeSchema)
 
 
 class PersonWithContactsSchema(PersonSchema):

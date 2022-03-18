@@ -11,6 +11,7 @@ from sqlalchemy import (
     Text,
     UniqueConstraint,
 )
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 
@@ -139,6 +140,10 @@ class StateRepresentativeMixin:
     district = Column(Integer)
 
     state_member_id = Column(Integer, nullable=False, unique=True)
+
+    # Really, this should belong to a separate "district" object, but as long
+    # as we only represent one person per district at a time, this is fine.
+    counties = Column(ARRAY(Text))
 
 
 class Senator(db.Model, StateRepresentativeMixin):
