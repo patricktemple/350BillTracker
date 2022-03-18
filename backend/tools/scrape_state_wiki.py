@@ -24,7 +24,7 @@ def assembly(input_csv):
     # Columns:
     # 0: District
     # 1: Name
-    # 2: Party (Rep or Dem)
+    # 2: Party (Rep or Dem or Ind)
     # 3: Year first elected
     # 4: Counties
     file = open(input_csv)
@@ -64,7 +64,7 @@ def senate(input_csv):
     # Columns:
     # 0: District
     # 1: Name
-    # 2: Party (Rep or Dem)
+    # 2: Party (Republican or Democratic)
     # 3: Year first elected
     # 4: Counties
     file = open(input_csv)
