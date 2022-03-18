@@ -240,7 +240,11 @@ def _create_state_representative_row(
         Cell(person.email),
         Cell(person.party or ""),
         Cell(district, link_url=representative.website),
-        Cell("\n".join(representative.counties) if representative.counties else ""),
+        Cell(
+            "\n".join(representative.counties)
+            if representative.counties
+            else ""
+        ),
         Cell(district_contacts),
         Cell(albany_contacts),
         Cell(
