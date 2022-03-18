@@ -24,7 +24,7 @@ PARTY_MAP = {
 }
 
 for line in lines:
-    district, name, party, year, counties = line.split(',', 4) # maxsplit because commas may exist inside the county list
+    district, name, party, year, counties = line.strip().split(',', 4) # maxsplit because commas may exist inside the county list
     
     existing_members = AssemblyMember.query.filter_by(district=district).all()
     if not existing_members:
@@ -35,11 +35,15 @@ for line in lines:
         continue
 
     member = existing_members[0]
+
+    if counties[0] == '"':
+        counties = counties[1:-1]
     output[member.state_member_id] = {
         "name": member.person.name,
         "wiki_scraped_name__SANITY_CHECK": name,
         "district": district,
         "party": PARTY_MAP.get(party, None),
+        "counties": counties.split(", ")
     }
 
 pprint(output)
