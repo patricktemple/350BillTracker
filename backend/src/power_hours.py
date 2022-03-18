@@ -51,6 +51,7 @@ STATE_COLUMN_TITLES = [
     ("Email", 200),
     ("Party", 50),
     ("District", 60),
+    ("Counties", 100),
     ("District Contact", 200),
     ("Albany Contact", 200),
     ("Twitter", 150),
@@ -239,6 +240,7 @@ def _create_state_representative_row(
         Cell(person.email),
         Cell(person.party or ""),
         Cell(district, link_url=representative.website),
+        Cell("\n".join(representative.counties) if representative.counties else ""),
         Cell(district_contacts),
         Cell(albany_contacts),
         Cell(

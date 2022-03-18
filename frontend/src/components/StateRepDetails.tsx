@@ -84,7 +84,7 @@ export default function StateRepDetails(props: Props) {
       </DetailContent>
       <DetailLabel>District counties</DetailLabel>
       <DetailContent>
-        {props.representativeDetails.counties.map((c) => (
+        {props.representativeDetails.counties?.map((c) => (
           <div key={c}>{c}</div>
         ))}
       </DetailContent>

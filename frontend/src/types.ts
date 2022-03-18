@@ -90,7 +90,7 @@ export interface CouncilMember {
 export interface StateRepresentative {
   website: string;
   district: number;
-  counties: string[];
+  counties?: string[];
 }
 
 // TODO: Change types to reflect nullability
