@@ -881,22 +881,6 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "name": "Pamela J. Hunter",
         "website_scraped_name__SANITY_CHECK": "Pamela J. Hunter",
     },
-    1115: {
-        "albany_contact": [
-            {"city": "Albany", "fax": "518-455-5769", "phone": "518-455-3028"}
-        ],
-        "district": 20,
-        "district_contact": [
-            {
-                "city": "Atlantic Beach",
-                "fax": "516-431-0412",
-                "phone": "516-431-0500",
-            }
-        ],
-        "email": "browna@nyassembly.gov",
-        "name": "Melissa Miller",
-        "website_scraped_name__SANITY_CHECK": "Ari Brown",
-    },
     1116: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5211"}],
         "district": 59,
