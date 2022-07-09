@@ -12,8 +12,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "breslin@nysenate.gov",
         "name": "Neil D. Breslin",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Neil D. Breslin",
         "website": "https://www.nysenate.gov/senators/neil-d-breslin/contact",
+        "website_scraped_name__SANITY_CHECK": "Neil D. Breslin",
     },
     373: {
         "albany_contact": [
@@ -34,8 +34,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "serrano@nysenate.gov",
         "name": "José M. Serrano",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "José M. Serrano",
         "website": "https://www.nysenate.gov/senators/jos%C3%A9-m-serrano/contact",
+        "website_scraped_name__SANITY_CHECK": "José M. Serrano",
     },
     377: {
         "albany_contact": [
@@ -48,8 +48,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "grivera@nysenate.gov",
         "name": "Gustavo Rivera",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Gustavo Rivera",
         "website": "https://www.nysenate.gov/senators/gustavo-rivera/contact",
+        "website_scraped_name__SANITY_CHECK": "Gustavo Rivera",
     },
     383: {
         "albany_contact": [
@@ -70,8 +70,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "gianaris@nysenate.gov",
         "name": "Michael Gianaris",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Michael Gianaris",
         "website": "https://www.nysenate.gov/senators/michael-gianaris/contact",
+        "website_scraped_name__SANITY_CHECK": "Michael Gianaris",
     },
     384: {
         "albany_contact": [
@@ -92,8 +92,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "addabbo@nysenate.gov",
         "name": "Joseph P. Addabbo Jr.",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Joseph P. Addabbo Jr",
         "website": "https://www.nysenate.gov/senators/joseph-p-addabbo-jr/contact",
+        "website_scraped_name__SANITY_CHECK": "Joseph P. Addabbo Jr",
     },
     393: {
         "albany_contact": [
@@ -114,8 +114,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "griffo@nysenate.gov",
         "name": "Joseph A. Griffo",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "Joseph A. Griffo",
         "website": "https://www.nysenate.gov/senators/joseph-griffo/contact",
+        "website_scraped_name__SANITY_CHECK": "Joseph A. Griffo",
     },
     396: {
         "albany_contact": [
@@ -141,8 +141,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "scousins@nysenate.gov",
         "name": "Andrea Stewart-Cousins",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Andrea Stewart-Cousins",
         "website": "https://www.nysenate.gov/senators/andrea-stewart-cousins/contact",
+        "website_scraped_name__SANITY_CHECK": "Andrea Stewart-Cousins",
     },
     400: {
         "albany_contact": [
@@ -163,8 +163,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "stavisky@nysenate.gov",
         "name": "Toby Ann Stavisky",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Toby Ann Stavisky",
         "website": "https://www.nysenate.gov/senators/toby-ann-stavisky/contact",
+        "website_scraped_name__SANITY_CHECK": "Toby Ann Stavisky",
     },
     401: {
         "albany_contact": [
@@ -185,8 +185,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "lkrueger@nysenate.gov",
         "name": "Liz Krueger",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Liz Krueger",
         "website": "https://www.nysenate.gov/senators/liz-krueger/contact",
+        "website_scraped_name__SANITY_CHECK": "Liz Krueger",
     },
     403: {
         "albany_contact": [
@@ -203,8 +203,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "Savino@nysenate.gov",
         "name": "Diane J. Savino",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Diane J. Savino",
         "website": "https://www.nysenate.gov/senators/diane-j-savino/contact",
+        "website_scraped_name__SANITY_CHECK": "Diane J. Savino",
     },
     409: {
         "albany_contact": [
@@ -225,8 +225,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "lanza@nysenate.gov",
         "name": "Andrew J Lanza",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "Andrew J. Lanza",
         "website": "https://www.nysenate.gov/senators/andrew-j-lanza/contact",
+        "website_scraped_name__SANITY_CHECK": "Andrew J. Lanza",
     },
     415: {
         "albany_contact": [
@@ -239,8 +239,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "omara@nysenate.gov",
         "name": "Thomas F. O'Mara",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "Thomas F. O'Mara",
         "website": "https://www.nysenate.gov/senators/thomas-f-omara/contact",
+        "website_scraped_name__SANITY_CHECK": "Thomas F. O'Mara",
     },
     416: {
         "albany_contact": [
@@ -261,8 +261,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "parker@nysenate.gov",
         "name": "Kevin S. Parker",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Kevin S. Parker",
         "website": "https://www.nysenate.gov/senators/kevin-s-parker/contact",
+        "website_scraped_name__SANITY_CHECK": "Kevin S. Parker",
     },
     423: {
         "albany_contact": [
@@ -293,8 +293,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "ritchie@nysenate.gov",
         "name": "Patty Ritchie",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "Patty Ritchie",
         "website": "https://www.nysenate.gov/senators/patty-ritchie/contact",
+        "website_scraped_name__SANITY_CHECK": "Patty Ritchie",
     },
     427: {
         "albany_contact": [
@@ -307,8 +307,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "gallivan@nysenate.gov",
         "name": "Patrick M. Gallivan",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "Patrick M. Gallivan",
         "website": "https://www.nysenate.gov/senators/patrick-m-gallivan/contact",
+        "website_scraped_name__SANITY_CHECK": "Patrick M. Gallivan",
     },
     429: {
         "albany_contact": [
@@ -321,8 +321,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "kennedy@nysenate.gov",
         "name": "Timothy M. Kennedy",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Timothy M. Kennedy",
         "website": "https://www.nysenate.gov/senators/timothy-m-kennedy/contact",
+        "website_scraped_name__SANITY_CHECK": "Timothy M. Kennedy",
     },
     432: {
         "albany_contact": [
@@ -339,8 +339,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "sanders@nysenate.gov",
         "name": "James Sanders Jr.",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "James Sanders Jr.",
         "website": "https://www.nysenate.gov/senators/james-sanders-jr/contact",
+        "website_scraped_name__SANITY_CHECK": "James Sanders Jr.",
     },
     433: {
         "albany_contact": [
@@ -353,8 +353,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "pboyle@nysenate.gov",
         "name": "Phil Boyle",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "Phil Boyle",
         "website": "https://www.nysenate.gov/senators/phil-boyle/contact",
+        "website_scraped_name__SANITY_CHECK": "Phil Boyle",
     },
     438: {
         "albany_contact": [
@@ -375,8 +375,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "hoylman@nysenate.gov",
         "name": "Brad Hoylman",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Brad Hoylman ",
         "website": "https://www.nysenate.gov/senators/brad-hoylman/contact",
+        "website_scraped_name__SANITY_CHECK": "Brad Hoylman ",
     },
     439: {
         "albany_contact": [
@@ -402,8 +402,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "felder@nysenate.gov",
         "name": "Simcha Felder",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Simcha Felder ",
         "website": "https://www.nysenate.gov/senators/simcha-felder/contact",
+        "website_scraped_name__SANITY_CHECK": "Simcha Felder ",
     },
     885: {
         "albany_contact": [
@@ -424,14 +424,14 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "Ortt@nysenate.gov",
         "name": "Robert Ortt",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "Robert G. Ortt",
         "website": "https://www.nysenate.gov/senators/robert-g-ortt/contact",
+        "website_scraped_name__SANITY_CHECK": "Robert G. Ortt",
     },
     888: {
         "albany_contact": [
             {
                 "city": "Albany",
-                "fax": "(518) 455-2816",
+                "fax": "(518) 426-2816",
                 "phone": "(518) 455-2701",
             }
         ],
@@ -442,8 +442,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "comrie@nysenate.gov",
         "name": "Leroy Comrie",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Leroy Comrie",
         "website": "https://www.nysenate.gov/senators/leroy-comrie/contact",
+        "website_scraped_name__SANITY_CHECK": "Leroy Comrie",
     },
     890: {
         "albany_contact": [
@@ -460,8 +460,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "Serino@nysenate.gov",
         "name": "Susan Serino",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "Sue Serino",
         "website": "https://www.nysenate.gov/senators/sue-serino/contact",
+        "website_scraped_name__SANITY_CHECK": "Sue Serino",
     },
     913: {
         "albany_contact": [
@@ -478,8 +478,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "akshar@nysenate.gov",
         "name": "Fredrick J Akshar II",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "Fred Akshar",
         "website": "https://www.nysenate.gov/senators/fred-akshar/contact",
+        "website_scraped_name__SANITY_CHECK": "Fred Akshar",
     },
     914: {
         "albany_contact": [
@@ -492,8 +492,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "senatorpersaud@gmail.com",
         "name": "Roxanne J Persaud",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Roxanne J. Persaud ",
         "website": "https://www.nysenate.gov/senators/roxanne-j-persaud/contact",
+        "website_scraped_name__SANITY_CHECK": "Roxanne J. Persaud ",
     },
     918: {
         "albany_contact": [
@@ -510,8 +510,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "kaminsky@nysenate.gov",
         "name": "Todd Kaminsky",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Todd Kaminsky",
         "website": "https://www.nysenate.gov/senators/todd-kaminsky/contact",
+        "website_scraped_name__SANITY_CHECK": "Todd Kaminsky",
     },
     951: {
         "albany_contact": [
@@ -524,8 +524,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "helming@nysenate.gov",
         "name": "Pamela Helming",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "Pamela Helming",
         "website": "https://www.nysenate.gov/senators/pamela-helming/contact",
+        "website_scraped_name__SANITY_CHECK": "Pamela Helming",
     },
     1101: {
         "albany_contact": [
@@ -542,8 +542,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "brooks@nysenate.gov",
         "name": "John E. Brooks",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "John E. Brooks",
         "website": "https://www.nysenate.gov/senators/john-e-brooks/contact",
+        "website_scraped_name__SANITY_CHECK": "John E. Brooks",
     },
     1102: {
         "albany_contact": [
@@ -556,8 +556,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "senatorjbailey@nysenate.gov",
         "name": "Jamaal Bailey",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Jamaal T. Bailey",
         "website": "https://www.nysenate.gov/senators/jamaal-t-bailey/contact",
+        "website_scraped_name__SANITY_CHECK": "Jamaal T. Bailey",
     },
     1103: {
         "albany_contact": [
@@ -574,8 +574,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "tedisco@nysenate.gov",
         "name": "James Tedisco",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "James Tedisco",
         "website": "https://www.nysenate.gov/senators/james-tedisco/contact",
+        "website_scraped_name__SANITY_CHECK": "James Tedisco",
     },
     1140: {
         "albany_contact": [
@@ -586,8 +586,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "kavanagh@nysenate.gov",
         "name": "Brian Kavanagh",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Brian Kavanagh",
         "website": "https://www.nysenate.gov/senators/brian-kavanagh/contact",
+        "website_scraped_name__SANITY_CHECK": "Brian Kavanagh",
     },
     1142: {
         "albany_contact": [
@@ -600,8 +600,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "sepulveda@nysenate.gov",
         "name": "Luis R. Sepúlveda",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Luis R. Sepúlveda",
         "website": "https://www.nysenate.gov/senators/luis-r-sepulveda/contact",
+        "website_scraped_name__SANITY_CHECK": "Luis R. Sepúlveda",
     },
     1143: {
         "albany_contact": [
@@ -618,8 +618,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "smayer@nysenate.gov",
         "name": "Shelley Mayer",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Shelley B. Mayer",
         "website": "https://www.nysenate.gov/senators/shelley-b-mayer/contact",
+        "website_scraped_name__SANITY_CHECK": "Shelley B. Mayer",
     },
     1222: {
         "albany_contact": [
@@ -640,8 +640,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "gaughran@nysenate.gov",
         "name": "Jim Gaughran",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "James Gaughran",
         "website": "https://www.nysenate.gov/senators/james-gaughran/contact",
+        "website_scraped_name__SANITY_CHECK": "James Gaughran",
     },
     1223: {
         "albany_contact": [
@@ -662,8 +662,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "thomas@nysenate.gov",
         "name": "Kevin Thomas",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Kevin Thomas",
         "website": "https://www.nysenate.gov/senators/kevin-thomas/contact",
+        "website_scraped_name__SANITY_CHECK": "Kevin Thomas",
     },
     1224: {
         "albany_contact": [
@@ -684,8 +684,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "kaplan@nysenate.gov",
         "name": "Anna Kaplan",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Anna M. Kaplan",
         "website": "https://www.nysenate.gov/senators/anna-m-kaplan/contact",
+        "website_scraped_name__SANITY_CHECK": "Anna M. Kaplan",
     },
     1225: {
         "albany_contact": [
@@ -698,8 +698,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "liu@nysenate.gov",
         "name": "John Liu",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "John C. Liu",
         "website": "https://www.nysenate.gov/senators/john-c-liu/contact",
+        "website_scraped_name__SANITY_CHECK": "John C. Liu",
     },
     1226: {
         "albany_contact": [
@@ -716,8 +716,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "ramos@nysenate.gov",
         "name": "Jessica Ramos",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Jessica Ramos",
         "website": "https://www.nysenate.gov/senators/jessica-ramos/contact",
+        "website_scraped_name__SANITY_CHECK": "Jessica Ramos",
     },
     1227: {
         "albany_contact": [
@@ -730,8 +730,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "salazar@nysenate.gov",
         "name": "Julia Salazar",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Julia Salazar",
         "website": "https://www.nysenate.gov/senators/julia-salazar/contact",
+        "website_scraped_name__SANITY_CHECK": "Julia Salazar",
     },
     1228: {
         "albany_contact": [
@@ -748,8 +748,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "myrie@nysenate.gov",
         "name": "Zellnor Myrie",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Zellnor Myrie",
         "website": "https://www.nysenate.gov/senators/zellnor-myrie/contact",
+        "website_scraped_name__SANITY_CHECK": "Zellnor Myrie",
     },
     1229: {
         "albany_contact": [
@@ -766,8 +766,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "gounardes@nysenate.gov",
         "name": "Andrew Gounardes",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Andrew Gounardes",
         "website": "https://www.nysenate.gov/senators/andrew-gounardes/contact",
+        "website_scraped_name__SANITY_CHECK": "Andrew Gounardes",
     },
     1230: {
         "albany_contact": [
@@ -784,8 +784,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "jackson@nysenate.gov",
         "name": "Robert Jackson",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Robert Jackson",
         "website": "https://www.nysenate.gov/senators/robert-jackson/contact",
+        "website_scraped_name__SANITY_CHECK": "Robert Jackson",
     },
     1231: {
         "albany_contact": [
@@ -798,8 +798,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "biaggi@nysenate.gov",
         "name": "Alessandra Biaggi",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Alessandra Biaggi",
         "website": "https://www.nysenate.gov/senators/alessandra-biaggi/contact",
+        "website_scraped_name__SANITY_CHECK": "Alessandra Biaggi",
     },
     1232: {
         "albany_contact": [
@@ -820,8 +820,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "skoufis@nysenate.gov",
         "name": "James Skoufis",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "James Skoufis",
         "website": "https://www.nysenate.gov/senators/james-skoufis/contact",
+        "website_scraped_name__SANITY_CHECK": "James Skoufis",
     },
     1233: {
         "albany_contact": [
@@ -842,8 +842,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "harckham@nysenate.gov",
         "name": "Pete Harckham",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Pete Harckham",
         "website": "https://www.nysenate.gov/senators/pete-harckham/contact",
+        "website_scraped_name__SANITY_CHECK": "Pete Harckham",
     },
     1235: {
         "albany_contact": [
@@ -856,8 +856,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "jordan@nysenate.gov",
         "name": "Daphne Jordan",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "Daphne Jordan",
         "website": "https://www.nysenate.gov/senators/daphne-jordan/contact",
+        "website_scraped_name__SANITY_CHECK": "Daphne Jordan",
     },
     1237: {
         "albany_contact": [
@@ -870,8 +870,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "may@nysenate.gov",
         "name": "Rachel May",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Rachel May",
         "website": "https://www.nysenate.gov/senators/rachel-may/contact",
+        "website_scraped_name__SANITY_CHECK": "Rachel May",
     },
     1370: {
         "albany_contact": [
@@ -888,8 +888,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "borrello@nysenate.gov",
         "name": "George Borrello",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "George M. Borrello",
         "website": "https://www.nysenate.gov/senators/george-m-borrello/contact",
+        "website_scraped_name__SANITY_CHECK": "George M. Borrello",
     },
     1489: {
         "albany_contact": [
@@ -902,8 +902,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "palumbo@nysenate.gov",
         "name": "Anthony H. Palumbo",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "Anthony H. Palumbo",
         "website": "https://www.nysenate.gov/senators/anthony-h-palumbo/contact",
+        "website_scraped_name__SANITY_CHECK": "Anthony H. Palumbo",
     },
     1490: {
         "albany_contact": [
@@ -916,8 +916,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "stec@nysenate.gov",
         "name": "Dan Stec",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "Daniel G. Stec",
         "website": "https://www.nysenate.gov/senators/daniel-g-stec/contact",
+        "website_scraped_name__SANITY_CHECK": "Daniel G. Stec",
     },
     1491: {
         "albany_contact": [
@@ -930,8 +930,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "ryan@nysenate.gov",
         "name": "Sean Ryan",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Sean M. Ryan ",
         "website": "https://www.nysenate.gov/senators/sean-m-ryan/contact",
+        "website_scraped_name__SANITY_CHECK": "Sean M. Ryan ",
     },
     1492: {
         "albany_contact": [
@@ -948,8 +948,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "mattera@nysenate.gov",
         "name": "Mario Mattera",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "Mario R. Mattera",
         "website": "https://www.nysenate.gov/senators/mario-r-mattera/contact",
+        "website_scraped_name__SANITY_CHECK": "Mario R. Mattera",
     },
     1493: {
         "albany_contact": [
@@ -962,8 +962,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "weik@nysenate.gov",
         "name": "Alexis Weik",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "Alexis Weik",
         "website": "https://www.nysenate.gov/senators/alexis-weik/contact",
+        "website_scraped_name__SANITY_CHECK": "Alexis Weik",
     },
     1494: {
         "albany_contact": [
@@ -984,8 +984,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "brisport@nysenate.gov",
         "name": "Jabari Brisport",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Jabari Brisport ",
         "website": "https://www.nysenate.gov/senators/jabari-brisport/contact",
+        "website_scraped_name__SANITY_CHECK": "Jabari Brisport ",
     },
     1495: {
         "albany_contact": [
@@ -1003,8 +1003,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "reichlin@nysenate.gov",
         "name": "Elijah Reichlin-Melnick",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Elijah Reichlin-Melnick",
         "website": "https://www.nysenate.gov/senators/elijah-reichlin-melnick/contact",
+        "website_scraped_name__SANITY_CHECK": "Elijah Reichlin-Melnick",
     },
     1496: {
         "albany_contact": [
@@ -1025,8 +1025,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "martucci@nysenate.gov",
         "name": "Mike Martucci",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "Mike Martucci",
         "website": "https://www.nysenate.gov/senators/mike-martucci/contact",
+        "website_scraped_name__SANITY_CHECK": "Mike Martucci",
     },
     1497: {
         "albany_contact": [
@@ -1043,8 +1043,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "hinchey@nysenate.gov",
         "name": "Michelle Hinchey",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Michelle Hinchey",
         "website": "https://www.nysenate.gov/senators/michelle-hinchey/contact",
+        "website_scraped_name__SANITY_CHECK": "Michelle Hinchey",
     },
     1498: {
         "albany_contact": [
@@ -1057,8 +1057,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "mannion@nysenate.gov",
         "name": "John Mannion",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "John W. Mannion",
         "website": "https://www.nysenate.gov/senators/john-w-mannion/contact",
+        "website_scraped_name__SANITY_CHECK": "John W. Mannion",
     },
     1499: {
         "albany_contact": [
@@ -1072,8 +1072,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "oberacker@nysenate.gov",
         "name": "Peter Oberacker",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "Peter Oberacker",
         "website": "https://www.nysenate.gov/senators/peter-oberacker/contact",
+        "website_scraped_name__SANITY_CHECK": "Peter Oberacker",
     },
     1500: {
         "albany_contact": [
@@ -1086,8 +1086,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "brouk@nysenate.gov",
         "name": "Samra Brouk",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Samra G. Brouk",
         "website": "https://www.nysenate.gov/senators/samra-g-brouk/contact",
+        "website_scraped_name__SANITY_CHECK": "Samra G. Brouk",
     },
     1501: {
         "albany_contact": [
@@ -1100,8 +1100,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "cooney@nysenate.gov",
         "name": "Jeremy Cooney",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Jeremy A. Cooney",
         "website": "https://www.nysenate.gov/senators/jeremy-cooney/contact",
+        "website_scraped_name__SANITY_CHECK": "Jeremy A. Cooney",
     },
     1502: {
         "albany_contact": [
@@ -1118,8 +1118,8 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "rath@nysenate.gov",
         "name": "Edward Rath",
         "party": "R",
-        "scrape_name__SANITY_CHECK": "Edward A. Rath III",
         "website": "https://www.nysenate.gov/senators/edward-rath-iii/contact",
+        "website_scraped_name__SANITY_CHECK": "Edward A. Rath III",
     },
     1504: {
         "albany_contact": [
@@ -1136,7 +1136,7 @@ SENATE_DATA_FROM_WEBSITE = {
         "email": "cleare@nysenate.gov",
         "name": "Cordell Cleare",
         "party": "D",
-        "scrape_name__SANITY_CHECK": "Cordell Cleare",
         "website": "https://www.nysenate.gov/senators/cordell-cleare/contact",
+        "website_scraped_name__SANITY_CHECK": "Cordell Cleare",
     },
 }
