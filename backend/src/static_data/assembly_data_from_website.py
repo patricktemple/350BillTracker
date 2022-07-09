@@ -5,7 +5,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Jamaica", "phone": "718-322-3975"}],
         "email": "CookV@nyassembly.gov",
         "name": "Vivian Cook",
-        "scrape_name__SANITY_CHECK": "Vivian E. Cook",
+        "website_scraped_name__SANITY_CHECK": "Vivian E. Cook",
     },
     460: {
         "albany_contact": [
@@ -17,7 +17,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "AubryJ@nyassembly.gov",
         "name": "Jeffrion Aubry",
-        "scrape_name__SANITY_CHECK": "Jeffrion L. Aubry",
+        "website_scraped_name__SANITY_CHECK": "Jeffrion L. Aubry",
     },
     464: {
         "albany_contact": [
@@ -33,7 +33,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "ThieleF@nyassembly.gov",
         "name": "Fred Thiele",
-        "scrape_name__SANITY_CHECK": "Fred W. Thiele, Jr.",
+        "website_scraped_name__SANITY_CHECK": "Fred W. Thiele, Jr.",
     },
     466: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4804"}],
@@ -43,7 +43,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "EngleS@nyassembly.gov",
         "name": "Steven Englebright",
-        "scrape_name__SANITY_CHECK": "Steve Englebright",
+        "website_scraped_name__SANITY_CHECK": "Steve Englebright",
     },
     468: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5185"}],
@@ -51,7 +51,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Brentwood", "phone": "631-435-3214"}],
         "email": "ramosp@nyassembly.gov",
         "name": "Philip Ramos",
-        "scrape_name__SANITY_CHECK": "Phil Ramos",
+        "website_scraped_name__SANITY_CHECK": "Phil Ramos",
     },
     469: {
         "albany_contact": [
@@ -67,7 +67,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "FitzpatrickM@nyassembly.gov",
         "name": "Michael J. Fitzpatrick",
-        "scrape_name__SANITY_CHECK": "Michael J. Fitzpatrick",
+        "website_scraped_name__SANITY_CHECK": "Michael J. Fitzpatrick",
     },
     474: {
         "albany_contact": [
@@ -83,7 +83,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "LavineC@nyassembly.gov",
         "name": "Charles Lavine",
-        "scrape_name__SANITY_CHECK": "Charles D. Lavine",
+        "website_scraped_name__SANITY_CHECK": "Charles D. Lavine",
     },
     476: {
         "albany_contact": [
@@ -99,7 +99,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "MontesanoM@nyassembly.gov",
         "name": "Michael Montesano",
-        "scrape_name__SANITY_CHECK": "Michael Montesano",
+        "website_scraped_name__SANITY_CHECK": "Michael Montesano",
     },
     480: {
         "albany_contact": [
@@ -115,7 +115,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "mcdonoughd@nyassembly.gov",
         "name": "David McDonough",
-        "scrape_name__SANITY_CHECK": "David G. McDonough",
+        "website_scraped_name__SANITY_CHECK": "David G. McDonough",
     },
     484: {
         "albany_contact": [
@@ -136,7 +136,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "WeprinD@nyassembly.gov",
         "name": "David Weprin",
-        "scrape_name__SANITY_CHECK": "David I. Weprin",
+        "website_scraped_name__SANITY_CHECK": "David I. Weprin",
     },
     488: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4926"}],
@@ -146,7 +146,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "HevesiA@nyassembly.gov",
         "name": "Andrew Hevesi",
-        "scrape_name__SANITY_CHECK": "Andrew Hevesi",
+        "website_scraped_name__SANITY_CHECK": "Andrew Hevesi",
     },
     491: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4851"}],
@@ -160,7 +160,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "NolanC@nyassembly.gov",
         "name": "Catherine Nolan",
-        "scrape_name__SANITY_CHECK": "Catherine Nolan",
+        "website_scraped_name__SANITY_CHECK": "Catherine Nolan",
     },
     494: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5462"}],
@@ -168,7 +168,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Brooklyn", "phone": "718-648-4700"}],
         "email": "WeinstH@nyassembly.gov",
         "name": "Helene Weinstein",
-        "scrape_name__SANITY_CHECK": "Helene E. Weinstein",
+        "website_scraped_name__SANITY_CHECK": "Helene E. Weinstein",
     },
     498: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5214"}],
@@ -176,7 +176,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Brooklyn", "phone": "718-743-4078"}],
         "email": "CymbroS@nyassembly.gov",
         "name": "Steven Cymbrowitz",
-        "scrape_name__SANITY_CHECK": "Steven Cymbrowitz",
+        "website_scraped_name__SANITY_CHECK": "Steven Cymbrowitz",
     },
     500: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5828"}],
@@ -184,7 +184,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Brooklyn", "phone": "718-236-1598"}],
         "email": "ColtonW@nyassembly.gov",
         "name": "William Colton",
-        "scrape_name__SANITY_CHECK": "William Colton",
+        "website_scraped_name__SANITY_CHECK": "William Colton",
     },
     502: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-3053"}],
@@ -198,15 +198,15 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "abbatep@nyassembly.gov",
         "name": "Peter Abbate",
-        "scrape_name__SANITY_CHECK": "Peter J. Abbate, Jr.",
+        "website_scraped_name__SANITY_CHECK": "Peter J. Abbate, Jr.",
     },
     511: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4166"}],
         "district": 58,
         "district_contact": [{"city": "Brooklyn", "phone": "718-385-3336"}],
-        "email": "PerryN@nyassembly.gov",
+        "email": None,
         "name": "N. Nick Perry",
-        "scrape_name__SANITY_CHECK": "N. Nick Perry",
+        "website_scraped_name__SANITY_CHECK": "Monique Chandler-Waterman",
     },
     516: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5526"}],
@@ -216,7 +216,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "CusickM@nyassembly.gov",
         "name": "Michael Cusick",
-        "scrape_name__SANITY_CHECK": "Michael Cusick",
+        "website_scraped_name__SANITY_CHECK": "Michael Cusick",
     },
     519: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4841"}],
@@ -224,7 +224,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Manhattan", "phone": "212-674-5153"}],
         "email": "GlickD@nyassembly.gov",
         "name": "Deborah Glick",
-        "scrape_name__SANITY_CHECK": "Deborah J. Glick",
+        "website_scraped_name__SANITY_CHECK": "Deborah J. Glick",
     },
     520: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5802"}],
@@ -232,7 +232,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Manhattan", "phone": "212-873-6368"}],
         "email": "RosentL@nyassembly.gov",
         "name": "Linda Rosenthal",
-        "scrape_name__SANITY_CHECK": "Linda B. Rosenthal",
+        "website_scraped_name__SANITY_CHECK": "Linda B. Rosenthal",
     },
     522: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5603"}],
@@ -240,7 +240,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Manhattan", "phone": "212-866-3970"}],
         "email": "OdonnellD@nyassembly.gov",
         "name": "Daniel O'Donnell",
-        "scrape_name__SANITY_CHECK": "Daniel J. O'Donnell",
+        "website_scraped_name__SANITY_CHECK": "Daniel J. O'Donnell",
     },
     527: {
         "albany_contact": [
@@ -256,7 +256,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "GottfriedR@nyassembly.gov",
         "name": "Richard Gottfried",
-        "scrape_name__SANITY_CHECK": "Richard N. Gottfried",
+        "website_scraped_name__SANITY_CHECK": "Richard N. Gottfried",
     },
     530: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5414"}],
@@ -264,7 +264,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Bronx", "phone": "718-933-2204"}],
         "email": "RiveraJ@nyassembly.gov",
         "name": "Jose Rivera",
-        "scrape_name__SANITY_CHECK": "José Rivera",
+        "website_scraped_name__SANITY_CHECK": "José Rivera",
     },
     533: {
         "albany_contact": [
@@ -276,7 +276,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "DinowiJ@nyassembly.gov",
         "name": "Jeffrey Dinowitz",
-        "scrape_name__SANITY_CHECK": "Jeffrey Dinowitz",
+        "website_scraped_name__SANITY_CHECK": "Jeffrey Dinowitz",
     },
     534: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5296"}],
@@ -287,7 +287,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "benedettom@nyassembly.gov",
         "name": "Michael Benedetto",
-        "scrape_name__SANITY_CHECK": "Michael Benedetto",
+        "website_scraped_name__SANITY_CHECK": "Michael Benedetto",
     },
     535: {
         "albany_contact": [
@@ -299,7 +299,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "Speaker@nyassembly.gov",
         "name": "Carl Heastie",
-        "scrape_name__SANITY_CHECK": "Carl E. Heastie",
+        "website_scraped_name__SANITY_CHECK": "Carl E. Heastie",
     },
     539: {
         "albany_contact": [
@@ -315,7 +315,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "PretloJ@nyassembly.gov",
         "name": "J. Gary Pretlow",
-        "scrape_name__SANITY_CHECK": "J. Gary Pretlow",
+        "website_scraped_name__SANITY_CHECK": "J. Gary Pretlow",
     },
     540: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5585"}],
@@ -323,7 +323,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Scarsdale", "phone": "914-723-1115"}],
         "email": "PaulinA@nyassembly.gov",
         "name": "Amy Paulin",
-        "scrape_name__SANITY_CHECK": "Amy Paulin",
+        "website_scraped_name__SANITY_CHECK": "Amy Paulin",
     },
     545: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5735"}],
@@ -331,7 +331,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "New City", "phone": "845-634-9791"}],
         "email": "ZebrowskiK@nyassembly.gov",
         "name": "Kenneth Zebrowski",
-        "scrape_name__SANITY_CHECK": "Kenneth Zebrowski",
+        "website_scraped_name__SANITY_CHECK": "Kenneth Zebrowski",
     },
     549: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5355"}],
@@ -342,7 +342,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "GuntheA@nyassembly.gov",
         "name": "Aileen Gunther",
-        "scrape_name__SANITY_CHECK": "Aileen M. Gunther",
+        "website_scraped_name__SANITY_CHECK": "Aileen M. Gunther",
     },
     551: {
         "albany_contact": [
@@ -358,7 +358,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "CahillK@nyassembly.gov",
         "name": "Kevin Cahill",
-        "scrape_name__SANITY_CHECK": "Kevin A. Cahill",
+        "website_scraped_name__SANITY_CHECK": "Kevin A. Cahill",
     },
     570: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4826"}],
@@ -366,7 +366,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Syracuse", "phone": "315-428-9651"}],
         "email": "MagnarW@nyassembly.gov",
         "name": "William Magnarelli",
-        "scrape_name__SANITY_CHECK": "William B. Magnarelli",
+        "website_scraped_name__SANITY_CHECK": "William B. Magnarelli",
     },
     571: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4505"}],
@@ -374,7 +374,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "N. Syracuse", "phone": "315-452-1115"}],
         "email": "StirpeA@nyassembly.gov",
         "name": "Albert A. Stirpe",
-        "scrape_name__SANITY_CHECK": "Al Stirpe",
+        "website_scraped_name__SANITY_CHECK": "Al Stirpe",
     },
     574: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-3751"}],
@@ -382,7 +382,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Fulton", "phone": "315-598-5185"}],
         "email": "BarclaW@nyassembly.gov",
         "name": "William A. Barclay",
-        "scrape_name__SANITY_CHECK": "William A. Barclay",
+        "website_scraped_name__SANITY_CHECK": "William A. Barclay",
     },
     576: {
         "albany_contact": [
@@ -392,7 +392,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Binghamton", "phone": "607-723-9047"}],
         "email": "LupardoD@nyassembly.gov",
         "name": "Donna Lupardo",
-        "scrape_name__SANITY_CHECK": "Donna A. Lupardo",
+        "website_scraped_name__SANITY_CHECK": "Donna A. Lupardo",
     },
     589: {
         "albany_contact": [
@@ -404,7 +404,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "HawleyS@nyassembly.gov",
         "name": "Stephen Hawley",
-        "scrape_name__SANITY_CHECK": "Stephen Hawley",
+        "website_scraped_name__SANITY_CHECK": "Stephen Hawley",
     },
     591: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5005"}],
@@ -412,7 +412,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Buffalo", "phone": "716-897-9714"}],
         "email": "PeopleC@nyassembly.gov",
         "name": "Crystal Peoples-Stokes",
-        "scrape_name__SANITY_CHECK": "Crystal D. Peoples-Stokes",
+        "website_scraped_name__SANITY_CHECK": "Crystal D. Peoples-Stokes",
     },
     599: {
         "albany_contact": [
@@ -424,7 +424,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "GiglioJ@nyassembly.gov",
         "name": "Joseph Giglio",
-        "scrape_name__SANITY_CHECK": "Joseph M. Giglio",
+        "website_scraped_name__SANITY_CHECK": "Joseph M. Giglio",
     },
     608: {
         "albany_contact": [],
@@ -439,7 +439,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "rae@nyassembly.gov",
         "name": "Edward Ra",
-        "scrape_name__SANITY_CHECK": "Edward P. Ra",
+        "website_scraped_name__SANITY_CHECK": "Edward P. Ra",
     },
     610: {
         "albany_contact": [
@@ -451,7 +451,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "braunsteine@nyassembly.gov",
         "name": "Edward Braunstein",
-        "scrape_name__SANITY_CHECK": "Edward C. Braunstein",
+        "website_scraped_name__SANITY_CHECK": "Edward C. Braunstein",
     },
     618: {
         "albany_contact": [{"city": "Albany ", "phone": "518-455-4794"}],
@@ -465,7 +465,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "quartd@nyassembly.gov",
         "name": "Dan Quart",
-        "scrape_name__SANITY_CHECK": "Dan Quart",
+        "website_scraped_name__SANITY_CHECK": "Dan Quart",
     },
     621: {
         "albany_contact": [
@@ -481,7 +481,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "GalefS@nyassembly.gov",
         "name": "Sandy Galef",
-        "scrape_name__SANITY_CHECK": "Sandy Galef",
+        "website_scraped_name__SANITY_CHECK": "Sandy Galef",
     },
     622: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5753"}],
@@ -495,7 +495,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "abinantit@nyassembly.gov",
         "name": "Thomas Abinanti",
-        "scrape_name__SANITY_CHECK": "Thomas J. Abinanti",
+        "website_scraped_name__SANITY_CHECK": "Thomas J. Abinanti",
     },
     625: {
         "albany_contact": [
@@ -512,7 +512,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "barrettd@nyassembly.gov",
         "name": "Didi Barrett",
-        "scrape_name__SANITY_CHECK": "Didi Barrett",
+        "website_scraped_name__SANITY_CHECK": "Didi Barrett",
     },
     631: {
         "albany_contact": [
@@ -528,7 +528,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "blankenbushk@nyassembly.gov",
         "name": "Kenneth Blankenbush",
-        "scrape_name__SANITY_CHECK": "Ken Blankenbush",
+        "website_scraped_name__SANITY_CHECK": "Ken Blankenbush",
     },
     633: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4527"}],
@@ -536,7 +536,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Rochester", "phone": "585-244-5255"}],
         "email": "bronsonh@nyassembly.gov",
         "name": "Harry B. Bronson",
-        "scrape_name__SANITY_CHECK": "Harry B. Bronson",
+        "website_scraped_name__SANITY_CHECK": "Harry B. Bronson",
     },
     635: {
         "albany_contact": [
@@ -548,7 +548,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "palmesanop@nyassembly.gov",
         "name": "Philip Palmesano",
-        "scrape_name__SANITY_CHECK": "Philip A. Palmesano",
+        "website_scraped_name__SANITY_CHECK": "Philip A. Palmesano",
     },
     636: {
         "albany_contact": [
@@ -564,7 +564,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "friendc@nyassembly.gov",
         "name": "Christopher Friend",
-        "scrape_name__SANITY_CHECK": "Christopher S. Friend",
+        "website_scraped_name__SANITY_CHECK": "Christopher S. Friend",
     },
     642: {
         "albany_contact": [
@@ -580,7 +580,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "goodella@nyassembly.gov",
         "name": "Andrew Goodell",
-        "scrape_name__SANITY_CHECK": "Andy Goodell",
+        "website_scraped_name__SANITY_CHECK": "Andy Goodell",
     },
     655: {
         "albany_contact": [
@@ -596,7 +596,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "DavilaM@nyassembly.gov",
         "name": "Maritza Davila",
-        "scrape_name__SANITY_CHECK": "Maritza Davila",
+        "website_scraped_name__SANITY_CHECK": "Maritza Davila",
     },
     656: {
         "albany_contact": [
@@ -612,7 +612,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "DiPietroD@nyassembly.gov",
         "name": "David DiPietro",
-        "scrape_name__SANITY_CHECK": "David DiPietro",
+        "website_scraped_name__SANITY_CHECK": "David DiPietro",
     },
     657: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4178"}],
@@ -620,15 +620,23 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [],
         "email": "FahyP@nyassembly.gov",
         "name": "Patricia Fahy",
-        "scrape_name__SANITY_CHECK": "Patricia Fahy",
+        "website_scraped_name__SANITY_CHECK": "Patricia Fahy",
     },
     659: {
-        "albany_contact": [{"city": "Albany", "phone": "518-455-5411"}],
+        "albany_contact": [
+            {"city": "Albany", "fax": "518-455-4995", "phone": "518-455-5411"}
+        ],
         "district": 40,
-        "district_contact": [{"city": "Flushing", "phone": "718-939-0195"}],
+        "district_contact": [
+            {
+                "city": "Flushing",
+                "fax": "718-939-1238",
+                "phone": "718-939-0195",
+            }
+        ],
         "email": "KimR@nyassembly.gov",
         "name": "Ron Kim",
-        "scrape_name__SANITY_CHECK": "Ron Kim",
+        "website_scraped_name__SANITY_CHECK": "Ron Kim",
     },
     660: {
         "albany_contact": [
@@ -644,7 +652,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "LalorK@nyassembly.gov",
         "name": "Kieran Michael Lalor",
-        "scrape_name__SANITY_CHECK": "Kieran Michael Lalor",
+        "website_scraped_name__SANITY_CHECK": "Kieran Michael Lalor",
     },
     662: {
         "albany_contact": [
@@ -654,7 +662,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [],
         "email": "McDonaldJ@nyassembly.gov",
         "name": "John T. McDonald III",
-        "scrape_name__SANITY_CHECK": "John T. McDonald III",
+        "website_scraped_name__SANITY_CHECK": "John T. McDonald III",
     },
     665: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4897"}],
@@ -668,7 +676,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "OtisS@nyassembly.gov",
         "name": "Steven Otis",
-        "scrape_name__SANITY_CHECK": "Steven Otis",
+        "website_scraped_name__SANITY_CHECK": "Steven Otis",
     },
     669: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5172"}],
@@ -676,7 +684,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Flushing", "phone": "718-820-0241"}],
         "email": "RozicN@nyassembly.gov",
         "name": "Nily Rozic",
-        "scrape_name__SANITY_CHECK": "Nily Rozic",
+        "website_scraped_name__SANITY_CHECK": "Nily Rozic",
     },
     670: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5197"}],
@@ -687,7 +695,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "SantabarbaraA@nyassembly.gov",
         "name": "Angelo Santabarbara",
-        "scrape_name__SANITY_CHECK": "Angelo Santabarbara",
+        "website_scraped_name__SANITY_CHECK": "Angelo Santabarbara",
     },
     673: {
         "albany_contact": [
@@ -703,7 +711,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "SolagesM@nyassembly.gov",
         "name": "Michaelle C. Solages",
-        "scrape_name__SANITY_CHECK": "Michaelle C. Solages",
+        "website_scraped_name__SANITY_CHECK": "Michaelle C. Solages",
     },
     675: {
         "albany_contact": [
@@ -719,7 +727,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "SteckP@nyassembly.gov",
         "name": "Phil Steck",
-        "scrape_name__SANITY_CHECK": "Phil Steck",
+        "website_scraped_name__SANITY_CHECK": "Phil Steck",
     },
     886: {
         "albany_contact": [
@@ -735,7 +743,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "woernerc@nyassembly.gov",
         "name": "Carrie Woerner",
-        "scrape_name__SANITY_CHECK": "Carrie  Woerner",
+        "website_scraped_name__SANITY_CHECK": "Carrie  Woerner",
     },
     896: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4466"}],
@@ -749,7 +757,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "WalkerL@nyassembly.gov",
         "name": "Latrice Walker",
-        "scrape_name__SANITY_CHECK": "Latrice Walker",
+        "website_scraped_name__SANITY_CHECK": "Latrice Walker",
     },
     898: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5385"}],
@@ -763,7 +771,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "bichotter@nyassembly.gov",
         "name": "Rodneyse Bichotte Hermelyn",
-        "scrape_name__SANITY_CHECK": "Rodneyse Bichotte Hermelyn",
+        "website_scraped_name__SANITY_CHECK": "Rodneyse Bichotte Hermelyn",
     },
     900: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5821"}],
@@ -777,7 +785,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "DilanE@nyassembly.gov",
         "name": "Erik Dilan",
-        "scrape_name__SANITY_CHECK": "Erik M. Dilan",
+        "website_scraped_name__SANITY_CHECK": "Erik M. Dilan",
     },
     901: {
         "albany_contact": [
@@ -793,7 +801,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "jeanpierrek@nyassembly.gov",
         "name": "Kimberly Jean-Pierre",
-        "scrape_name__SANITY_CHECK": "Kimberly  Jean-Pierre",
+        "website_scraped_name__SANITY_CHECK": "Kimberly  Jean-Pierre",
     },
     902: {
         "albany_contact": [
@@ -805,7 +813,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "joynerl@nyassembly.gov",
         "name": "Latoya Joyner",
-        "scrape_name__SANITY_CHECK": "Latoya Joyner",
+        "website_scraped_name__SANITY_CHECK": "Latoya Joyner",
     },
     906: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5676"}],
@@ -819,7 +827,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "SeawrightR@nyassembly.gov",
         "name": "Rebecca Seawright",
-        "scrape_name__SANITY_CHECK": "Rebecca A. Seawright",
+        "website_scraped_name__SANITY_CHECK": "Rebecca A. Seawright",
     },
     907: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5426"}],
@@ -827,7 +835,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Brooklyn", "phone": "718-246-4889"}],
         "email": "simonj@nyassembly.gov",
         "name": "Jo Anne Simon",
-        "scrape_name__SANITY_CHECK": "Jo Anne Simon",
+        "website_scraped_name__SANITY_CHECK": "Jo Anne Simon",
     },
     908: {
         "albany_contact": [
@@ -839,7 +847,21 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "brabeneck@nyassembly.gov",
         "name": "Karl Brabenec",
-        "scrape_name__SANITY_CHECK": "Karl Brabenec",
+        "website_scraped_name__SANITY_CHECK": "Karl Brabenec",
+    },
+    912: {
+        "albany_contact": [{"city": "Albany", "phone": "518-455-5262"}],
+        "district": 43,
+        "district_contact": [
+            {
+                "city": "Brooklyn",
+                "fax": "718-771-3276",
+                "phone": "718-771-3105",
+            }
+        ],
+        "email": "cunninghamba@nyassembly.gov",
+        "name": "Diana Richardson",
+        "website_scraped_name__SANITY_CHECK": "Brian Cunningham",
     },
     1089: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4451"}],
@@ -849,7 +871,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "hyndmana@nyassembly.gov",
         "name": "Alicia Hyndman",
-        "scrape_name__SANITY_CHECK": "Alicia Hyndman",
+        "website_scraped_name__SANITY_CHECK": "Alicia Hyndman",
     },
     1105: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5383"}],
@@ -857,7 +879,23 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Syracuse", "phone": "315-449-9536"}],
         "email": "HunterP@nyassembly.gov",
         "name": "Pamela J. Hunter",
-        "scrape_name__SANITY_CHECK": "Pamela J. Hunter",
+        "website_scraped_name__SANITY_CHECK": "Pamela J. Hunter",
+    },
+    1115: {
+        "albany_contact": [
+            {"city": "Albany", "fax": "518-455-5769", "phone": "518-455-3028"}
+        ],
+        "district": 20,
+        "district_contact": [
+            {
+                "city": "Atlantic Beach",
+                "fax": "516-431-0412",
+                "phone": "516-431-0500",
+            }
+        ],
+        "email": "browna@nyassembly.gov",
+        "name": "Melissa Miller",
+        "website_scraped_name__SANITY_CHECK": "Ari Brown",
     },
     1116: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5211"}],
@@ -871,7 +909,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "williamsja@nyassembly.gov",
         "name": "Jaime R. Williams",
-        "scrape_name__SANITY_CHECK": "Jaime R. Williams",
+        "website_scraped_name__SANITY_CHECK": "Jaime R. Williams",
     },
     1118: {
         "albany_contact": [
@@ -887,7 +925,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "vanelc@nyassembly.gov",
         "name": "Clyde Vanel",
-        "scrape_name__SANITY_CHECK": "Clyde Vanel",
+        "website_scraped_name__SANITY_CHECK": "Clyde Vanel",
     },
     1119: {
         "albany_contact": [
@@ -899,7 +937,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "BarnwellB@nyassembly.gov",
         "name": "Brian Barnwell",
-        "scrape_name__SANITY_CHECK": "Brian Barnwell",
+        "website_scraped_name__SANITY_CHECK": "Brian Barnwell",
     },
     1120: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5943"}],
@@ -907,7 +945,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Plattsburgh", "phone": "518-562-1986"}],
         "email": "jonesb@nyassembly.gov",
         "name": "Billy Jones",
-        "scrape_name__SANITY_CHECK": "Billy Jones",
+        "website_scraped_name__SANITY_CHECK": "Billy Jones",
     },
     1122: {
         "albany_contact": [
@@ -923,7 +961,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "CarrollR@nyassembly.gov",
         "name": "Robert C. Carroll",
-        "scrape_name__SANITY_CHECK": "Robert C. Carroll",
+        "website_scraped_name__SANITY_CHECK": "Robert C. Carroll",
     },
     1123: {
         "albany_contact": [
@@ -939,7 +977,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "ByrneK@nyassembly.gov",
         "name": "Kevin M. Byrne",
-        "scrape_name__SANITY_CHECK": "Kevin M. Byrne",
+        "website_scraped_name__SANITY_CHECK": "Kevin M. Byrne",
     },
     1125: {
         "albany_contact": [
@@ -956,7 +994,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "millerb@nyassembly.gov",
         "name": "Brian D. Miller",
-        "scrape_name__SANITY_CHECK": "Brian D. Miller",
+        "website_scraped_name__SANITY_CHECK": "Brian D. Miller",
     },
     1126: {
         "albany_contact": [
@@ -972,7 +1010,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "norrism@nyassembly.gov",
         "name": "Michael J. Norris",
-        "scrape_name__SANITY_CHECK": "Michael J. Norris",
+        "website_scraped_name__SANITY_CHECK": "Michael J. Norris",
     },
     1127: {
         "albany_contact": [
@@ -988,7 +1026,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "walshm@nyassembly.gov",
         "name": "Mary Beth Walsh",
-        "scrape_name__SANITY_CHECK": "Mary Beth Walsh",
+        "website_scraped_name__SANITY_CHECK": "Mary Beth Walsh",
     },
     1128: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4793"}],
@@ -996,7 +1034,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Manhattan", "phone": "212-866-5809"}],
         "email": "DickensI@nyassembly.gov",
         "name": "Inez E. Dickens",
-        "scrape_name__SANITY_CHECK": "Inez E. Dickens",
+        "website_scraped_name__SANITY_CHECK": "Inez E. Dickens",
     },
     1131: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4292"}],
@@ -1015,7 +1053,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "amatos@nyassembly.gov",
         "name": "Stacey Pheffer Amato",
-        "scrape_name__SANITY_CHECK": "Stacey Pheffer Amato",
+        "website_scraped_name__SANITY_CHECK": "Stacey Pheffer Amato",
     },
     1132: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-3640"}],
@@ -1029,7 +1067,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "niouy@nyassembly.gov",
         "name": "Yuh-Line Niou",
-        "scrape_name__SANITY_CHECK": "Yuh-Line Niou",
+        "website_scraped_name__SANITY_CHECK": "Yuh-Line Niou",
     },
     1133: {
         "albany_contact": [
@@ -1045,7 +1083,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "wallacem@nyassembly.gov",
         "name": "Monica P. Wallace",
-        "scrape_name__SANITY_CHECK": "Monica P. Wallace",
+        "website_scraped_name__SANITY_CHECK": "Monica P. Wallace",
     },
     1135: {
         "albany_contact": [
@@ -1061,7 +1099,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "morinelloa@nyassembly.gov",
         "name": "Angelo J. Morinello",
-        "scrape_name__SANITY_CHECK": "Angelo J. Morinello",
+        "website_scraped_name__SANITY_CHECK": "Angelo J. Morinello",
     },
     1139: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4404"}],
@@ -1075,7 +1113,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "rosenthald@nyassembly.gov",
         "name": "Daniel Rosenthal",
-        "scrape_name__SANITY_CHECK": "Daniel Rosenthal",
+        "website_scraped_name__SANITY_CHECK": "Daniel Rosenthal",
     },
     1141: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5491"}],
@@ -1083,7 +1121,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Manhattan", "phone": "212-234-1430"}],
         "email": "taylora@nyassembly.gov",
         "name": "Al Taylor",
-        "scrape_name__SANITY_CHECK": "Al Taylor",
+        "website_scraped_name__SANITY_CHECK": "Al Taylor",
     },
     1144: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5506"}],
@@ -1091,7 +1129,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Manhattan", "phone": "212-979-9696"}],
         "email": "epsteinh@nyassembly.gov",
         "name": "Harvey Epstein",
-        "scrape_name__SANITY_CHECK": "Harvey Epstein",
+        "website_scraped_name__SANITY_CHECK": "Harvey Epstein",
     },
     1146: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5844"}],
@@ -1101,7 +1139,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "fernandezn@nyassembly.gov",
         "name": "Nathalia Fernandez",
-        "scrape_name__SANITY_CHECK": "Nathalia Fernandez",
+        "website_scraped_name__SANITY_CHECK": "Nathalia Fernandez",
     },
     1147: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5732"}],
@@ -1109,7 +1147,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Melville", "phone": "631-271-8025"}],
         "email": "sterns@nyassembly.gov",
         "name": "Steve Stern",
-        "scrape_name__SANITY_CHECK": "Steve Stern",
+        "website_scraped_name__SANITY_CHECK": "Steve Stern",
     },
     1148: {
         "albany_contact": [
@@ -1125,7 +1163,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "smithd@nyassembly.gov",
         "name": "Doug Smith",
-        "scrape_name__SANITY_CHECK": "Doug Smith",
+        "website_scraped_name__SANITY_CHECK": "Doug Smith",
     },
     1150: {
         "albany_contact": [
@@ -1141,7 +1179,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "mikulinj@nyassembly.gov",
         "name": "John K. Mikulin",
-        "scrape_name__SANITY_CHECK": "John K. Mikulin",
+        "website_scraped_name__SANITY_CHECK": "John K. Mikulin",
     },
     1151: {
         "albany_contact": [
@@ -1157,7 +1195,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "ashbyj@nyassembly.gov",
         "name": "Jake Ashby",
-        "scrape_name__SANITY_CHECK": "Jake Ashby",
+        "website_scraped_name__SANITY_CHECK": "Jake Ashby",
     },
     1152: {
         "albany_contact": [
@@ -1174,7 +1212,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "taguec@nyassembly.gov",
         "name": "Chris Tague",
-        "scrape_name__SANITY_CHECK": "Chris Tague",
+        "website_scraped_name__SANITY_CHECK": "Chris Tague",
     },
     1238: {
         "albany_contact": [
@@ -1186,7 +1224,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "destefanoj@nyassembly.gov",
         "name": "Joe DeStefano",
-        "scrape_name__SANITY_CHECK": "Joe DeStefano",
+        "website_scraped_name__SANITY_CHECK": "Joe DeStefano",
     },
     1240: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5861"}],
@@ -1194,7 +1232,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Hempstead", "phone": "516-489-6610"}],
         "email": "darlingt@nyassembly.gov",
         "name": "Taylor Darling",
-        "scrape_name__SANITY_CHECK": "Taylor Darling",
+        "website_scraped_name__SANITY_CHECK": "Taylor Darling",
     },
     1241: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4656"}],
@@ -1204,7 +1242,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "griffinj@nyassembly.gov",
         "name": "Judy Griffin",
-        "scrape_name__SANITY_CHECK": "Judy Griffin",
+        "website_scraped_name__SANITY_CHECK": "Judy Griffin",
     },
     1242: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4567"}],
@@ -1214,7 +1252,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "cruzc@nyassembly.gov",
         "name": "Catalina Cruz",
-        "scrape_name__SANITY_CHECK": "Catalina Cruz",
+        "website_scraped_name__SANITY_CHECK": "Catalina Cruz",
     },
     1243: {
         "albany_contact": [
@@ -1230,7 +1268,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "EichensteinS@nyassembly.gov",
         "name": "Simcha Eichenstein",
-        "scrape_name__SANITY_CHECK": "Simcha  Eichenstein",
+        "website_scraped_name__SANITY_CHECK": "Simcha  Eichenstein",
     },
     1244: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4677"}],
@@ -1240,7 +1278,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "fallc@nyassembly.gov",
         "name": "Charles Fall",
-        "scrape_name__SANITY_CHECK": "Charles D. Fall",
+        "website_scraped_name__SANITY_CHECK": "Charles D. Fall",
     },
     1245: {
         "albany_contact": [
@@ -1256,7 +1294,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "reillym@nyassembly.gov",
         "name": "Mike Reilly",
-        "scrape_name__SANITY_CHECK": "Michael Reilly",
+        "website_scraped_name__SANITY_CHECK": "Michael Reilly",
     },
     1246: {
         "albany_contact": [
@@ -1272,7 +1310,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "schmittc@nyassembly.gov",
         "name": "Colin Schmitt",
-        "scrape_name__SANITY_CHECK": "Colin Schmitt",
+        "website_scraped_name__SANITY_CHECK": "Colin Schmitt",
     },
     1247: {
         "albany_contact": [
@@ -1289,7 +1327,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "walczykm@nyassembly.gov",
         "name": "Mark Walczyk",
-        "scrape_name__SANITY_CHECK": "Mark Walczyk",
+        "website_scraped_name__SANITY_CHECK": "Mark Walczyk",
     },
     1248: {
         "albany_contact": [
@@ -1310,7 +1348,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "smullenr@nyassembly.gov",
         "name": "Robert Smullen",
-        "scrape_name__SANITY_CHECK": "Robert Smullen",
+        "website_scraped_name__SANITY_CHECK": "Robert Smullen",
     },
     1249: {
         "albany_contact": [
@@ -1322,7 +1360,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "buttenschonm@nyassembly.gov",
         "name": "Marianne Buttenschon",
-        "scrape_name__SANITY_CHECK": "Marianne  Buttenschon",
+        "website_scraped_name__SANITY_CHECK": "Marianne  Buttenschon",
     },
     1250: {
         "albany_contact": [
@@ -1334,7 +1372,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "salkaj@nyassembly.gov",
         "name": "John Salka",
-        "scrape_name__SANITY_CHECK": "John Salka",
+        "website_scraped_name__SANITY_CHECK": "John Salka",
     },
     1251: {
         "albany_contact": [
@@ -1346,7 +1384,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "manktelowb@nyassembly.gov",
         "name": "Brian Manktelow",
-        "scrape_name__SANITY_CHECK": "Brian Manktelow",
+        "website_scraped_name__SANITY_CHECK": "Brian Manktelow",
     },
     1252: {
         "albany_contact": [
@@ -1358,7 +1396,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "byrnesm@nyassembly.gov",
         "name": "Marjorie Byrnes",
-        "scrape_name__SANITY_CHECK": "Marjorie Byrnes",
+        "website_scraped_name__SANITY_CHECK": "Marjorie Byrnes",
     },
     1254: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4691"}],
@@ -1366,7 +1404,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "West Seneca", "phone": "716-608-6099"}],
         "email": "burkep@nyassembly.gov",
         "name": "Patrick Burke",
-        "scrape_name__SANITY_CHECK": "Pat Burke",
+        "website_scraped_name__SANITY_CHECK": "Pat Burke",
     },
     1255: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4618"}],
@@ -1376,7 +1414,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "mcmahonk@nyassembly.gov",
         "name": "Karen McMahon",
-        "scrape_name__SANITY_CHECK": "Karen McMahon",
+        "website_scraped_name__SANITY_CHECK": "Karen McMahon",
     },
     1256: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4811"}],
@@ -1395,7 +1433,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "FrontusM@nyassembly.gov",
         "name": "Mathylde Frontus",
-        "scrape_name__SANITY_CHECK": "Mathylde Frontus",
+        "website_scraped_name__SANITY_CHECK": "Mathylde Frontus",
     },
     1257: {
         "albany_contact": [
@@ -1407,7 +1445,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "reyesk@nyassembly.gov",
         "name": "Karines Reyes",
-        "scrape_name__SANITY_CHECK": "Karines  Reyes",
+        "website_scraped_name__SANITY_CHECK": "Karines  Reyes",
     },
     1258: {
         "albany_contact": [{"city": "Albany"}],
@@ -1415,7 +1453,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Yonkers", "phone": "914-779-8805"}],
         "email": "sayeghn@nyassembly.gov",
         "name": "Nader sayegh",
-        "scrape_name__SANITY_CHECK": "Nader J. Sayegh",
+        "website_scraped_name__SANITY_CHECK": "Nader J. Sayegh",
     },
     1259: {
         "albany_contact": [
@@ -1432,7 +1470,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "jacobsonj@nyassembly.gov",
         "name": "Jonathan Jacobson",
-        "scrape_name__SANITY_CHECK": "Jonathan  G. Jacobson",
+        "website_scraped_name__SANITY_CHECK": "Jonathan  G. Jacobson",
     },
     1459: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5668"}],
@@ -1443,7 +1481,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "andersonk@nyassembly.gov",
         "name": "Khaleel Anderson",
-        "scrape_name__SANITY_CHECK": "Khaleel M. Anderson",
+        "website_scraped_name__SANITY_CHECK": "Khaleel M. Anderson",
     },
     1460: {
         "albany_contact": [
@@ -1459,7 +1497,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "clarks@nyassembly.gov",
         "name": "Sarah Clark",
-        "scrape_name__SANITY_CHECK": "Sarah Clark",
+        "website_scraped_name__SANITY_CHECK": "Sarah Clark",
     },
     1461: {
         "albany_contact": [
@@ -1475,7 +1513,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "brownk@nyassembly.gov",
         "name": "Keith Brown",
-        "scrape_name__SANITY_CHECK": "Keith P. Brown",
+        "website_scraped_name__SANITY_CHECK": "Keith P. Brown",
     },
     1462: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5606"}],
@@ -1483,7 +1521,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Rochester", "phone": "585-454-3670"}],
         "email": "meeksd@nyassembly.gov",
         "name": "Demond Meeks",
-        "scrape_name__SANITY_CHECK": "Demond Meeks",
+        "website_scraped_name__SANITY_CHECK": "Demond Meeks",
     },
     1463: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5514"}],
@@ -1491,7 +1529,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Bronx", "phone": "718-893-0202"}],
         "email": "burgosk@nyassembly.gov",
         "name": "Kenny Burgos",
-        "scrape_name__SANITY_CHECK": "Kenny Burgos",
+        "website_scraped_name__SANITY_CHECK": "Kenny Burgos",
     },
     1464: {
         "albany_contact": [
@@ -1507,7 +1545,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "giglioj2@nyassembly.gov",
         "name": "Jodi Giglio",
-        "scrape_name__SANITY_CHECK": "Jodi Giglio",
+        "website_scraped_name__SANITY_CHECK": "Jodi Giglio",
     },
     1465: {
         "albany_contact": [
@@ -1519,7 +1557,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "gandolfoj@nyassembly.gov",
         "name": "Jerett Gandolfo",
-        "scrape_name__SANITY_CHECK": "Jarett Gandolfo",
+        "website_scraped_name__SANITY_CHECK": "Jarett Gandolfo",
     },
     1466: {
         "albany_contact": [
@@ -1535,7 +1573,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "dursom@nyassembly.gov",
         "name": "Michael Durso",
-        "scrape_name__SANITY_CHECK": "Michael Durso",
+        "website_scraped_name__SANITY_CHECK": "Michael Durso",
     },
     1467: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5192"}],
@@ -1545,7 +1583,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "sillittig@nyassembly.gov",
         "name": "Gina Sillitti",
-        "scrape_name__SANITY_CHECK": "Gina L. Sillitti",
+        "website_scraped_name__SANITY_CHECK": "Gina L. Sillitti",
     },
     1468: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4545"}],
@@ -1559,7 +1597,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "gonzalezrojasj@nyassembly.gov",
         "name": "Jessica Gonzalez-Rojas",
-        "scrape_name__SANITY_CHECK": "Jessica González-Rojas",
+        "website_scraped_name__SANITY_CHECK": "Jessica González-Rojas",
     },
     1469: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5014"}],
@@ -1567,7 +1605,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Astoria", "phone": "718-545-3889"}],
         "email": "mamdaniz@nyassembly.gov",
         "name": "Zohran Mamdani",
-        "scrape_name__SANITY_CHECK": "Zohran K. Mamdani",
+        "website_scraped_name__SANITY_CHECK": "Zohran K. Mamdani",
     },
     1470: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4621"}],
@@ -1581,7 +1619,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "rajkumarj@nyassembly.gov",
         "name": "Jenifer Rajkumar",
-        "scrape_name__SANITY_CHECK": "Jenifer Rajkumar",
+        "website_scraped_name__SANITY_CHECK": "Jenifer Rajkumar",
     },
     1471: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4477"}],
@@ -1589,7 +1627,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Brooklyn", "phone": "718-383-7474"}],
         "email": "gallaghere@nyassembly.gov",
         "name": "Emily Gallagher",
-        "scrape_name__SANITY_CHECK": "Emily Gallagher",
+        "website_scraped_name__SANITY_CHECK": "Emily Gallagher",
     },
     1472: {
         "albany_contact": [
@@ -1605,7 +1643,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "mitaynesm@nyassembly.gov",
         "name": "Marcela Mitaynes",
-        "scrape_name__SANITY_CHECK": "Marcela Mitaynes",
+        "website_scraped_name__SANITY_CHECK": "Marcela Mitaynes",
     },
     1473: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5474"}],
@@ -1613,7 +1651,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Brooklyn", "phone": "718-399-7630"}],
         "email": "zinermans@nyassembly.gov",
         "name": "Stefani Zinerman",
-        "scrape_name__SANITY_CHECK": "Stefani Zinerman",
+        "website_scraped_name__SANITY_CHECK": "Stefani Zinerman",
     },
     1474: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5325"}],
@@ -1621,7 +1659,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Brooklyn", "phone": "718-596-0100"}],
         "email": "souffrantforrestp@nyassembly.gov",
         "name": "Phara Souffrant Forrest",
-        "scrape_name__SANITY_CHECK": "Phara Souffrant Forrest",
+        "website_scraped_name__SANITY_CHECK": "Phara Souffrant Forrest",
     },
     1475: {
         "albany_contact": [
@@ -1638,7 +1676,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "tannousism@nyassembly.gov",
         "name": "Michael Tannousis",
-        "scrape_name__SANITY_CHECK": "Michael Tannousis",
+        "website_scraped_name__SANITY_CHECK": "Michael Tannousis",
     },
     1476: {
         "albany_contact": [
@@ -1650,7 +1688,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "Jacksonc@nyassembly.gov",
         "name": "Chantel Jackson",
-        "scrape_name__SANITY_CHECK": "Chantel Jackson",
+        "website_scraped_name__SANITY_CHECK": "Chantel Jackson",
     },
     1477: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5402"}],
@@ -1658,7 +1696,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Bronx", "phone": "718-292-2901"}],
         "email": "septimoa@nyassembly.gov",
         "name": "Amanda Septimo",
-        "scrape_name__SANITY_CHECK": "Amanda Septimo",
+        "website_scraped_name__SANITY_CHECK": "Amanda Septimo",
     },
     1478: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5397"}],
@@ -1666,7 +1704,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Mount Kisco", "phone": "914-244-4450"}],
         "email": "burdickc@nyassembly.gov",
         "name": "Chris Burdick",
-        "scrape_name__SANITY_CHECK": "Chris Burdick",
+        "website_scraped_name__SANITY_CHECK": "Chris Burdick",
     },
     1479: {
         "albany_contact": [
@@ -1682,7 +1720,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "lawlerm@nyassembly.gov",
         "name": "Michael Lawler",
-        "scrape_name__SANITY_CHECK": "Mike Lawler",
+        "website_scraped_name__SANITY_CHECK": "Mike Lawler",
     },
     1480: {
         "albany_contact": [
@@ -1698,7 +1736,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "SimpsonM@nyassembly.gov",
         "name": "Matthew Simpson",
-        "scrape_name__SANITY_CHECK": "Matthew Simpson",
+        "website_scraped_name__SANITY_CHECK": "Matthew Simpson",
     },
     1481: {
         "albany_contact": [
@@ -1714,15 +1752,18 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "angelinoj@nyassembly.gov",
         "name": "Joe Angelino",
-        "scrape_name__SANITY_CHECK": "Joe Angelino",
+        "website_scraped_name__SANITY_CHECK": "Joe Angelino",
     },
     1482: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5444"}],
         "district": 125,
-        "district_contact": [{"city": "Ithaca", "phone": "607-277-8030"}],
+        "district_contact": [
+            {"city": "Ithaca", "phone": "607-277-8030"},
+            {"city": "Cortland", "phone": "607-208-2024"},
+        ],
         "email": "kellesa@nyassembly.gov",
         "name": "Anna Kelles",
-        "scrape_name__SANITY_CHECK": "Dr. Anna R. Kelles",
+        "website_scraped_name__SANITY_CHECK": "Dr. Anna R. Kelles",
     },
     1483: {
         "albany_contact": [
@@ -1734,7 +1775,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "lemondesj@nyassembly.gov",
         "name": "John Lemondes",
-        "scrape_name__SANITY_CHECK": "John Lemondes",
+        "website_scraped_name__SANITY_CHECK": "John Lemondes",
     },
     1484: {
         "albany_contact": [
@@ -1746,7 +1787,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "gallahanj@nyassembly.gov",
         "name": "Jeff Gallahan",
-        "scrape_name__SANITY_CHECK": "Jeff Gallahan",
+        "website_scraped_name__SANITY_CHECK": "Jeff Gallahan",
     },
     1485: {
         "albany_contact": [
@@ -1762,7 +1803,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "jensenj@nyassembly.gov",
         "name": "Josh Jensen",
-        "scrape_name__SANITY_CHECK": "Josh Jensen",
+        "website_scraped_name__SANITY_CHECK": "Josh Jensen",
     },
     1486: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5784"}],
@@ -1772,7 +1813,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "lunsfordj@nyassembly.gov",
         "name": "Jen Lunsford",
-        "scrape_name__SANITY_CHECK": "Jennifer Lunsford",
+        "website_scraped_name__SANITY_CHECK": "Jennifer Lunsford",
     },
     1487: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4767"}],
@@ -1786,7 +1827,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "conradw@nyassembly.gov",
         "name": "William Conrad",
-        "scrape_name__SANITY_CHECK": "William Conrad",
+        "website_scraped_name__SANITY_CHECK": "William Conrad",
     },
     1488: {
         "albany_contact": [
@@ -1798,7 +1839,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "riverajd@nyassembly.gov",
         "name": "Jonathan Rivera",
-        "scrape_name__SANITY_CHECK": "Jonathan Rivera",
+        "website_scraped_name__SANITY_CHECK": "Jonathan Rivera",
     },
     1503: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5511"}],
@@ -1806,7 +1847,7 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Bronx", "phone": "718-933-6909"}],
         "email": "tapiay@nyassembly.gov",
         "name": "Yudelka Tapia",
-        "scrape_name__SANITY_CHECK": "Yudelka Tapia",
+        "website_scraped_name__SANITY_CHECK": "Yudelka Tapia",
     },
     1505: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-4781"}],
@@ -1814,15 +1855,15 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         "district_contact": [{"city": "Manhattan", "phone": "212-828-3953"}],
         "email": "gibbse@nyassembly.gov",
         "name": "Eddie Gibbs",
-        "scrape_name__SANITY_CHECK": "Edward Gibbs",
+        "website_scraped_name__SANITY_CHECK": "Edward Gibbs",
     },
     1506: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5807"}],
         "district": 72,
         "district_contact": [{"city": "Manhattan", "phone": "212-544-2278"}],
-        "email": None,
+        "email": "delossm@nyassembly.gov",
         "name": "Manny De Los Santos",
-        "scrape_name__SANITY_CHECK": "Manny De Los Santos",
+        "website_scraped_name__SANITY_CHECK": "Manny De Los Santos",
     },
     1507: {
         "albany_contact": [{"city": "Albany", "phone": "518-455-5912"}],
@@ -1836,6 +1877,6 @@ ASSEMBLY_DATA_FROM_WEBSITE = {
         ],
         "email": "lucasn@nyassembly.gov",
         "name": "Nikki Lucas",
-        "scrape_name__SANITY_CHECK": "Nikki Lucas",
+        "website_scraped_name__SANITY_CHECK": "Nikki Lucas",
     },
 }
